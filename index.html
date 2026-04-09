@@ -39,38 +39,39 @@
 
     <style>
         /* =======================================================================
-           🔥 ULTIMATE MOBILE BROWSER FIX (ANTI-PICHKA, ANTI-ZOOM, ANTI-UGLY) 🔥
+           🔥 META / BIG TECH STANDARD MOBILE WEB RESETS 🔥
+           Ye block browser ko tumhare UI ke sath chhed-chhad karne se rokega
            ======================================================================= */
-        html, body, .app-container, * {
-            -webkit-text-size-adjust: 100% !important;
-            -moz-text-size-adjust: 100% !important;
-            text-size-adjust: 100% !important;
-            touch-action: manipulation !important;
-            -webkit-tap-highlight-color: transparent !important;
-            margin: 0; 
-            padding: 0; 
+        html, body, * {
+            -webkit-tap-highlight-color: transparent; /* Removes blue blink on tap */
+            touch-action: manipulation; /* Disables double-tap to zoom */
+            -webkit-text-size-adjust: 100%; /* Prevents text scaling on orientation change */
             box-sizing: border-box;
+            margin: 0;
+            padding: 0;
         }
 
-        button, input, select, textarea, .input-box, .btn-primary {
-            -webkit-appearance: none !important;
-            -moz-appearance: none !important;
-            appearance: none !important;
-            font-size: 16px !important; /* iOS auto-zoom prevention */
+        /* Removes OS-level styling from buttons and inputs */
+        button, input, select, textarea {
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+            font-family: inherit;
         }
 
-        button {
-            white-space: nowrap !important;
-            word-break: keep-all !important;
-        }
-
-        select, input[type="date"], input[type="number"] {
+        /* THE GOLDEN RULE FOR iOS: Inputs MUST be 16px to prevent auto-zoom */
+        input, select, textarea, .input-box {
             font-size: 16px !important;
         }
 
-        /* Anti-Pichka / Flex-shrink */
-        button, .action-btn, .btn-primary, .nav-item, .glass-card, .w-8, .w-9, .w-10, .w-12 {
+        /* Prevent Flexbox from squishing buttons and cards */
+        button, .action-btn, .btn-primary, .nav-item, .glass-card, .w-8, .w-10 {
             flex-shrink: 0 !important;
+        }
+
+        /* Prevent text wrapping inside buttons */
+        button {
+            white-space: nowrap;
         }
 
         /* =======================================================================
@@ -119,7 +120,7 @@
             to { opacity: 1; transform: translateX(0); } 
         }
         
-        /* Glassmorphism 2.0 (Enhanced Apple Style) */
+        /* Glassmorphism */
         .glass-card { 
             background: rgba(255, 255, 255, 0.65); 
             backdrop-filter: blur(24px); 
@@ -145,264 +146,116 @@
             background: rgba(118, 118, 128, 0.08); 
             border: 1px solid transparent; 
             border-radius: 14px; 
-            padding: 14px 18px !important; 
+            padding: 14px 18px; 
             outline: none; 
             font-weight: 500; 
             transition: all 0.3s ease;
             color: #1C1C1E; 
-            min-height: 44px !important;
+            min-height: 44px;
         }
-        .dark .input-box { 
-            background: rgba(118, 118, 128, 0.18); 
-            color: #FFFFFF; 
-        }
-        .input-box:focus { 
-            background: rgba(118, 118, 128, 0.12); 
-            border-color: rgba(52, 199, 89, 0.4); 
-            box-shadow: 0 0 0 3px rgba(52, 199, 89, 0.15); 
-        }
+        .dark .input-box { background: rgba(118, 118, 128, 0.18); color: #FFFFFF; }
+        .input-box:focus { background: rgba(118, 118, 128, 0.12); border-color: rgba(52, 199, 89, 0.4); box-shadow: 0 0 0 3px rgba(52, 199, 89, 0.15); }
 
         .btn-primary { 
-            background: #34C759; 
-            color: #FFFFFF; 
-            padding: 16px !important; 
-            border-radius: 14px; 
-            font-weight: 600; 
-            border: none; 
-            cursor: pointer; 
-            width: 100%;
-            display: flex; 
-            align-items: center; 
-            justify-content: center; 
-            gap: 8px; 
-            transition: all 0.2s ease; 
-            min-height: 44px !important;
+            background: #34C759; color: #FFFFFF; padding: 14px 16px; border-radius: 14px; 
+            font-weight: 600; border: none; cursor: pointer; width: 100%;
+            display: flex; align-items: center; justify-content: center; gap: 8px; 
+            transition: all 0.2s ease; min-height: 44px;
             box-shadow: 0 4px 14px rgba(52, 199, 89, 0.3);
+            font-size: 16px;
         }
-        .btn-primary:active { 
-            transform: scale(0.96); 
-            box-shadow: 0 2px 8px rgba(52, 199, 89, 0.2); 
-        }
+        .btn-primary:active { transform: scale(0.96); box-shadow: 0 2px 8px rgba(52, 199, 89, 0.2); }
         
-        .btn-google { 
-            background: #FFFFFF; 
-            color: #000000; 
-            border: 1px solid #E5E5EA; 
-            box-shadow: 0 4px 14px rgba(0,0,0,0.05); 
-        }
-        .dark .btn-google { 
-            background: #2C2C2E; 
-            color: #FFFFFF; 
-            border-color: #3A3A3C; 
-            box-shadow: 0 4px 14px rgba(0,0,0,0.2); 
-        }
+        .btn-google { background: #FFFFFF; color: #000000; border: 1px solid #E5E5EA; box-shadow: 0 4px 14px rgba(0,0,0,0.05); }
+        .dark .btn-google { background: #2C2C2E; color: #FFFFFF; border-color: #3A3A3C; box-shadow: 0 4px 14px rgba(0,0,0,0.2); }
 
         .action-btn { 
-            background: rgba(255,59,48,0.1) !important; 
-            color: #FF3B30 !important; 
-            border-radius: 10px !important; 
-            border: none !important; 
-            cursor: pointer !important; 
-            transition: transform 0.2s !important; 
-            display: inline-flex !important; 
-            align-items: center !important; 
-            justify-content: center !important; 
-            min-width: 32px !important; 
-            min-height: 32px !important;
+            background: rgba(255,59,48,0.1); color: #FF3B30; 
+            border-radius: 10px; border: none; 
+            cursor: pointer; transition: transform 0.2s; 
+            display: inline-flex; align-items: center; justify-content: center; 
+            min-width: 36px; min-height: 36px;
         }
-        .action-btn:active { 
-            transform: scale(0.85) !important; 
-        }
+        .action-btn:active { transform: scale(0.85); }
 
         /* Navigation */
         .bottom-nav { 
-            position: fixed; 
-            bottom: 0; 
-            left: 50%; 
-            transform: translateX(-50%); 
-            width: 100%; 
-            max-width: 480px; 
-            background: rgba(245, 245, 247, 0.85); 
-            backdrop-filter: blur(30px); 
-            -webkit-backdrop-filter: blur(30px);
+            position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); 
+            width: 100%; max-width: 480px; background: rgba(245, 245, 247, 0.85); 
+            backdrop-filter: blur(30px); -webkit-backdrop-filter: blur(30px);
             border-top: 0.5px solid rgba(0, 0, 0, 0.08); 
-            display: flex; 
-            overflow-x: auto; 
-            scroll-behavior: smooth;
-            padding: 10px 8px calc(10px + env(safe-area-inset-bottom)); 
-            z-index: 50; 
+            display: flex; overflow-x: auto; scroll-behavior: smooth;
+            padding: 10px 8px calc(10px + env(safe-area-inset-bottom)); z-index: 50; 
         }
-        .bottom-nav::-webkit-scrollbar { 
-            display: none; 
-        }
-        .dark .bottom-nav { 
-            background: rgba(28, 28, 30, 0.85); 
-            border-top-color: rgba(255, 255, 255, 0.1); 
-        }
+        .bottom-nav::-webkit-scrollbar { display: none; }
+        .dark .bottom-nav { background: rgba(28, 28, 30, 0.85); border-top-color: rgba(255, 255, 255, 0.1); }
         
         .nav-item { 
-            color: #8E8E93; 
-            text-align: center; 
-            font-size: 10px; 
-            font-weight: 600; 
-            cursor: pointer; 
-            padding: 6px 12px; 
-            border-radius: 12px; 
-            display: flex; 
-            flex-direction: column; 
-            align-items: center; 
-            justify-content: center;
-            transition: all 0.3s cubic-bezier(0.32, 0.72, 0, 1); 
-            min-width: 65px;
+            color: #8E8E93; text-align: center; font-size: 10px; font-weight: 600; 
+            cursor: pointer; padding: 6px 12px; border-radius: 12px; 
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            transition: all 0.3s cubic-bezier(0.32, 0.72, 0, 1); min-width: 65px;
         }
-        .nav-item.active { 
-            color: #34C759; 
-            transform: translateY(-2px); 
-        }
-        .nav-item i { 
-            font-size: 20px; 
-            margin-bottom: 4px; 
-        }
+        .nav-item.active { color: #34C759; transform: translateY(-2px); }
+        .nav-item i { font-size: 20px; margin-bottom: 4px; }
         
         /* Modals & Loaders */
         .modal-overlay { 
-            position: fixed; 
-            inset: 0; 
-            background: rgba(0, 0, 0, 0.4); 
-            backdrop-filter: blur(8px); 
-            -webkit-backdrop-filter: blur(8px);
-            z-index: 100; 
-            display: none; 
-            align-items: flex-end; 
+            position: fixed; inset: 0; background: rgba(0, 0, 0, 0.4); 
+            backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+            z-index: 100; display: none; align-items: flex-end; 
         }
         .modal-content { 
-            background: #FFFFFF; 
-            width: 100%; 
-            max-width: 480px; 
-            margin: 0 auto; 
-            border-radius: 32px 32px 0 0; 
-            padding: 24px 24px 48px; 
-            animation: slideUpSheet 0.4s cubic-bezier(0.32, 0.72, 0, 1); 
-            max-height: 90vh; 
-            overflow-y: auto; 
+            background: #FFFFFF; width: 100%; max-width: 480px; margin: 0 auto; 
+            border-radius: 32px 32px 0 0; padding: 24px 24px 48px; 
+            animation: slideUpSheet 0.4s cubic-bezier(0.32, 0.72, 0, 1); max-height: 90vh; overflow-y: auto; 
             box-shadow: 0 -10px 40px rgba(0,0,0,0.1);
         }
-        .dark .modal-content { 
-            background: #1C1C1E; 
-            color: #FFFFFF; 
-            box-shadow: 0 -10px 40px rgba(0,0,0,0.5); 
-        }
-        @keyframes slideUpSheet { 
-            from { transform: translateY(100%); } 
-            to { transform: translateY(0); } 
-        }
+        .dark .modal-content { background: #1C1C1E; color: #FFFFFF; box-shadow: 0 -10px 40px rgba(0,0,0,0.5); }
+        @keyframes slideUpSheet { from { transform: translateY(100%); } to { transform: translateY(0); } }
         
-        .table-custom { 
-            width: 100%; 
-            border-collapse: collapse; 
-            margin-top: 8px; 
-        }
-        .table-custom th { 
-            color: #8E8E93; 
-            font-size: 11px; 
-            font-weight: 600; 
-            text-align: left; 
-            padding: 12px 8px; 
-            border-bottom: 1px solid rgba(0,0,0,0.05); 
-            text-transform: uppercase; 
-            letter-spacing: 0.5px; 
-        }
-        .table-custom td { 
-            padding: 14px 8px; 
-            font-size: 14px; 
-            font-weight: 600; 
-            border-bottom: 1px solid rgba(0,0,0,0.03); 
-            color: #1C1C1E; 
-            vertical-align: middle; 
-        }
+        .table-custom { width: 100%; border-collapse: collapse; margin-top: 8px; }
+        .table-custom th { color: #8E8E93; font-size: 11px; font-weight: 600; text-align: left; padding: 12px 8px; border-bottom: 1px solid rgba(0,0,0,0.05); text-transform: uppercase; letter-spacing: 0.5px; }
+        .table-custom td { padding: 14px 8px; font-size: 14px; font-weight: 600; border-bottom: 1px solid rgba(0,0,0,0.03); color: #1C1C1E; vertical-align: middle; }
         .dark .table-custom th { border-bottom-color: rgba(255,255,255,0.05); }
         .dark .table-custom td { border-bottom-color: rgba(255,255,255,0.05); color: #FFFFFF; }
         
         #toast { 
-            position: fixed; 
-            top: 40px; 
-            left: 50%; 
-            transform: translateX(-50%) translateY(-150px);
-            background: rgba(0,0,0,0.85); 
-            backdrop-filter: blur(16px); 
-            color: #FFFFFF; 
-            padding: 14px 28px; 
-            border-radius: 99px; 
-            z-index: 200; 
-            font-size: 14px; 
-            font-weight: 600;
-            display: flex; 
-            align-items: center; 
-            gap: 10px; 
-            opacity: 0; 
-            transition: all 0.4s cubic-bezier(0.32, 0.72, 0, 1);
+            position: fixed; top: 40px; left: 50%; transform: translateX(-50%) translateY(-150px);
+            background: rgba(0,0,0,0.85); backdrop-filter: blur(16px); color: #FFFFFF; 
+            padding: 14px 28px; border-radius: 99px; z-index: 200; font-size: 14px; font-weight: 600;
+            display: flex; align-items: center; gap: 10px; opacity: 0; transition: all 0.4s cubic-bezier(0.32, 0.72, 0, 1);
             box-shadow: 0 8px 24px rgba(0,0,0,0.15);
         }
-        .dark #toast { 
-            background: rgba(255,255,255,0.95); 
-            color: #000000; 
-        }
-        #toast.show { 
-            transform: translateX(-50%) translateY(0); 
-            opacity: 1; 
-        }
+        .dark #toast { background: rgba(255,255,255,0.95); color: #000000; }
+        #toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
 
         #global-loader {
-            position: fixed; 
-            inset: 0; 
-            background: rgba(245, 245, 247, 0.9); 
-            backdrop-filter: blur(15px);
-            z-index: 9999; 
-            display: flex; 
-            flex-direction: column; 
-            justify-content: center; 
-            align-items: center;
-            opacity: 0; 
-            pointer-events: none; 
-            transition: opacity 0.3s ease;
+            position: fixed; inset: 0; background: rgba(245, 245, 247, 0.9); backdrop-filter: blur(15px);
+            z-index: 9999; display: flex; flex-direction: column; justify-content: center; align-items: center;
+            opacity: 0; pointer-events: none; transition: opacity 0.3s ease;
         }
         .dark #global-loader { background: rgba(0, 0, 0, 0.9); }
         #global-loader.show { opacity: 1; pointer-events: all; }
         
         .spinner { 
-            width: 44px; 
-            height: 44px; 
-            border: 4px solid rgba(52, 199, 89, 0.2); 
-            border-top-color: #34C759; 
-            border-radius: 50%; 
-            animation: spin 1s linear infinite; 
+            width: 44px; height: 44px; border: 4px solid rgba(52, 199, 89, 0.2); 
+            border-top-color: #34C759; border-radius: 50%; animation: spin 1s linear infinite; 
         }
         @keyframes spin { to { transform: rotate(360deg); } }
 
         .header-sticky { 
-            background: rgba(245, 245, 247, 0.8); 
-            backdrop-filter: blur(30px); 
-            -webkit-backdrop-filter: blur(30px);
-            position: sticky; 
-            top: 0; 
-            z-index: 10; 
-            display: flex; 
-            align-items: center; 
-            justify-content: space-between; 
-            padding: calc(16px + env(safe-area-inset-top)) 24px 16px; 
-            border-bottom: 0.5px solid rgba(0,0,0,0.05); 
-            gap: 8px;
+            background: rgba(245, 245, 247, 0.8); backdrop-filter: blur(30px); -webkit-backdrop-filter: blur(30px);
+            position: sticky; top: 0; z-index: 10; display: flex; align-items: center; justify-content: space-between; 
+            padding: calc(16px + env(safe-area-inset-top)) 24px 16px; border-bottom: 0.5px solid rgba(0,0,0,0.05); gap: 8px;
         }
-        .dark .header-sticky { 
-            background: rgba(0, 0, 0, 0.8); 
-            border-bottom-color: rgba(255,255,255,0.1); 
-        }
+        .dark .header-sticky { background: rgba(0, 0, 0, 0.8); border-bottom-color: rgba(255,255,255,0.1); }
 
-        /* 🔥 PREMIUM DIARY STYLING (Upgraded) 🔥 */
+        /* 🔥 PREMIUM DIARY STYLING 🔥 */
         .diary-paper {
-            background-color: #FDFBF7; /* Authentic paper feel */
-            border: 1px solid rgba(212, 175, 55, 0.3); /* Subtle gold border */
-            border-left: 6px solid #D4AF37; /* Premium binding look */
+            background-color: #FDFBF7; 
+            border: 1px solid rgba(212, 175, 55, 0.3); 
+            border-left: 6px solid #D4AF37; 
             box-shadow: 0 8px 30px rgba(0,0,0,0.04), inset 4px 0 10px rgba(0,0,0,0.02);
             border-radius: 12px 20px 20px 12px; 
             position: relative; 
@@ -416,7 +269,7 @@
             background-image: repeating-linear-gradient(transparent, transparent 31px, rgba(255,255,255,0.03) 31px, rgba(255,255,255,0.03) 32px);
         }
         .diary-textarea {
-            line-height: 32px; /* Matches the gradient lines */
+            line-height: 32px; 
             padding: 16px 24px;
             font-family: 'Georgia', serif; 
             font-size: 18px; 
@@ -428,13 +281,10 @@
             background: transparent; 
             border: none; 
             outline: none;
-            color: #2C1E16; /* Deep elegant ink color */
+            color: #2C1E16; 
         }
         .dark .diary-textarea { color: #E5D5C5; }
-        .diary-card { 
-            border-left: 4px solid #D4AF37; 
-            transition: transform 0.2s; 
-        }
+        .diary-card { border-left: 4px solid #D4AF37; transition: transform 0.2s; }
         
         /* Dashboard Gradient Text/Backgrounds */
         .dash-card-lena { background: linear-gradient(135deg, rgba(52,199,89,0.15) 0%, rgba(52,199,89,0.05) 100%); }
@@ -927,11 +777,15 @@
 </div>
 
 <script>
-    // ========================== HAPTICS & THEME ==========================
+    // ========================== HAPTICS, SOUND & THEME ==========================
+    const clickSound = new Audio('https://www.myinstants.com/media/sounds/mouse-click.mp3'); 
+    
     function haptic() { 
         if (navigator.vibrate) {
-            navigator.vibrate(45); 
+            navigator.vibrate(45);
         }
+        clickSound.currentTime = 0;
+        clickSound.play().catch(e => {});
     }
     
     function toggleTheme() {
@@ -962,11 +816,7 @@
 
     let app, auth, database, currentUserUID = null, appDataRef = null;
     let milkDB = {}, udharDB = [], expenseDB = [], salaryDB = {}, diaryDB = [];
-    let activeMilkCustomer = null;
-    let activeSalaryPerson = null;
-    let activeExpenseCategory = null;
-    let activeUdharPerson = null;
-    let activeDiaryIndex = null;
+    let activeMilkCustomer = null, activeSalaryPerson = null, activeExpenseCategory = null, activeUdharPerson = null, activeDiaryIndex = null;
     
     let selectedMonth = new Date().getMonth();
     let selectedYear = new Date().getFullYear();
@@ -1011,6 +861,7 @@
     function initFilters() {
         const yearSelects = ['filter-year-milk', 'filter-year-exp', 'filter-year-salary'];
         const monthSelects = ['filter-month-milk', 'filter-month-exp', 'filter-month-salary'];
+        
         const currentYear = new Date().getFullYear();
         
         let monthOptions = MONTHS.map((m, i) => `<option value="${i}">${m}</option>`).join('');
@@ -1019,7 +870,7 @@
         for (let y = currentYear - 2; y <= currentYear + 1; y++) {
             yearOptions += `<option value="${y}">${y}</option>`;
         }
-        
+
         yearSelects.forEach(id => { 
             if(document.getElementById(id)) { 
                 document.getElementById(id).innerHTML = yearOptions; 
@@ -1034,33 +885,37 @@
             }
         });
     }
-
+        
     function updateMonthFilter() {
         const activeTab = document.querySelector('.nav-item.active').id.replace('tab-', '');
         
         if(activeTab === 'milk' || document.getElementById('milk-detail-screen').classList.contains('active')) {
             selectedMonth = parseInt(document.getElementById('filter-month-milk').value);
             selectedYear = parseInt(document.getElementById('filter-year-milk').value);
-            renderMilkRecords(); 
+            document.getElementById('filter-month-exp').value = selectedMonth;
+            document.getElementById('filter-year-exp').value = selectedYear;
+            if(document.getElementById('filter-month-salary')) document.getElementById('filter-month-salary').value = selectedMonth;
+            if(document.getElementById('filter-year-salary')) document.getElementById('filter-year-salary').value = selectedYear;
+            renderMilkRecords();
             renderMilkList();
         } else if(activeTab === 'expenses' || document.getElementById('expense-detail-screen').classList.contains('active')) {
             selectedMonth = parseInt(document.getElementById('filter-month-exp').value);
             selectedYear = parseInt(document.getElementById('filter-year-exp').value);
-            renderExpenseList(); 
+            document.getElementById('filter-month-milk').value = selectedMonth;
+            document.getElementById('filter-year-milk').value = selectedYear;
+            if(document.getElementById('filter-month-salary')) document.getElementById('filter-month-salary').value = selectedMonth;
+            if(document.getElementById('filter-year-salary')) document.getElementById('filter-year-salary').value = selectedYear;
+            renderExpenseList();
             renderExpenseRecords();
         } else if(document.getElementById('salary-detail-screen').classList.contains('active')) {
             selectedMonth = parseInt(document.getElementById('filter-month-salary').value);
             selectedYear = parseInt(document.getElementById('filter-year-salary').value);
+            document.getElementById('filter-month-milk').value = selectedMonth;
+            document.getElementById('filter-year-milk').value = selectedYear;
+            document.getElementById('filter-month-exp').value = selectedMonth;
+            document.getElementById('filter-year-exp').value = selectedYear;
             renderSalaryRecords();
         }
-        
-        if(document.getElementById('filter-month-salary')) {
-            document.getElementById('filter-month-salary').value = selectedMonth;
-        }
-        if(document.getElementById('filter-year-salary')) {
-            document.getElementById('filter-year-salary').value = selectedYear;
-        }
-        
         updateDashboard();
     }
 
@@ -1078,59 +933,59 @@
     function initFirebase() {
         if (!app) {
             app = firebase.initializeApp(firebaseConfig);
-            auth = firebase.auth(); 
+            auth = firebase.auth();
             database = firebase.database();
             
             auth.onAuthStateChanged((user) => {
-                if (user) { 
-                    currentUserUID = user.uid; 
-                    loadUserData(); 
-                } else { 
-                    hideLoader(); 
-                    document.getElementById('login-screen').style.display = 'flex'; 
-                    document.getElementById('main-app').classList.add('hidden'); 
+                if (user) {
+                    currentUserUID = user.uid;
+                    loadUserData();
+                } else {
+                    hideLoader();
+                    document.getElementById('login-screen').style.display = 'flex';
+                    document.getElementById('main-app').classList.add('hidden');
                 }
             });
         }
     }
-
-    function handleGoogleLogin() { 
-        showLoader("CONNECTING..."); 
-        const provider = new firebase.auth.GoogleAuthProvider(); 
+   
+    function handleGoogleLogin() {
+        showLoader("CONNECTING...");
+        const provider = new firebase.auth.GoogleAuthProvider();
         auth.signInWithPopup(provider).catch((err) => { 
             hideLoader(); 
             showToast(err.message); 
-        }); 
+        });
     }
-    
-    function logout() { 
+
+    function logout() {
         if (confirm('Logout?')) {
-            auth.signOut(); 
+            auth.signOut();
         }
     }
 
     function loadUserData() {
-        showLoader("LOADING..."); 
+        showLoader("LOADING...");
         appDataRef = database.ref(`users/${currentUserUID}/appData`);
         
         appDataRef.on('value', (snapshot) => {
             const data = snapshot.val() || {};
-            milkDB = data.milkDB || {}; 
-            udharDB = data.udharDB || []; 
-            expenseDB = data.expenseDB || []; 
-            salaryDB = data.salaryDB || {}; 
+            milkDB = data.milkDB || {};
+            udharDB = data.udharDB || [];
+            expenseDB = data.expenseDB || [];
+            salaryDB = data.salaryDB || {};
             diaryDB = data.diaryDB || [];
-            
-            updateActiveScreen(); 
+
+            updateActiveScreen();
             hideLoader();
-            document.getElementById('login-screen').style.display = 'none'; 
+            document.getElementById('login-screen').style.display = 'none';
             document.getElementById('main-app').classList.remove('hidden');
         });
     }
-    
-    async function saveDB() { 
-        if (!currentUserUID) return; 
-        await appDataRef.set({ milkDB, udharDB, expenseDB, salaryDB, diaryDB }); 
+
+    async function saveDB() {
+        if (!currentUserUID) return;
+        await appDataRef.set({ milkDB, udharDB, expenseDB, salaryDB, diaryDB });
     }
 
     function updateActiveScreen() {
@@ -1172,22 +1027,22 @@
             if(u.type === 'credit') {
                 lenaHai += Number(u.amount); 
             } else {
-                denaHai += Number(u.amount); 
+                denaHai += Number(u.amount);
             }
         });
-        
-        Object.values(salaryDB).forEach(s => { 
+
+        Object.values(salaryDB).forEach(s => {
             let mTotal = 0; 
             filterByMonth(s.records || []).forEach(r => {
                 mTotal += Number(r.amount||0);
-            }); 
+            });
             if (s.type === 'lene_wala') {
                 rev += mTotal; 
             } else {
                 exp += mTotal; 
             }
         });
-        
+
         document.getElementById('dash-lena').textContent = `₹${Math.round(lenaHai).toLocaleString('en-IN')}`;
         document.getElementById('dash-dena').textContent = `₹${Math.round(denaHai).toLocaleString('en-IN')}`;
         document.getElementById('dash-expenses').textContent = `₹${Math.round(exp).toLocaleString('en-IN')}`;
@@ -1257,13 +1112,13 @@
             .filter(d => (d.title + d.content).toLowerCase().includes(query))
             .sort((a,b) => new Date(b.date) - new Date(a.date));
             
-        if (records.length === 0) {
-            document.getElementById('diary-list').innerHTML = '<p class="text-center opacity-50 mt-10 font-medium w-full">Empty!</p>';
+        if(records.length === 0) {
+            document.getElementById('diary-list').innerHTML = '<p class="text-center opacity-50">Empty!</p>';
         } else {
             document.getElementById('diary-list').innerHTML = records.map(d => `
-                <div onclick="haptic(); openDiaryDetail(${d.idx})" class="glass-card diary-card mb-3 cursor-pointer w-full min-w-0">
-                    <h4 class="font-bold text-lg text-[#D4AF37] truncate">${d.title}</h4>
-                    <p class="text-sm font-serif text-gray-600 dark:text-gray-300 italic truncate w-full">"${d.content.substring(0,60)}..."</p>
+                <div onclick="haptic(); openDiaryDetail(${d.idx})" class="glass-card diary-card mb-3 cursor-pointer">
+                    <h4 class="font-bold text-lg text-[#F5A623] truncate">${d.title}</h4>
+                    <p class="text-sm font-serif text-gray-600 dark:text-gray-300 italic truncate">"${d.content.substring(0,60)}..."</p>
                     <p class="text-[10px] text-gray-400 font-bold uppercase mt-2">${formatDisplayDate(d.date)}</p>
                 </div>
             `).join('');
@@ -1277,7 +1132,6 @@
     function openDiaryDetail(idx) {
         activeDiaryIndex = idx; 
         const d = diaryDB[idx]; 
-        
         if(!d) return;
         
         document.getElementById('diary-view-title').textContent = d.title;
@@ -1293,9 +1147,9 @@
             diaryDB.splice(idx,1); 
             await saveDB(); 
             if(back) {
-                switchTab('diary'); 
+                switchTab('diary');
             } else {
-                renderDiaryList(); 
+                renderDiaryList();
             }
             showToast('Deleted!'); 
         }
@@ -1303,8 +1157,7 @@
 
     // ========================== MILK LOGIC ==========================
     async function addMilkCustomer() {
-        let name = document.getElementById('new-milk-name').value.trim();
-        name = name.replace(/[.#$\[\]]/g, '');
+        let name = document.getElementById('new-milk-name').value.trim().replace(/[.#$\[\]]/g, '');
         const rate = parseFloat(document.getElementById('new-milk-rate').value) || DEFAULT_RATE;
         const type = document.getElementById('new-milk-type').value;
         
@@ -1324,12 +1177,12 @@
     function renderMilkList() {
         const q = (document.getElementById('milk-search').value || '').toLowerCase();
         
-        const filteredKeys = Object.keys(milkDB).filter(n => n.toLowerCase().includes(q));
+        const filteredNames = Object.keys(milkDB).filter(n => n.toLowerCase().includes(q));
         
-        if (filteredKeys.length === 0) {
-            document.getElementById('milk-list').innerHTML = '<p class="text-center opacity-50 mt-10 font-medium w-full">No Customers</p>';
+        if(filteredNames.length === 0) {
+            document.getElementById('milk-list').innerHTML = '<p class="text-center opacity-50">No Customers</p>';
         } else {
-            document.getElementById('milk-list').innerHTML = filteredKeys.map(name => {
+            document.getElementById('milk-list').innerHTML = filteredNames.map(name => {
                 const c = milkDB[name]; 
                 let kg = 0; 
                 filterByMonth(c.records||[]).forEach(r => {
@@ -1338,12 +1191,12 @@
                 const isD = c.type === 'dene_wala';
                 
                 return `
-                <div onclick="haptic(); openMilkDetail('${name}')" ontouchstart="startLP('${name}', 'milk')" ontouchend="stopLP()" class="glass-card mb-3 flex items-center justify-between cursor-pointer border-l-4 ${isD?'border-green-500':'border-red-500'} w-full min-w-0">
+                <div onclick="haptic(); openMilkDetail('${name}')" ontouchstart="startLP('${name}', 'milk')" ontouchend="stopLP()" class="glass-card mb-3 flex items-center justify-between cursor-pointer border-l-4 ${isD?'border-green-500':'border-red-500'}">
                     <div class="flex-1 min-w-0">
-                        <h4 class="font-bold text-lg truncate w-full">${name} <span class="text-[9px] uppercase border px-1 rounded">${isD?'Seller':'Buyer'}</span></h4>
-                        <p class="text-[11px] text-gray-500 truncate w-full">${kg.toFixed(2)} KG • <b>${isD?'+':'-'}₹${Math.round(kg*c.rate)}</b></p>
+                        <h4 class="font-bold text-lg truncate">${name} <span class="text-[9px] uppercase border px-1 rounded">${isD?'Seller':'Buyer'}</span></h4>
+                        <p class="text-[11px] text-gray-500">${kg.toFixed(2)} KG • <b>${isD?'+':'-'}₹${Math.round(kg*c.rate)}</b></p>
                     </div>
-                    <i class="fa-solid fa-chevron-right text-gray-300 ml-2 shrink-0"></i>
+                    <i class="fa-solid fa-chevron-right text-gray-300 ml-2"></i>
                 </div>`;
             }).join('');
         }
@@ -1366,8 +1219,8 @@
         let kg = 0;
         const recs = filterByMonth((c.records||[]).map((r,i)=>({...r,oi:i}))).sort((a,b)=>new Date(b.date)-new Date(a.date));
         
-        if (recs.length === 0) {
-            document.getElementById('milk-detail-records').innerHTML = '<tr><td colspan="5" class="text-center py-6 opacity-50 font-medium">No entries</td></tr>';
+        if(recs.length === 0) {
+            document.getElementById('milk-detail-records').innerHTML = '<tr><td colspan="5" class="text-center py-4 opacity-50">No entries</td></tr>';
         } else {
             document.getElementById('milk-detail-records').innerHTML = recs.map(r => {
                 const t = (Number(r.morning)||0)+(Number(r.evening)||0); 
@@ -1379,7 +1232,7 @@
                     <td>${r.evening||0}</td>
                     <td class="text-green-500 font-bold">${t}</td>
                     <td class="text-right">
-                        <button onclick="haptic(); delMilk(${r.oi})" class="action-btn shrink-0">
+                        <button onclick="haptic(); delMilk(${r.oi})" class="action-btn">
                             <i class="fa-solid fa-trash text-xs"></i>
                         </button>
                     </td>
@@ -1427,8 +1280,7 @@
 
     // ========================== SALARY LOGIC ==========================
     async function addSalaryPerson() {
-        let name = document.getElementById('new-salary-name').value.trim();
-        name = name.replace(/[.#$\[\]]/g, '');
+        let name = document.getElementById('new-salary-name').value.trim().replace(/[.#$\[\]]/g, '');
         const comp = document.getElementById('new-salary-company').value.trim() || '—';
         const type = document.getElementById('new-salary-type').value;
         
@@ -1444,12 +1296,13 @@
     
     function renderSalaryList() {
         const q = (document.getElementById('salary-search').value || '').toLowerCase();
-        const filteredKeys = Object.keys(salaryDB).filter(n => n.toLowerCase().includes(q));
         
-        if (filteredKeys.length === 0) {
-            document.getElementById('salary-list').innerHTML = '<p class="text-center opacity-50 mt-10 font-medium w-full">Empty</p>';
+        const filteredNames = Object.keys(salaryDB).filter(n => n.toLowerCase().includes(q));
+        
+        if(filteredNames.length === 0) {
+            document.getElementById('salary-list').innerHTML = '<p class="text-center opacity-50">Empty</p>';
         } else {
-            document.getElementById('salary-list').innerHTML = filteredKeys.map(name => {
+            document.getElementById('salary-list').innerHTML = filteredNames.map(name => {
                 const s = salaryDB[name]; 
                 let amt = 0; 
                 filterByMonth(s.records||[]).forEach(r => {
@@ -1458,19 +1311,15 @@
                 const isL = s.type === 'lene_wala';
                 
                 return `
-                <div onclick="haptic(); openSalaryDetail('${name}')" ontouchstart="startLP('${name}', 'salary')" ontouchend="stopLP()" class="glass-card mb-3 flex items-center justify-between cursor-pointer border-l-4 ${isL?'border-green-500':'border-red-500'} w-full min-w-0">
+                <div onclick="haptic(); openSalaryDetail('${name}')" ontouchstart="startLP('${name}', 'salary')" ontouchend="stopLP()" class="glass-card mb-3 flex items-center justify-between cursor-pointer border-l-4 ${isL?'border-green-500':'border-red-500'}">
                     <div class="flex-1 min-w-0">
-                        <h4 class="font-bold text-lg truncate w-full">${name} <span class="text-[9px] uppercase border px-1 rounded">${isL?'Receives':'Pays'}</span></h4>
-                        <p class="text-[11px] text-gray-500 truncate w-full">${s.company} • <b>${isL?'+':'-'}₹${amt}</b></p>
+                        <h4 class="font-bold text-lg truncate">${name} <span class="text-[9px] uppercase border px-1 rounded">${isL?'Receives':'Pays'}</span></h4>
+                        <p class="text-[11px] text-gray-500">${s.company} • <b>${isL?'+':'-'}₹${amt}</b></p>
                     </div>
-                    <i class="fa-solid fa-chevron-right text-gray-300 ml-2 shrink-0"></i>
+                    <i class="fa-solid fa-chevron-right text-gray-300 ml-2"></i>
                 </div>`;
             }).join('');
         }
-    }
-    
-    function filterSalaryList() { 
-        renderSalaryList(); 
     }
     
     function openSalaryDetail(name) { 
@@ -1486,8 +1335,8 @@
         let amt = 0;
         const recs = filterByMonth((s.records||[]).map((r,i)=>({...r,oi:i}))).sort((a,b)=>new Date(b.date)-new Date(a.date));
         
-        if (recs.length === 0) {
-            document.getElementById('salary-detail-records').innerHTML = '<tr><td colspan="3" class="text-center py-6 opacity-50 font-medium">No data</td></tr>';
+        if(recs.length === 0) {
+            document.getElementById('salary-detail-records').innerHTML = '<tr><td colspan="3" class="text-center py-4">No data</td></tr>';
         } else {
             document.getElementById('salary-detail-records').innerHTML = recs.map(r => { 
                 amt += Number(r.amount); 
@@ -1496,7 +1345,7 @@
                     <td>${formatDisplayDate(r.date)}</td>
                     <td class="text-green-500 font-bold">₹${r.amount}</td>
                     <td class="text-right">
-                        <button onclick="haptic(); delSal(${r.oi})" class="action-btn shrink-0">
+                        <button onclick="haptic(); delSal(${r.oi})" class="action-btn">
                             <i class="fa-solid fa-trash text-xs"></i>
                         </button>
                     </td>
@@ -1520,10 +1369,6 @@
             return showToast('Data!'); 
         }
         
-        if (!salaryDB[activeSalaryPerson].records) {
-            salaryDB[activeSalaryPerson].records = [];
-        }
-        
         salaryDB[activeSalaryPerson].records.push({date:d, amount:a}); 
         await saveDB(); 
         closeModal('add-salary-entry-modal'); 
@@ -1542,8 +1387,8 @@
 
     // ========================== UDHAR LOGIC ==========================
     function openUdharModal(n=null) { 
-        document.getElementById('udhar-date').value = getTodayISO(); 
-        document.getElementById('udhar-name').value = n || ''; 
+        document.getElementById('udhar-date').value=getTodayISO(); 
+        document.getElementById('udhar-name').value=n||''; 
         openModal('add-udhar-modal'); 
     }
     
@@ -1552,7 +1397,7 @@
         const n = document.getElementById('udhar-name').value.trim();
         const a = parseFloat(document.getElementById('udhar-amount').value);
         
-        if(!d || !n || !a) {
+        if(!d||!n||!a) {
             return showToast('Data!'); 
         }
         
@@ -1569,41 +1414,33 @@
         
         udharDB.forEach(u => { 
             if(!grouped[u.name]) {
-                grouped[u.name] = {net:0, ld:u.date}; 
+                grouped[u.name] = {net:0, ld:u.date};
             }
-            if(u.type === 'credit') {
-                grouped[u.name].net += u.amount;
-            } else {
-                grouped[u.name].net -= u.amount;
-            }
+            grouped[u.name].net += (u.type === 'credit' ? u.amount : -u.amount); 
         });
         
-        const filteredKeys = Object.keys(grouped).filter(n => n.toLowerCase().includes(q));
+        const filteredNames = Object.keys(grouped).filter(n=>n.toLowerCase().includes(q));
         
-        if (filteredKeys.length === 0) {
-            document.getElementById('udhar-list').innerHTML = '<p class="text-center opacity-50 mt-10 font-medium w-full">Empty</p>';
+        if(filteredNames.length === 0) {
+            document.getElementById('udhar-list').innerHTML = '<p class="text-center opacity-50">Empty</p>';
         } else {
-            document.getElementById('udhar-list').innerHTML = filteredKeys.map(n => {
+            document.getElementById('udhar-list').innerHTML = filteredNames.map(n => {
                 const net = grouped[n].net; 
                 return `
-                <div onclick="haptic(); openUdharDetail('${n}')" class="glass-card mb-3 flex items-center justify-between border-l-4 ${net>=0?'border-green-500':'border-red-500'} w-full min-w-0">
+                <div onclick="haptic(); openUdharDetail('${n}')" class="glass-card mb-3 flex items-center justify-between border-l-4 ${net>=0?'border-green-500':'border-red-500'}">
                     <div class="flex-1 min-w-0">
-                        <h4 class="font-bold text-lg truncate w-full">${n}</h4>
-                        <p class="text-xs text-gray-500 truncate w-full">Net: <b>${net>=0?'+':'-'}₹${Math.abs(net)}</b></p>
+                        <h4 class="font-bold text-lg truncate">${n}</h4>
+                        <p class="text-xs text-gray-500">Net: <b>${net>=0?'+':'-'}₹${Math.abs(net)}</b></p>
                     </div>
-                    <i class="fa-solid fa-chevron-right text-gray-300 ml-2 shrink-0"></i>
+                    <i class="fa-solid fa-chevron-right text-gray-300"></i>
                 </div>`;
             }).join('');
         }
     }
     
-    function filterUdharList() { 
-        renderUdharList(); 
-    }
-    
     function openUdharDetail(n) { 
-        activeUdharPerson=n; 
-        document.getElementById('udhar-detail-title').textContent=n; 
+        activeUdharPerson = n; 
+        document.getElementById('udhar-detail-title').textContent = n; 
         document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active')); 
         document.getElementById('udhar-detail-screen').classList.add('active'); 
         renderUdharRecords(); 
@@ -1615,18 +1452,14 @@
         
         document.getElementById('udhar-detail-records').innerHTML = recs.map(r => { 
             const isC = r.type === 'credit'; 
-            if (isC) {
-                net += r.amount;
-            } else {
-                net -= r.amount;
-            }
+            net += (isC ? r.amount : -r.amount); 
             return `
             <tr>
                 <td>${formatDisplayDate(r.date)}</td>
                 <td class="${isC?'text-green-500':'text-red-500'}">${isC?'Given':'Taken'}</td>
                 <td>₹${r.amount}</td>
                 <td class="text-right">
-                    <button onclick="event.stopPropagation(); haptic(); delUdhar(${r.oi})" class="action-btn shrink-0">
+                    <button onclick="haptic(); delUdhar(${r.oi})" class="action-btn">
                         <i class="fa-solid fa-trash text-xs"></i>
                     </button>
                 </td>
@@ -1634,14 +1467,9 @@
         }).join('');
         
         const c = document.getElementById('udhar-detail-card'); 
-        if (net >= 0) {
-            c.style.background = '#34C759'; 
-            document.getElementById('udhar-detail-status').textContent = 'To Receive';
-        } else {
-            c.style.background = '#FF3B30';
-            document.getElementById('udhar-detail-status').textContent = 'To Pay';
-        }
+        c.style.background = net >= 0 ? '#34C759' : '#FF3B30'; 
         document.getElementById('udhar-detail-total').textContent = '₹' + Math.abs(net); 
+        document.getElementById('udhar-detail-status').textContent = net >= 0 ? 'To Receive' : 'To Pay';
     }
     
     async function delUdhar(i) { 
@@ -1660,7 +1488,7 @@
         const c = document.getElementById('expense-category').value.trim() || 'Other';
         const a = parseFloat(document.getElementById('expense-amount').value);
         
-        if(!d||!a) {
+        if(!d || !a) {
             return showToast('Data!'); 
         }
         
@@ -1686,17 +1514,18 @@
         document.getElementById('total-expense-display').textContent = '₹' + t;
         
         const groupedKeys = Object.keys(grouped);
-        if (groupedKeys.length === 0) {
+        if(groupedKeys.length === 0) {
             document.getElementById('expense-list-container').innerHTML = '<p class="text-center opacity-50 mt-10 font-medium w-full">Empty</p>';
         } else {
             document.getElementById('expense-list-container').innerHTML = groupedKeys.map(cat => `
-                <div onclick="haptic(); openExpenseDetail('${cat}')" class="glass-card mb-3 flex items-center justify-between border-l-4 border-red-500 w-full min-w-0">
-                    <div class="flex-1 min-w-0">
-                        <h4 class="font-bold text-lg truncate w-full">${cat}</h4>
-                        <p class="text-red-500 font-bold truncate w-full">₹${grouped[cat]}</p>
+                <div onclick="haptic(); openExpenseDetail('${cat}')" class="glass-card mb-3 flex items-center justify-between border-l-4 border-red-500">
+                    <div class="flex-1">
+                        <h4 class="font-bold text-lg">${cat}</h4>
+                        <p class="text-red-500 font-bold">₹${grouped[cat]}</p>
                     </div>
-                    <i class="fa-solid fa-chevron-right text-gray-300 ml-2 shrink-0"></i>
-                </div>`).join('');
+                    <i class="fa-solid fa-chevron-right text-gray-300"></i>
+                </div>
+            `).join('');
         }
     }
     
@@ -1719,7 +1548,7 @@
                 <td>${formatDisplayDate(r.date)}</td>
                 <td class="text-red-500 font-bold">₹${r.amount}</td>
                 <td class="text-right">
-                    <button onclick="haptic(); delExp(${r.oi})" class="action-btn shrink-0">
+                    <button onclick="haptic(); delExp(${r.oi})" class="action-btn">
                         <i class="fa-solid fa-trash text-xs"></i>
                     </button>
                 </td>
@@ -1775,57 +1604,6 @@
     
     function stopLP() { 
         clearTimeout(lpTimer); 
-    }
-
-    function downloadExcel() {
-        let csv = "Type,Name/Category,Date,Amount\n";
-        
-        Object.keys(milkDB).forEach(name => {
-            let label = milkDB[name].type === 'dene_wala' ? 'Milk (Expense)' : 'Milk (Income)';
-            (milkDB[name].records||[]).forEach(r => {
-                let total = ((Number(r.morning)||0) + (Number(r.evening)||0)) * (milkDB[name].rate||DEFAULT_RATE);
-                csv += `${label},${name},${r.date},${total}\n`;
-            });
-        });
-        
-        expenseDB.forEach(e => csv += `Expense,${e.category},${e.date},${e.amount}\n`);
-        udharDB.forEach(u => csv += `Credit (${u.type}),${u.name},${u.date},${u.amount}\n`);
-        
-        Object.keys(salaryDB).forEach(name => {
-            (salaryDB[name].records||[]).forEach(r => {
-                csv += `Salary (${salaryDB[name].type}),${name},${r.date},${r.amount}\n`;
-            });
-        });
-
-        const blob = new Blob([csv], { type: 'text/csv' });
-        const url = window.URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = `AarishDairy_Export_${getTodayISO()}.csv`;
-        a.click();
-        showToast("Export Downloaded!");
-    }
-
-    let deferredPrompt;
-    window.addEventListener('beforeinstallprompt', (e) => {
-        e.preventDefault();
-        deferredPrompt = e;
-        const installBtn = document.getElementById('install-app-btn');
-        if(installBtn) installBtn.classList.remove('hidden');
-    });
-
-    async function installAppPWA() {
-        if (deferredPrompt) {
-            deferredPrompt.prompt();
-            const { outcome } = await deferredPrompt.userChoice;
-            if (outcome === 'accepted') {
-                showToast("Installing App! 🎉");
-                document.getElementById('install-app-btn').classList.add('hidden');
-            }
-            deferredPrompt = null;
-        } else {
-            showToast("App already installed or not supported.");
-        }
     }
 
     window.onload = () => { 
