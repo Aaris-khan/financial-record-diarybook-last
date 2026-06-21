@@ -5616,5 +5616,161 @@ window.onload = function(){ setTimeout(function(){ window.focus(); window.print(
 })();
 </script>
 
+
+
+<script>
+// AARISH_MILK_HEADER_NET_COLOR_V24
+// Only changes Milk Record heading color by all-customer milk net.
+// Net = all given milk amount - all taken milk amount.
+// No badge, no amount text, no extra UI, no Firebase/data write.
+(function () {
+  if (window.__AARISH_MILK_HEADER_NET_COLOR_V24_READY) return;
+  window.__AARISH_MILK_HEADER_NET_COLOR_V24_READY = true;
+
+  function n(v) {
+    return Number(v) || 0;
+  }
+
+  function milkDbV24() {
+    try {
+      if (typeof milkDB !== "undefined" && milkDB && typeof milkDB === "object") return milkDB;
+    } catch(e) {}
+    return window.milkDB || {};
+  }
+
+  function recordsV24(v) {
+    if (Array.isArray(v)) return v.filter(Boolean);
+    if (v && typeof v === "object") return Object.keys(v).map(function (k) { return v[k]; }).filter(Boolean);
+    return [];
+  }
+
+  function qtyV24(record) {
+    return n(record && record.morning) + n(record && record.evening);
+  }
+
+  function rateV24(customer, record) {
+    var rr = n(record && record.rate);
+    if (rr > 0) return rr;
+
+    var cr = n(customer && customer.rate);
+    if (cr > 0) return cr;
+
+    try {
+      if (typeof DEFAULT_RATE !== "undefined") return n(DEFAULT_RATE);
+    } catch(e) {}
+
+    return 0;
+  }
+
+  function flowV24(record, customer) {
+    var raw = String((record && (record.flow || record.milkFlow || record.direction || record.entryType || record.type)) || "").toLowerCase();
+
+    if (["taken", "take", "minus", "debit", "pay", "dene_wala"].indexOf(raw) !== -1) return "taken";
+    if (["given", "give", "plus", "credit", "receive", "lene_wala"].indexOf(raw) !== -1) return "given";
+
+    return customer && customer.type === "dene_wala" ? "taken" : "given";
+  }
+
+  function allMilkNetV24() {
+    var db = milkDbV24();
+    var net = 0;
+
+    Object.keys(db || {}).forEach(function (name) {
+      var customer = db[name] || {};
+
+      recordsV24(customer.records).forEach(function (record) {
+        var amount = qtyV24(record) * rateV24(customer, record);
+        if (!amount) return;
+
+        net += flowV24(record, customer) === "taken" ? -amount : amount;
+      });
+    });
+
+    return net;
+  }
+
+  function milkTitleV24() {
+    return document.querySelector("#milk-screen .header-sticky h1");
+  }
+
+  window.updateMilkRecordHeaderColorV24 = function () {
+    var title = milkTitleV24();
+    if (!title) return;
+
+    var net = allMilkNetV24();
+    title.style.transition = "color 0.25s ease";
+
+    if (net > 0.0001) {
+      title.style.color = "#34C759";
+      title.dataset.milkNetColorV24 = "green";
+    } else if (net < -0.0001) {
+      title.style.color = "#FF3B30";
+      title.dataset.milkNetColorV24 = "red";
+    } else {
+      title.style.removeProperty("color");
+      title.dataset.milkNetColorV24 = "neutral";
+    }
+  };
+
+  function scheduleV24() {
+    setTimeout(window.updateMilkRecordHeaderColorV24, 0);
+    setTimeout(window.updateMilkRecordHeaderColorV24, 250);
+    setTimeout(window.updateMilkRecordHeaderColorV24, 900);
+  }
+
+  function wrapAfterV24(name) {
+    var old = window[name];
+    if (typeof old !== "function" || old.__milkHeaderNetColorWrappedV24) return;
+
+    var wrapped = function () {
+      var out = old.apply(this, arguments);
+      scheduleV24();
+      return out;
+    };
+
+    wrapped.__milkHeaderNetColorWrappedV24 = true;
+    window[name] = wrapped;
+  }
+
+  [
+    "renderMilkList",
+    "filterMilkList",
+    "saveMilkEntry",
+    "addMilkCustomer",
+    "switchTab",
+    "openAllBalances",
+    "renderDashboardBalances"
+  ].forEach(wrapAfterV24);
+
+  document.addEventListener("DOMContentLoaded", scheduleV24);
+  window.addEventListener("load", scheduleV24);
+  document.addEventListener("visibilitychange", scheduleV24);
+
+  setTimeout(scheduleV24, 500);
+  setTimeout(scheduleV24, 1500);
+  setInterval(function () {
+    var screen = document.getElementById("milk-screen");
+    if (screen && screen.classList.contains("active")) {
+      window.updateMilkRecordHeaderColorV24();
+    }
+  }, 2000);
+
+  window.__milkHeaderNetColorStatusV24 = function () {
+    var status = {
+      version: "V24",
+      netAmount: allMilkNetV24(),
+      headingOnly: true,
+      addsAmountText: false,
+      addsBadge: false,
+      firebaseWrite: false
+    };
+    console.log("AARISH MILK HEADER NET COLOR STATUS V24", status);
+    return status;
+  };
+
+  console.log("✅ AARISH_MILK_HEADER_NET_COLOR_V24 active");
+})();
+</script>
+
 </body>
 </html>
