@@ -2198,8 +2198,8 @@ async function shareDiaryBill(id) {
         overlay.innerHTML = `
             <div class="modal-content" onclick="event.stopImmediatePropagation()">
                 <div class="w-12 h-1.5 bg-gray-300 dark:bg-gray-600 shrink-0 rounded-full mx-auto mb-6"></div>
-                <h2 class="text-2xl font-extrabold mb-2 text-center w-full">Visual PDF Export</h2>
-                <p class="text-[11px] text-center text-gray-500 mb-6 font-bold uppercase tracking-wider">Select the report you want to download in website design</p>
+                <h2 class="text-2xl font-extrabold mb-2 text-center w-full">Exact UI PDF Export</h2>
+                <p class="text-[11px] text-center text-gray-500 mb-6 font-bold uppercase tracking-wider">Download the same design you see on screen</p>
 
                 <div class="grid grid-cols-2 gap-3 mb-6 w-full">
                     <button onclick="haptic(); executeDownload('all')" class="btn-primary !bg-[#000] dark:!bg-[#FFF] dark:!text-[#000]"><i class="fa-solid fa-layer-group"></i> All Data</button>
@@ -3270,16 +3270,22 @@ async function saveNewProject() {
 
 
 
+
+
+
+
+
 <script>
-// AARISH_VISUAL_EXPORT_OVERRIDE_V4
+// AARISH_EXACT_UI_CLONE_EXPORT_V5
 (function () {
   function esc(v) {
-    const s = String(v ?? "");
-    return s.replace(/[&<>"']/g, c => ({ "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;", "'":"&#39;" }[c]));
+    return String(v ?? "").replace(/[&<>"']/g, c => ({
+      "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;", "'":"&#39;"
+    }[c]));
   }
   function num(v) { return Number(v) || 0; }
-  function money(v) { return "₹" + Math.round(num(v)).toLocaleString("en-IN"); }
   function arr(v) { return Array.isArray(v) ? v : []; }
+  function money(v) { return "₹" + Math.round(num(v)).toLocaleString("en-IN"); }
   function todayISO() {
     try { if (typeof getTodayISO === "function") return getTodayISO(); } catch(e) {}
     return new Date().toISOString().slice(0,10);
@@ -3297,138 +3303,290 @@ async function saveNewProject() {
     return "Current View";
   }
   function monthOnly(records) {
-    try { if (typeof filterByMonth === "function") return filterByMonth(arr(records)); } catch(e) {}
-    return arr(records);
+    const list = arr(records);
+    try { if (typeof filterByMonth === "function") return arr(filterByMonth(list)); } catch(e) {}
+    return list;
   }
+  function signMoney(sign, amount) { return `${sign}${money(amount)}`; }
 
-  const card = "background:rgba(255,255,255,.88);border:1px solid rgba(255,255,255,.82);box-shadow:0 10px 34px rgba(0,0,0,.07),inset 0 1px 1px rgba(255,255,255,.8);border-radius:24px;";
-  function empty(t){ return `<div style="${card}padding:22px;text-align:center;color:#8E8E93;font-weight:900;font-size:13px;margin-bottom:12px;">${esc(t)}</div>`; }
-  function first(n){ return esc(String(n || "?").trim().charAt(0).toUpperCase() || "?"); }
-
-  function row(date, title, tag, amount, color) {
-    return `<div style="display:grid;grid-template-columns:80px 1fr 74px 90px;gap:8px;align-items:center;padding:11px 0;border-top:1px solid rgba(0,0,0,.06);">
-      <div style="font-size:11px;font-weight:850;color:#8E8E93;">${esc(date)}</div>
-      <div style="font-size:13px;font-weight:850;color:#1C1C1E;line-height:1.35;word-break:break-word;">${title}</div>
-      <div style="font-size:10px;font-weight:950;color:${color};text-align:right;text-transform:uppercase;">${esc(tag)}</div>
-      <div style="font-size:14px;font-weight:950;color:${color};text-align:right;">${amount}</div>
-    </div>`;
-  }
-
-  function person(name, label, amount, color, rows) {
-    return `<div style="${card}padding:18px;border-left:6px solid ${color};margin-bottom:12px;overflow:hidden;">
-      <div style="display:flex;align-items:center;gap:14px;">
-        <div style="width:52px;height:52px;border-radius:17px;background:${color}1A;color:${color};display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:950;flex-shrink:0;">${first(name)}</div>
-        <div style="min-width:0;flex:1;">
-          <div style="font-size:18px;font-weight:950;color:#1C1C1E;letter-spacing:-.3px;word-break:break-word;">${esc(name)}</div>
-          <div style="font-size:11px;font-weight:900;color:#8E8E93;text-transform:uppercase;letter-spacing:.8px;margin-top:4px;">${esc(label)}</div>
+  function pageTitle(icon, title, subtitle) {
+    return `
+      <div class="flex items-center gap-3 w-full min-w-0 mb-4">
+        <div class="w-10 h-10 shrink-0 rounded-full bg-black/5 dark:bg-white/10 flex items-center justify-center">
+          <i class="${icon} text-gray-500 dark:text-gray-300"></i>
         </div>
-        <div style="font-size:19px;font-weight:950;color:${color};white-space:nowrap;">${amount}</div>
-      </div>
-      ${rows ? `<div style="margin-top:12px;">${rows}</div>` : ""}
-    </div>`;
+        <div class="flex-1 min-w-0">
+          <h1 class="text-xl font-extrabold truncate flex-1 min-w-0 w-full text-gray-900 dark:text-white">${title}</h1>
+          ${subtitle ? `<p class="text-[10px] text-gray-500 font-bold uppercase tracking-wider truncate w-full mt-0.5">${subtitle}</p>` : ""}
+        </div>
+      </div>`;
   }
 
-  function section(title, subtitle, color, body) {
-    return `<section style="margin-top:22px;">
-      <div style="display:flex;align-items:end;justify-content:space-between;margin:0 2px 12px;">
-        <div>
-          <h2 style="margin:0;font-size:21px;font-weight:950;color:#1C1C1E;letter-spacing:-.5px;">${esc(title)}</h2>
-          <p style="margin:4px 0 0;color:#8E8E93;font-size:10px;font-weight:950;letter-spacing:1.2px;text-transform:uppercase;">${esc(subtitle)}</p>
-        </div>
-        <div style="width:38px;height:38px;border-radius:14px;background:${color}1A;color:${color};display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:950;">●</div>
-      </div>${body || empty("No data found")}</section>`;
+  function empty(text) {
+    return `<div class="text-center py-10 text-gray-400 font-semibold text-sm">${esc(text)}</div>`;
   }
 
   function buildMilk() {
     const db = (typeof milkDB !== "undefined" && milkDB) ? milkDB : {};
-    let body = "";
+    let html = "";
     Object.keys(db).sort().forEach(name => {
       const c = db[name] || {};
-      const recs = monthOnly(c.records || []);
+      const recs = monthOnly(c.records || []).slice().sort((a,b)=>new Date(b.date)-new Date(a.date));
+      if (recs.length === 0) return;
+
       const rate = num(c.rate || (typeof DEFAULT_RATE !== "undefined" ? DEFAULT_RATE : 0));
-      const kg = recs.reduce((s,r)=>s+num(r.morning)+num(r.evening),0);
-      const isBuyer = c.type === "dene_wala";
-      const color = isBuyer ? "#FF3B30" : "#34C759";
-      const rows = recs.map(r => {
-        const m = num(r.morning), e = num(r.evening), t = m + e;
-        return row(fdate(r.date), `${m} KG morning + ${e} KG evening`, `${t.toFixed(2)} KG`, money(t * rate), color);
-      }).join("");
-      body += person(name, `${isBuyer ? "Buyer / To Pay" : "Seller / To Receive"} • ${kg.toFixed(2)} KG • Rate ${money(rate)}/KG`, `${isBuyer ? "-" : "+"}${money(kg * rate)}`, color, rows || empty("No milk entries in selected month"));
+      const kg = recs.reduce((s,r)=>s + num(r.morning) + num(r.evening), 0);
+      const isReceive = c.type !== "dene_wala";
+      const sign = isReceive ? "+" : "-";
+      const cardBg = isReceive ? "from-[#34C759] to-[#28a745]" : "from-[#FF3B30] to-[#c92a2a]";
+      const shadow = isReceive ? "shadow-[0_8px_24px_rgba(52,199,89,0.3)]" : "shadow-[0_8px_24px_rgba(255,59,48,0.3)]";
+      const totalColor = isReceive ? "text-[#34C759]" : "text-[#FF3B30]";
+
+      html += `<div style="margin-bottom:40px; page-break-inside:avoid; width:100%;">
+        ${pageTitle("fa-solid fa-user", esc(name), isReceive ? "Seller / To Receive" : "Buyer / To Pay")}
+
+        <div class="glass-card mb-6 flex justify-between items-center bg-gradient-to-br ${cardBg} text-white border-none ${shadow} ring-1 ring-white/30 w-full min-w-0 gap-3">
+          <div class="flex-1 min-w-0">
+            <p class="text-[11px] font-bold uppercase opacity-90 tracking-wider truncate w-full drop-shadow-sm">Month Bill</p>
+            <h3 class="text-[32px] font-extrabold mt-1 tracking-tight truncate w-full drop-shadow-md">${signMoney(sign, kg * rate)}</h3>
+          </div>
+          <div class="text-right shrink-0">
+            <p class="text-[11px] font-bold uppercase opacity-90 tracking-wider truncate w-full drop-shadow-sm">Total Milk</p>
+            <h3 class="text-xl font-bold mt-1 truncate w-full drop-shadow-md">${kg.toFixed(2)} KG</h3>
+          </div>
+        </div>
+
+        <h3 class="font-bold text-[19px] tracking-tight truncate flex-1 min-w-0 mb-3 text-gray-900 dark:text-white">Daily Entries</h3>
+        <div class="glass-card p-0 w-full ring-1 ring-white/40 dark:ring-white/5 overflow-hidden">
+          <table class="table-custom min-w-full">
+            <thead class="bg-black/5 dark:bg-white/5">
+              <tr><th>Date</th><th>Morning</th><th>Evening</th><th>Total</th></tr>
+            </thead>
+            <tbody>
+              ${recs.map(r => {
+                const m = num(r.morning), e = num(r.evening), t = m + e;
+                return `<tr>
+                  <td>${esc(fdate(r.date))}</td>
+                  <td>${m || "-"}</td>
+                  <td>${e || "-"}</td>
+                  <td class="font-bold ${totalColor}">${t.toFixed(2)}</td>
+                </tr>`;
+              }).join("")}
+            </tbody>
+          </table>
+        </div>
+      </div>`;
     });
-    return section("Milk Records", "Month: " + monthName(), "#34C759", body || empty("No milk records found"));
+    return html || empty("No milk entries for " + monthName());
   }
 
   function buildExpenses() {
-    const recs = monthOnly((typeof expenseDB !== "undefined") ? expenseDB : []);
-    const total = recs.reduce((s,e)=>s+num(e.amount),0);
-    let body = `<div style="${card}padding:18px;margin-bottom:12px;background:linear-gradient(135deg,#FF4B4B,#D92A2A);color:white;border:none;">
-      <div style="font-size:11px;font-weight:950;letter-spacing:1.2px;text-transform:uppercase;opacity:.9;">Total Month Expenses</div>
-      <div style="font-size:32px;font-weight:950;margin-top:4px;">${money(total)}</div>
+    const recs = monthOnly((typeof expenseDB !== "undefined") ? expenseDB : []).slice().sort((a,b)=>new Date(b.date)-new Date(a.date));
+    if (!recs.length) return empty("No expenses for " + monthName());
+
+    const total = recs.reduce((s,e)=>s + num(e.amount), 0);
+
+    return `<div style="margin-bottom:40px; page-break-inside:avoid; width:100%;">
+      ${pageTitle("fa-solid fa-receipt", "All Expenses", "Selected Month")}
+
+      <div class="glass-card mb-6 flex justify-between items-center bg-gradient-to-br from-[#FF4B4B] to-[#D92A2A] text-white border-none shadow-[0_8px_24px_rgba(255,59,48,0.3)] ring-1 ring-white/30 w-full min-w-0 gap-3">
+        <div class="flex-1 min-w-0">
+          <p class="text-[11px] font-bold uppercase opacity-90 tracking-wider truncate w-full drop-shadow-sm">Total Month Expenses</p>
+          <h3 class="text-[32px] font-extrabold mt-1 tracking-tight truncate w-full drop-shadow-md">${money(total)}</h3>
+        </div>
+      </div>
+
+      <h3 class="font-bold text-[19px] tracking-tight truncate flex-1 min-w-0 mb-3 text-gray-900 dark:text-white">All Entries</h3>
+      <div class="glass-card p-0 w-full ring-1 ring-white/40 dark:ring-white/5 overflow-hidden">
+        <table class="table-custom min-w-full">
+          <thead class="bg-black/5 dark:bg-white/5">
+            <tr><th>Date</th><th>Category</th><th class="text-right">Amount</th></tr>
+          </thead>
+          <tbody>
+            ${recs.map(r => `<tr>
+              <td>${esc(fdate(r.date))}</td>
+              <td class="font-bold">${esc(r.category || "Expense")}</td>
+              <td class="font-bold text-[#FF3B30] text-[16px] text-right">${money(r.amount)}</td>
+            </tr>`).join("")}
+          </tbody>
+        </table>
+      </div>
     </div>`;
-    body += recs.map(e => person(e.category || "Expense", fdate(e.date), money(e.amount), "#FF3B30", "")).join("");
-    return section("Expenses", "Month: " + monthName(), "#FF3B30", recs.length ? body : empty("No expenses found"));
   }
 
   function buildUdhar() {
-    const recs = arr((typeof udharDB !== "undefined") ? udharDB : []);
-    const g = {};
-    recs.forEach(u => {
+    const db = arr((typeof udharDB !== "undefined") ? udharDB : []);
+    const grouped = {};
+    db.forEach(u => {
       const name = String(u.name || "Unknown");
-      if (!g[name]) g[name] = { net:0, rows:[] };
-      const credit = u.type === "credit";
-      g[name].net += credit ? num(u.amount) : -num(u.amount);
-      g[name].rows.push(u);
+      if (!grouped[name]) grouped[name] = { net:0, records:[] };
+      grouped[name].net += (u.type === "credit") ? num(u.amount) : -num(u.amount);
+      grouped[name].records.push(u);
     });
-    let body = "";
-    Object.keys(g).sort().forEach(name => {
-      const x = g[name], color = x.net >= 0 ? "#34C759" : "#FF3B30";
-      const rows = x.rows.map(u => {
-        const credit = u.type === "credit";
-        return row(fdate(u.date), credit ? "Given / To Receive" : "Taken / To Pay", credit ? "Credit" : "Debit", `${credit ? "+" : "-"}${money(u.amount)}`, credit ? "#34C759" : "#FF3B30");
-      }).join("");
-      body += person(name, x.net >= 0 ? "Net To Receive" : "Net To Pay", `${x.net >= 0 ? "+" : "-"}${money(Math.abs(x.net))}`, color, rows);
+
+    let html = "";
+    Object.keys(grouped).sort().forEach(name => {
+      const x = grouped[name];
+      const isPlus = x.net >= 0;
+      const cardBg = isPlus ? "from-[#34C759] to-[#28a745]" : "from-[#FF3B30] to-[#c92a2a]";
+      const shadow = isPlus ? "shadow-[0_8px_24px_rgba(52,199,89,0.3)]" : "shadow-[0_8px_24px_rgba(255,59,48,0.3)]";
+      const statusTxt = isPlus ? "Net Balance (To Receive)" : "Net Balance (To Pay)";
+      const sign = isPlus ? "+" : "-";
+
+      html += `<div style="margin-bottom:40px; page-break-inside:avoid; width:100%;">
+        ${pageTitle("fa-solid fa-handshake", esc(name), statusTxt)}
+
+        <div class="glass-card mb-6 flex justify-between items-center bg-gradient-to-br ${cardBg} text-white border-none ${shadow} ring-1 ring-white/30 w-full min-w-0 gap-3">
+          <div class="flex-1 min-w-0">
+            <p class="text-[11px] font-bold uppercase opacity-90 tracking-wider truncate w-full drop-shadow-sm">${statusTxt}</p>
+            <h3 class="text-[32px] font-extrabold mt-1 tracking-tight truncate w-full drop-shadow-md">${signMoney(sign, Math.abs(x.net))}</h3>
+          </div>
+        </div>
+
+        <h3 class="font-bold text-[19px] tracking-tight truncate flex-1 min-w-0 mb-3 text-gray-900 dark:text-white">All Entries</h3>
+        <div class="glass-card p-0 w-full ring-1 ring-white/40 dark:ring-white/5 overflow-hidden">
+          <table class="table-custom min-w-full">
+            <thead class="bg-black/5 dark:bg-white/5">
+              <tr><th>Date</th><th>Detail</th><th class="text-right">Amount</th></tr>
+            </thead>
+            <tbody>
+              ${x.records.slice().sort((a,b)=>new Date(b.date)-new Date(a.date)).map(r => {
+                const isCredit = r.type === "credit";
+                const badgeClass = isCredit ? "bg-[#34C759]/10 text-[#34C759]" : "bg-[#FF3B30]/10 text-[#FF3B30]";
+                const amtColor = isCredit ? "text-[#34C759]" : "text-[#FF3B30]";
+                return `<tr>
+                  <td>${esc(fdate(r.date))}</td>
+                  <td><span class="text-[10px] font-extrabold uppercase px-2 py-1 rounded-md ${badgeClass}">${isCredit ? "Given" : "Taken"}</span></td>
+                  <td class="font-bold ${amtColor} text-[16px] text-right">${money(r.amount)}</td>
+                </tr>`;
+              }).join("")}
+            </tbody>
+          </table>
+        </div>
+      </div>`;
     });
-    return section("Credit Ledger", "All udhar records", "#007AFF", body || empty("No credit records found"));
+    return html || empty("No credit records found");
   }
 
   function buildSalary() {
     const db = (typeof salaryDB !== "undefined" && salaryDB) ? salaryDB : {};
-    let body = "";
+    let html = "";
     Object.keys(db).sort().forEach(name => {
       const s = db[name] || {};
-      const recs = monthOnly(s.records || []);
-      const total = recs.reduce((a,r)=>a+num(r.amount),0);
-      const color = s.type === "dene_wala" ? "#FF3B30" : "#10B981";
-      const rows = recs.map(r => row(fdate(r.date), esc(s.company || "Salary entry"), "Salary", money(r.amount), color)).join("");
-      body += person(name, `${s.type === "dene_wala" ? "Receives" : "Pays"} • ${s.company || "—"}`, money(total), color, rows || empty("No salary entries in selected month"));
+      const recs = monthOnly(s.records || []).slice().sort((a,b)=>new Date(b.date)-new Date(a.date));
+      if (!recs.length) return;
+
+      const total = recs.reduce((a,r)=>a + num(r.amount), 0);
+      const isReceive = s.type === "lene_wala";
+      const sign = isReceive ? "+" : "-";
+      const cardBg = isReceive ? "from-[#10B981] to-[#059669]" : "from-[#FF3B30] to-[#c92a2a]";
+      const shadow = isReceive ? "shadow-[0_8px_24px_rgba(16,185,129,0.3)]" : "shadow-[0_8px_24px_rgba(255,59,48,0.3)]";
+      const color = isReceive ? "text-[#10B981]" : "text-[#FF3B30]";
+
+      html += `<div style="margin-bottom:40px; page-break-inside:avoid; width:100%;">
+        ${pageTitle("fa-solid fa-sack-dollar", `${esc(name)} <span class="text-[12px] font-medium text-gray-500">(${esc(s.company || "N/A")})</span>`, isReceive ? "Receives" : "Pays")}
+
+        <div class="glass-card mb-6 flex justify-between items-center bg-gradient-to-br ${cardBg} text-white border-none ${shadow} ring-1 ring-white/30 w-full min-w-0 gap-3">
+          <div class="flex-1 min-w-0">
+            <p class="text-[11px] font-bold uppercase opacity-90 tracking-wider truncate w-full drop-shadow-sm">Total Salary (This Month)</p>
+            <h3 class="text-[32px] font-extrabold mt-1 tracking-tight truncate w-full drop-shadow-md">${signMoney(sign, total)}</h3>
+          </div>
+        </div>
+
+        <h3 class="font-bold text-[19px] tracking-tight truncate flex-1 min-w-0 mb-3 text-gray-900 dark:text-white">Daily Entries</h3>
+        <div class="glass-card p-0 w-full ring-1 ring-white/40 dark:ring-white/5 overflow-hidden">
+          <table class="table-custom min-w-full">
+            <thead class="bg-black/5 dark:bg-white/5">
+              <tr><th>Date</th><th class="text-right">Amount</th></tr>
+            </thead>
+            <tbody>
+              ${recs.map(r => `<tr>
+                <td>${esc(fdate(r.date))}</td>
+                <td class="font-bold ${color} text-[16px] text-right">${money(r.amount)}</td>
+              </tr>`).join("")}
+            </tbody>
+          </table>
+        </div>
+      </div>`;
     });
-    return section("Salary Records", "Month: " + monthName(), "#10B981", body || empty("No salary records found"));
+    return html || empty("No salary entries for " + monthName());
   }
 
   function buildDiary() {
-    const recs = arr((typeof diaryDB !== "undefined") ? diaryDB : []);
-    const body = recs.map(d => `<div style="${card}padding:20px;border-left:6px solid #F5A623;margin-bottom:12px;">
-      <div style="font-size:11px;color:#8E8E93;font-weight:950;text-transform:uppercase;letter-spacing:1px;">${esc(fdate(d.date))}</div>
-      <div style="font-size:20px;font-weight:950;color:#F5A623;margin:6px 0 10px;word-break:break-word;">${esc(d.title || "Diary Page")}</div>
-      <div style="font-family:Georgia,serif;font-style:italic;font-size:15px;line-height:1.7;color:#3A3A3C;white-space:pre-wrap;word-break:break-word;">${esc(d.content || "")}</div>
+    const recs = arr((typeof diaryDB !== "undefined") ? diaryDB : []).slice().sort((a,b)=>new Date(b.date)-new Date(a.date));
+    const html = recs.map(d => `<div style="margin-bottom:40px; page-break-inside:avoid; width:100%;">
+      <div class="diary-paper w-full p-8 min-h-[100px]">
+        <h2 class="text-[30px] font-bold mb-2 text-[#F5A623] break-words leading-tight tracking-tight">${esc(d.title || "Diary Page")}</h2>
+        <p class="text-xs text-gray-400 font-bold uppercase tracking-widest mb-8">${esc(fdate(d.date))}</p>
+        <div class="text-gray-800 dark:text-gray-200 font-serif text-[18px] leading-[1.9] whitespace-pre-wrap break-words italic">${esc(d.content || "")}</div>
+      </div>
     </div>`).join("");
-    return section("Personal Diary", "All diary pages", "#F5A623", body || empty("No diary pages found"));
+    return html || empty("No diary pages found");
   }
 
   function buildProjects() {
     const db = (typeof projectDB !== "undefined" && projectDB) ? projectDB : {};
-    const colors = { green:"#34C759", red:"#FF3B30", blue:"#007AFF", orange:"#FF9500", black:"#1C1C1E" };
-    let body = "";
+    const colorHex = { green:"#34C759", red:"#FF3B30", blue:"#007AFF", orange:"#FF9500" };
+    const bgGradients = {
+      green:"from-[#34C759] to-[#28a745]",
+      red:"from-[#FF3B30] to-[#c92a2a]",
+      blue:"from-[#007AFF] to-[#0056b3]",
+      orange:"from-[#FF9500] to-[#d67a00]"
+    };
+    const labels = {
+      green:"INCOME (RECIEVED)",
+      red:"EXPENSE (SENT)",
+      blue:"BANK / OTHER",
+      orange:"PENDING / UDHAR"
+    };
+
+    let html = "";
     Object.keys(db).sort().forEach(name => {
-      const recs = arr((db[name] || {}).records);
-      const total = recs.reduce((a,r)=>a+num(r.amount),0);
-      const rows = recs.map(r => {
-        const color = colors[String(r.color || "").toLowerCase()] || "#007AFF";
-        return row(fdate(r.date), esc(r.title || "Business entry"), String(r.color || "Entry").toUpperCase(), money(r.amount), color);
-      }).join("");
-      body += person(name, `${recs.length} entries`, money(total), "#1C1C1E", rows || empty("No business entries found"));
+      const item = db[name] || {};
+      const recs = arr(item.records).slice().sort((a,b)=>new Date(b.date)-new Date(a.date));
+      if (!recs.length) return;
+
+      const totals = { green:0, red:0, blue:0, orange:0 };
+      recs.forEach(r => { if (totals[r.color] !== undefined) totals[r.color] += num(r.amount); });
+
+      const totalsHtml = Object.keys(totals).filter(k => totals[k] > 0).map(k => `
+        <div class="glass-card flex flex-col justify-center min-w-0 w-full bg-gradient-to-br ${bgGradients[k]} text-white border-none shadow-[0_8px_24px_rgba(0,0,0,0.15)]">
+          <p class="text-[10px] font-bold uppercase tracking-wider truncate w-full opacity-90">${labels[k]}</p>
+          <h3 class="text-2xl font-extrabold mt-1 tracking-tight truncate w-full drop-shadow-sm">${money(totals[k])}</h3>
+        </div>`).join("");
+
+      html += `<div style="margin-bottom:40px; page-break-inside:avoid; width:100%;">
+        ${pageTitle("fa-solid fa-briefcase", esc(name), "Business Khata")}
+
+        ${totalsHtml ? `<div class="grid grid-cols-2 gap-3 mb-6 w-full">${totalsHtml}</div>` : ""}
+
+        <h3 class="font-bold text-[19px] tracking-tight truncate flex-1 min-w-0 mb-3 text-gray-900 dark:text-white">All Entries</h3>
+        <div class="glass-card p-0 w-full ring-1 ring-white/40 dark:ring-white/5 shadow-sm overflow-hidden">
+          <table class="table-custom min-w-full">
+            <thead class="bg-black/5 dark:bg-white/5">
+              <tr><th>Date</th><th>Detail</th><th class="text-right">Amount</th></tr>
+            </thead>
+            <tbody>
+              ${recs.map(r => {
+                const c = colorHex[r.color] || "#007AFF";
+                const badgeStyle = `background-color:${c}1A;color:${c};`;
+                return `<tr>
+                  <td class="text-gray-500 font-medium text-[13px]">${esc(fdate(r.date))}</td>
+                  <td>
+                    <div class="flex flex-col min-w-0">
+                      <span class="font-bold text-[15px] truncate w-full text-gray-900 dark:text-white">${esc(r.title || "Business entry")}</span>
+                      <span class="px-2 py-0.5 rounded-md text-[9px] font-extrabold uppercase tracking-wider w-fit mt-1" style="${badgeStyle}">${esc(r.color || "entry")}</span>
+                    </div>
+                  </td>
+                  <td class="font-extrabold text-[17px] tracking-tight text-right" style="color:${c};">${money(r.amount)}</td>
+                </tr>`;
+              }).join("")}
+            </tbody>
+          </table>
+        </div>
+      </div>`;
     });
-    return section("Business Hub", "All business khata entries", "#1C1C1E", body || empty("No business khata found"));
+    return html || empty("No business khata found");
   }
 
   async function loadPdfLib() {
@@ -3446,22 +3604,34 @@ async function saveNewProject() {
   function downloadBlob(blob, name) {
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
-    a.href = url; a.download = name;
-    document.body.appendChild(a); a.click(); a.remove();
-    setTimeout(()=>URL.revokeObjectURL(url),3000);
+    a.href = url;
+    a.download = name;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 3000);
   }
 
   window.executeDownload = async function(type) {
     const modal = document.getElementById("dynamic-download-modal");
     if (modal) modal.remove();
+
     const main = document.getElementById("main-app");
     if (main) main.classList.remove("app-scale-down");
 
     const t = String(type || "all").toLowerCase();
-    const names = { all:"All Data", milk:"Milk Records", expenses:"Expenses", udhar:"Credit Ledger", salary:"Salary", diary:"Personal Diary", projects:"Business Hub" };
+    const names = {
+      all:"All Data",
+      milk:"Milk Records",
+      expenses:"Expenses",
+      udhar:"Credit Ledger",
+      salary:"Salary",
+      diary:"Personal Diary",
+      projects:"Business Hub"
+    };
     const title = names[t] || t.toUpperCase();
 
-    try { showLoader("Generating visual PDF..."); } catch(e) {}
+    try { showLoader("Generating exact UI PDF..."); } catch(e) {}
 
     let sections = "";
     if (t === "all" || t === "milk") sections += buildMilk();
@@ -3471,68 +3641,79 @@ async function saveNewProject() {
     if (t === "all" || t === "diary") sections += buildDiary();
     if (t === "all" || t === "projects") sections += buildProjects();
 
+    const isDark = document.documentElement.classList.contains("dark");
     const report = document.createElement("div");
-    report.style.cssText = 'position:absolute;left:-99999px;top:0;width:560px;background:#F5F5F7;color:#1C1C1E;padding:26px;font-family:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;z-index:2147483647;';
+    report.className = `app-container aarish-pdf-clone ${isDark ? "dark" : ""}`;
+    report.style.cssText =
+      `position:absolute;left:-99999px;top:0;width:480px!important;min-width:480px!important;max-width:480px!important;` +
+      `height:auto!important;min-height:auto!important;max-height:none!important;display:block!important;` +
+      `padding:30px 20px!important;z-index:2147483647;transform:none!important;` +
+      `background:${isDark ? "#000000" : "#F5F5F7"};overflow:visible!important;box-shadow:none!important;color:${isDark ? "#FFFFFF" : "#1C1C1E"};`;
+
     report.innerHTML = `
-      <div style="position:absolute;top:-120px;left:-120px;width:360px;height:360px;background:radial-gradient(circle,rgba(52,199,89,.20),transparent 70%);filter:blur(40px);"></div>
-      <div style="position:absolute;right:-160px;bottom:-160px;width:420px;height:420px;background:radial-gradient(circle,rgba(0,122,255,.18),transparent 70%);filter:blur(45px);"></div>
-      <div style="position:relative;">
-        <div style="${card}padding:24px;background:linear-gradient(135deg,rgba(255,255,255,.94),rgba(255,255,255,.74));">
-          <div style="display:flex;align-items:center;gap:14px;">
-            <div style="width:58px;height:58px;border-radius:20px;background:linear-gradient(135deg,#007AFF,#34C759);display:flex;align-items:center;justify-content:center;color:#fff;font-size:28px;font-weight:950;box-shadow:0 12px 28px rgba(0,122,255,.25);">₹</div>
-            <div style="min-width:0;flex:1;">
-              <h1 style="margin:0;font-size:30px;line-height:1;font-weight:950;letter-spacing:-1px;color:#1C1C1E;">Aarish Dairy <span style="color:#007AFF;">Pro</span></h1>
-              <p style="margin:7px 0 0;color:#8E8E93;font-size:11px;font-weight:950;letter-spacing:1.6px;text-transform:uppercase;">${esc(title)} Visual Report</p>
-            </div>
-          </div>
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:18px;">
-            <div style="background:rgba(0,122,255,.09);border-radius:16px;padding:12px;color:#007AFF;font-weight:950;font-size:11px;">Generated<br><span style="font-size:15px;color:#1C1C1E;">${esc(fdate(todayISO()))}</span></div>
-            <div style="background:rgba(52,199,89,.10);border-radius:16px;padding:12px;color:#34C759;font-weight:950;font-size:11px;">Month View<br><span style="font-size:15px;color:#1C1C1E;">${esc(monthName())}</span></div>
-          </div>
+      <div style="text-align:center;margin-bottom:36px;padding-bottom:20px;border-bottom:1px solid rgba(128,128,128,0.18);">
+        <div class="w-16 h-16 mx-auto bg-blue-500/20 rounded-[20px] flex items-center justify-center mb-4 shadow-[0_0_20px_rgba(0,122,255,0.3)]">
+          <i class="fa-solid fa-leaf text-3xl text-[#007AFF]"></i>
         </div>
-        ${sections}
-        <div style="text-align:center;margin:30px 0 6px;color:#8E8E93;font-size:10px;font-weight:950;letter-spacing:1.1px;text-transform:uppercase;">Securely exported from Aarish Dairy Pro</div>
+        <h1 class="text-[28px] font-extrabold tracking-tight text-gray-900 dark:text-white">Aarish Dairy <span class="text-[#007AFF]">Pro</span></h1>
+        <p class="text-[12px] text-gray-500 font-bold uppercase tracking-widest mt-1">${esc(title)} Exact UI Report</p>
+        <div class="mt-5 flex items-center justify-center gap-3 text-[12px] font-bold text-gray-500">
+          <span class="bg-black/5 dark:bg-white/10 px-3 py-1.5 rounded-full"><i class="fa-regular fa-calendar mr-1"></i> ${esc(monthName())}</span>
+          <span class="bg-black/5 dark:bg-white/10 px-3 py-1.5 rounded-full"><i class="fa-solid fa-download mr-1"></i> ${esc(fdate(todayISO()))}</span>
+        </div>
+      </div>
+
+      <div class="w-full flex flex-col gap-4">${sections}</div>
+
+      <div class="text-center mt-10 mb-4 text-[11px] text-gray-400 font-bold uppercase tracking-widest">
+        <i class="fa-solid fa-shield-halved"></i> Securely exported via Aarish Dairy Pro
       </div>`;
 
     try {
       document.body.appendChild(report);
-      await new Promise(r => setTimeout(r, 200));
+      await new Promise(r => setTimeout(r, 350));
+
       if (typeof html2canvas !== "function") throw new Error("html2canvas missing");
 
       const h = Math.max(report.scrollHeight, report.offsetHeight, 900);
+      const scale = h > 18000 ? 1.15 : 2;
+
       const canvas = await html2canvas(report, {
-        scale: h > 18000 ? 1.15 : 2,
-        backgroundColor:"#F5F5F7",
-        useCORS:true,
-        allowTaint:true,
-        logging:false,
-        width:560,
-        height:h,
-        windowWidth:560,
-        windowHeight:h
+        scale,
+        backgroundColor: isDark ? "#000000" : "#F5F5F7",
+        useCORS: true,
+        allowTaint: true,
+        logging: false,
+        width: 480,
+        height: h,
+        windowWidth: 480,
+        windowHeight: h
       });
 
-      const base = `Aarish_${t.toUpperCase()}_Visual_Report_${todayISO()}`;
+      const base = `Aarish_${t.toUpperCase()}_ExactUI_Report_${todayISO()}`;
+
       if (await loadPdfLib()) {
         const { jsPDF } = window.jspdf;
         const pdf = new jsPDF("p", "pt", [canvas.width, canvas.height]);
         pdf.addImage(canvas.toDataURL("image/png"), "PNG", 0, 0, canvas.width, canvas.height, undefined, "FAST");
         const blob = pdf.output("blob");
         downloadBlob(blob, `${base}.pdf`);
+
         try {
           const file = new File([blob], `${base}.pdf`, { type:"application/pdf" });
           if (navigator.canShare && navigator.canShare({ files:[file] })) {
-            await navigator.share({ files:[file], title:"Aarish Dairy Pro", text:`${title} visual report` });
+            await navigator.share({ files:[file], title:"Aarish Dairy Pro", text:`${title} exact UI report` });
           }
         } catch(e) {}
-        try { showToast("Visual PDF downloaded! 📄"); } catch(e) {}
+
+        try { showToast("Exact UI PDF downloaded! 📄"); } catch(e) {}
       } else {
         canvas.toBlob(b => { if (b) downloadBlob(b, `${base}.png`); }, "image/png");
         try { showToast("PDF library failed, image downloaded!"); } catch(e) {}
       }
     } catch (e) {
       console.error(e);
-      try { showToast("Visual report failed!"); } catch(x) {}
+      try { showToast("Exact UI report failed!"); } catch(x) {}
     } finally {
       if (report && report.parentNode) report.remove();
       try { hideLoader(); } catch(e) {}
