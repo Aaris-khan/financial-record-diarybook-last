@@ -5217,5 +5217,200 @@ window.onload = function(){ setTimeout(function(){ window.focus(); window.print(
 })();
 </script>
 
+
+
+
+
+
+
+
+<script>
+// AARISH_MILK_LIST_OLD_STYLE_NET_V21
+(function () {
+  if (window.__AARISH_MILK_LIST_OLD_STYLE_NET_V21_READY) return;
+  window.__AARISH_MILK_LIST_OLD_STYLE_NET_V21_READY = true;
+
+  function dbV21() {
+    try {
+      if (typeof milkDB !== "undefined" && milkDB && typeof milkDB === "object") return milkDB;
+    } catch(e) {}
+    return window.milkDB || {};
+  }
+
+  function n(v) { return Number(v) || 0; }
+
+  function cleanNameV21(v) {
+    return String(v || "").normalize("NFKC").replace(/\s+/g, " ").trim();
+  }
+
+  function normNameV21(v) {
+    return cleanNameV21(v).toLocaleLowerCase("en-IN");
+  }
+
+  function jsArgV21(v) {
+    return String(v || "")
+      .replace(/\\/g, "\\\\")
+      .replace(/'/g, "\\'")
+      .replace(/\n/g, "\\n")
+      .replace(/\r/g, "");
+  }
+
+  function recordsArrayV21(customer) {
+    const r = customer && customer.records;
+    if (Array.isArray(r)) return r.filter(Boolean);
+    if (r && typeof r === "object") return Object.keys(r).map(k => r[k]).filter(Boolean);
+    return [];
+  }
+
+  function qtyV21(r) {
+    return n(r && r.morning) + n(r && r.evening);
+  }
+
+  function flowOfV21(record, customer) {
+    const raw = String((record && (record.flow || record.milkFlow || record.direction || record.entryType || record.type)) || "").toLowerCase();
+    if (["taken", "take", "minus", "debit", "pay", "dene_wala"].includes(raw)) return "taken";
+    if (["given", "give", "plus", "credit", "receive", "lene_wala"].includes(raw)) return "given";
+    return customer && customer.type === "dene_wala" ? "taken" : "given";
+  }
+
+  function rateOfV21(customer, record) {
+    const rr = n(record && record.rate);
+    if (rr > 0) return rr;
+    const cr = n(customer && customer.rate);
+    if (cr > 0) return cr;
+    return n(typeof DEFAULT_RATE !== "undefined" ? DEFAULT_RATE : 0);
+  }
+
+  function groupsV21() {
+    const db = dbV21();
+    const map = {};
+
+    Object.keys(db || {}).forEach(key => {
+      const norm = normNameV21(key);
+      if (!norm) return;
+
+      if (!map[norm]) {
+        map[norm] = {
+          norm: norm,
+          name: cleanNameV21(key) || "Unknown",
+          keys: []
+        };
+      }
+
+      map[norm].keys.push(key);
+    });
+
+    return map;
+  }
+
+  function totalsForGroupV21(group) {
+    const db = dbV21();
+    let givenKg = 0;
+    let takenKg = 0;
+    let givenAmt = 0;
+    let takenAmt = 0;
+
+    (group.keys || []).forEach(key => {
+      const customer = db[key] || {};
+      recordsArrayV21(customer).forEach(record => {
+        const q = qtyV21(record);
+        if (!q) return;
+
+        const amt = q * rateOfV21(customer, record);
+        const flow = flowOfV21(record, customer);
+
+        if (flow === "taken") {
+          takenKg += q;
+          takenAmt += amt;
+        } else {
+          givenKg += q;
+          givenAmt += amt;
+        }
+      });
+    });
+
+    return {
+      netKg: givenKg - takenKg,
+      netAmt: givenAmt - takenAmt
+    };
+  }
+
+  function moneyV21(v) {
+    const sign = n(v) >= 0 ? "+₹" : "-₹";
+    return sign + String(Math.round(Math.abs(n(v))));
+  }
+
+  function kgV21(v) {
+    return Math.abs(n(v)).toFixed(2) + " KG";
+  }
+
+  function openGroupV21(group) {
+    try { window.__activeMilkGroupV15 = group.norm; } catch(e) {}
+
+    if (typeof openMilkDetailV15 === "function") {
+      openMilkDetailV15(group.norm);
+      return;
+    }
+
+    if (typeof openMilkDetail === "function") {
+      openMilkDetail(group.name);
+      return;
+    }
+  }
+
+  window.renderMilkList = function () {
+    const q = (document.getElementById("milk-search")?.value || "").toLocaleLowerCase("en-IN");
+    const box = document.getElementById("milk-list");
+    if (!box) return;
+
+    const list = Object.values(groupsV21()).filter(g => g.name.toLocaleLowerCase("en-IN").includes(q));
+
+    box.innerHTML = list.map((g, i) => {
+      const t = totalsForGroupV21(g);
+      const plus = t.netAmt >= 0;
+      const color = plus ? "text-[#34C759]" : "text-[#FF3B30]";
+      const bg = plus ? "bg-[#34C759]/10" : "bg-[#FF3B30]/10";
+      const border = plus ? "border-l-[#34C759]" : "border-l-[#FF3B30]";
+      const first = (g.name && g.name[0] ? g.name[0].toUpperCase() : "?");
+      const norm = jsArgV21(g.norm);
+
+      return `<div onclick="haptic(); window.__milkOpenGroupV21 && window.__milkOpenGroupV21('${norm}')"
+        class="glass-card mb-3.5 flex items-center justify-between cursor-pointer border-l-[3px] ${border} w-full ring-1 ring-white/40 dark:ring-white/5 list-enter"
+        style="animation-delay:${i * 0.05}s;">
+        <div class="flex items-center gap-4 w-full min-w-0">
+          <div class="w-12 h-12 shrink-0 squircle ${bg} ${color} font-extrabold flex items-center justify-center text-lg">${first}</div>
+          <div class="flex-1 min-w-0">
+            <h4 class="font-bold text-[17px] leading-tight truncate w-full flex items-center text-gray-900 dark:text-white">${g.name}</h4>
+            <p class="text-[14px] text-gray-500 font-bold truncate w-full mt-1 tracking-tight">
+              <span>${kgV21(t.netKg)}</span>
+              <span class="mx-1 text-gray-400">•</span>
+              <span class="${color} font-extrabold text-[18px]">${moneyV21(t.netAmt)}</span>
+            </p>
+          </div>
+        </div>
+        <i class="fa-solid fa-chevron-right text-gray-300 shrink-0 ml-3 text-[13px]"></i>
+      </div>`;
+    }).join("") || (typeof getEmptyState === "function" ? getEmptyState("fa-jug-detergent", "No customers found") : "");
+  };
+
+  window.__milkOpenGroupV21 = function (norm) {
+    const group = groupsV21()[norm];
+    if (group) openGroupV21(group);
+  };
+
+  window.filterMilkList = function () {
+    window.renderMilkList();
+  };
+
+  document.addEventListener("DOMContentLoaded", function () {
+    setTimeout(function () { try { window.renderMilkList(); } catch(e) {} }, 300);
+  });
+
+  setTimeout(function () { try { window.renderMilkList(); } catch(e) {} }, 700);
+
+  console.log("✅ AARISH_MILK_LIST_OLD_STYLE_NET_V21 active");
+})();
+</script>
+
 </body>
 </html>
