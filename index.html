@@ -4035,5 +4035,419 @@ window.onload = function(){ setTimeout(function(){ window.focus(); window.print(
 })();
 </script>
 
+
+
+<script>
+// AARISH_MILK_NET_GIVEN_TAKEN_V14
+// Final logic:
+// Given = plus milk
+// Taken = minus milk
+// Customer net = Given - Taken
+// Net positive => Dashboard To Receive
+// Net negative => Dashboard To Pay
+(function () {
+  function n(v) { return Number(v) || 0; }
+  function arr(v) { return Array.isArray(v) ? v : []; }
+  function rupeeAbs(v) { return Math.round(Math.abs(n(v))).toLocaleString("en-IN"); }
+  function signedMoney(v) { return (n(v) >= 0 ? "+₹" : "-₹") + rupeeAbs(v); }
+  function signedKg(v) { return (n(v) >= 0 ? "+" : "-") + Math.abs(n(v)).toFixed(2) + " KG"; }
+  function q(r) { return n(r && r.morning) + n(r && r.evening); }
+
+  function flowOf(record, customer) {
+    const raw = String((record && (record.flow || record.milkFlow || record.direction || record.entryType || record.type)) || "").toLowerCase();
+    if (["taken", "take", "minus", "debit", "pay", "dene_wala"].includes(raw)) return "taken";
+    if (["given", "give", "plus", "credit", "receive", "lene_wala"].includes(raw)) return "given";
+    return customer && customer.type === "dene_wala" ? "taken" : "given";
+  }
+
+  function monthRecords(customer) {
+    try { return filterByMonth(arr(customer.records)); } catch(e) { return arr(customer.records); }
+  }
+
+  function totals(customer, monthOnly) {
+    const rate = n(customer && (customer.rate || DEFAULT_RATE));
+    const list = monthOnly ? monthRecords(customer) : arr(customer && customer.records);
+    let givenKg = 0, takenKg = 0;
+    list.forEach(r => {
+      const qty = q(r);
+      if (flowOf(r, customer) === "taken") takenKg += qty;
+      else givenKg += qty;
+    });
+    const netKg = givenKg - takenKg;
+    const netAmt = netKg * rate;
+    return {
+      rate,
+      givenKg,
+      takenKg,
+      netKg,
+      givenAmt: givenKg * rate,
+      takenAmt: takenKg * rate,
+      netAmt
+    };
+  }
+
+  function badge(flow) {
+    if (flow === "taken") {
+      return '<span class="inline-flex items-center rounded-md px-2 py-1 text-[9px] font-extrabold uppercase tracking-wider bg-[#FF3B30]/10 text-[#FF3B30] border border-[#FF3B30]/20">Taken</span>';
+    }
+    return '<span class="inline-flex items-center rounded-md px-2 py-1 text-[9px] font-extrabold uppercase tracking-wider bg-[#34C759]/10 text-[#34C759] border border-[#34C759]/20">Given</span>';
+  }
+
+  function ensureMilkButtons() {
+    const modal = document.getElementById("add-milk-entry-modal");
+    if (!modal) return;
+
+    if (!document.getElementById("milk-entry-flow")) {
+      const input = document.createElement("input");
+      input.type = "hidden";
+      input.id = "milk-entry-flow";
+      input.value = "given";
+      modal.querySelector(".modal-content")?.appendChild(input);
+    }
+
+    const content = modal.querySelector(".modal-content");
+    if (!content) return;
+
+    let oldHolder = content.querySelector("#milk-given-taken-actions");
+    if (oldHolder) oldHolder.remove();
+
+    const oldBtn = content.querySelector('button[onclick*="saveMilkEntry"]');
+
+    const holder = document.createElement("div");
+    holder.id = "milk-given-taken-actions";
+    holder.className = "grid grid-cols-2 gap-4 w-full";
+    holder.innerHTML = `
+      <button onclick="haptic(); saveMilkEntry('given')" class="btn-primary flex-1 min-w-0 !bg-[#34C759] !shadow-[0_4px_14px_rgba(52,199,89,0.25)]">
+        <i class="fa-solid fa-plus text-lg"></i> Given
+      </button>
+      <button onclick="haptic(); saveMilkEntry('taken')" class="btn-primary flex-1 min-w-0 !bg-[#FF3B30] !shadow-[0_4px_14px_rgba(255,59,48,0.25)]">
+        <i class="fa-solid fa-minus text-lg"></i> Taken
+      </button>
+    `;
+
+    if (oldBtn) oldBtn.replaceWith(holder);
+    else content.appendChild(holder);
+  }
+
+  function recalcMilkDashboardNet() {
+    let oldLifeReceive = 0;
+    let oldLifePay = 0;
+    let oldMonthReceive = 0;
+    let oldMonthPay = 0;
+
+    let newLifeReceive = 0;
+    let newLifePay = 0;
+    let newMonthReceive = 0;
+    let newMonthPay = 0;
+
+    Object.values(milkDB || {}).forEach(c => {
+      const rate = n(c.rate || DEFAULT_RATE);
+
+      const oldLifeAmt = arr(c.records).reduce((s,r) => s + q(r) * rate, 0);
+      const oldMonthAmt = monthRecords(c).reduce((s,r) => s + q(r) * rate, 0);
+
+      if (c.type === "dene_wala") {
+        oldLifePay += oldLifeAmt;
+        oldMonthPay += oldMonthAmt;
+      } else {
+        oldLifeReceive += oldLifeAmt;
+        oldMonthReceive += oldMonthAmt;
+      }
+
+      const life = totals(c, false);
+      const mon = totals(c, true);
+
+      if (life.netAmt >= 0) newLifeReceive += life.netAmt;
+      else newLifePay += Math.abs(life.netAmt);
+
+      if (mon.netAmt >= 0) newMonthReceive += mon.netAmt;
+      else newMonthPay += Math.abs(mon.netAmt);
+    });
+
+    return {
+      oldLifeReceive,
+      oldLifePay,
+      oldMonthReceive,
+      oldMonthPay,
+      newLifeReceive,
+      newLifePay,
+      newMonthReceive,
+      newMonthPay
+    };
+  }
+
+  function parseRs(text) {
+    return Number(String(text || "").replace(/[^\d.-]/g, "")) || 0;
+  }
+
+  const coreUpdateDashboard = window.updateDashboard;
+  window.updateDashboard = function () {
+    if (typeof coreUpdateDashboard === "function") coreUpdateDashboard();
+
+    const d = recalcMilkDashboardNet();
+
+    const lenaEl = document.getElementById("dash-lena");
+    const denaEl = document.getElementById("dash-dena");
+    const expEl = document.getElementById("dash-expenses");
+    const profitEl = document.getElementById("dash-profit");
+
+    if (lenaEl) {
+      const v = parseRs(lenaEl.textContent) - d.oldLifeReceive + d.newLifeReceive;
+      lenaEl.textContent = `₹${Math.round(v).toLocaleString("en-IN")}`;
+    }
+
+    if (denaEl) {
+      const v = parseRs(denaEl.textContent) - d.oldLifePay + d.newLifePay;
+      denaEl.textContent = `₹${Math.round(v).toLocaleString("en-IN")}`;
+    }
+
+    if (expEl) {
+      const v = parseRs(expEl.textContent) - d.oldMonthPay + d.newMonthPay;
+      expEl.textContent = `₹${Math.round(v).toLocaleString("en-IN")}`;
+    }
+
+    if (profitEl) {
+      const oldMilkProfit = d.oldMonthReceive - d.oldMonthPay;
+      const newMilkProfit = d.newMonthReceive - d.newMonthPay;
+      const v = parseRs(profitEl.textContent) - oldMilkProfit + newMilkProfit;
+      profitEl.textContent = `₹${Math.round(v).toLocaleString("en-IN")}`;
+      profitEl.style.color = v < 0 ? "#FF3B30" : "#34C759";
+    }
+  };
+
+  window.renderMilkList = function () {
+    const qText = (document.getElementById("milk-search")?.value || "").toLowerCase();
+
+    const html = Object.keys(milkDB || {})
+      .filter(name => name.toLowerCase().includes(qText))
+      .map((name, index) => {
+        const c = milkDB[name] || {};
+        const life = totals(c, false);
+        const isPlus = life.netAmt >= 0;
+        const colorClass = isPlus ? "text-[#34C759]" : "text-[#FF3B30]";
+        const bgClass = isPlus ? "bg-[#34C759]/10" : "bg-[#FF3B30]/10";
+        const borderClass = isPlus ? "border-l-[#34C759]" : "border-l-[#FF3B30]";
+        const label = isPlus ? "Net To Receive" : "Net To Pay";
+        const first = (name && name[0] ? name[0].toUpperCase() : "?");
+
+        return `<div
+          onclick="haptic(); openMilkDetail('${String(name).replace(/'/g, "\\'")}')"
+          ontouchstart="startLongPress('${String(name).replace(/'/g, "\\'")}')"
+          ontouchend="cancelLongPress()"
+          ontouchmove="cancelLongPress()"
+          onmousedown="startLongPress('${String(name).replace(/'/g, "\\'")}')"
+          onmouseup="cancelLongPress()"
+          onmouseleave="cancelLongPress()"
+          class="glass-card mb-3.5 flex items-center justify-between cursor-pointer border-l-[3px] ${borderClass} w-full ring-1 ring-white/40 dark:ring-white/5 list-enter"
+          style="animation-delay:${index * 0.05}s;">
+          <div class="flex items-center gap-4 w-full min-w-0">
+            <div class="w-12 h-12 shrink-0 squircle ${bgClass} ${colorClass} font-extrabold flex items-center justify-center text-lg">${first}</div>
+            <div class="flex-1 min-w-0">
+              <h4 class="font-bold text-[17px] leading-tight truncate w-full flex items-center text-gray-900 dark:text-white">${name}</h4>
+              <p class="text-[12px] text-gray-500 font-bold truncate w-full mt-0.5 tracking-tight">
+                Given ${life.givenKg.toFixed(2)} KG • Taken ${life.takenKg.toFixed(2)} KG
+              </p>
+              <p class="text-[13px] text-gray-500 font-medium truncate w-full mt-0.5 tracking-tight">
+                ${label}: <span class="${colorClass} font-extrabold text-[15px] ml-1">${signedMoney(life.netAmt)}</span>
+              </p>
+            </div>
+          </div>
+          <i class="fa-solid fa-chevron-right text-gray-300 shrink-0 ml-3 text-[13px]"></i>
+        </div>`;
+      }).join("");
+
+    const box = document.getElementById("milk-list");
+    if (box) box.innerHTML = html || getEmptyState("fa-jug-detergent", "No customers found");
+  };
+
+  window.filterMilkList = function () { renderMilkList(); };
+
+  window.renderMilkRecords = function () {
+    if (!activeMilkCustomer || !milkDB[activeMilkCustomer]) return;
+    const c = milkDB[activeMilkCustomer];
+
+    const records = monthRecords(c).map((r, i) => ({ ...r, originalIndex: i }))
+      .sort((a,b) => new Date(b.date) - new Date(a.date));
+
+    const mt = totals(c, true);
+    const isPlus = mt.netAmt >= 0;
+
+    const html = records.map((r, index) => {
+      const flow = flowOf(r, c);
+      const qty = q(r);
+      const sign = flow === "taken" ? "-" : "+";
+      const color = flow === "taken" ? "#FF3B30" : "#34C759";
+
+      return `<tr class="list-enter" style="animation-delay:${index * 0.05}s;">
+        <td>
+          <div class="font-bold">${formatDisplayDate(r.date)}</div>
+          <div class="mt-1">${badge(flow)}</div>
+        </td>
+        <td>${n(r.morning) || "-"}</td>
+        <td>${n(r.evening) || "-"}</td>
+        <td class="font-extrabold" style="color:${color};">${sign}${qty.toFixed(2)}</td>
+        <td class="text-right">
+          <button onclick="haptic(); deleteMilkEntry('${r.id}')" class="action-btn shrink-0">
+            <i class="fa-solid fa-trash text-xs"></i>
+          </button>
+        </td>
+      </tr>`;
+    }).join("");
+
+    const tbody = document.getElementById("milk-detail-records");
+    if (tbody) tbody.innerHTML = html || `<tr><td colspan="5" class="text-center py-8 text-gray-400 font-semibold">No entries for ${MONTHS[selectedMonth]}</td></tr>`;
+
+    const detailCard = document.querySelector("#milk-detail-screen .glass-card");
+    if (detailCard) {
+      detailCard.className = isPlus
+        ? "glass-card mb-6 flex justify-between items-center bg-gradient-to-br from-[#34C759] to-[#28a745] text-white border-none shadow-[0_8px_24px_rgba(52,199,89,0.3)] ring-1 ring-white/30 w-full min-w-0 gap-3"
+        : "glass-card mb-6 flex justify-between items-center bg-gradient-to-br from-[#FF3B30] to-[#c92a2a] text-white border-none shadow-[0_8px_24px_rgba(255,59,48,0.3)] ring-1 ring-white/30 w-full min-w-0 gap-3";
+
+      const labels = detailCard.querySelectorAll("p");
+      if (labels[0]) labels[0].textContent = isPlus ? "Net Bill To Receive" : "Net Bill To Pay";
+      if (labels[1]) labels[1].textContent = "Net Milk";
+    }
+
+    const kgEl = document.getElementById("milk-detail-kg");
+    const billEl = document.getElementById("milk-detail-bill");
+    if (kgEl) kgEl.textContent = signedKg(mt.netKg);
+    if (billEl) billEl.textContent = signedMoney(mt.netAmt);
+
+    let summary = document.getElementById("milk-net-given-taken-summary");
+    if (!summary && detailCard) {
+      summary = document.createElement("div");
+      summary.id = "milk-net-given-taken-summary";
+      summary.className = "grid grid-cols-2 gap-3 mb-5 w-full";
+      detailCard.insertAdjacentElement("afterend", summary);
+    }
+
+    if (summary) {
+      summary.innerHTML = `
+        <div class="glass-card !rounded-[18px] !p-4 bg-[#34C759]/10 border !border-[#34C759]/20">
+          <p class="text-[10px] font-extrabold uppercase tracking-wider text-[#34C759]">Given</p>
+          <h3 class="text-xl font-extrabold text-[#34C759] mt-1">${mt.givenKg.toFixed(2)} KG</h3>
+          <p class="text-[11px] font-bold text-[#34C759] mt-1">₹${rupeeAbs(mt.givenAmt)}</p>
+        </div>
+        <div class="glass-card !rounded-[18px] !p-4 bg-[#FF3B30]/10 border !border-[#FF3B30]/20">
+          <p class="text-[10px] font-extrabold uppercase tracking-wider text-[#FF3B30]">Taken</p>
+          <h3 class="text-xl font-extrabold text-[#FF3B30] mt-1">${mt.takenKg.toFixed(2)} KG</h3>
+          <p class="text-[11px] font-bold text-[#FF3B30] mt-1">₹${rupeeAbs(mt.takenAmt)}</p>
+        </div>
+      `;
+    }
+  };
+
+  window.openMilkEntryModal = function () {
+    const dateEl = document.getElementById("milk-entry-date");
+    const mEl = document.getElementById("milk-morning-kg");
+    const eEl = document.getElementById("milk-evening-kg");
+
+    if (dateEl) dateEl.value = getTodayISO();
+    if (mEl) mEl.value = "";
+    if (eEl) eEl.value = "";
+
+    ensureMilkButtons();
+    openModal("add-milk-entry-modal");
+  };
+
+  window.saveMilkEntry = async function (flowArg) {
+    const date = document.getElementById("milk-entry-date")?.value;
+    const m = parseFloat(document.getElementById("milk-morning-kg")?.value) || 0;
+    const e = parseFloat(document.getElementById("milk-evening-kg")?.value) || 0;
+
+    let flow = String(flowArg || "given").toLowerCase();
+    flow = flow === "taken" ? "taken" : "given";
+
+    if (!activeMilkCustomer || !milkDB[activeMilkCustomer]) return showToast("Customer not selected");
+    if (!date || (m === 0 && e === 0)) return showToast("Please enter quantity");
+
+    if (!milkDB[activeMilkCustomer].records) milkDB[activeMilkCustomer].records = [];
+
+    const uniqueId = "mlk_" + Date.now() + "_" + Math.floor(Math.random() * 100000);
+    const newEntry = {
+      id: uniqueId,
+      date: date,
+      morning: m,
+      evening: e,
+      flow: flow,
+      type: flow
+    };
+
+    milkDB[activeMilkCustomer].records.push(newEntry);
+
+    if (currentUserUID) {
+      await appDataRef.child(`milkDB/${activeMilkCustomer}/records/${uniqueId}`).set(newEntry);
+    }
+
+    closeModal("add-milk-entry-modal");
+
+    const d = new Date(date);
+    selectedMonth = d.getMonth();
+    selectedYear = d.getFullYear();
+
+    const mm = document.getElementById("filter-month-milk");
+    const yy = document.getElementById("filter-year-milk");
+    if (mm) mm.value = selectedMonth;
+    if (yy) yy.value = selectedYear;
+
+    renderMilkRecords();
+    renderMilkList();
+    updateDashboard();
+
+    showToast(flow === "given" ? "Given milk saved!" : "Taken milk saved!");
+  };
+
+  window.deleteMilkEntry = async function (id) {
+    if (!activeMilkCustomer || !milkDB[activeMilkCustomer]) return;
+    if (confirm("Are you sure you want to delete this entry?")) {
+      milkDB[activeMilkCustomer].records = arr(milkDB[activeMilkCustomer].records).filter(r => r.id !== id);
+
+      if (currentUserUID) {
+        await appDataRef.child(`milkDB/${activeMilkCustomer}/records/${id}`).remove();
+      }
+
+      renderMilkRecords();
+      renderMilkList();
+      updateDashboard();
+      showToast("Deleted!");
+    }
+  };
+
+  window.generateAndShareBill = async function () {
+    if (!activeMilkCustomer || !milkDB[activeMilkCustomer]) return;
+
+    showLoader("Generating net bill photo...");
+
+    const c = milkDB[activeMilkCustomer];
+    const mt = totals(c, true);
+
+    const set = (id, val) => {
+      const el = document.getElementById(id);
+      if (el) el.textContent = val;
+    };
+
+    set("rcpt-name", activeMilkCustomer);
+    set("rcpt-month", `${MONTHS[selectedMonth]} ${selectedYear}`);
+    set("rcpt-qty", signedKg(mt.netKg));
+    set("rcpt-amt", signedMoney(mt.netAmt));
+
+    await exportAndShareCanvas(
+      "receipt-card",
+      `${activeMilkCustomer}_Milk_Net_Bill.png`,
+      `Hello ${activeMilkCustomer},\nMilk bill for ${MONTHS[selectedMonth]} ${selectedYear}\nGiven: ${mt.givenKg.toFixed(2)} KG = ₹${rupeeAbs(mt.givenAmt)}\nTaken: ${mt.takenKg.toFixed(2)} KG = ₹${rupeeAbs(mt.takenAmt)}\nNet Milk: ${signedKg(mt.netKg)}\nNet Amount: ${signedMoney(mt.netAmt)}`
+    );
+  };
+
+  document.addEventListener("DOMContentLoaded", function () {
+    ensureMilkButtons();
+    try { renderMilkList(); } catch(e) {}
+    try { if (activeMilkCustomer) renderMilkRecords(); } catch(e) {}
+    try { updateDashboard(); } catch(e) {}
+  });
+
+  try { ensureMilkButtons(); } catch(e) {}
+})();
+</script>
+
 </body>
 </html>
