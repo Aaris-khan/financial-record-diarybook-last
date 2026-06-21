@@ -5976,5 +5976,154 @@ window.onload = function(){ setTimeout(function(){ window.focus(); window.print(
 })();
 </script>
 
+
+
+<script>
+// AARISH_SALARY_HEADING_NET_COLOR_V28
+// Only Salary Record heading color.
+// Net = all visible/current-filter salary Receives minus Pays.
+// No list change, no card change, no dashboard change, no Firebase/data write.
+(function () {
+  if (window.__AARISH_SALARY_HEADING_NET_COLOR_V28_READY) return;
+  window.__AARISH_SALARY_HEADING_NET_COLOR_V28_READY = true;
+
+  var applyingV28 = false;
+
+  function nV28(v) {
+    return Number(v) || 0;
+  }
+
+  function dbV28() {
+    try {
+      if (typeof salaryDB !== "undefined" && salaryDB && typeof salaryDB === "object") return salaryDB;
+    } catch (e) {}
+    return window.salaryDB || {};
+  }
+
+  function recordsV28(records) {
+    var list = [];
+
+    if (Array.isArray(records)) {
+      list = records.filter(Boolean);
+    } else if (records && typeof records === "object") {
+      list = Object.keys(records).map(function (k) { return records[k]; }).filter(Boolean);
+    }
+
+    try {
+      if (typeof filterByMonth === "function") return filterByMonth(list) || [];
+    } catch (e) {}
+
+    return list;
+  }
+
+  function salaryNetV28() {
+    var db = dbV28();
+    var net = 0;
+
+    Object.keys(db || {}).forEach(function (name) {
+      var person = db[name] || {};
+      var total = 0;
+
+      recordsV28(person.records).forEach(function (record) {
+        total += nV28(record && record.amount);
+      });
+
+      if (person.type === "lene_wala") {
+        net += total;
+      } else {
+        net -= total;
+      }
+    });
+
+    return net;
+  }
+
+  function titleV28() {
+    return document.querySelector("#salary-screen .header-sticky h1");
+  }
+
+  window.updateSalaryRecordHeadingColorV28 = function () {
+    var title = titleV28();
+    if (!title) return;
+
+    var net = salaryNetV28();
+
+    applyingV28 = true;
+    title.style.transition = "color 0.25s ease";
+
+    if (net > 0.0001) {
+      title.style.color = "#34C759";
+      title.dataset.aarishSalaryNetV28 = "green";
+    } else if (net < -0.0001) {
+      title.style.color = "#FF3B30";
+      title.dataset.aarishSalaryNetV28 = "red";
+    } else {
+      title.style.removeProperty("color");
+      title.dataset.aarishSalaryNetV28 = "neutral";
+    }
+
+    setTimeout(function () {
+      applyingV28 = false;
+    }, 80);
+  };
+
+  function scheduleV28() {
+    setTimeout(window.updateSalaryRecordHeadingColorV28, 0);
+    setTimeout(window.updateSalaryRecordHeadingColorV28, 250);
+    setTimeout(window.updateSalaryRecordHeadingColorV28, 900);
+  }
+
+  document.addEventListener("DOMContentLoaded", scheduleV28);
+  window.addEventListener("load", scheduleV28);
+  document.addEventListener("visibilitychange", scheduleV28);
+
+  var screenV28 = document.getElementById("salary-screen");
+  if (screenV28 && window.MutationObserver) {
+    new MutationObserver(function () {
+      if (applyingV28) return;
+      scheduleV28();
+    }).observe(screenV28, {
+      childList: true,
+      subtree: true,
+      attributes: true,
+      attributeFilter: ["class"]
+    });
+  }
+
+  setTimeout(scheduleV28, 500);
+  setTimeout(scheduleV28, 1500);
+
+  setInterval(function () {
+    var screen = document.getElementById("salary-screen");
+    if (screen && screen.classList.contains("active")) {
+      window.updateSalaryRecordHeadingColorV28();
+    }
+  }, 1200);
+
+  window.__salaryHeadingNetColorStatusV28 = function () {
+    var status = {
+      version: "V28",
+      targetPage: "Salary Record",
+      titleOnly: true,
+      salaryHeadingColorByNet: true,
+      netPlusGreen: true,
+      netMinusRed: true,
+      listChanged: false,
+      cardChanged: false,
+      dashboardChanged: false,
+      partyLedgerChanged: false,
+      firebaseWrite: false,
+      dataChanged: false,
+      netAmount: salaryNetV28()
+    };
+    console.log("AARISH SALARY HEADING NET COLOR STATUS V28", status);
+    return status;
+  };
+
+  scheduleV28();
+  console.log("✅ AARISH_SALARY_HEADING_NET_COLOR_V28 active");
+})();
+</script>
+
 </body>
 </html>
