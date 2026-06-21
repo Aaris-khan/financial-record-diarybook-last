@@ -7023,5 +7023,626 @@ window.onload = function(){ setTimeout(function(){ window.focus(); window.print(
 })();
 </script>
 
+
+
+<script>
+// AARISH_BIG_TECH_SMOOTH_UX_V32
+// Safe smoothness engine:
+// - No existing colors changed.
+// - No Firebase/data schema changed.
+// - No global render wrapping.
+// - Replaces heavy native confirm profile deletes with paint-first custom confirm.
+// - Reduces old 45ms haptic to a short throttled premium tick.
+(function () {
+  if (window.__AARISH_BIG_TECH_SMOOTH_UX_V32_READY) return;
+  window.__AARISH_BIG_TECH_SMOOTH_UX_V32_READY = true;
+
+  var V32 = {
+    version: "V32",
+    deleteBusy: false,
+    tapTimer: null,
+    originalConfirm: window.confirm,
+    patchedButtons: {},
+    installedAt: new Date().toISOString()
+  };
+
+  function qV32(sel) { return document.querySelector(sel); }
+  function idV32(id) { return document.getElementById(id); }
+  function textV32(v) { return String(v || "").replace(/\s+/g, " ").trim(); }
+  function normV32(v) {
+    return textV32(v)
+      .normalize("NFKC")
+      .replace(/[.#$\[\]<>\/\\]/g, " ")
+      .replace(/[\u0000-\u001F\u007F]/g, " ")
+      .replace(/\s+/g, " ")
+      .trim()
+      .toLocaleLowerCase("en-IN");
+  }
+  function nowV32() { return Date.now ? Date.now() : new Date().getTime(); }
+
+  function nextFrameV32() {
+    return new Promise(function (resolve) {
+      requestAnimationFrame(function () {
+        setTimeout(resolve, 0);
+      });
+    });
+  }
+
+  function idleV32(fn) {
+    if (window.requestIdleCallback) {
+      return requestIdleCallback(fn, { timeout: 1200 });
+    }
+    return setTimeout(fn, 80);
+  }
+
+  function cloneV32(obj) {
+    try { return JSON.parse(JSON.stringify(obj)); }
+    catch (e) { return obj; }
+  }
+
+  function toastV32(msg) {
+    try {
+      if (typeof showToast === "function") showToast(msg);
+      else console.log(msg);
+    } catch (e) {
+      console.log(msg);
+    }
+  }
+
+  function installStyleV32() {
+    if (idV32("aarish-big-tech-smooth-v32-style")) return;
+
+    var style = document.createElement("style");
+    style.id = "aarish-big-tech-smooth-v32-style";
+    style.textContent = `
+      /* AARISH_BIG_TECH_SMOOTH_UX_V32_CSS */
+      * { -webkit-tap-highlight-color: transparent !important; }
+
+      button, .nav-item, .glass-card, .btn-primary, .btn-ios-share, .btn-ios-add, .action-btn {
+        touch-action: manipulation !important;
+        backface-visibility: hidden !important;
+        -webkit-backface-visibility: hidden !important;
+      }
+
+      .aarish-tap-v32 {
+        transform: scale(0.975) translate3d(0,0,0) !important;
+        opacity: 0.92 !important;
+        transition: transform 105ms cubic-bezier(.2,.8,.2,1), opacity 105ms ease !important;
+        will-change: transform, opacity !important;
+      }
+
+      .aarish-delete-pending-v32 {
+        pointer-events: none !important;
+        opacity: 0.70 !important;
+        transform: scale(0.985) translate3d(0,0,0) !important;
+        transition: transform 160ms cubic-bezier(.2,.8,.2,1), opacity 160ms ease !important;
+      }
+
+      #milk-list > *, #udhar-list > *, #expense-list-container > *, #salary-list > *, #project-list > *, #diary-list > *, #dash-balances-list > * {
+        content-visibility: auto;
+        contain-intrinsic-size: 88px;
+        contain: layout paint style;
+      }
+
+      .table-custom tbody tr {
+        content-visibility: auto;
+        contain-intrinsic-size: 54px;
+      }
+
+      .screen.active, .modal-content, .header-sticky, .bottom-nav {
+        backface-visibility: hidden;
+        -webkit-backface-visibility: hidden;
+      }
+
+      .aarish-confirm-overlay-v32 {
+        position: fixed;
+        inset: 0;
+        z-index: 9999999;
+        display: flex;
+        align-items: flex-end;
+        justify-content: center;
+        padding: 18px;
+        background: rgba(0,0,0,0.26);
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        opacity: 0;
+        transition: opacity 155ms ease;
+      }
+
+      .aarish-confirm-overlay-v32.show { opacity: 1; }
+
+      .aarish-confirm-box-v32 {
+        width: min(440px, 100%);
+        border-radius: 28px;
+        padding: 18px;
+        background: rgba(255,255,255,0.92);
+        color: #1C1C1E;
+        box-shadow: 0 18px 50px rgba(0,0,0,0.18);
+        transform: translate3d(0,18px,0) scale(0.985);
+        transition: transform 185ms cubic-bezier(.2,.8,.2,1), opacity 185ms ease;
+      }
+
+      .dark .aarish-confirm-box-v32 {
+        background: rgba(28,28,30,0.94);
+        color: #FFFFFF;
+      }
+
+      .aarish-confirm-overlay-v32.show .aarish-confirm-box-v32 {
+        transform: translate3d(0,0,0) scale(1);
+      }
+
+      .aarish-confirm-title-v32 {
+        font-size: 18px;
+        font-weight: 800;
+        letter-spacing: -0.02em;
+        margin-bottom: 6px;
+      }
+
+      .aarish-confirm-msg-v32 {
+        font-size: 13px;
+        line-height: 1.45;
+        opacity: .72;
+        margin-bottom: 16px;
+        white-space: pre-wrap;
+      }
+
+      .aarish-confirm-row-v32 {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+      }
+
+      .aarish-confirm-row-v32 button {
+        min-height: 48px !important;
+        border-radius: 16px !important;
+        border: 0 !important;
+        font-weight: 800 !important;
+        font-size: 15px !important;
+      }
+
+      .aarish-confirm-cancel-v32 {
+        background: rgba(118,118,128,0.14) !important;
+        color: inherit !important;
+      }
+
+      .aarish-confirm-ok-v32 {
+        background: rgba(255,59,48,0.12) !important;
+        color: #FF3B30 !important;
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        .aarish-tap-v32, .aarish-confirm-overlay-v32, .aarish-confirm-box-v32 {
+          transition: none !important;
+        }
+      }
+    `;
+    document.head.appendChild(style);
+  }
+
+  function installHapticV32() {
+    try {
+      var last = 0;
+      var soft = function () {
+        var t = performance && performance.now ? performance.now() : nowV32();
+        if (t - last < 90) return;
+        last = t;
+        try { if (navigator.vibrate) navigator.vibrate(8); } catch (e) {}
+      };
+      soft.__aarishSmoothV32 = true;
+      window.haptic = soft;
+      try { haptic = soft; } catch (e) {}
+    } catch (e) {}
+  }
+
+  function installTapFeedbackV32() {
+    if (window.__AARISH_TAP_FEEDBACK_V32) return;
+    window.__AARISH_TAP_FEEDBACK_V32 = true;
+
+    var selector = "button, .nav-item, .glass-card[onclick], .btn-primary, .btn-ios-share, .btn-ios-add, .action-btn";
+
+    function clearTap(el) {
+      if (!el) return;
+      clearTimeout(V32.tapTimer);
+      V32.tapTimer = setTimeout(function () {
+        try { el.classList.remove("aarish-tap-v32"); } catch (e) {}
+      }, 90);
+    }
+
+    document.addEventListener("pointerdown", function (e) {
+      var el = e.target && e.target.closest ? e.target.closest(selector) : null;
+      if (!el || el.disabled) return;
+      try { el.classList.add("aarish-tap-v32"); } catch (err) {}
+    }, { passive: true });
+
+    ["pointerup", "pointercancel", "pointerleave", "scroll"].forEach(function (evt) {
+      document.addEventListener(evt, function (e) {
+        var el = e.target && e.target.closest ? e.target.closest(".aarish-tap-v32") : qV32(".aarish-tap-v32");
+        clearTap(el);
+      }, { passive: true });
+    });
+  }
+
+  window.aarishConfirmV32 = function (title, msg, okText) {
+    installStyleV32();
+
+    return new Promise(function (resolve) {
+      var overlay = document.createElement("div");
+      overlay.className = "aarish-confirm-overlay-v32";
+      overlay.innerHTML =
+        '<div class="aarish-confirm-box-v32" role="dialog" aria-modal="true">' +
+          '<div class="aarish-confirm-title-v32"></div>' +
+          '<div class="aarish-confirm-msg-v32"></div>' +
+          '<div class="aarish-confirm-row-v32">' +
+            '<button type="button" class="aarish-confirm-cancel-v32">Cancel</button>' +
+            '<button type="button" class="aarish-confirm-ok-v32"></button>' +
+          '</div>' +
+        '</div>';
+
+      overlay.querySelector(".aarish-confirm-title-v32").textContent = title || "Confirm";
+      overlay.querySelector(".aarish-confirm-msg-v32").textContent = msg || "";
+      overlay.querySelector(".aarish-confirm-ok-v32").textContent = okText || "Delete";
+
+      var done = false;
+
+      function close(result) {
+        if (done) return;
+        done = true;
+        overlay.classList.remove("show");
+        setTimeout(function () {
+          try { overlay.remove(); } catch (e) {}
+          resolve(!!result);
+        }, 135);
+      }
+
+      overlay.addEventListener("click", function (e) {
+        if (e.target === overlay) close(false);
+      });
+
+      overlay.querySelector(".aarish-confirm-cancel-v32").onclick = function () { close(false); };
+      overlay.querySelector(".aarish-confirm-ok-v32").onclick = function () { close(true); };
+
+      document.body.appendChild(overlay);
+      requestAnimationFrame(function () { overlay.classList.add("show"); });
+    });
+  };
+
+  function activeLabelV32(type) {
+    var map = {
+      milk: ["milk-detail-title", "Customer"],
+      credit: ["udhar-detail-title", "Customer"],
+      expense: ["expense-detail-title", "Expense Detail"],
+      salary: ["salary-detail-title", "Employee"]
+    };
+    var cfg = map[type] || [];
+    var el = idV32(cfg[0]);
+    var val = textV32(el && el.textContent);
+    if (!val || val === cfg[1]) return cfg[1] || "Profile";
+    return val;
+  }
+
+  function getMilkDBV32() {
+    try { if (typeof milkDB !== "undefined" && milkDB && typeof milkDB === "object") return milkDB; } catch (e) {}
+    if (!window.milkDB || typeof window.milkDB !== "object") window.milkDB = {};
+    return window.milkDB;
+  }
+
+  function getUdharDBV32() {
+    try { if (typeof udharDB !== "undefined" && Array.isArray(udharDB)) return udharDB; } catch (e) {}
+    return Array.isArray(window.udharDB) ? window.udharDB : [];
+  }
+
+  function setUdharDBV32(next) {
+    try { udharDB = next; } catch (e) { window.udharDB = next; }
+  }
+
+  function getExpenseDBV32() {
+    try { if (typeof expenseDB !== "undefined" && Array.isArray(expenseDB)) return expenseDB; } catch (e) {}
+    return Array.isArray(window.expenseDB) ? window.expenseDB : [];
+  }
+
+  function setExpenseDBV32(next) {
+    try { expenseDB = next; } catch (e) { window.expenseDB = next; }
+  }
+
+  function getSalaryDBV32() {
+    try { if (typeof salaryDB !== "undefined" && salaryDB && typeof salaryDB === "object") return salaryDB; } catch (e) {}
+    return window.salaryDB && typeof window.salaryDB === "object" ? window.salaryDB : {};
+  }
+
+  function milkKeysV32() {
+    var db = getMilkDBV32();
+    var keys = [];
+
+    try {
+      if (window.__activeMilkGroupV15) {
+        var n = String(window.__activeMilkGroupV15 || "");
+        keys = Object.keys(db || {}).filter(function (k) { return normV32(k) === n; });
+      }
+    } catch (e) {}
+
+    if (!keys.length) {
+      try {
+        if (typeof activeMilkCustomer !== "undefined" && activeMilkCustomer && db[activeMilkCustomer]) {
+          keys = [activeMilkCustomer];
+        }
+      } catch (e) {}
+    }
+
+    if (!keys.length) {
+      var title = activeLabelV32("milk");
+      var target = normV32(title);
+      keys = Object.keys(db || {}).filter(function (k) { return normV32(k) === target; });
+    }
+
+    return keys.filter(function (k, i, arr) { return k && db[k] && arr.indexOf(k) === i; });
+  }
+
+  function updateAfterDeleteV32(tab) {
+    try { if (tab === "milk" && typeof renderMilkList === "function") renderMilkList(); } catch (e) {}
+    try { if (tab === "udhar" && typeof renderUdharList === "function") renderUdharList(); } catch (e) {}
+    try { if (tab === "expenses" && typeof renderExpenseList === "function") renderExpenseList(); } catch (e) {}
+    try { if (tab === "salary" && typeof renderSalaryList === "function") renderSalaryList(); } catch (e) {}
+    try { if (typeof updateDashboard === "function") updateDashboard(); } catch (e) {}
+    try { if (typeof renderDashboardBalances === "function") renderDashboardBalances(); } catch (e) {}
+    try { if (typeof switchTab === "function") switchTab(tab); } catch (e) {}
+  }
+
+  function bgFirebaseV32(path, action, payload) {
+    idleV32(function () {
+      Promise.resolve().then(async function () {
+        try {
+          if (typeof currentUserUID === "undefined" || !currentUserUID || typeof appDataRef === "undefined" || !appDataRef) return;
+          if (action === "set") await appDataRef.child(path).set(payload);
+          if (action === "remove") await appDataRef.child(path).remove();
+        } catch (e) {
+          console.warn("Aarish Smooth V32 background Firebase issue:", path, e);
+        }
+      });
+    });
+  }
+
+  function localBackupV32(key, payload) {
+    try { localStorage.setItem(key + "_" + nowV32(), JSON.stringify(payload)); } catch (e) {}
+  }
+
+  async function runDeleteV32(type, btn) {
+    if (V32.deleteBusy) return;
+
+    var label = activeLabelV32(type);
+    var readable =
+      type === "credit" ? "credit profile" :
+      type === "expense" ? "expense category" :
+      type === "salary" ? "salary profile" :
+      "milk customer";
+
+    if (!(await window.aarishConfirmV32("Delete " + readable + "?", '"' + label + '" delete hoga. Backup pehle banega.', "Delete"))) return;
+    if (!(await window.aarishConfirmV32("Final confirmation", '"' + label + '" permanently delete karna hai?', "Final Delete"))) return;
+
+    V32.deleteBusy = true;
+    if (btn) btn.classList.add("aarish-delete-pending-v32");
+    await nextFrameV32();
+
+    try {
+      if (type === "milk") {
+        var mdb = getMilkDBV32();
+        var keys = milkKeysV32();
+        if (!keys.length) { toastV32("Customer not found!"); return; }
+
+        var milkBackup = {};
+        keys.forEach(function (k) { milkBackup[k] = cloneV32(mdb[k]); });
+
+        var mp = {
+          version: "V32",
+          type: "smooth-milk-delete",
+          name: label,
+          deletedAt: new Date().toISOString(),
+          keys: keys,
+          data: milkBackup
+        };
+
+        localBackupV32("AARISH_SMOOTH_MILK_DELETE_BACKUP_V32", mp);
+
+        keys.forEach(function (k) {
+          try { delete mdb[k]; } catch (e) {}
+          bgFirebaseV32("milkDB/" + k, "remove");
+        });
+
+        bgFirebaseV32("milkDB_DELETE_BACKUP_V32/" + nowV32(), "set", mp);
+        try { activeMilkCustomer = null; } catch (e) {}
+        try { window.__activeMilkGroupV15 = null; } catch (e) {}
+        updateAfterDeleteV32("milk");
+        toastV32("Customer deleted!");
+      }
+
+      if (type === "credit") {
+        var udb = getUdharDBV32();
+        var creditEntries = udb.filter(function (x) { return x && String(x.name || "") === String(label); });
+
+        var cp = {
+          version: "V32",
+          type: "smooth-credit-delete",
+          name: label,
+          deletedAt: new Date().toISOString(),
+          entries: cloneV32(creditEntries)
+        };
+
+        localBackupV32("AARISH_SMOOTH_CREDIT_DELETE_BACKUP_V32", cp);
+        setUdharDBV32(udb.filter(function (x) { return !(x && String(x.name || "") === String(label)); }));
+        creditEntries.forEach(function (x) { if (x && x.id) bgFirebaseV32("udharDB/" + x.id, "remove"); });
+        bgFirebaseV32("udharDB_DELETE_BACKUP_V32/" + nowV32(), "set", cp);
+        try { activeUdharPerson = null; } catch (e) {}
+        updateAfterDeleteV32("udhar");
+        toastV32("Credit profile deleted!");
+      }
+
+      if (type === "expense") {
+        var edb = getExpenseDBV32();
+        var expenseEntries = edb.filter(function (x) { return x && String(x.category || "") === String(label); });
+
+        var ep = {
+          version: "V32",
+          type: "smooth-expense-delete",
+          category: label,
+          deletedAt: new Date().toISOString(),
+          entries: cloneV32(expenseEntries)
+        };
+
+        localBackupV32("AARISH_SMOOTH_EXPENSE_DELETE_BACKUP_V32", ep);
+        setExpenseDBV32(edb.filter(function (x) { return !(x && String(x.category || "") === String(label)); }));
+        expenseEntries.forEach(function (x) { if (x && x.id) bgFirebaseV32("expenseDB/" + x.id, "remove"); });
+        bgFirebaseV32("expenseDB_DELETE_BACKUP_V32/" + nowV32(), "set", ep);
+        try { activeExpenseCategory = null; } catch (e) {}
+        updateAfterDeleteV32("expenses");
+        toastV32("Expense category deleted!");
+      }
+
+      if (type === "salary") {
+        var sdb = getSalaryDBV32();
+
+        if (!sdb[label]) {
+          toastV32("Salary profile not found!");
+          return;
+        }
+
+        var sp = {
+          version: "V32",
+          type: "smooth-salary-delete",
+          name: label,
+          deletedAt: new Date().toISOString(),
+          profile: cloneV32(sdb[label])
+        };
+
+        localBackupV32("AARISH_SMOOTH_SALARY_DELETE_BACKUP_V32", sp);
+        try { delete sdb[label]; } catch (e) {}
+        bgFirebaseV32("salaryDB/" + label, "remove");
+        bgFirebaseV32("salaryDB_DELETE_BACKUP_V32/" + nowV32(), "set", sp);
+        try { activeSalaryPerson = null; } catch (e) {}
+        updateAfterDeleteV32("salary");
+        toastV32("Salary profile deleted!");
+      }
+    } catch (err) {
+      console.error("Aarish Smooth V32 delete failed:", err);
+      toastV32("Delete failed!");
+    } finally {
+      if (btn) btn.classList.remove("aarish-delete-pending-v32");
+      setTimeout(function () { V32.deleteBusy = false; }, 260);
+    }
+  }
+
+  function patchDeleteButtonsV32() {
+    [
+      ["milk-customer-delete-btn-v19", "milk"],
+      ["credit-profile-delete-btn-v29", "credit"],
+      ["expense-category-delete-btn-v30", "expense"],
+      ["salary-profile-delete-btn-v31", "salary"]
+    ].forEach(function (pair) {
+      var btn = idV32(pair[0]);
+      if (!btn || btn.dataset.aarishSmoothV32 === "1") return;
+
+      btn.dataset.aarishSmoothV32 = "1";
+      btn.onclick = function (event) {
+        if (event) {
+          event.preventDefault();
+          event.stopPropagation();
+        }
+        try { if (typeof haptic === "function") haptic(); } catch (e) {}
+        runDeleteV32(pair[1], btn);
+        return false;
+      };
+    });
+  }
+
+  function patchPaintFirstActionsV32() {
+    var names = [
+      "addMilkCustomer", "saveMilkEntry", "deleteMilkEntry",
+      "addSalaryPerson", "saveSalaryEntry", "deleteSalarySingleEntry",
+      "saveUdharEntry", "deleteUdhar",
+      "saveExpenseEntry", "deleteExpense",
+      "saveDiaryEntry", "deleteDiary",
+      "saveNewProject", "saveProjectEntry", "deleteProjectEntry", "deleteProject"
+    ];
+
+    names.forEach(function (name) {
+      try {
+        var fn = window[name];
+        if (typeof fn !== "function" || fn.__aarishPaintFirstV32) return;
+
+        var wrapped = function () {
+          var ctx = this;
+          var args = arguments;
+
+          if (wrapped.__busy) return false;
+          wrapped.__busy = true;
+
+          requestAnimationFrame(function () {
+            setTimeout(function () {
+              try { fn.apply(ctx, args); }
+              finally { setTimeout(function () { wrapped.__busy = false; }, 280); }
+            }, 0);
+          });
+
+          return false;
+        };
+
+        wrapped.__aarishPaintFirstV32 = true;
+        window[name] = wrapped;
+
+        try { Function("wrapped", name + " = wrapped;")(wrapped); } catch (e) {}
+      } catch (e) {}
+    });
+  }
+
+  function bootV32() {
+    installStyleV32();
+    installHapticV32();
+    installTapFeedbackV32();
+    patchPaintFirstActionsV32();
+    patchDeleteButtonsV32();
+  }
+
+  document.addEventListener("DOMContentLoaded", bootV32);
+
+  window.addEventListener("load", function () {
+    setTimeout(bootV32, 120);
+    setTimeout(bootV32, 700);
+  });
+
+  document.addEventListener("visibilitychange", bootV32);
+
+  if (window.MutationObserver) {
+    new MutationObserver(function () {
+      patchDeleteButtonsV32();
+    }).observe(document.documentElement, { childList: true, subtree: true });
+  }
+
+  setInterval(function () {
+    patchDeleteButtonsV32();
+  }, 1200);
+
+  window.__aarishSmoothUxStatusV32 = function () {
+    var status = {
+      version: "V32",
+      colorsChanged: false,
+      dataSchemaChanged: false,
+      globalRenderWrapped: false,
+      haptic45msOverriddenToShortTick: true,
+      paintFirstSaveDeleteActions: true,
+      customNonBlockingDeleteConfirm: true,
+      milkDeleteButtonPatched: !!(idV32("milk-customer-delete-btn-v19") && idV32("milk-customer-delete-btn-v19").dataset.aarishSmoothV32 === "1"),
+      creditDeleteButtonPatched: !!(idV32("credit-profile-delete-btn-v29") && idV32("credit-profile-delete-btn-v29").dataset.aarishSmoothV32 === "1"),
+      expenseDeleteButtonPatched: !!(idV32("expense-category-delete-btn-v30") && idV32("expense-category-delete-btn-v30").dataset.aarishSmoothV32 === "1"),
+      salaryDeleteButtonPatched: !!(idV32("salary-profile-delete-btn-v31") && idV32("salary-profile-delete-btn-v31").dataset.aarishSmoothV32 === "1"),
+      localBackupBeforeDelete: true,
+      firebaseSyncBackground: true
+    };
+    console.log("AARISH BIG TECH SMOOTH UX STATUS V32", status);
+    return status;
+  };
+
+  bootV32();
+  console.log("✅ AARISH_BIG_TECH_SMOOTH_UX_V32 active");
+})();
+</script>
+
 </body>
 </html>
