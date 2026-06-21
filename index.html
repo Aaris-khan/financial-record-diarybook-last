@@ -6125,5 +6125,903 @@ window.onload = function(){ setTimeout(function(){ window.focus(); window.print(
 })();
 </script>
 
+
+
+<script>
+// AARISH_CREDIT_DETAIL_TOP_DELETE_V29
+// Adds Milk-style top-right delete button inside Credit Book detail screen.
+// Disables old long-press profile delete.
+// Deletes only the active credit customer/profile entries after double confirmation.
+// Existing individual entry trash buttons stay unchanged.
+(function () {
+  if (window.__AARISH_CREDIT_DETAIL_TOP_DELETE_V29_READY) return;
+  window.__AARISH_CREDIT_DETAIL_TOP_DELETE_V29_READY = true;
+
+  var longPressDisabledMessageV29 = "Open profile and use top-right delete button.";
+
+  function toastV29(msg) {
+    try {
+      if (typeof showToast === "function") showToast(msg);
+      else console.log(msg);
+    } catch (e) {
+      console.log(msg);
+    }
+  }
+
+  function hapticV29() {
+    try {
+      if (typeof haptic === "function") haptic();
+    } catch (e) {}
+  }
+
+  function getActiveNameV29() {
+    try {
+      if (typeof activeUdharPerson !== "undefined" && activeUdharPerson) return String(activeUdharPerson);
+    } catch (e) {}
+
+    var title = document.getElementById("udhar-detail-title");
+    if (title && title.textContent && title.textContent.trim() && title.textContent.trim() !== "Customer") {
+      return title.textContent.trim();
+    }
+
+    return "";
+  }
+
+  function getUdharDBV29() {
+    try {
+      if (typeof udharDB !== "undefined" && Array.isArray(udharDB)) return udharDB;
+    } catch (e) {}
+
+    if (Array.isArray(window.udharDB)) return window.udharDB;
+    return [];
+  }
+
+  function setUdharDBV29(next) {
+    try {
+      udharDB = next;
+    } catch (e) {
+      window.udharDB = next;
+    }
+  }
+
+  function entriesForNameV29(name) {
+    return getUdharDBV29().filter(function (entry) {
+      return entry && String(entry.name || "") === String(name || "");
+    });
+  }
+
+  function updateAfterDeleteV29() {
+    try { if (typeof renderUdharList === "function") renderUdharList(); } catch (e) {}
+    try { if (typeof updateDashboard === "function") updateDashboard(); } catch (e) {}
+    try { if (typeof renderDashboardBalances === "function") renderDashboardBalances(); } catch (e) {}
+    try { if (typeof switchTab === "function") switchTab("udhar"); } catch (e) {
+      try {
+        document.querySelectorAll(".screen").forEach(function (s) { s.classList.remove("active"); });
+        var screen = document.getElementById("udhar-screen");
+        if (screen) screen.classList.add("active");
+      } catch (_) {}
+    }
+  }
+
+  async function backupCreditProfileV29(name, entries) {
+    var backup = {
+      version: "V29",
+      type: "credit-profile-delete-backup",
+      name: name,
+      deletedAt: new Date().toISOString(),
+      entries: entries
+    };
+
+    try {
+      localStorage.setItem("AARISH_CREDIT_DELETE_BACKUP_V29_" + Date.now(), JSON.stringify(backup));
+    } catch (e) {}
+
+    try {
+      if (typeof currentUserUID !== "undefined" && currentUserUID && typeof appDataRef !== "undefined" && appDataRef) {
+        await appDataRef.child("udharDB_DELETE_BACKUP_V29/" + Date.now()).set(backup);
+      }
+    } catch (e) {
+      console.warn("Credit delete backup Firebase failed V29:", e);
+    }
+  }
+
+  window.deleteActiveCreditProfileV29 = async function () {
+    var name = getActiveNameV29();
+    if (!name) {
+      toastV29("No credit profile selected!");
+      return;
+    }
+
+    var entries = entriesForNameV29(name);
+
+    if (!confirm('Delete credit profile "' + name + '" and all its records?')) return;
+    if (!confirm('Final confirmation: delete "' + name + '" permanently?')) return;
+
+    hapticV29();
+
+    try {
+      await backupCreditProfileV29(name, entries);
+
+      setUdharDBV29(getUdharDBV29().filter(function (entry) {
+        return !(entry && String(entry.name || "") === String(name));
+      }));
+
+      try {
+        if (typeof currentUserUID !== "undefined" && currentUserUID && typeof appDataRef !== "undefined" && appDataRef) {
+          for (var i = 0; i < entries.length; i++) {
+            var id = entries[i] && entries[i].id;
+            if (id) await appDataRef.child("udharDB/" + id).remove();
+          }
+        }
+      } catch (firebaseErr) {
+        console.error("Credit Firebase delete failed V29:", firebaseErr);
+        toastV29("Local deleted. Firebase sync issue!");
+      }
+
+      try {
+        if (typeof activeUdharPerson !== "undefined" && String(activeUdharPerson) === String(name)) {
+          activeUdharPerson = null;
+        }
+      } catch (e) {}
+
+      updateAfterDeleteV29();
+      toastV29("Credit profile deleted!");
+    } catch (err) {
+      console.error("Credit profile delete failed V29:", err);
+      toastV29("Delete failed!");
+    }
+  };
+
+  function makeButtonV29() {
+    var btn = document.getElementById("credit-profile-delete-btn-v29");
+    if (btn) return btn;
+
+    btn = document.createElement("button");
+    btn.id = "credit-profile-delete-btn-v29";
+    btn.type = "button";
+    btn.setAttribute("aria-label", "Delete credit profile");
+    btn.className = "w-12 h-12 shrink-0 rounded-full bg-red-500/10 text-red-500 flex items-center justify-center transition-transform active:scale-95";
+    btn.style.cssText = [
+      "width:48px",
+      "height:48px",
+      "min-width:48px",
+      "min-height:48px",
+      "border-radius:999px",
+      "border:none",
+      "background:rgba(255,59,48,0.10)",
+      "color:#FF3B30",
+      "display:inline-flex",
+      "align-items:center",
+      "justify-content:center",
+      "box-shadow:0 8px 22px rgba(255,59,48,0.10)",
+      "cursor:pointer"
+    ].join(";");
+
+    btn.innerHTML = '<i class="fa-solid fa-trash" style="font-size:20px;"></i>';
+    btn.onclick = function (event) {
+      if (event) {
+        event.preventDefault();
+        event.stopPropagation();
+      }
+      hapticV29();
+      window.deleteActiveCreditProfileV29();
+    };
+
+    return btn;
+  }
+
+  window.ensureCreditDetailDeleteButtonV29 = function () {
+    var screen = document.getElementById("udhar-detail-screen");
+    if (!screen) return;
+
+    var header = screen.querySelector(".header-sticky");
+    if (!header) return;
+
+    var leftGroup = header.querySelector(".flex.items-center");
+    if (leftGroup) {
+      leftGroup.style.flex = "1 1 auto";
+      leftGroup.style.minWidth = "0";
+      leftGroup.classList.remove("w-full");
+    }
+
+    header.style.gap = "12px";
+
+    var btn = makeButtonV29();
+    if (!btn.parentNode) header.appendChild(btn);
+
+    var name = getActiveNameV29();
+    btn.style.display = name ? "inline-flex" : "none";
+  };
+
+  function scheduleV29() {
+    setTimeout(window.ensureCreditDetailDeleteButtonV29, 0);
+    setTimeout(window.ensureCreditDetailDeleteButtonV29, 200);
+    setTimeout(window.ensureCreditDetailDeleteButtonV29, 700);
+  }
+
+  var oldOpenUdharDetailV29 = window.openUdharDetail;
+  if (typeof oldOpenUdharDetailV29 === "function" && !oldOpenUdharDetailV29.__creditDeleteV29Wrapped) {
+    var wrappedOpenUdharDetailV29 = function () {
+      var out = oldOpenUdharDetailV29.apply(this, arguments);
+      scheduleV29();
+      return out;
+    };
+    wrappedOpenUdharDetailV29.__creditDeleteV29Wrapped = true;
+    window.openUdharDetail = wrappedOpenUdharDetailV29;
+    try { openUdharDetail = wrappedOpenUdharDetailV29; } catch (e) {}
+  }
+
+  function disabledLongPressV29(name) {
+    try { if (typeof udharPressTimer !== "undefined") clearTimeout(udharPressTimer); } catch (e) {}
+    try { if (typeof isLongPress !== "undefined") isLongPress = false; } catch (e) {}
+    return false;
+  }
+
+  function disabledCancelV29() {
+    try { if (typeof udharPressTimer !== "undefined") clearTimeout(udharPressTimer); } catch (e) {}
+    try { if (typeof isLongPress !== "undefined") isLongPress = false; } catch (e) {}
+    return false;
+  }
+
+  function disabledProfileDeleteV29(name) {
+    try { if (typeof isLongPress !== "undefined") isLongPress = false; } catch (e) {}
+    toastV29(longPressDisabledMessageV29);
+    return false;
+  }
+
+  window.startUdharLongPress = disabledLongPressV29;
+  window.cancelUdharLongPress = disabledCancelV29;
+  window.deleteUdharPersonProfile = disabledProfileDeleteV29;
+
+  try { startUdharLongPress = disabledLongPressV29; } catch (e) {}
+  try { cancelUdharLongPress = disabledCancelV29; } catch (e) {}
+  try { deleteUdharPersonProfile = disabledProfileDeleteV29; } catch (e) {}
+
+  document.addEventListener("DOMContentLoaded", scheduleV29);
+  window.addEventListener("load", scheduleV29);
+  document.addEventListener("visibilitychange", scheduleV29);
+
+  var screenV29 = document.getElementById("udhar-detail-screen");
+  if (screenV29 && window.MutationObserver) {
+    new MutationObserver(function () {
+      scheduleV29();
+    }).observe(screenV29, {
+      childList: true,
+      subtree: true,
+      attributes: true,
+      attributeFilter: ["class"]
+    });
+  }
+
+  setInterval(function () {
+    var screen = document.getElementById("udhar-detail-screen");
+    if (screen && screen.classList.contains("active")) {
+      window.ensureCreditDetailDeleteButtonV29();
+    }
+  }, 1000);
+
+  window.__creditDetailDeleteStatusV29 = function () {
+    var status = {
+      version: "V29",
+      creditDetailTopRightDelete: true,
+      milkStyleDeleteButton: true,
+      doubleConfirmation: true,
+      longPressProfileDeleteDisabled: true,
+      individualEntryTrashUnchanged: true,
+      targetedDeleteOnly: true,
+      backupBeforeDelete: true,
+      fullUdharDbDelete: false,
+      selectedName: getActiveNameV29(),
+      selectedEntries: entriesForNameV29(getActiveNameV29()).length
+    };
+    console.log("AARISH CREDIT DETAIL DELETE STATUS V29", status);
+    return status;
+  };
+
+  scheduleV29();
+  console.log("✅ AARISH_CREDIT_DETAIL_TOP_DELETE_V29 active");
+})();
+</script>
+
+
+
+<script>
+// AARISH_EXPENSE_DETAIL_TOP_DELETE_V30
+// Adds Milk/Credit-style top-right delete button inside Expense category detail screen.
+// Disables old long-press category delete.
+// Deletes only active expense category entries after double confirmation.
+// Existing individual entry trash buttons stay unchanged.
+(function () {
+  if (window.__AARISH_EXPENSE_DETAIL_TOP_DELETE_V30_READY) return;
+  window.__AARISH_EXPENSE_DETAIL_TOP_DELETE_V30_READY = true;
+
+  var longPressDisabledMessageV30 = "Open category and use top-right delete button.";
+
+  function toastV30(msg) {
+    try {
+      if (typeof showToast === "function") showToast(msg);
+      else console.log(msg);
+    } catch (e) {
+      console.log(msg);
+    }
+  }
+
+  function hapticV30() {
+    try {
+      if (typeof haptic === "function") haptic();
+    } catch (e) {}
+  }
+
+  function getActiveCategoryV30() {
+    try {
+      if (typeof activeExpenseCategory !== "undefined" && activeExpenseCategory) return String(activeExpenseCategory);
+    } catch (e) {}
+
+    var title = document.getElementById("expense-detail-title");
+    if (title && title.textContent && title.textContent.trim() && title.textContent.trim() !== "Expense Detail") {
+      return title.textContent.trim();
+    }
+
+    return "";
+  }
+
+  function getExpenseDBV30() {
+    try {
+      if (typeof expenseDB !== "undefined" && Array.isArray(expenseDB)) return expenseDB;
+    } catch (e) {}
+
+    if (Array.isArray(window.expenseDB)) return window.expenseDB;
+    return [];
+  }
+
+  function setExpenseDBV30(next) {
+    try {
+      expenseDB = next;
+    } catch (e) {
+      window.expenseDB = next;
+    }
+  }
+
+  function entriesForCategoryV30(category) {
+    return getExpenseDBV30().filter(function (entry) {
+      return entry && String(entry.category || "") === String(category || "");
+    });
+  }
+
+  function updateAfterDeleteV30() {
+    try { if (typeof renderExpenseList === "function") renderExpenseList(); } catch (e) {}
+    try { if (typeof updateDashboard === "function") updateDashboard(); } catch (e) {}
+    try { if (typeof switchTab === "function") switchTab("expenses"); } catch (e) {
+      try {
+        document.querySelectorAll(".screen").forEach(function (s) { s.classList.remove("active"); });
+        var screen = document.getElementById("expenses-screen");
+        if (screen) screen.classList.add("active");
+      } catch (_) {}
+    }
+  }
+
+  async function backupExpenseCategoryV30(category, entries) {
+    var backup = {
+      version: "V30",
+      type: "expense-category-delete-backup",
+      category: category,
+      deletedAt: new Date().toISOString(),
+      entries: entries
+    };
+
+    try {
+      localStorage.setItem("AARISH_EXPENSE_DELETE_BACKUP_V30_" + Date.now(), JSON.stringify(backup));
+    } catch (e) {}
+
+    try {
+      if (typeof currentUserUID !== "undefined" && currentUserUID && typeof appDataRef !== "undefined" && appDataRef) {
+        await appDataRef.child("expenseDB_DELETE_BACKUP_V30/" + Date.now()).set(backup);
+      }
+    } catch (e) {
+      console.warn("Expense delete backup Firebase failed V30:", e);
+    }
+  }
+
+  window.deleteActiveExpenseCategoryV30 = async function () {
+    var category = getActiveCategoryV30();
+    if (!category) {
+      toastV30("No expense category selected!");
+      return;
+    }
+
+    var entries = entriesForCategoryV30(category);
+
+    if (!confirm('Delete expense category "' + category + '" and all its records?')) return;
+    if (!confirm('Final confirmation: delete "' + category + '" permanently?')) return;
+
+    hapticV30();
+
+    try {
+      await backupExpenseCategoryV30(category, entries);
+
+      setExpenseDBV30(getExpenseDBV30().filter(function (entry) {
+        return !(entry && String(entry.category || "") === String(category));
+      }));
+
+      try {
+        if (typeof currentUserUID !== "undefined" && currentUserUID && typeof appDataRef !== "undefined" && appDataRef) {
+          for (var i = 0; i < entries.length; i++) {
+            var id = entries[i] && entries[i].id;
+            if (id) await appDataRef.child("expenseDB/" + id).remove();
+          }
+        }
+      } catch (firebaseErr) {
+        console.error("Expense Firebase delete failed V30:", firebaseErr);
+        toastV30("Local deleted. Firebase sync issue!");
+      }
+
+      try {
+        if (typeof activeExpenseCategory !== "undefined" && String(activeExpenseCategory) === String(category)) {
+          activeExpenseCategory = null;
+        }
+      } catch (e) {}
+
+      updateAfterDeleteV30();
+      toastV30("Expense category deleted!");
+    } catch (err) {
+      console.error("Expense category delete failed V30:", err);
+      toastV30("Delete failed!");
+    }
+  };
+
+  function makeButtonV30() {
+    var btn = document.getElementById("expense-category-delete-btn-v30");
+    if (btn) return btn;
+
+    btn = document.createElement("button");
+    btn.id = "expense-category-delete-btn-v30";
+    btn.type = "button";
+    btn.setAttribute("aria-label", "Delete expense category");
+    btn.className = "w-12 h-12 shrink-0 rounded-full bg-red-500/10 text-red-500 flex items-center justify-center transition-transform active:scale-95";
+    btn.style.cssText = [
+      "width:48px",
+      "height:48px",
+      "min-width:48px",
+      "min-height:48px",
+      "border-radius:999px",
+      "border:none",
+      "background:rgba(255,59,48,0.10)",
+      "color:#FF3B30",
+      "display:inline-flex",
+      "align-items:center",
+      "justify-content:center",
+      "box-shadow:0 8px 22px rgba(255,59,48,0.10)",
+      "cursor:pointer"
+    ].join(";");
+
+    btn.innerHTML = '<i class="fa-solid fa-trash" style="font-size:20px;"></i>';
+    btn.onclick = function (event) {
+      if (event) {
+        event.preventDefault();
+        event.stopPropagation();
+      }
+      hapticV30();
+      window.deleteActiveExpenseCategoryV30();
+    };
+
+    return btn;
+  }
+
+  window.ensureExpenseDetailDeleteButtonV30 = function () {
+    var screen = document.getElementById("expense-detail-screen");
+    if (!screen) return;
+
+    var header = screen.querySelector(".header-sticky");
+    if (!header) return;
+
+    var leftGroup = header.querySelector(".flex.items-center");
+    if (leftGroup) {
+      leftGroup.style.flex = "1 1 auto";
+      leftGroup.style.minWidth = "0";
+      leftGroup.classList.remove("w-full");
+    }
+
+    header.style.gap = "12px";
+
+    var btn = makeButtonV30();
+    if (!btn.parentNode) header.appendChild(btn);
+
+    var category = getActiveCategoryV30();
+    btn.style.display = category ? "inline-flex" : "none";
+  };
+
+  function scheduleV30() {
+    setTimeout(window.ensureExpenseDetailDeleteButtonV30, 0);
+    setTimeout(window.ensureExpenseDetailDeleteButtonV30, 200);
+    setTimeout(window.ensureExpenseDetailDeleteButtonV30, 700);
+  }
+
+  var oldOpenExpenseDetailV30 = window.openExpenseDetail;
+  if (typeof oldOpenExpenseDetailV30 === "function" && !oldOpenExpenseDetailV30.__expenseDeleteV30Wrapped) {
+    var wrappedOpenExpenseDetailV30 = function () {
+      var out = oldOpenExpenseDetailV30.apply(this, arguments);
+      scheduleV30();
+      return out;
+    };
+    wrappedOpenExpenseDetailV30.__expenseDeleteV30Wrapped = true;
+    window.openExpenseDetail = wrappedOpenExpenseDetailV30;
+    try { openExpenseDetail = wrappedOpenExpenseDetailV30; } catch (e) {}
+  }
+
+  function disabledLongPressV30(category) {
+    try { if (typeof expensePressTimer !== "undefined") clearTimeout(expensePressTimer); } catch (e) {}
+    try { if (typeof isLongPress !== "undefined") isLongPress = false; } catch (e) {}
+    return false;
+  }
+
+  function disabledCancelV30() {
+    try { if (typeof expensePressTimer !== "undefined") clearTimeout(expensePressTimer); } catch (e) {}
+    try { if (typeof isLongPress !== "undefined") isLongPress = false; } catch (e) {}
+    return false;
+  }
+
+  function disabledCategoryDeleteV30(category) {
+    try { if (typeof isLongPress !== "undefined") isLongPress = false; } catch (e) {}
+    toastV30(longPressDisabledMessageV30);
+    return false;
+  }
+
+  window.startExpenseLongPress = disabledLongPressV30;
+  window.cancelExpenseLongPress = disabledCancelV30;
+  window.deleteExpenseCategoryProfile = disabledCategoryDeleteV30;
+
+  try { startExpenseLongPress = disabledLongPressV30; } catch (e) {}
+  try { cancelExpenseLongPress = disabledCancelV30; } catch (e) {}
+  try { deleteExpenseCategoryProfile = disabledCategoryDeleteV30; } catch (e) {}
+
+  document.addEventListener("DOMContentLoaded", scheduleV30);
+  window.addEventListener("load", scheduleV30);
+  document.addEventListener("visibilitychange", scheduleV30);
+
+  var screenV30 = document.getElementById("expense-detail-screen");
+  if (screenV30 && window.MutationObserver) {
+    new MutationObserver(function () {
+      scheduleV30();
+    }).observe(screenV30, {
+      childList: true,
+      subtree: true,
+      attributes: true,
+      attributeFilter: ["class"]
+    });
+  }
+
+  setInterval(function () {
+    var screen = document.getElementById("expense-detail-screen");
+    if (screen && screen.classList.contains("active")) {
+      window.ensureExpenseDetailDeleteButtonV30();
+    }
+  }, 1000);
+
+  window.__expenseDetailDeleteStatusV30 = function () {
+    var status = {
+      version: "V30",
+      expenseDetailTopRightDelete: true,
+      milkStyleDeleteButton: true,
+      doubleConfirmation: true,
+      longPressCategoryDeleteDisabled: true,
+      individualEntryTrashUnchanged: true,
+      targetedDeleteOnly: true,
+      backupBeforeDelete: true,
+      fullExpenseDbDelete: false,
+      selectedCategory: getActiveCategoryV30(),
+      selectedEntries: entriesForCategoryV30(getActiveCategoryV30()).length
+    };
+    console.log("AARISH EXPENSE DETAIL DELETE STATUS V30", status);
+    return status;
+  };
+
+  scheduleV30();
+  console.log("✅ AARISH_EXPENSE_DETAIL_TOP_DELETE_V30 active");
+})();
+</script>
+
+
+
+<script>
+// AARISH_SALARY_DETAIL_TOP_DELETE_V31
+// Adds Milk/Credit/Expense-style top-right delete button inside Salary person detail screen.
+// Disables old long-press salary profile delete.
+// Deletes only active salary person/profile after double confirmation.
+// Existing individual salary entry trash buttons stay unchanged.
+(function () {
+  if (window.__AARISH_SALARY_DETAIL_TOP_DELETE_V31_READY) return;
+  window.__AARISH_SALARY_DETAIL_TOP_DELETE_V31_READY = true;
+
+  var longPressDisabledMessageV31 = "Open employee and use top-right delete button.";
+
+  function toastV31(msg) {
+    try {
+      if (typeof showToast === "function") showToast(msg);
+      else console.log(msg);
+    } catch (e) {
+      console.log(msg);
+    }
+  }
+
+  function hapticV31() {
+    try {
+      if (typeof haptic === "function") haptic();
+    } catch (e) {}
+  }
+
+  function getActiveSalaryNameV31() {
+    try {
+      if (typeof activeSalaryPerson !== "undefined" && activeSalaryPerson) return String(activeSalaryPerson);
+    } catch (e) {}
+
+    var title = document.getElementById("salary-detail-title");
+    if (title && title.textContent && title.textContent.trim() && title.textContent.trim() !== "Employee") {
+      return title.textContent.trim();
+    }
+
+    return "";
+  }
+
+  function getSalaryDBV31() {
+    try {
+      if (typeof salaryDB !== "undefined" && salaryDB && typeof salaryDB === "object") return salaryDB;
+    } catch (e) {}
+
+    if (window.salaryDB && typeof window.salaryDB === "object") return window.salaryDB;
+    return {};
+  }
+
+  function deleteLocalSalaryPersonV31(name) {
+    try {
+      delete salaryDB[name];
+    } catch (e) {
+      try { delete window.salaryDB[name]; } catch (_) {}
+    }
+  }
+
+  function selectedPersonDataV31(name) {
+    var db = getSalaryDBV31();
+    if (!name || !db || !db[name]) return null;
+
+    try {
+      return JSON.parse(JSON.stringify(db[name]));
+    } catch (e) {
+      return db[name];
+    }
+  }
+
+  function updateAfterSalaryDeleteV31() {
+    try { if (typeof renderSalaryList === "function") renderSalaryList(); } catch (e) {}
+    try { if (typeof updateDashboard === "function") updateDashboard(); } catch (e) {}
+    try { if (typeof switchTab === "function") switchTab("salary"); } catch (e) {
+      try {
+        document.querySelectorAll(".screen").forEach(function (s) { s.classList.remove("active"); });
+        var screen = document.getElementById("salary-screen");
+        if (screen) screen.classList.add("active");
+      } catch (_) {}
+    }
+  }
+
+  async function backupSalaryProfileV31(name, personData) {
+    var backup = {
+      version: "V31",
+      type: "salary-profile-delete-backup",
+      name: name,
+      deletedAt: new Date().toISOString(),
+      profile: personData
+    };
+
+    try {
+      localStorage.setItem("AARISH_SALARY_DELETE_BACKUP_V31_" + Date.now(), JSON.stringify(backup));
+    } catch (e) {}
+
+    try {
+      if (typeof currentUserUID !== "undefined" && currentUserUID && typeof appDataRef !== "undefined" && appDataRef) {
+        await appDataRef.child("salaryDB_DELETE_BACKUP_V31/" + Date.now()).set(backup);
+      }
+    } catch (e) {
+      console.warn("Salary delete backup Firebase failed V31:", e);
+    }
+  }
+
+  window.deleteActiveSalaryProfileV31 = async function () {
+    var name = getActiveSalaryNameV31();
+    if (!name) {
+      toastV31("No salary profile selected!");
+      return;
+    }
+
+    var personData = selectedPersonDataV31(name);
+    if (!personData) {
+      toastV31("Salary profile not found!");
+      return;
+    }
+
+    if (!confirm('Delete salary profile "' + name + '" and all its records?')) return;
+    if (!confirm('Final confirmation: delete "' + name + '" permanently?')) return;
+
+    hapticV31();
+
+    try {
+      await backupSalaryProfileV31(name, personData);
+
+      deleteLocalSalaryPersonV31(name);
+
+      try {
+        if (typeof currentUserUID !== "undefined" && currentUserUID && typeof appDataRef !== "undefined" && appDataRef) {
+          await appDataRef.child("salaryDB/" + name).remove();
+        }
+      } catch (firebaseErr) {
+        console.error("Salary Firebase delete failed V31:", firebaseErr);
+        toastV31("Local deleted. Firebase sync issue!");
+      }
+
+      try {
+        if (typeof activeSalaryPerson !== "undefined" && String(activeSalaryPerson) === String(name)) {
+          activeSalaryPerson = null;
+        }
+      } catch (e) {}
+
+      updateAfterSalaryDeleteV31();
+      toastV31("Salary profile deleted!");
+    } catch (err) {
+      console.error("Salary profile delete failed V31:", err);
+      toastV31("Delete failed!");
+    }
+  };
+
+  function makeButtonV31() {
+    var btn = document.getElementById("salary-profile-delete-btn-v31");
+    if (btn) return btn;
+
+    btn = document.createElement("button");
+    btn.id = "salary-profile-delete-btn-v31";
+    btn.type = "button";
+    btn.setAttribute("aria-label", "Delete salary profile");
+    btn.className = "w-12 h-12 shrink-0 rounded-full bg-red-500/10 text-red-500 flex items-center justify-center transition-transform active:scale-95";
+    btn.style.cssText = [
+      "width:48px",
+      "height:48px",
+      "min-width:48px",
+      "min-height:48px",
+      "border-radius:999px",
+      "border:none",
+      "background:rgba(255,59,48,0.10)",
+      "color:#FF3B30",
+      "display:inline-flex",
+      "align-items:center",
+      "justify-content:center",
+      "box-shadow:0 8px 22px rgba(255,59,48,0.10)",
+      "cursor:pointer"
+    ].join(";");
+
+    btn.innerHTML = '<i class="fa-solid fa-trash" style="font-size:20px;"></i>';
+    btn.onclick = function (event) {
+      if (event) {
+        event.preventDefault();
+        event.stopPropagation();
+      }
+      hapticV31();
+      window.deleteActiveSalaryProfileV31();
+    };
+
+    return btn;
+  }
+
+  window.ensureSalaryDetailDeleteButtonV31 = function () {
+    var screen = document.getElementById("salary-detail-screen");
+    if (!screen) return;
+
+    var header = screen.querySelector(".header-sticky");
+    if (!header) return;
+
+    var leftGroup = header.querySelector(".flex.items-center");
+    if (leftGroup) {
+      leftGroup.style.flex = "1 1 auto";
+      leftGroup.style.minWidth = "0";
+      leftGroup.classList.remove("w-full");
+    }
+
+    header.style.gap = "12px";
+
+    var btn = makeButtonV31();
+    if (!btn.parentNode) header.appendChild(btn);
+
+    var name = getActiveSalaryNameV31();
+    btn.style.display = name ? "inline-flex" : "none";
+  };
+
+  function scheduleV31() {
+    setTimeout(window.ensureSalaryDetailDeleteButtonV31, 0);
+    setTimeout(window.ensureSalaryDetailDeleteButtonV31, 200);
+    setTimeout(window.ensureSalaryDetailDeleteButtonV31, 700);
+  }
+
+  var oldOpenSalaryDetailV31 = window.openSalaryDetail;
+  if (typeof oldOpenSalaryDetailV31 === "function" && !oldOpenSalaryDetailV31.__salaryDeleteV31Wrapped) {
+    var wrappedOpenSalaryDetailV31 = function () {
+      var out = oldOpenSalaryDetailV31.apply(this, arguments);
+      scheduleV31();
+      return out;
+    };
+    wrappedOpenSalaryDetailV31.__salaryDeleteV31Wrapped = true;
+    window.openSalaryDetail = wrappedOpenSalaryDetailV31;
+    try { openSalaryDetail = wrappedOpenSalaryDetailV31; } catch (e) {}
+  }
+
+  function disabledLongPressV31(name) {
+    try { if (typeof salaryPressTimer !== "undefined") clearTimeout(salaryPressTimer); } catch (e) {}
+    try { if (typeof isLongPress !== "undefined") isLongPress = false; } catch (e) {}
+    return false;
+  }
+
+  function disabledCancelV31() {
+    try { if (typeof salaryPressTimer !== "undefined") clearTimeout(salaryPressTimer); } catch (e) {}
+    try { if (typeof isLongPress !== "undefined") isLongPress = false; } catch (e) {}
+    return false;
+  }
+
+  function disabledSalaryProfileDeleteV31(name) {
+    try { if (typeof isLongPress !== "undefined") isLongPress = false; } catch (e) {}
+    toastV31(longPressDisabledMessageV31);
+    return false;
+  }
+
+  window.startSalaryLongPress = disabledLongPressV31;
+  window.cancelSalaryLongPress = disabledCancelV31;
+  window.deleteSalaryPersonProfile = disabledSalaryProfileDeleteV31;
+
+  try { startSalaryLongPress = disabledLongPressV31; } catch (e) {}
+  try { cancelSalaryLongPress = disabledCancelV31; } catch (e) {}
+  try { deleteSalaryPersonProfile = disabledSalaryProfileDeleteV31; } catch (e) {}
+
+  document.addEventListener("DOMContentLoaded", scheduleV31);
+  window.addEventListener("load", scheduleV31);
+  document.addEventListener("visibilitychange", scheduleV31);
+
+  var screenV31 = document.getElementById("salary-detail-screen");
+  if (screenV31 && window.MutationObserver) {
+    new MutationObserver(function () {
+      scheduleV31();
+    }).observe(screenV31, {
+      childList: true,
+      subtree: true,
+      attributes: true,
+      attributeFilter: ["class"]
+    });
+  }
+
+  setInterval(function () {
+    var screen = document.getElementById("salary-detail-screen");
+    if (screen && screen.classList.contains("active")) {
+      window.ensureSalaryDetailDeleteButtonV31();
+    }
+  }, 1000);
+
+  window.__salaryDetailDeleteStatusV31 = function () {
+    var selected = getActiveSalaryNameV31();
+    var data = selectedPersonDataV31(selected);
+    var status = {
+      version: "V31",
+      salaryDetailTopRightDelete: true,
+      milkStyleDeleteButton: true,
+      doubleConfirmation: true,
+      longPressSalaryDeleteDisabled: true,
+      individualEntryTrashUnchanged: true,
+      targetedDeleteOnly: true,
+      backupBeforeDelete: true,
+      fullSalaryDbDelete: false,
+      selectedName: selected,
+      selectedRecords: data && data.records ? Object.keys(data.records).length : 0
+    };
+    console.log("AARISH SALARY DETAIL DELETE STATUS V31", status);
+    return status;
+  };
+
+  scheduleV31();
+  console.log("✅ AARISH_SALARY_DETAIL_TOP_DELETE_V31 active");
+})();
+</script>
+
 </body>
 </html>
