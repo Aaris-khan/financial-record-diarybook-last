@@ -2198,8 +2198,8 @@ async function shareDiaryBill(id) {
         overlay.innerHTML = `
             <div class="modal-content" onclick="event.stopImmediatePropagation()">
                 <div class="w-12 h-1.5 bg-gray-300 dark:bg-gray-600 shrink-0 rounded-full mx-auto mb-6"></div>
-                <h2 class="text-2xl font-extrabold mb-2 text-center w-full">Safe Print PDF V11</h2>
-                <p class="text-[11px] text-center text-gray-500 mb-6 font-bold uppercase tracking-wider">Open fresh V11 safe print report — do not open old ExactUI PDF</p>
+                <h2 class="text-2xl font-extrabold mb-2 text-center w-full">Compact PDF Export V12</h2>
+                <p class="text-[11px] text-center text-gray-500 mb-6 font-bold uppercase tracking-wider">Open compact formal PDF report</p>
 
                 <div class="grid grid-cols-2 gap-3 mb-6 w-full">
                     <button onclick="haptic(); executeDownload('all')" class="btn-primary !bg-[#000] dark:!bg-[#FFF] dark:!text-[#000]"><i class="fa-solid fa-layer-group"></i> All Data</button>
@@ -3290,8 +3290,13 @@ async function saveNewProject() {
 
 
 
+
+
+
+
+
 <script>
-// AARISH_SAFE_PRINT_PDF_V11 — Final Safe Text Print, No Canvas, No Clipping
+// AARISH_COMPACT_FLOW_PDF_V12 — Compact Formal Print Flow, No Huge Page Gaps
 (function () {
   function esc(v) {
     return String(v ?? "").replace(/[&<>"']/g, c => ({
@@ -3329,7 +3334,7 @@ async function saveNewProject() {
     text:"#15171A",
     muted:"#6B7280",
     line:"#E1E5EA",
-    head:"#F0F2F5",
+    head:"#F2F2F7",
     blue:"#007AFF",
     green:"#22B14C",
     red:"#E53935",
@@ -3339,13 +3344,12 @@ async function saveNewProject() {
 
   function css() {
     return `
-      @page { size: A4; margin: 13mm; }
+      @page { size: A4; margin: 10mm; }
 
       * {
         box-sizing: border-box !important;
         -webkit-print-color-adjust: exact !important;
         print-color-adjust: exact !important;
-        overflow: visible !important;
         text-shadow: none !important;
       }
 
@@ -3355,8 +3359,8 @@ async function saveNewProject() {
         background: ${C.bg} !important;
         color: ${C.text} !important;
         font-family: Arial, "Inter", "Segoe UI", sans-serif !important;
-        font-size: 15px !important;
-        line-height: 1.65 !important;
+        font-size: 14px !important;
+        line-height: 1.42 !important;
       }
 
       .report {
@@ -3364,39 +3368,38 @@ async function saveNewProject() {
         max-width: 760px !important;
         margin: 0 auto !important;
         padding: 0 !important;
-        overflow: visible !important;
       }
 
       .topbar {
         display: flex !important;
         justify-content: space-between !important;
         align-items: flex-start !important;
-        gap: 20px !important;
-        padding: 0 0 24px 0 !important;
-        margin: 0 0 34px 0 !important;
-        border-bottom: 2px solid ${C.line} !important;
-        break-inside: avoid !important;
-        page-break-inside: avoid !important;
+        gap: 16px !important;
+        padding: 0 0 12px 0 !important;
+        margin: 0 0 16px 0 !important;
+        border-bottom: 1.5px solid ${C.line} !important;
+        break-inside: auto !important;
+        page-break-inside: auto !important;
       }
 
       .brand-chip {
         display: inline-flex !important;
         align-items: center !important;
-        gap: 9px !important;
-        padding: 9px 14px !important;
-        margin: 0 0 16px 0 !important;
+        gap: 8px !important;
+        padding: 5px 10px !important;
+        margin: 0 0 6px 0 !important;
         border-radius: 999px !important;
         background: rgba(0,122,255,.10) !important;
         color: ${C.blue} !important;
-        font-size: 12px !important;
+        font-size: 11px !important;
         font-weight: 800 !important;
-        line-height: 1.7 !important;
+        line-height: 1.35 !important;
         white-space: nowrap !important;
       }
 
       .brand-dot {
-        width: 12px !important;
-        height: 12px !important;
+        width: 10px !important;
+        height: 10px !important;
         border-radius: 50% !important;
         background: linear-gradient(135deg, ${C.blue}, ${C.green}) !important;
         display: inline-block !important;
@@ -3406,82 +3409,82 @@ async function saveNewProject() {
       h1 {
         margin: 0 !important;
         color: ${C.text} !important;
-        font-size: 32px !important;
+        font-size: 25px !important;
         font-weight: 800 !important;
-        letter-spacing: -0.4px !important;
-        line-height: 1.6 !important;
-        padding: 4px 0 7px 0 !important;
+        letter-spacing: -0.2px !important;
+        line-height: 1.45 !important;
+        padding: 1px 0 3px 0 !important;
         word-break: break-word !important;
       }
 
       .subtitle {
-        margin: 4px 0 0 0 !important;
+        margin: 0 !important;
         color: ${C.muted} !important;
-        font-size: 12px !important;
+        font-size: 11px !important;
         font-weight: 800 !important;
-        letter-spacing: 1px !important;
+        letter-spacing: .8px !important;
         text-transform: uppercase !important;
-        line-height: 1.75 !important;
-        padding: 3px 0 5px 0 !important;
+        line-height: 1.45 !important;
+        padding: 1px 0 2px 0 !important;
       }
 
       .datebox {
-        min-width: 170px !important;
+        min-width: 145px !important;
         text-align: right !important;
         color: ${C.muted} !important;
-        font-size: 13px !important;
+        font-size: 12px !important;
         font-weight: 700 !important;
-        line-height: 1.7 !important;
-        padding-top: 8px !important;
+        line-height: 1.45 !important;
+        padding-top: 4px !important;
       }
 
       .datebox strong {
         display: block !important;
         color: ${C.text} !important;
-        font-size: 15px !important;
+        font-size: 13px !important;
         font-weight: 800 !important;
-        line-height: 1.75 !important;
-        padding-bottom: 4px !important;
+        line-height: 1.45 !important;
+        padding-bottom: 1px !important;
       }
 
       .section {
         width: 100% !important;
-        margin: 0 0 44px 0 !important;
-        break-inside: avoid !important;
-        page-break-inside: avoid !important;
+        margin: 0 0 18px 0 !important;
+        break-inside: auto !important;
+        page-break-inside: auto !important;
       }
 
       .person {
         display: flex !important;
         align-items: flex-start !important;
-        gap: 15px !important;
-        margin: 0 0 20px 0 !important;
+        gap: 11px !important;
+        margin: 0 0 10px 0 !important;
         break-inside: avoid !important;
         page-break-inside: avoid !important;
       }
 
       .avatar {
-        width: 52px !important;
-        height: 52px !important;
-        min-width: 52px !important;
-        border-radius: 18px !important;
+        width: 38px !important;
+        height: 38px !important;
+        min-width: 38px !important;
+        border-radius: 14px !important;
         background: rgba(0,0,0,.055) !important;
         display: flex !important;
         align-items: center !important;
         justify-content: center !important;
-        font-size: 20px !important;
-        line-height: 1.5 !important;
-        padding: 4px !important;
+        font-size: 14px !important;
+        line-height: 1.4 !important;
+        padding: 3px !important;
       }
 
       .person-title {
         margin: 0 !important;
         color: ${C.text} !important;
-        font-size: 23px !important;
+        font-size: 19px !important;
         font-weight: 800 !important;
-        letter-spacing: -0.2px !important;
-        line-height: 1.65 !important;
-        padding: 2px 0 7px 0 !important;
+        letter-spacing: -0.1px !important;
+        line-height: 1.42 !important;
+        padding: 1px 0 3px 0 !important;
         text-transform: uppercase !important;
         word-break: break-word !important;
       }
@@ -3489,42 +3492,42 @@ async function saveNewProject() {
       .person-sub {
         margin: 0 !important;
         color: ${C.muted} !important;
-        font-size: 12px !important;
+        font-size: 10.5px !important;
         font-weight: 800 !important;
-        letter-spacing: .9px !important;
+        letter-spacing: .7px !important;
         text-transform: uppercase !important;
-        line-height: 1.7 !important;
-        padding: 2px 0 6px 0 !important;
+        line-height: 1.42 !important;
+        padding: 0 0 2px 0 !important;
       }
 
       .stat {
         color: #fff !important;
-        border-radius: 28px !important;
-        padding: 34px 28px 38px 28px !important;
-        min-height: 175px !important;
+        border-radius: 20px !important;
+        padding: 18px 20px 20px 20px !important;
+        min-height: 96px !important;
         display: grid !important;
         grid-template-columns: minmax(0,1fr) auto !important;
         align-items: center !important;
-        gap: 24px !important;
-        margin: 0 0 26px 0 !important;
+        gap: 18px !important;
+        margin: 0 0 12px 0 !important;
         border: 1px solid rgba(255,255,255,.28) !important;
         break-inside: avoid !important;
         page-break-inside: avoid !important;
       }
 
-      .stat.green { background: linear-gradient(135deg,#34C759,#22B14C) !important; box-shadow: 0 12px 30px rgba(52,199,89,.22) !important; }
-      .stat.red { background: linear-gradient(135deg,#FF3B30,#C62828) !important; box-shadow: 0 12px 30px rgba(255,59,48,.22) !important; }
-      .stat.blue { background: linear-gradient(135deg,#007AFF,#0056B3) !important; box-shadow: 0 12px 30px rgba(0,122,255,.20) !important; }
-      .stat.orange { background: linear-gradient(135deg,#FF9500,#D67A00) !important; box-shadow: 0 12px 30px rgba(255,149,0,.20) !important; }
+      .stat.green { background: linear-gradient(135deg,#34C759,#22B14C) !important; box-shadow: 0 8px 18px rgba(52,199,89,.18) !important; }
+      .stat.red { background: linear-gradient(135deg,#FF3B30,#C62828) !important; box-shadow: 0 8px 18px rgba(255,59,48,.18) !important; }
+      .stat.blue { background: linear-gradient(135deg,#007AFF,#0056B3) !important; box-shadow: 0 8px 18px rgba(0,122,255,.18) !important; }
+      .stat.orange { background: linear-gradient(135deg,#FF9500,#D67A00) !important; box-shadow: 0 8px 18px rgba(255,149,0,.18) !important; }
 
       .stat-title {
-        margin: 0 0 12px 0 !important;
+        margin: 0 0 4px 0 !important;
         color: #fff !important;
-        font-size: 12px !important;
+        font-size: 10.5px !important;
         font-weight: 800 !important;
-        line-height: 1.8 !important;
-        padding: 3px 0 7px 0 !important;
-        letter-spacing: 1.2px !important;
+        line-height: 1.5 !important;
+        padding: 1px 0 2px 0 !important;
+        letter-spacing: .9px !important;
         text-transform: uppercase !important;
         opacity: .95 !important;
         white-space: normal !important;
@@ -3534,44 +3537,44 @@ async function saveNewProject() {
         display: block !important;
         margin: 0 !important;
         color: #fff !important;
-        font-size: 34px !important;
+        font-size: 28px !important;
         font-weight: 800 !important;
-        line-height: 1.75 !important;
-        padding: 4px 0 10px 0 !important;
-        letter-spacing: -0.3px !important;
+        line-height: 1.45 !important;
+        padding: 1px 0 4px 0 !important;
+        letter-spacing: -0.2px !important;
         word-break: break-word !important;
         white-space: normal !important;
       }
 
       .stat-right {
-        min-width: 150px !important;
+        min-width: 115px !important;
         text-align: right !important;
       }
 
       .stat-right .stat-value {
-        font-size: 23px !important;
-        line-height: 1.75 !important;
-        padding-bottom: 9px !important;
+        font-size: 19px !important;
+        line-height: 1.45 !important;
+        padding-bottom: 4px !important;
       }
 
       .block-title {
-        margin: 0 0 14px 0 !important;
+        margin: 0 0 8px 0 !important;
         color: ${C.text} !important;
-        font-size: 20px !important;
+        font-size: 17px !important;
         font-weight: 800 !important;
-        line-height: 1.65 !important;
-        padding: 3px 0 7px 0 !important;
-        letter-spacing: -0.2px !important;
+        line-height: 1.42 !important;
+        padding: 1px 0 3px 0 !important;
+        letter-spacing: -0.1px !important;
       }
 
       .tablebox {
         background: ${C.card} !important;
         border: 1px solid ${C.line} !important;
-        border-radius: 22px !important;
+        border-radius: 16px !important;
         overflow: hidden !important;
-        box-shadow: 0 8px 22px rgba(0,0,0,.05) !important;
-        break-inside: avoid !important;
-        page-break-inside: avoid !important;
+        box-shadow: 0 4px 12px rgba(0,0,0,.035) !important;
+        break-inside: auto !important;
+        page-break-inside: auto !important;
       }
 
       table {
@@ -3580,25 +3583,27 @@ async function saveNewProject() {
         table-layout: fixed !important;
       }
 
+      thead { display: table-header-group !important; }
+
       th {
         background: ${C.head} !important;
         color: ${C.muted} !important;
-        padding: 17px 14px 19px 14px !important;
-        font-size: 11px !important;
+        padding: 10px 12px 11px 12px !important;
+        font-size: 10.5px !important;
         font-weight: 800 !important;
-        letter-spacing: .8px !important;
+        letter-spacing: .65px !important;
         text-transform: uppercase !important;
-        line-height: 1.75 !important;
+        line-height: 1.35 !important;
         text-align: left !important;
         border-bottom: 1px solid ${C.line} !important;
         white-space: normal !important;
       }
 
       td {
-        padding: 18px 14px 20px 14px !important;
-        font-size: 15px !important;
+        padding: 10px 12px 11px 12px !important;
+        font-size: 13.5px !important;
         font-weight: 650 !important;
-        line-height: 1.75 !important;
+        line-height: 1.42 !important;
         color: ${C.text} !important;
         border-bottom: 1px solid ${C.line} !important;
         vertical-align: middle !important;
@@ -3606,6 +3611,7 @@ async function saveNewProject() {
         white-space: normal !important;
       }
 
+      tr { break-inside: avoid !important; page-break-inside: avoid !important; }
       tr:last-child td { border-bottom: none !important; }
 
       .right { text-align: right !important; }
@@ -3616,14 +3622,15 @@ async function saveNewProject() {
 
       .badge {
         display: inline-block !important;
-        padding: 6px 10px 7px 10px !important;
-        border-radius: 9px !important;
-        font-size: 10px !important;
-        line-height: 1.6 !important;
+        padding: 4px 8px !important;
+        border-radius: 7px !important;
+        font-size: 9.5px !important;
+        line-height: 1.35 !important;
         font-weight: 800 !important;
         text-transform: uppercase !important;
-        letter-spacing: .4px !important;
+        letter-spacing: .3px !important;
       }
+
       .badge.green { background: rgba(52,199,89,.12) !important; color: ${C.green} !important; }
       .badge.red { background: rgba(255,59,48,.12) !important; color: ${C.red} !important; }
       .badge.blue { background: rgba(0,122,255,.12) !important; color: ${C.blue} !important; }
@@ -3632,76 +3639,75 @@ async function saveNewProject() {
       .cards {
         display: grid !important;
         grid-template-columns: 1fr 1fr !important;
-        gap: 14px !important;
-        margin: 0 0 24px 0 !important;
+        gap: 10px !important;
+        margin: 0 0 12px 0 !important;
         break-inside: avoid !important;
         page-break-inside: avoid !important;
       }
 
       .mini {
-        border-radius: 22px !important;
+        border-radius: 16px !important;
         color: white !important;
-        padding: 25px 20px 29px 20px !important;
-        min-height: 128px !important;
+        padding: 14px 15px 16px 15px !important;
+        min-height: 84px !important;
         display: flex !important;
         flex-direction: column !important;
         justify-content: center !important;
       }
 
       .mini p {
-        margin: 0 0 9px 0 !important;
-        font-size: 10px !important;
+        margin: 0 0 4px 0 !important;
+        font-size: 9.5px !important;
         font-weight: 800 !important;
         text-transform: uppercase !important;
-        letter-spacing: .9px !important;
-        line-height: 1.75 !important;
-        padding-bottom: 5px !important;
+        letter-spacing: .7px !important;
+        line-height: 1.35 !important;
+        padding-bottom: 1px !important;
       }
 
       .mini h3 {
         margin: 0 !important;
-        font-size: 24px !important;
+        font-size: 20px !important;
         font-weight: 800 !important;
-        line-height: 1.75 !important;
-        padding-bottom: 8px !important;
+        line-height: 1.4 !important;
+        padding-bottom: 3px !important;
         display: block !important;
       }
 
       .diary-card {
         background: ${C.card} !important;
         border: 1px solid ${C.line} !important;
-        border-radius: 24px !important;
-        padding: 32px !important;
-        box-shadow: 0 8px 22px rgba(0,0,0,.05) !important;
-        break-inside: avoid !important;
-        page-break-inside: avoid !important;
+        border-radius: 18px !important;
+        padding: 20px !important;
+        box-shadow: 0 4px 12px rgba(0,0,0,.035) !important;
+        break-inside: auto !important;
+        page-break-inside: auto !important;
       }
 
       .diary-title {
-        margin: 0 0 10px 0 !important;
+        margin: 0 0 6px 0 !important;
         color: ${C.amber} !important;
-        font-size: 27px !important;
+        font-size: 22px !important;
         font-weight: 800 !important;
-        line-height: 1.65 !important;
-        padding-bottom: 7px !important;
+        line-height: 1.45 !important;
+        padding-bottom: 2px !important;
         word-break: break-word !important;
       }
 
       .diary-date {
-        margin: 0 0 20px 0 !important;
+        margin: 0 0 10px 0 !important;
         color: ${C.muted} !important;
-        font-size: 12px !important;
+        font-size: 11px !important;
         font-weight: 800 !important;
         text-transform: uppercase !important;
-        letter-spacing: .9px !important;
-        line-height: 1.65 !important;
-        padding-bottom: 5px !important;
+        letter-spacing: .7px !important;
+        line-height: 1.45 !important;
       }
 
       .diary-body {
         font-family: Georgia, serif !important;
-        font-size: 17px !important;
-        line-height: 2 !important;
+        font-size: 15px !important;
+        line-height: 1.75 !important;
         font-style: italic !important;
         white-space: pre-wrap !important;
         word-break: break-word !important;
@@ -3710,32 +3716,35 @@ async function saveNewProject() {
 
       .footer {
         text-align: center !important;
-        margin: 38px 0 0 0 !important;
-        padding-top: 20px !important;
+        margin: 18px 0 0 0 !important;
+        padding-top: 12px !important;
         border-top: 1px solid ${C.line} !important;
         color: ${C.muted} !important;
-        font-size: 10px !important;
+        font-size: 9.5px !important;
         font-weight: 800 !important;
-        letter-spacing: .9px !important;
+        letter-spacing: .75px !important;
         text-transform: uppercase !important;
-        line-height: 1.75 !important;
+        line-height: 1.45 !important;
       }
 
       .empty {
         background: ${C.card} !important;
         border: 1px solid ${C.line} !important;
-        border-radius: 22px !important;
-        padding: 36px !important;
+        border-radius: 16px !important;
+        padding: 22px !important;
         color: ${C.muted} !important;
         text-align: center !important;
         font-weight: 800 !important;
-        line-height: 1.75 !important;
+        line-height: 1.45 !important;
       }
 
       @media print {
         body { background: ${C.bg} !important; }
         .report { max-width: none !important; width: 100% !important; }
-        .section, .tablebox, .stat, .person, .cards, .diary-card { break-inside: avoid !important; page-break-inside: avoid !important; }
+        .section, .tablebox { break-inside: auto !important; page-break-inside: auto !important; }
+        .stat, .person, .cards { break-inside: avoid !important; page-break-inside: avoid !important; }
+        thead { display: table-header-group !important; }
+        tr { break-inside: avoid !important; page-break-inside: avoid !important; }
       }
     `;
   }
@@ -3746,7 +3755,7 @@ async function saveNewProject() {
         <div>
           <div class="brand-chip"><span class="brand-dot"></span><span>Aarish Dairy Pro</span></div>
           <h1>${esc(title)} Report</h1>
-          <p class="subtitle">V11 safe print statement — fresh output</p>
+          <p class="subtitle">Compact formal statement — V12</p>
         </div>
         <div class="datebox">
           <strong>${esc(monthName())}</strong>
@@ -3946,7 +3955,7 @@ async function saveNewProject() {
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Aarish_${reportType.toUpperCase()}_SAFE_PRINT_V11_${todayISO()}</title>
+<title>Aarish_${reportType.toUpperCase()}_COMPACT_FLOW_V12_${todayISO()}</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -3964,7 +3973,7 @@ ${css()}
 <div class="report">
 ${top(title)}
 ${sections}
-<div class="footer">Securely exported via Aarish Dairy Pro • SAFE PRINT V11</div>
+<div class="footer">Securely exported via Aarish Dairy Pro • Compact Flow V12</div>
 </div>
 <script>
 window.onload = function(){ setTimeout(function(){ window.focus(); window.print(); }, 500); };
@@ -4008,12 +4017,12 @@ window.onload = function(){ setTimeout(function(){ window.focus(); window.print(
       const url = URL.createObjectURL(blob);
       const a = document.createElement("a");
       a.href = url;
-      a.download = `Aarish_${reportType.toUpperCase()}_SAFE_PRINT_V11_${todayISO()}.html`;
+      a.download = `Aarish_${reportType.toUpperCase()}_COMPACT_FLOW_V12_${todayISO()}.html`;
       document.body.appendChild(a);
       a.click();
       a.remove();
       setTimeout(() => URL.revokeObjectURL(url), 3000);
-      try { showToast("SAFE PRINT V11 HTML downloaded. Open it and Save as PDF."); } catch(e) {}
+      try { showToast("COMPACT FLOW V12 HTML downloaded. Open it and Save as PDF."); } catch(e) {}
       return;
     }
 
@@ -4021,7 +4030,7 @@ window.onload = function(){ setTimeout(function(){ window.focus(); window.print(
     w.document.write(doc);
     w.document.close();
 
-    try { showToast("SAFE PRINT V11 opened — choose Save as PDF."); } catch(e) {}
+    try { showToast("COMPACT FLOW V12 opened — choose Save as PDF."); } catch(e) {}
   };
 })();
 </script>
