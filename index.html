@@ -5412,5 +5412,209 @@ window.onload = function(){ setTimeout(function(){ window.focus(); window.print(
 })();
 </script>
 
+
+
+
+
+
+
+
+<script>
+// AARISH_PARTY_LEDGER_MILK_FLOW_NET_V23
+(function () {
+  if (window.__AARISH_PARTY_LEDGER_MILK_FLOW_NET_V23_READY) return;
+  window.__AARISH_PARTY_LEDGER_MILK_FLOW_NET_V23_READY = true;
+
+  function n(v) { return Number(v) || 0; }
+
+  function milkDbV23() {
+    try {
+      if (typeof milkDB !== "undefined" && milkDB && typeof milkDB === "object") return milkDB;
+    } catch(e) {}
+    return window.milkDB || {};
+  }
+
+  function udharDbV23() {
+    try {
+      if (typeof udharDB !== "undefined") return udharDB || [];
+    } catch(e) {}
+    return window.udharDB || [];
+  }
+
+  function arrRecordsV23(v) {
+    if (Array.isArray(v)) return v.filter(Boolean);
+    if (v && typeof v === "object") return Object.keys(v).map(k => v[k]).filter(Boolean);
+    return [];
+  }
+
+  function arrEntriesV23(v) {
+    if (Array.isArray(v)) return v.filter(Boolean);
+    if (v && typeof v === "object") return Object.keys(v).map(k => v[k]).filter(Boolean);
+    return [];
+  }
+
+  function cleanNameV23(v) {
+    return String(v || "")
+      .normalize("NFKC")
+      .replace(/\s+/g, " ")
+      .trim();
+  }
+
+  function normNameV23(v) {
+    return cleanNameV23(v).toLocaleLowerCase("en-IN");
+  }
+
+  function qtyV23(r) {
+    return n(r && r.morning) + n(r && r.evening);
+  }
+
+  function rateV23(customer, record) {
+    const rr = n(record && record.rate);
+    if (rr > 0) return rr;
+
+    const cr = n(customer && customer.rate);
+    if (cr > 0) return cr;
+
+    return n(typeof DEFAULT_RATE !== "undefined" ? DEFAULT_RATE : 0);
+  }
+
+  function flowV23(record, customer) {
+    const raw = String((record && (record.flow || record.milkFlow || record.direction || record.entryType || record.type)) || "").toLowerCase();
+
+    if (["taken", "take", "minus", "debit", "pay", "dene_wala"].includes(raw)) return "taken";
+    if (["given", "give", "plus", "credit", "receive", "lene_wala"].includes(raw)) return "given";
+
+    return customer && customer.type === "dene_wala" ? "taken" : "given";
+  }
+
+  function ensureRowV23(map, name) {
+    const display = cleanNameV23(name) || "Unknown";
+    const norm = normNameV23(display);
+    if (!norm) return null;
+
+    if (!map[norm]) {
+      map[norm] = {
+        name: display,
+        balance: 0
+      };
+    }
+
+    return map[norm];
+  }
+
+  function addMilkV23(map) {
+    const milk = milkDbV23();
+
+    Object.keys(milk || {}).forEach(name => {
+      const customer = milk[name] || {};
+      const row = ensureRowV23(map, name);
+      if (!row) return;
+
+      arrRecordsV23(customer.records).forEach(record => {
+        const amount = qtyV23(record) * rateV23(customer, record);
+        if (!amount) return;
+
+        row.balance += flowV23(record, customer) === "taken" ? -amount : amount;
+      });
+    });
+  }
+
+  function addUdharV23(map) {
+    arrEntriesV23(udharDbV23()).forEach(entry => {
+      const name = cleanNameV23(entry && entry.name);
+      const row = ensureRowV23(map, name);
+      if (!row) return;
+
+      const amount = n(entry && entry.amount);
+      if (!amount) return;
+
+      row.balance += entry && entry.type === "credit" ? amount : -amount;
+    });
+  }
+
+  window.renderDashboardBalances = function () {
+    const box = document.getElementById("dash-balances-list");
+    if (!box) return;
+
+    const search = (document.getElementById("balance-search")?.value || "").toLocaleLowerCase("en-IN");
+    const balances = {};
+
+    addMilkV23(balances);
+    addUdharV23(balances);
+
+    const rows = Object.values(balances)
+      .filter(row => row.name.toLocaleLowerCase("en-IN").includes(search))
+      .filter(row => Math.round(row.balance) !== 0)
+      .sort((a, b) => Math.abs(b.balance) - Math.abs(a.balance));
+
+    if (!rows.length) {
+      box.innerHTML = `<div class="text-center py-10 text-gray-400 font-semibold text-sm">No active balances!</div>`;
+      return;
+    }
+
+    box.innerHTML = rows.map((row, i) => {
+      const net = row.balance;
+      const plus = net > 0;
+      const color = plus ? "text-[#34C759]" : "text-[#FF3B30]";
+      const bg = plus ? "bg-[#34C759]/10" : "bg-[#FF3B30]/10";
+      const border = plus ? "border-l-[#34C759]" : "border-l-[#FF3B30]";
+      const sign = plus ? "+" : "-";
+      const label = plus ? "To Receive" : "To Pay";
+      const amount = Math.round(Math.abs(net)).toLocaleString("en-IN");
+      const first = row.name && row.name[0] ? row.name[0].toUpperCase() : "?";
+
+      return `<div class="glass-card list-enter flex items-center justify-between border-l-[4px] ${border} w-full cursor-pointer"
+        style="animation-delay:${i * 0.04}s;">
+        <div class="flex items-center gap-4 min-w-0 flex-1">
+          <div class="w-12 h-12 shrink-0 squircle ${bg} ${color} font-extrabold flex items-center justify-center text-lg">${first}</div>
+          <div class="flex-1 min-w-0">
+            <h4 class="font-bold text-[16px] truncate w-full text-gray-900 dark:text-white leading-tight">${row.name}</h4>
+            <p class="text-[10px] text-gray-500 font-bold uppercase tracking-wider truncate w-full mt-0.5">${label}</p>
+          </div>
+        </div>
+        <div class="text-right shrink-0">
+          <span class="font-extrabold ${color} text-[17px]">${sign}₹${amount}</span>
+        </div>
+      </div>`;
+    }).join("");
+  };
+
+  window.openAllBalances = function () {
+    document.querySelectorAll(".screen").forEach(function (s) {
+      s.classList.remove("active");
+    });
+
+    const screen = document.getElementById("balances-screen");
+    if (screen) screen.classList.add("active");
+
+    window.renderDashboardBalances();
+  };
+
+  window.__partyLedgerMilkFlowStatusV23 = function () {
+    const status = {
+      version: "V23",
+      milkGivenPlus: true,
+      milkTakenMinus: true,
+      usesRecordFlow: true,
+      dataWrite: false
+    };
+    console.log("AARISH PARTY LEDGER MILK FLOW STATUS V23", status);
+    return status;
+  };
+
+  document.addEventListener("DOMContentLoaded", function () {
+    setTimeout(function () {
+      try {
+        if (document.getElementById("balances-screen")?.classList.contains("active")) {
+          window.renderDashboardBalances();
+        }
+      } catch(e) {}
+    }, 500);
+  });
+
+  console.log("✅ AARISH_PARTY_LEDGER_MILK_FLOW_NET_V23 active");
+})();
+</script>
+
 </body>
 </html>
