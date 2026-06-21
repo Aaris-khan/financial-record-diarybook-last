@@ -4449,5 +4449,319 @@ window.onload = function(){ setTimeout(function(){ window.focus(); window.print(
 })();
 </script>
 
+
+
+<script>
+// AARISH_MILK_LIST_CLEAN_NET_V15
+// Keeps V14 net logic, but Milk list card UI becomes compact old-style:
+// Total Milk + Total Amount only. Duplicate same-name customers are grouped for display and dashboard net.
+(function () {
+  function n(v) { return Number(v) || 0; }
+  function arr(v) { return Array.isArray(v) ? v : []; }
+  function normName(name) { return String(name || "").trim().replace(/\s+/g, " ").toLowerCase(); }
+  function displayName(name) { return String(name || "").trim().replace(/\s+/g, " ") || "Unknown"; }
+  function rupeeAbs(v) { return Math.round(Math.abs(n(v))).toLocaleString("en-IN"); }
+  function signedMoney(v) { return (n(v) >= 0 ? "+₹" : "-₹") + rupeeAbs(v); }
+  function signedKg(v) { return (n(v) >= 0 ? "+" : "-") + Math.abs(n(v)).toFixed(2) + " KG"; }
+  function qty(r) { return n(r && r.morning) + n(r && r.evening); }
+
+  function flowOf(record, customer) {
+    const raw = String((record && (record.flow || record.milkFlow || record.direction || record.entryType || record.type)) || "").toLowerCase();
+    if (["taken", "take", "minus", "debit", "pay", "dene_wala"].includes(raw)) return "taken";
+    if (["given", "give", "plus", "credit", "receive", "lene_wala"].includes(raw)) return "given";
+    return customer && customer.type === "dene_wala" ? "taken" : "given";
+  }
+
+  function monthRecords(customer) {
+    try { return filterByMonth(arr(customer.records)); } catch(e) { return arr(customer.records); }
+  }
+
+  function groups() {
+    const map = {};
+    Object.keys(milkDB || {}).forEach(key => {
+      const k = normName(key);
+      if (!k) return;
+      if (!map[k]) map[k] = { norm:k, name:displayName(key), keys:[] };
+      map[k].keys.push(key);
+    });
+    return map;
+  }
+
+  function entriesForGroup(g, monthOnly) {
+    const out = [];
+    g.keys.forEach(key => {
+      const c = milkDB[key] || {};
+      const rate = n(c.rate || DEFAULT_RATE);
+      const records = monthOnly ? monthRecords(c) : arr(c.records);
+      records.forEach(r => {
+        const q = qty(r);
+        const flow = flowOf(r, c);
+        const sign = flow === "taken" ? -1 : 1;
+        out.push({
+          ...r,
+          sourceKey:key,
+          sourceName:displayName(key),
+          flow,
+          q,
+          signedKg:q * sign,
+          amount:q * rate * sign,
+          rate
+        });
+      });
+    });
+    return out;
+  }
+
+  function totalsForGroup(g, monthOnly) {
+    const es = entriesForGroup(g, monthOnly);
+    let givenKg = 0, takenKg = 0, netKg = 0, givenAmt = 0, takenAmt = 0, netAmt = 0;
+    es.forEach(e => {
+      if (e.flow === "taken") {
+        takenKg += e.q;
+        takenAmt += Math.abs(e.amount);
+      } else {
+        givenKg += e.q;
+        givenAmt += Math.abs(e.amount);
+      }
+      netKg += e.signedKg;
+      netAmt += e.amount;
+    });
+    return { givenKg, takenKg, netKg, givenAmt, takenAmt, netAmt, entries:es };
+  }
+
+  function perKeyV14Totals(monthOnly) {
+    let receive = 0, pay = 0;
+    Object.keys(milkDB || {}).forEach(key => {
+      const c = milkDB[key] || {};
+      let netAmt = 0;
+      const rate = n(c.rate || DEFAULT_RATE);
+      const records = monthOnly ? monthRecords(c) : arr(c.records);
+      records.forEach(r => {
+        const sign = flowOf(r, c) === "taken" ? -1 : 1;
+        netAmt += qty(r) * rate * sign;
+      });
+      if (netAmt >= 0) receive += netAmt;
+      else pay += Math.abs(netAmt);
+    });
+    return { receive, pay };
+  }
+
+  function groupedTotals(monthOnly) {
+    let receive = 0, pay = 0;
+    Object.values(groups()).forEach(g => {
+      const t = totalsForGroup(g, monthOnly);
+      if (t.netAmt >= 0) receive += t.netAmt;
+      else pay += Math.abs(t.netAmt);
+    });
+    return { receive, pay };
+  }
+
+  function parseRs(text) {
+    return Number(String(text || "").replace(/[^\d.-]/g, "")) || 0;
+  }
+
+  const prevUpdateDashboardV15 = window.updateDashboard;
+  window.updateDashboard = function () {
+    if (typeof prevUpdateDashboardV15 === "function") prevUpdateDashboardV15();
+
+    const lifeOld = perKeyV14Totals(false);
+    const lifeNew = groupedTotals(false);
+    const monthOld = perKeyV14Totals(true);
+    const monthNew = groupedTotals(true);
+
+    const lenaEl = document.getElementById("dash-lena");
+    const denaEl = document.getElementById("dash-dena");
+    const expEl = document.getElementById("dash-expenses");
+    const profitEl = document.getElementById("dash-profit");
+
+    if (lenaEl) {
+      const v = parseRs(lenaEl.textContent) - lifeOld.receive + lifeNew.receive;
+      lenaEl.textContent = `₹${Math.round(v).toLocaleString("en-IN")}`;
+    }
+
+    if (denaEl) {
+      const v = parseRs(denaEl.textContent) - lifeOld.pay + lifeNew.pay;
+      denaEl.textContent = `₹${Math.round(v).toLocaleString("en-IN")}`;
+    }
+
+    if (expEl) {
+      const v = parseRs(expEl.textContent) - monthOld.pay + monthNew.pay;
+      expEl.textContent = `₹${Math.round(v).toLocaleString("en-IN")}`;
+    }
+
+    if (profitEl) {
+      const oldProfit = monthOld.receive - monthOld.pay;
+      const newProfit = monthNew.receive - monthNew.pay;
+      const v = parseRs(profitEl.textContent) - oldProfit + newProfit;
+      profitEl.textContent = `₹${Math.round(v).toLocaleString("en-IN")}`;
+      profitEl.style.color = v < 0 ? "#FF3B30" : "#34C759";
+    }
+  };
+
+  function openGroup(g) {
+    window.__activeMilkGroupV15 = g.norm;
+    window.activeMilkCustomer = g.keys[0];
+
+    const oldOpen = window.__originalOpenMilkDetailV15 || window.__baseOpenMilkDetailV15;
+    if (typeof oldOpen === "function") {
+      oldOpen(g.keys[0]);
+    } else {
+      const title = document.getElementById("milk-detail-title");
+      if (title) title.textContent = g.name;
+      if (typeof switchTab === "function") switchTab("milk-detail");
+    }
+
+    const title = document.getElementById("milk-detail-title");
+    if (title) title.textContent = g.name;
+
+    setTimeout(() => {
+      try { renderMilkRecords(); } catch(e) {}
+    }, 60);
+  }
+
+  if (!window.__baseOpenMilkDetailV15 && typeof window.openMilkDetail === "function") {
+    window.__baseOpenMilkDetailV15 = window.openMilkDetail;
+  }
+
+  window.openMilkDetailV15 = function (norm) {
+    const g = groups()[String(norm || "")];
+    if (!g) return;
+    openGroup(g);
+  };
+
+  window.openMilkDetail = function (name) {
+    const k = normName(name);
+    const g = groups()[k] || Object.values(groups()).find(x => x.keys.includes(name));
+    if (g) return openGroup(g);
+
+    if (typeof window.__baseOpenMilkDetailV15 === "function") return window.__baseOpenMilkDetailV15(name);
+  };
+
+  window.renderMilkList = function () {
+    const qText = (document.getElementById("milk-search")?.value || "").toLowerCase();
+    const gs = Object.values(groups()).filter(g => g.name.toLowerCase().includes(qText));
+
+    const html = gs.map((g, index) => {
+      const t = totalsForGroup(g, false);
+      const isPlus = t.netAmt >= 0;
+      const colorClass = isPlus ? "text-[#34C759]" : "text-[#FF3B30]";
+      const bgClass = isPlus ? "bg-[#34C759]/10" : "bg-[#FF3B30]/10";
+      const borderClass = isPlus ? "border-l-[#34C759]" : "border-l-[#FF3B30]";
+      const first = (g.name && g.name[0] ? g.name[0].toUpperCase() : "?");
+
+      return `<div
+        onclick="haptic(); openMilkDetailV15('${g.norm.replace(/'/g, "\\'")}')"
+        class="glass-card mb-3.5 flex items-center justify-between cursor-pointer border-l-[3px] ${borderClass} w-full ring-1 ring-white/40 dark:ring-white/5 list-enter"
+        style="animation-delay:${index * 0.05}s;">
+        <div class="flex items-center gap-4 w-full min-w-0">
+          <div class="w-12 h-12 shrink-0 squircle ${bgClass} ${colorClass} font-extrabold flex items-center justify-center text-lg">${first}</div>
+          <div class="flex-1 min-w-0">
+            <h4 class="font-bold text-[17px] leading-tight truncate w-full flex items-center text-gray-900 dark:text-white">${g.name}</h4>
+            <p class="text-[13px] text-gray-500 font-bold truncate w-full mt-0.5 tracking-tight">
+              Total Milk: <span class="${colorClass}">${signedKg(t.netKg)}</span>
+            </p>
+            <p class="text-[14px] text-gray-500 font-bold truncate w-full mt-0.5 tracking-tight">
+              Total: <span class="${colorClass} font-extrabold text-[17px] ml-1">${signedMoney(t.netAmt)}</span>
+            </p>
+          </div>
+        </div>
+        <i class="fa-solid fa-chevron-right text-gray-300 shrink-0 ml-3 text-[13px]"></i>
+      </div>`;
+    }).join("");
+
+    const box = document.getElementById("milk-list");
+    if (box) box.innerHTML = html || getEmptyState("fa-jug-detergent", "No customers found");
+  };
+
+  window.filterMilkList = function () { renderMilkList(); };
+
+  const prevRenderMilkRecordsV15 = window.renderMilkRecords;
+  window.renderMilkRecords = function () {
+    const g = groups()[window.__activeMilkGroupV15] || (activeMilkCustomer ? groups()[normName(activeMilkCustomer)] : null);
+    if (!g) {
+      if (typeof prevRenderMilkRecordsV15 === "function") return prevRenderMilkRecordsV15();
+      return;
+    }
+
+    const t = totalsForGroup(g, true);
+    const isPlus = t.netAmt >= 0;
+
+    const records = t.entries.slice().sort((a,b) => new Date(b.date) - new Date(a.date));
+
+    const html = records.map((r, index) => {
+      const sign = r.flow === "taken" ? "-" : "+";
+      const color = r.flow === "taken" ? "#FF3B30" : "#34C759";
+      const label = r.flow === "taken" ? "Taken" : "Given";
+      const badge = r.flow === "taken"
+        ? '<span class="inline-flex items-center rounded-md px-2 py-1 text-[9px] font-extrabold uppercase tracking-wider bg-[#FF3B30]/10 text-[#FF3B30] border border-[#FF3B30]/20">Taken</span>'
+        : '<span class="inline-flex items-center rounded-md px-2 py-1 text-[9px] font-extrabold uppercase tracking-wider bg-[#34C759]/10 text-[#34C759] border border-[#34C759]/20">Given</span>';
+
+      return `<tr class="list-enter" style="animation-delay:${index * 0.05}s;">
+        <td>
+          <div class="font-bold">${formatDisplayDate(r.date)}</div>
+          <div class="mt-1">${badge}</div>
+        </td>
+        <td>${n(r.morning) || "-"}</td>
+        <td>${n(r.evening) || "-"}</td>
+        <td class="font-extrabold" style="color:${color};">${sign}${r.q.toFixed(2)}</td>
+        <td class="text-right">
+          <button onclick="haptic(); deleteMilkEntryV15('${String(r.sourceKey).replace(/'/g, "\\'")}', '${String(r.id).replace(/'/g, "\\'")}')" class="action-btn shrink-0">
+            <i class="fa-solid fa-trash text-xs"></i>
+          </button>
+        </td>
+      </tr>`;
+    }).join("");
+
+    const tbody = document.getElementById("milk-detail-records");
+    if (tbody) tbody.innerHTML = html || `<tr><td colspan="5" class="text-center py-8 text-gray-400 font-semibold">No entries for ${MONTHS[selectedMonth]}</td></tr>`;
+
+    const detailCard = document.querySelector("#milk-detail-screen .glass-card");
+    if (detailCard) {
+      detailCard.className = isPlus
+        ? "glass-card mb-6 flex justify-between items-center bg-gradient-to-br from-[#34C759] to-[#28a745] text-white border-none shadow-[0_8px_24px_rgba(52,199,89,0.3)] ring-1 ring-white/30 w-full min-w-0 gap-3"
+        : "glass-card mb-6 flex justify-between items-center bg-gradient-to-br from-[#FF3B30] to-[#c92a2a] text-white border-none shadow-[0_8px_24px_rgba(255,59,48,0.3)] ring-1 ring-white/30 w-full min-w-0 gap-3";
+
+      const labels = detailCard.querySelectorAll("p");
+      if (labels[0]) labels[0].textContent = "Total";
+      if (labels[1]) labels[1].textContent = "Total Milk";
+    }
+
+    const kgEl = document.getElementById("milk-detail-kg");
+    const billEl = document.getElementById("milk-detail-bill");
+    if (kgEl) kgEl.textContent = signedKg(t.netKg);
+    if (billEl) billEl.textContent = signedMoney(t.netAmt);
+
+    const oldSummary = document.getElementById("milk-net-given-taken-summary");
+    if (oldSummary) oldSummary.remove();
+  };
+
+  window.deleteMilkEntryV15 = async function (sourceKey, id) {
+    if (!milkDB[sourceKey]) return;
+    if (confirm("Are you sure you want to delete this entry?")) {
+      milkDB[sourceKey].records = arr(milkDB[sourceKey].records).filter(r => r.id !== id);
+
+      if (currentUserUID) {
+        await appDataRef.child(`milkDB/${sourceKey}/records/${id}`).remove();
+      }
+
+      renderMilkRecords();
+      renderMilkList();
+      updateDashboard();
+      showToast("Deleted!");
+    }
+  };
+
+  document.addEventListener("DOMContentLoaded", function () {
+    try { renderMilkList(); } catch(e) {}
+    try { updateDashboard(); } catch(e) {}
+  });
+
+  setTimeout(function () {
+    try { renderMilkList(); } catch(e) {}
+    try { updateDashboard(); } catch(e) {}
+  }, 300);
+})();
+</script>
+
 </body>
 </html>
