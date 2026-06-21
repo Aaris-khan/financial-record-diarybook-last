@@ -5772,5 +5772,209 @@ window.onload = function(){ setTimeout(function(){ window.focus(); window.print(
 })();
 </script>
 
+
+
+
+
+
+
+
+<script>
+// AARISH_CREDIT_BOOK_PAGE_NET_V27
+(function () {
+  if (window.__AARISH_CREDIT_BOOK_PAGE_NET_V27_READY) return;
+  window.__AARISH_CREDIT_BOOK_PAGE_NET_V27_READY = true;
+
+  var applyingV27 = false;
+
+  function nV27(v) {
+    return Number(v) || 0;
+  }
+
+  function entriesV27() {
+    var raw = [];
+    try {
+      raw = (typeof udharDB !== "undefined") ? (udharDB || []) : (window.udharDB || []);
+    } catch (e) {
+      raw = window.udharDB || [];
+    }
+
+    if (Array.isArray(raw)) return raw.filter(Boolean);
+
+    if (raw && typeof raw === "object") {
+      return Object.keys(raw).map(function (k) {
+        return raw[k];
+      }).filter(Boolean);
+    }
+
+    return [];
+  }
+
+  function netV27() {
+    var net = 0;
+
+    entriesV27().forEach(function (entry) {
+      var amount = nV27(entry && entry.amount);
+      if (!amount) return;
+
+      if (entry && entry.type === "credit") {
+        net += amount;
+      } else {
+        net -= amount;
+      }
+    });
+
+    return net;
+  }
+
+  function moneyV27(v) {
+    return Math.round(Math.abs(nV27(v))).toLocaleString("en-IN");
+  }
+
+  function titleV27() {
+    return document.querySelector("#udhar-screen .header-sticky h1");
+  }
+
+  function cardV27() {
+    var oldLena = document.getElementById("udhar-total-lena");
+    var oldDena = document.getElementById("udhar-total-dena");
+
+    if (oldLena && oldLena.closest) {
+      var c1 = oldLena.closest(".glass-card");
+      if (c1 && c1.closest("#udhar-screen")) return c1;
+    }
+
+    if (oldDena && oldDena.closest) {
+      var c2 = oldDena.closest(".glass-card");
+      if (c2 && c2.closest("#udhar-screen")) return c2;
+    }
+
+    return document.querySelector("#udhar-screen .p-5 > .glass-card");
+  }
+
+  function buildCardV27(card) {
+    if (!card || card.dataset.aarishCreditNetV27 === "ready") return;
+
+    card.dataset.aarishCreditNetV27 = "ready";
+
+    card.innerHTML = [
+      '<div class="flex-1 min-w-0">',
+        '<p id="credit-net-label-v27" class="text-[11px] font-bold uppercase opacity-90 tracking-wider truncate w-full drop-shadow-sm">Net Balance</p>',
+        '<h3 id="credit-net-total-v27" class="text-[34px] font-extrabold mt-2 tracking-tight truncate w-full drop-shadow-md">₹0</h3>',
+      '</div>',
+      '<div aria-hidden="true" style="display:none !important; visibility:hidden !important; width:0 !important; height:0 !important; overflow:hidden !important;">',
+        '<span id="udhar-total-lena">₹0</span>',
+        '<span id="udhar-total-dena">₹0</span>',
+      '</div>'
+    ].join("");
+  }
+
+  window.updateCreditBookNetV27 = function () {
+    var screen = document.getElementById("udhar-screen");
+    if (!screen) return;
+
+    var net = netV27();
+    var title = titleV27();
+    var card = cardV27();
+
+    applyingV27 = true;
+
+    if (title) {
+      title.style.transition = "color 0.25s ease";
+
+      if (net > 0.0001) {
+        title.style.color = "#34C759";
+        title.dataset.aarishCreditNetV27 = "green";
+      } else if (net < -0.0001) {
+        title.style.color = "#FF3B30";
+        title.dataset.aarishCreditNetV27 = "red";
+      } else {
+        title.style.removeProperty("color");
+        title.dataset.aarishCreditNetV27 = "neutral";
+      }
+    }
+
+    if (card) {
+      buildCardV27(card);
+
+      var label = document.getElementById("credit-net-label-v27");
+      var total = document.getElementById("credit-net-total-v27");
+
+      if (net > 0.0001) {
+        card.className = "glass-card mb-6 flex justify-between items-center bg-gradient-to-br from-[#34C759] to-[#28a745] text-white border-none shadow-[0_8px_24px_rgba(52,199,89,0.3)] ring-1 ring-white/30 w-full min-w-0 gap-3";
+        card.dataset.aarishCreditNetV27 = "green";
+        if (label) label.textContent = "Net Balance / Profit";
+        if (total) total.textContent = "+₹" + moneyV27(net);
+      } else if (net < -0.0001) {
+        card.className = "glass-card mb-6 flex justify-between items-center bg-gradient-to-br from-[#FF3B30] to-[#c92a2a] text-white border-none shadow-[0_8px_24px_rgba(255,59,48,0.3)] ring-1 ring-white/30 w-full min-w-0 gap-3";
+        card.dataset.aarishCreditNetV27 = "red";
+        if (label) label.textContent = "Net Balance / Loss";
+        if (total) total.textContent = "-₹" + moneyV27(net);
+      } else {
+        card.className = "glass-card mb-6 flex justify-between items-center bg-gradient-to-br from-[#007AFF] to-[#0056b3] text-white border-none shadow-[0_8px_24px_rgba(0,122,255,0.3)] ring-1 ring-white/30 w-full min-w-0 gap-3";
+        card.dataset.aarishCreditNetV27 = "neutral";
+        if (label) label.textContent = "Net Balance";
+        if (total) total.textContent = "₹0";
+      }
+    }
+
+    setTimeout(function () {
+      applyingV27 = false;
+    }, 80);
+  };
+
+  function scheduleV27() {
+    setTimeout(window.updateCreditBookNetV27, 0);
+    setTimeout(window.updateCreditBookNetV27, 250);
+    setTimeout(window.updateCreditBookNetV27, 900);
+  }
+
+  document.addEventListener("DOMContentLoaded", scheduleV27);
+  window.addEventListener("load", scheduleV27);
+  document.addEventListener("visibilitychange", scheduleV27);
+
+  var screenV27 = document.getElementById("udhar-screen");
+  if (screenV27 && window.MutationObserver) {
+    new MutationObserver(function () {
+      if (applyingV27) return;
+      scheduleV27();
+    }).observe(screenV27, {
+      childList: true,
+      subtree: true,
+      attributes: true,
+      attributeFilter: ["class"]
+    });
+  }
+
+  setTimeout(scheduleV27, 500);
+  setTimeout(scheduleV27, 1500);
+
+  setInterval(function () {
+    var screen = document.getElementById("udhar-screen");
+    if (screen && screen.classList.contains("active")) {
+      window.updateCreditBookNetV27();
+    }
+  }, 1200);
+
+  window.__creditBookNetStatusV27 = function () {
+    var status = {
+      version: "V27",
+      pageOnly: true,
+      titleColorByNet: true,
+      topCardSingleNet: true,
+      listSame: true,
+      oldTotalIdsHidden: true,
+      writesData: false,
+      netAmount: netV27()
+    };
+    console.log("AARISH CREDIT BOOK NET STATUS V27", status);
+    return status;
+  };
+
+  scheduleV27();
+  console.log("✅ AARISH_CREDIT_BOOK_PAGE_NET_V27 active");
+})();
+</script>
+
 </body>
 </html>
