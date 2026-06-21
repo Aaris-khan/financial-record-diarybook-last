@@ -4763,5 +4763,193 @@ window.onload = function(){ setTimeout(function(){ window.focus(); window.print(
 })();
 </script>
 
+
+
+
+
+
+
+
+<script>
+// AARISH_MILK_DUPLICATE_BLOCK_ONLY_V18
+// Final policy:
+// - Same customer name duplicate create hi nahi hoga.
+// - Case/space difference also duplicate maana jayega.
+// - No auto merge.
+// - No manual merge button.
+// - No background Firebase milkDB replace.
+// - Existing data untouched.
+(function () {
+  if (window.__AARISH_MILK_DUPLICATE_BLOCK_ONLY_V18_READY) return;
+  window.__AARISH_MILK_DUPLICATE_BLOCK_ONLY_V18_READY = true;
+
+  function dbV18() {
+    try {
+      if (typeof milkDB !== "undefined" && milkDB && typeof milkDB === "object") return milkDB;
+    } catch(e) {}
+    if (!window.milkDB || typeof window.milkDB !== "object") window.milkDB = {};
+    return window.milkDB;
+  }
+
+  function cleanMilkNameV18(v) {
+    return String(v || "")
+      .normalize("NFKC")
+      .replace(/[.#$\[\]<>\/\\]/g, " ")
+      .replace(/[\u0000-\u001F\u007F]/g, " ")
+      .replace(/\s+/g, " ")
+      .trim();
+  }
+
+  function normMilkNameV18(v) {
+    return cleanMilkNameV18(v).toLocaleLowerCase("en-IN");
+  }
+
+  function recordCountV18(customer) {
+    const r = customer && customer.records;
+    if (Array.isArray(r)) return r.length;
+    if (r && typeof r === "object") return Object.keys(r).length;
+    return 0;
+  }
+
+  function findExistingMilkKeyV18(name) {
+    const target = normMilkNameV18(name);
+    if (!target) return "";
+
+    const db = dbV18();
+    const keys = Object.keys(db || {});
+    const matches = keys.filter(k => normMilkNameV18(k) === target);
+
+    if (!matches.length) return "";
+
+    const exactClean = cleanMilkNameV18(name);
+    const exact = matches.find(k => cleanMilkNameV18(k) === exactClean);
+    if (exact) return exact;
+
+    matches.sort((a, b) => {
+      const ca = recordCountV18(db[a]);
+      const cb = recordCountV18(db[b]);
+      if (cb !== ca) return cb - ca;
+      return a.localeCompare(b);
+    });
+
+    return matches[0];
+  }
+
+  function duplicateAuditV18() {
+    const db = dbV18();
+    const map = {};
+    Object.keys(db || {}).forEach(k => {
+      const n = normMilkNameV18(k);
+      if (!n) return;
+      if (!map[n]) map[n] = [];
+      map[n].push(k);
+    });
+
+    return Object.keys(map)
+      .filter(n => map[n].length > 1)
+      .map(n => ({ normalized:n, keys:map[n].slice() }));
+  }
+
+  window.findExistingMilkKeyV18 = findExistingMilkKeyV18;
+  window.safeMilkDuplicateStatusV18 = function () {
+    const dups = duplicateAuditV18();
+    const status = {
+      version: "V18_DUPLICATE_BLOCK_ONLY",
+      duplicateCreateBlocked: true,
+      autoMerge: false,
+      manualMerge: false,
+      backgroundFirebaseReplace: false,
+      existingDataTouched: false,
+      duplicateGroupCount: dups.length,
+      duplicateGroups: dups
+    };
+    console.log("AARISH MILK DUPLICATE STATUS V18", status);
+    return status;
+  };
+
+  window.addMilkCustomer = async function () {
+    const nameEl = document.getElementById("new-milk-name");
+    const rateEl = document.getElementById("new-milk-rate");
+    const typeEl = document.getElementById("new-milk-type");
+
+    const entered = cleanMilkNameV18(nameEl && nameEl.value);
+    const rate = parseFloat(rateEl && rateEl.value) || (typeof DEFAULT_RATE !== "undefined" ? DEFAULT_RATE : 0);
+    const type = (typeEl && typeEl.value) || "lene_wala";
+
+    if (!entered) return showToast("Enter Name!");
+
+    const db = dbV18();
+    const existingKey = findExistingMilkKeyV18(entered);
+
+    if (existingKey && db[existingKey]) {
+      try { activeMilkCustomer = existingKey; } catch(e) {}
+
+      if (nameEl) nameEl.value = "";
+      if (rateEl) rateEl.value = "";
+
+      try { closeModal("add-milk-customer-modal"); } catch(e) {}
+      try { renderMilkList(); } catch(e) {}
+      try { updateDashboard(); } catch(e) {}
+
+      showToast("Customer already exists — duplicate not created!");
+      return;
+    }
+
+    const finalKey = entered;
+
+    const hardCheck = findExistingMilkKeyV18(finalKey);
+    if (hardCheck && db[hardCheck]) {
+      try { activeMilkCustomer = hardCheck; } catch(e) {}
+      showToast("Customer already exists — duplicate not created!");
+      return;
+    }
+
+    db[finalKey] = {
+      rate: rate,
+      type: type,
+      records: [],
+      canonicalNameV18: normMilkNameV18(finalKey),
+      createdAtV18: new Date().toISOString()
+    };
+
+    try { milkDB = db; } catch(e) {}
+    window.milkDB = db;
+
+    if (typeof currentUserUID !== "undefined" && currentUserUID && typeof appDataRef !== "undefined" && appDataRef) {
+      await appDataRef.child(`milkDB/${finalKey}`).set(db[finalKey]);
+    }
+
+    try { closeModal("add-milk-customer-modal"); } catch(e) {}
+
+    if (nameEl) nameEl.value = "";
+    if (rateEl) rateEl.value = "";
+
+    try { renderMilkList(); } catch(e) {}
+    try { updateDashboard(); } catch(e) {}
+
+    showToast("Customer Added!");
+  };
+
+  const previousSaveMilkEntryV18 = window.saveMilkEntry;
+  window.saveMilkEntry = async function (flowArg) {
+    try {
+      if (typeof activeMilkCustomer !== "undefined" && activeMilkCustomer) {
+        const existingKey = findExistingMilkKeyV18(activeMilkCustomer);
+        const db = dbV18();
+        if (existingKey && db[existingKey]) activeMilkCustomer = existingKey;
+      }
+    } catch(e) {}
+
+    if (typeof previousSaveMilkEntryV18 === "function") {
+      return previousSaveMilkEntryV18.call(this, flowArg);
+    }
+
+    showToast("Save logic missing!");
+  };
+
+  console.log("✅ AARISH_MILK_DUPLICATE_BLOCK_ONLY_V18 active: duplicate create blocked, merge disabled.");
+})();
+</script>
+
 </body>
 </html>
