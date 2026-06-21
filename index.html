@@ -4951,5 +4951,271 @@ window.onload = function(){ setTimeout(function(){ window.focus(); window.print(
 })();
 </script>
 
+
+
+<script>
+// AARISH_MILK_CUSTOMER_DELETE_BUTTON_V19
+// Visible delete button for full milk customer profile.
+// Safe policy:
+// - Button appears on Milk Customer Detail top-right.
+// - Delete only after confirmation.
+// - Backup created before delete.
+// - No full milkDB replace.
+// - V14/V15/V18 logic preserved.
+(function () {
+  if (window.__AARISH_MILK_CUSTOMER_DELETE_BUTTON_V19_READY) return;
+  window.__AARISH_MILK_CUSTOMER_DELETE_BUTTON_V19_READY = true;
+
+  function dbV19() {
+    try {
+      if (typeof milkDB !== "undefined" && milkDB && typeof milkDB === "object") return milkDB;
+    } catch(e) {}
+    if (!window.milkDB || typeof window.milkDB !== "object") window.milkDB = {};
+    return window.milkDB;
+  }
+
+  function cleanNameV19(v) {
+    return String(v || "")
+      .normalize("NFKC")
+      .replace(/[.#$\[\]<>\/\\]/g, " ")
+      .replace(/[\u0000-\u001F\u007F]/g, " ")
+      .replace(/\s+/g, " ")
+      .trim();
+  }
+
+  function normNameV19(v) {
+    return cleanNameV19(v).toLocaleLowerCase("en-IN");
+  }
+
+  function recordCountV19(customer) {
+    const r = customer && customer.records;
+    if (Array.isArray(r)) return r.length;
+    if (r && typeof r === "object") return Object.keys(r).length;
+    return 0;
+  }
+
+  function cloneV19(obj) {
+    try { return JSON.parse(JSON.stringify(obj || {})); }
+    catch(e) { return {}; }
+  }
+
+  function groupKeysByNameV19(name) {
+    const db = dbV19();
+    const target = normNameV19(name);
+    if (!target) return [];
+    return Object.keys(db || {}).filter(k => normNameV19(k) === target);
+  }
+
+  function activeDeleteKeysV19() {
+    const db = dbV19();
+
+    let keys = [];
+
+    try {
+      if (window.__activeMilkGroupV15) {
+        const groupNorm = String(window.__activeMilkGroupV15 || "");
+        keys = Object.keys(db || {}).filter(k => normNameV19(k) === groupNorm);
+      }
+    } catch(e) {}
+
+    if (!keys.length) {
+      try {
+        if (typeof activeMilkCustomer !== "undefined" && activeMilkCustomer && db[activeMilkCustomer]) {
+          keys = [activeMilkCustomer];
+        }
+      } catch(e) {}
+    }
+
+    if (!keys.length) {
+      const title = document.getElementById("milk-detail-title")?.textContent || "";
+      keys = groupKeysByNameV19(title);
+    }
+
+    const seen = new Set();
+    return keys.filter(k => {
+      if (!k || !db[k] || seen.has(k)) return false;
+      seen.add(k);
+      return true;
+    });
+  }
+
+  function displayNameForDeleteV19(keys) {
+    const title = cleanNameV19(document.getElementById("milk-detail-title")?.textContent || "");
+    if (title) return title;
+    return keys && keys[0] ? keys[0] : "Customer";
+  }
+
+  async function backupBeforeDeleteV19(keys) {
+    const db = dbV19();
+    const stamp = new Date().toISOString().replace(/[:.]/g, "-");
+    const deletedData = {};
+
+    keys.forEach(k => {
+      deletedData[k] = cloneV19(db[k]);
+    });
+
+    const payload = {
+      version: "AARISH_MILK_CUSTOMER_DELETE_BUTTON_V19",
+      reason: "before-delete-full-milk-customer",
+      createdAt: new Date().toISOString(),
+      deletedKeys: keys.slice(),
+      deletedData
+    };
+
+    try {
+      localStorage.setItem("AARISH_MILK_DELETE_BACKUP_V19_" + stamp, JSON.stringify(payload));
+    } catch(e) {}
+
+    if (typeof currentUserUID !== "undefined" && currentUserUID && typeof appDataRef !== "undefined" && appDataRef) {
+      await appDataRef.child("milkDB_DELETE_BACKUP_V19/" + stamp).set(payload);
+    }
+
+    return stamp;
+  }
+
+  window.deleteActiveMilkCustomerV19 = async function () {
+    const db = dbV19();
+    const keys = activeDeleteKeysV19();
+
+    if (!keys.length) {
+      try { showToast("Customer not found!"); } catch(e) {}
+      return;
+    }
+
+    const name = displayNameForDeleteV19(keys);
+    const totalRecords = keys.reduce((s, k) => s + recordCountV19(db[k]), 0);
+
+    const msg =
+      `Delete customer "${name}"?\n\n` +
+      `This will delete:\n` +
+      `• ${keys.length} customer profile${keys.length > 1 ? "s" : ""}\n` +
+      `• ${totalRecords} milk entr${totalRecords === 1 ? "y" : "ies"}\n\n` +
+      `A backup will be created before delete.\n\n` +
+      `Continue?`;
+
+    if (!confirm(msg)) return;
+
+    const finalConfirm =
+      `Final confirmation:\n\n` +
+      `"${name}" ka complete milk customer data delete hoga.\n\n` +
+      `Backup banega, phir Firebase se delete hoga.\n\n` +
+      `OK दबाओगे तो delete होगा.`;
+
+    if (!confirm(finalConfirm)) return;
+
+    try {
+      const stamp = await backupBeforeDeleteV19(keys);
+
+      for (const key of keys) {
+        delete db[key];
+
+        if (typeof currentUserUID !== "undefined" && currentUserUID && typeof appDataRef !== "undefined" && appDataRef) {
+          await appDataRef.child(`milkDB/${key}`).remove();
+        }
+      }
+
+      try { milkDB = db; } catch(e) {}
+      window.milkDB = db;
+
+      try { activeMilkCustomer = null; } catch(e) {}
+      try { window.__activeMilkGroupV15 = null; } catch(e) {}
+
+      try { switchTab("milk"); } catch(e) {}
+      try { renderMilkList(); } catch(e) {}
+      try { updateDashboard(); } catch(e) {}
+
+      try { showToast("Customer deleted. Backup saved."); } catch(e) {}
+      console.log("AARISH V19 customer deleted with backup:", { keys, backup: stamp });
+
+    } catch (err) {
+      console.error("AARISH V19 customer delete failed:", err);
+      alert("Delete failed. Data may still be safe. Please check internet/Firebase and try again.");
+    }
+  };
+
+  function ensureMilkCustomerDeleteButtonV19() {
+    const screen = document.getElementById("milk-detail-screen");
+    if (!screen) return;
+
+    const header = screen.querySelector(".header-sticky");
+    if (!header) return;
+
+    let row = header.querySelector(".flex.items-center.gap-3");
+    if (!row) row = header;
+
+    const old = document.getElementById("milk-customer-delete-btn-v19");
+    if (old) old.remove();
+
+    const btn = document.createElement("button");
+    btn.id = "milk-customer-delete-btn-v19";
+    btn.type = "button";
+    btn.title = "Delete Customer";
+    btn.setAttribute("aria-label", "Delete Customer");
+    btn.className = "w-10 h-10 shrink-0 rounded-full bg-red-500/10 text-red-500 flex items-center justify-center transition-transform active:scale-95 ml-2";
+    btn.innerHTML = '<i class="fa-solid fa-trash text-[15px]"></i>';
+
+    btn.onclick = function (ev) {
+      ev.preventDefault();
+      ev.stopPropagation();
+      try { haptic(); } catch(e) {}
+      window.deleteActiveMilkCustomerV19();
+    };
+
+    row.appendChild(btn);
+  }
+
+  const oldOpenMilkDetailV19 = window.openMilkDetail;
+  if (typeof oldOpenMilkDetailV19 === "function") {
+    window.openMilkDetail = function () {
+      const result = oldOpenMilkDetailV19.apply(this, arguments);
+      setTimeout(ensureMilkCustomerDeleteButtonV19, 60);
+      setTimeout(ensureMilkCustomerDeleteButtonV19, 250);
+      return result;
+    };
+  }
+
+  const oldOpenMilkDetailV15_V19 = window.openMilkDetailV15;
+  if (typeof oldOpenMilkDetailV15_V19 === "function") {
+    window.openMilkDetailV15 = function () {
+      const result = oldOpenMilkDetailV15_V19.apply(this, arguments);
+      setTimeout(ensureMilkCustomerDeleteButtonV19, 60);
+      setTimeout(ensureMilkCustomerDeleteButtonV19, 250);
+      return result;
+    };
+  }
+
+  const oldRenderMilkRecordsV19 = window.renderMilkRecords;
+  if (typeof oldRenderMilkRecordsV19 === "function") {
+    window.renderMilkRecords = function () {
+      const result = oldRenderMilkRecordsV19.apply(this, arguments);
+      setTimeout(ensureMilkCustomerDeleteButtonV19, 0);
+      return result;
+    };
+  }
+
+  const oldSwitchTabV19 = window.switchTab;
+  if (typeof oldSwitchTabV19 === "function") {
+    window.switchTab = function (tab) {
+      const result = oldSwitchTabV19.apply(this, arguments);
+      if (tab === "milk-detail") {
+        setTimeout(ensureMilkCustomerDeleteButtonV19, 60);
+        setTimeout(ensureMilkCustomerDeleteButtonV19, 250);
+      }
+      return result;
+    };
+  }
+
+  window.ensureMilkCustomerDeleteButtonV19 = ensureMilkCustomerDeleteButtonV19;
+
+  document.addEventListener("DOMContentLoaded", function () {
+    setTimeout(ensureMilkCustomerDeleteButtonV19, 800);
+  });
+
+  setTimeout(ensureMilkCustomerDeleteButtonV19, 1200);
+
+  console.log("✅ AARISH_MILK_CUSTOMER_DELETE_BUTTON_V19 active");
+})();
+</script>
+
 </body>
 </html>
