@@ -1098,6 +1098,573 @@
 }
 </style>
 
+
+
+<style id="aarish-scoped-dark-uiux-v64">
+/* AARISH_SCOPED_DARK_UIUX_V64
+   Dark-mode scoped UI/UX extension for:
+   Credit Book, Expenses, Salary, Personal Diary, Business Hub + detail pages.
+   Milk/Dashboard/Party Ledger old scoped fixes stay intact.
+   Logic:
+   - white/gray normal text => app blue
+   - amount/status semantic colors stay green/red/yellow/orange
+   - delete buttons always red
+   - left curved stripe keeps light-mode thickness: list screens 3px, Party Ledger 4px
+   - positive => green stripe, negative => red stripe
+   - total cards keep green/red background logic from existing JS, but labels + amount match green/red
+   - CSS-only: no Firebase, no JS loop, no render/data changes
+*/
+
+.dark :is(
+  #udhar-screen,
+  #udhar-detail-screen,
+  #expenses-screen,
+  #expense-detail-screen,
+  #salary-screen,
+  #salary-detail-screen,
+  #diary-screen,
+  #diary-detail-screen,
+  #projects-screen,
+  #project-detail-screen,
+  #milk-detail-screen
+) {
+  --aarish-v64-blue: var(--ios-blue, #007AFF);
+  --aarish-v64-blue-soft: #0A84FF;
+  --aarish-v64-blue-glow: rgba(0,122,255,0.34);
+  --aarish-v64-green: #34C759;
+  --aarish-v64-green-dark-bg: rgba(52,199,89,0.16);
+  --aarish-v64-red: #FF3B30;
+  --aarish-v64-red-dark-bg: rgba(255,59,48,0.16);
+  --aarish-v64-yellow: #F5A623;
+  --aarish-v64-orange: #FF9500;
+  --aarish-v64-purple: #BF5AF2;
+}
+
+/* ===================== COMMON BLUE TEXT ON TARGET SCREENS ===================== */
+.dark :is(
+  #udhar-screen,
+  #udhar-detail-screen,
+  #expenses-screen,
+  #expense-detail-screen,
+  #salary-screen,
+  #salary-detail-screen,
+  #diary-screen,
+  #diary-detail-screen,
+  #projects-screen,
+  #project-detail-screen,
+  #milk-detail-screen
+) .header-sticky h1,
+.dark :is(
+  #udhar-screen,
+  #udhar-detail-screen,
+  #expenses-screen,
+  #expense-detail-screen,
+  #salary-screen,
+  #salary-detail-screen,
+  #diary-detail-screen,
+  #projects-screen,
+  #project-detail-screen,
+  #milk-detail-screen
+) .header-sticky button i,
+.dark :is(
+  #udhar-screen,
+  #udhar-detail-screen,
+  #expenses-screen,
+  #expense-detail-screen,
+  #salary-screen,
+  #salary-detail-screen,
+  #diary-screen,
+  #diary-detail-screen,
+  #projects-screen,
+  #project-detail-screen,
+  #milk-detail-screen
+) .fa-search {
+  color: var(--aarish-v64-blue) !important;
+  text-shadow: 0 0 10px var(--aarish-v64-blue-glow) !important;
+}
+
+/* Diary title stays permanent yellow from V54 */
+.dark #diary-title-v54,
+.dark #diary-title-v54 *,
+.dark #tab-diary[data-aarishDiaryV54],
+.dark #tab-diary[data-aarishDiaryV54] i {
+  color: var(--aarish-v64-yellow) !important;
+  text-shadow: 0 0 14px rgba(245,166,35,0.45) !important;
+}
+
+/* Inputs/selects/search placeholders */
+.dark :is(
+  #udhar-screen,
+  #expenses-screen,
+  #salary-screen,
+  #diary-screen,
+  #projects-screen,
+  #milk-detail-screen,
+  #salary-detail-screen
+) .input-box,
+.dark :is(
+  #udhar-screen,
+  #expenses-screen,
+  #salary-screen,
+  #diary-screen,
+  #projects-screen,
+  #milk-detail-screen,
+  #salary-detail-screen
+) input,
+.dark :is(
+  #udhar-screen,
+  #expenses-screen,
+  #salary-screen,
+  #diary-screen,
+  #projects-screen,
+  #milk-detail-screen,
+  #salary-detail-screen
+) select {
+  color: #D8EAFF !important;
+  border-color: rgba(0,122,255,0.18) !important;
+}
+
+.dark :is(
+  #udhar-screen,
+  #expenses-screen,
+  #salary-screen,
+  #diary-screen,
+  #projects-screen,
+  #milk-detail-screen,
+  #salary-detail-screen
+) input::placeholder,
+.dark :is(
+  #udhar-screen,
+  #expenses-screen,
+  #salary-screen,
+  #diary-screen,
+  #projects-screen,
+  #milk-detail-screen,
+  #salary-detail-screen
+) .input-box::placeholder,
+.dark :is(
+  #udhar-screen,
+  #expenses-screen,
+  #salary-screen,
+  #diary-screen,
+  #projects-screen,
+  #milk-detail-screen,
+  #salary-detail-screen
+) input::-webkit-input-placeholder,
+.dark :is(
+  #udhar-screen,
+  #expenses-screen,
+  #salary-screen,
+  #diary-screen,
+  #projects-screen,
+  #milk-detail-screen,
+  #salary-detail-screen
+) .input-box::-webkit-input-placeholder {
+  color: rgba(0,122,255,0.76) !important;
+  opacity: 1 !important;
+}
+
+/* List names / normal white text => blue */
+.dark :is(
+  #udhar-list,
+  #expense-list-container,
+  #salary-list,
+  #diary-list,
+  #project-list
+) .glass-card h3,
+.dark :is(
+  #udhar-list,
+  #expense-list-container,
+  #salary-list,
+  #diary-list,
+  #project-list
+) .glass-card h4,
+.dark :is(
+  #udhar-list,
+  #expense-list-container,
+  #salary-list,
+  #diary-list,
+  #project-list
+) .glass-card .font-bold:not([class*="text-green"]):not([class*="text-red"]):not([class*="text-[#34C759]"]):not([class*="text-[#FF3B30]"]):not([class*="text-[#F5A623]"]),
+.dark :is(
+  #udhar-list,
+  #expense-list-container,
+  #salary-list,
+  #diary-list,
+  #project-list
+) .glass-card .font-extrabold:not([class*="text-green"]):not([class*="text-red"]):not([class*="text-[#34C759]"]):not([class*="text-[#FF3B30]"]):not([class*="text-[#F5A623]"]) {
+  color: var(--aarish-v64-blue) !important;
+  text-shadow: 0 0 10px var(--aarish-v64-blue-glow) !important;
+}
+
+/* Subtext / last entry / record count / preview => blue */
+.dark :is(
+  #udhar-list,
+  #expense-list-container,
+  #salary-list,
+  #diary-list,
+  #project-list
+) .glass-card p,
+.dark :is(
+  #udhar-list,
+  #expense-list-container,
+  #salary-list,
+  #diary-list,
+  #project-list
+) .glass-card .text-gray-500,
+.dark :is(
+  #udhar-list,
+  #expense-list-container,
+  #salary-list,
+  #diary-list,
+  #project-list
+) .glass-card .text-gray-400,
+.dark :is(
+  #udhar-list,
+  #expense-list-container,
+  #salary-list,
+  #diary-list,
+  #project-list
+) .glass-card .text-gray-300,
+.dark :is(
+  #udhar-list,
+  #expense-list-container,
+  #salary-list,
+  #diary-list,
+  #project-list
+) .glass-card .text-xs,
+.dark :is(
+  #udhar-list,
+  #expense-list-container,
+  #salary-list,
+  #diary-list,
+  #project-list
+) .glass-card .text-\[10px\],
+.dark :is(
+  #udhar-list,
+  #expense-list-container,
+  #salary-list,
+  #diary-list,
+  #project-list
+) .glass-card .text-\[11px\],
+.dark :is(
+  #udhar-list,
+  #expense-list-container,
+  #salary-list,
+  #diary-list,
+  #project-list
+) .glass-card .text-\[12px\],
+.dark :is(
+  #udhar-list,
+  #expense-list-container,
+  #salary-list,
+  #diary-list,
+  #project-list
+) .glass-card .text-\[13px\] {
+  color: var(--aarish-v64-blue) !important;
+  text-shadow: 0 0 8px var(--aarish-v64-blue-glow) !important;
+  opacity: 1 !important;
+}
+
+/* Chevron / triangle open icons => blue */
+.dark :is(
+  #udhar-list,
+  #expense-list-container,
+  #salary-list,
+  #diary-list,
+  #project-list
+) .fa-chevron-right {
+  color: var(--aarish-v64-blue) !important;
+  text-shadow: 0 0 10px var(--aarish-v64-blue-glow) !important;
+  opacity: 1 !important;
+}
+
+/* ===================== SEMANTIC AMOUNT COLORS NEVER CHANGE ===================== */
+.dark :is(
+  #udhar-screen,
+  #udhar-detail-screen,
+  #expenses-screen,
+  #expense-detail-screen,
+  #salary-screen,
+  #salary-detail-screen,
+  #diary-screen,
+  #diary-detail-screen,
+  #projects-screen,
+  #project-detail-screen,
+  #milk-detail-screen
+) :is(.text-green-400,.text-green-500,.text-green-600,.dark\:text-green-400,[class*="text-[#34C759]"],[class*="text-[#10B981]"]) {
+  color: var(--aarish-v64-green) !important;
+  text-shadow: 0 0 10px rgba(52,199,89,0.34) !important;
+}
+
+.dark :is(
+  #udhar-screen,
+  #udhar-detail-screen,
+  #expenses-screen,
+  #expense-detail-screen,
+  #salary-screen,
+  #salary-detail-screen,
+  #diary-screen,
+  #diary-detail-screen,
+  #projects-screen,
+  #project-detail-screen,
+  #milk-detail-screen
+) :is(.text-red-400,.text-red-500,.text-red-600,.dark\:text-red-400,[class*="text-[#FF3B30]"],[class*="text-[#FF4B4B]"],i.fa-trash) {
+  color: var(--aarish-v64-red) !important;
+  text-shadow: 0 0 10px rgba(255,59,48,0.34) !important;
+}
+
+.dark :is(
+  #diary-screen,
+  #diary-detail-screen,
+  #projects-screen,
+  #project-detail-screen
+) :is(.text-yellow-400,.text-orange-400,.text-orange-500,.text-orange-600,[class*="text-[#F5A623]"],[class*="text-[#FF9500]"]) {
+  color: var(--aarish-v64-yellow) !important;
+  text-shadow: 0 0 10px rgba(245,166,35,0.34) !important;
+}
+
+/* ===================== DELETE BUTTON ALWAYS RED ===================== */
+.dark :is(
+  #udhar-screen,
+  #udhar-detail-screen,
+  #expenses-screen,
+  #expense-detail-screen,
+  #salary-screen,
+  #salary-detail-screen,
+  #diary-screen,
+  #diary-detail-screen,
+  #projects-screen,
+  #project-detail-screen,
+  #milk-detail-screen
+) .action-btn,
+.dark :is(
+  #udhar-screen,
+  #udhar-detail-screen,
+  #expenses-screen,
+  #expense-detail-screen,
+  #salary-screen,
+  #salary-detail-screen,
+  #diary-screen,
+  #diary-detail-screen,
+  #projects-screen,
+  #project-detail-screen,
+  #milk-detail-screen
+) .action-btn *,
+.dark :is(
+  #udhar-screen,
+  #udhar-detail-screen,
+  #expenses-screen,
+  #expense-detail-screen,
+  #salary-screen,
+  #salary-detail-screen,
+  #diary-screen,
+  #diary-detail-screen,
+  #projects-screen,
+  #project-detail-screen,
+  #milk-detail-screen
+) .fa-trash {
+  color: var(--aarish-v64-red) !important;
+}
+
+.dark :is(
+  #udhar-screen,
+  #udhar-detail-screen,
+  #expenses-screen,
+  #expense-detail-screen,
+  #salary-screen,
+  #salary-detail-screen,
+  #diary-screen,
+  #diary-detail-screen,
+  #projects-screen,
+  #project-detail-screen,
+  #milk-detail-screen
+) .action-btn {
+  background: rgba(255,59,48,0.12) !important;
+  border-color: rgba(255,59,48,0.24) !important;
+}
+
+/* ===================== STRIPE LOGIC: LIGHT-MODE THICKNESS ONLY ===================== */
+/* Common list stripe thickness = existing Tailwind border-l-[3px] */
+.dark :is(#udhar-list,#expense-list-container,#salary-list,#diary-list,#project-list,#milk-list) .glass-card,
+.dark :is(#udhar-list,#expense-list-container,#salary-list,#diary-list,#project-list,#milk-list) .list-enter {
+  border-left-width: 3px !important;
+  border-left-style: solid !important;
+}
+
+/* Party Ledger natural inline stripe is 4px; override older thick patches only there */
+.dark #balances-screen #dash-balances-list .glass-card,
+.dark #balances-screen #dash-balances-list .party-ledger-balance-stripe-v40,
+.dark #balances-screen #dash-balances-list .list-enter {
+  border-left-width: 4px !important;
+  border-left-style: solid !important;
+}
+
+/* Positive => green stripe */
+.dark :is(#udhar-list,#salary-list,#milk-list,#balances-screen #dash-balances-list) :is(.border-l-\[\#34C759\],[class*="border-l-[#34C759]"]),
+.dark :is(#udhar-list,#salary-list,#milk-list,#balances-screen #dash-balances-list) .glass-card:has(:is(.text-green-400,.text-green-500,.text-green-600,[class*="text-[#34C759]"],[class*="text-[#10B981]"])) {
+  border-left-color: var(--aarish-v64-green) !important;
+  box-shadow: -4px 0 12px rgba(52,199,89,0.18), inset 1px 0 0 rgba(52,199,89,0.50) !important;
+}
+
+/* Negative => red stripe */
+.dark :is(#udhar-list,#salary-list,#expense-list-container,#milk-list,#balances-screen #dash-balances-list) :is(.border-l-\[\#FF3B30\],[class*="border-l-[#FF3B30]"]),
+.dark :is(#udhar-list,#salary-list,#expense-list-container,#milk-list,#balances-screen #dash-balances-list) .glass-card:has(:is(.text-red-400,.text-red-500,.text-red-600,[class*="text-[#FF3B30]"],[class*="text-[#FF4B4B]"])),
+.dark #expense-list-container .glass-card {
+  border-left-color: var(--aarish-v64-red) !important;
+  box-shadow: -4px 0 12px rgba(255,59,48,0.18), inset 1px 0 0 rgba(255,59,48,0.50) !important;
+}
+
+/* Diary stripe remains yellow, Business stripe remains neutral but visible */
+.dark #diary-list .diary-card,
+.dark #diary-list .glass-card {
+  border-left-color: var(--aarish-v64-yellow) !important;
+  box-shadow: -4px 0 12px rgba(245,166,35,0.16), inset 1px 0 0 rgba(245,166,35,0.45) !important;
+}
+
+.dark #project-list .glass-card {
+  border-left-color: var(--aarish-v64-blue) !important;
+  box-shadow: -4px 0 12px rgba(0,122,255,0.14), inset 1px 0 0 rgba(0,122,255,0.40) !important;
+}
+
+/* ===================== TOTAL CARDS: GREEN/RED BACKGROUND + MATCHING TEXT ===================== */
+/* Green totals: Milk/Credit/Salary/Business income cards */
+.dark :is(#milk-detail-screen,#udhar-detail-screen,#salary-detail-screen,#project-detail-screen) .glass-card[class*="from-[#34C759]"],
+.dark :is(#salary-detail-screen,#project-detail-screen) .glass-card[class*="from-[#10B981]"],
+.dark #salary-detail-screen .glass-card[class*="from-[#10B981]"] {
+  background: linear-gradient(135deg, rgba(2,54,24,0.94), rgba(0,28,14,0.96)) !important;
+  border: 1px solid rgba(52,199,89,0.38) !important;
+  box-shadow: 0 8px 24px rgba(52,199,89,0.18), inset 0 1px 0 rgba(52,199,89,0.20) !important;
+}
+
+.dark :is(#milk-detail-screen,#udhar-detail-screen,#salary-detail-screen,#project-detail-screen) .glass-card[class*="from-[#34C759]"] :is(p,h3,span,div),
+.dark :is(#salary-detail-screen,#project-detail-screen) .glass-card[class*="from-[#10B981]"] :is(p,h3,span,div) {
+  color: var(--aarish-v64-green) !important;
+  text-shadow: 0 0 12px rgba(52,199,89,0.38) !important;
+}
+
+/* Red totals: Credit pay / Expense / Salary pay / Business expense cards */
+.dark :is(#milk-detail-screen,#udhar-detail-screen,#salary-detail-screen,#expense-detail-screen,#project-detail-screen) .glass-card[class*="from-[#FF3B30]"],
+.dark :is(#expense-detail-screen,#project-detail-screen) .glass-card[class*="from-[#FF4B4B]"] {
+  background: linear-gradient(135deg, rgba(62,8,8,0.94), rgba(28,0,0,0.96)) !important;
+  border: 1px solid rgba(255,59,48,0.38) !important;
+  box-shadow: 0 8px 24px rgba(255,59,48,0.18), inset 0 1px 0 rgba(255,59,48,0.20) !important;
+}
+
+.dark :is(#milk-detail-screen,#udhar-detail-screen,#salary-detail-screen,#expense-detail-screen,#project-detail-screen) .glass-card[class*="from-[#FF3B30]"] :is(p,h3,span,div),
+.dark :is(#expense-detail-screen,#project-detail-screen) .glass-card[class*="from-[#FF4B4B]"] :is(p,h3,span,div) {
+  color: var(--aarish-v64-red) !important;
+  text-shadow: 0 0 12px rgba(255,59,48,0.38) !important;
+}
+
+/* Expense summary card on main Expenses screen */
+.dark #expenses-screen .glass-card.bg-red-500\/10,
+.dark #expenses-screen .glass-card.border-red-500\/20 {
+  background: rgba(62,8,8,0.72) !important;
+  border-color: rgba(255,59,48,0.34) !important;
+  box-shadow: 0 8px 22px rgba(255,59,48,0.12) !important;
+}
+
+.dark #expenses-screen #total-expense-display,
+.dark #expenses-screen .glass-card.bg-red-500\/10 p,
+.dark #expenses-screen .glass-card.border-red-500\/20 p {
+  color: var(--aarish-v64-red) !important;
+  text-shadow: 0 0 10px rgba(255,59,48,0.34) !important;
+}
+
+/* Credit main total card remains blue identity but readable */
+.dark #udhar-screen .glass-card[class*="from-[#007AFF]"] :is(p,h3,span,div) {
+  color: var(--aarish-v64-blue) !important;
+  text-shadow: 0 0 10px var(--aarish-v64-blue-glow) !important;
+}
+
+/* Business blue/orange total cards stay semantic */
+.dark #project-detail-screen .glass-card[class*="from-[#007AFF]"] :is(p,h3,span,div) {
+  color: var(--aarish-v64-blue) !important;
+}
+
+.dark #project-detail-screen .glass-card[class*="from-[#FF9500]"] :is(p,h3,span,div) {
+  color: var(--aarish-v64-orange) !important;
+}
+
+/* ===================== TABLES ON DETAIL SCREENS ===================== */
+.dark :is(
+  #milk-detail-screen,
+  #udhar-detail-screen,
+  #expense-detail-screen,
+  #salary-detail-screen,
+  #project-detail-screen
+) .table-custom th {
+  color: var(--aarish-v64-blue) !important;
+  text-shadow: 0 0 8px var(--aarish-v64-blue-glow) !important;
+  border-bottom-color: rgba(0,122,255,0.14) !important;
+}
+
+.dark :is(
+  #milk-detail-screen,
+  #udhar-detail-screen,
+  #expense-detail-screen,
+  #salary-detail-screen,
+  #project-detail-screen
+) .table-custom td:not([style*="color:"]):not([class*="text-[#34C759]"]):not([class*="text-[#10B981]"]):not([class*="text-[#FF3B30]"]):not([class*="text-[#FF4B4B]"]):not(:has(.action-btn)) {
+  color: var(--aarish-v64-blue) !important;
+  text-shadow: 0 0 8px var(--aarish-v64-blue-glow) !important;
+}
+
+/* Row titles in Business detail */
+.dark #project-detail-screen #project-detail-records span.text-gray-900,
+.dark #project-detail-screen #project-detail-records .dark\:text-white {
+  color: var(--aarish-v64-blue) !important;
+}
+
+/* Detail screen section headings */
+.dark :is(
+  #milk-detail-screen,
+  #udhar-detail-screen,
+  #expense-detail-screen,
+  #salary-detail-screen,
+  #project-detail-screen
+) h3:not([id*="total"]):not([id*="bill"]):not([id*="kg"]) {
+  color: var(--aarish-v64-blue) !important;
+  text-shadow: 0 0 10px var(--aarish-v64-blue-glow) !important;
+}
+
+/* Diary detail readable blue content/date, but diary title remains yellow */
+.dark #diary-detail-screen #diary-view-date {
+  color: var(--aarish-v64-blue) !important;
+  text-shadow: 0 0 8px var(--aarish-v64-blue-glow) !important;
+}
+
+.dark #diary-detail-screen #diary-view-content {
+  color: #9FD0FF !important;
+}
+
+/* Share buttons blue, Add buttons keep semantic green/red/yellow by existing classes */
+.dark :is(
+  #milk-detail-screen,
+  #udhar-detail-screen,
+  #expense-detail-screen,
+  #salary-detail-screen,
+  #diary-detail-screen,
+  #projects-screen,
+  #project-detail-screen
+) .btn-ios-share:not([class*="FF3B30"]):not([class*="F5A623"]):not([data-aarishFinanceV52]),
+.dark :is(
+  #milk-detail-screen,
+  #udhar-detail-screen,
+  #expense-detail-screen,
+  #salary-detail-screen,
+  #diary-detail-screen,
+  #projects-screen,
+  #project-detail-screen
+) .btn-ios-share:not([class*="FF3B30"]):not([class*="F5A623"]):not([data-aarishFinanceV52]) * {
+  color: var(--aarish-v64-blue) !important;
+  border-color: rgba(0,122,255,0.28) !important;
+}
+
+/* Do not change bottom nav dynamic V50/V51/V52/V54 logic */
+</style>
+
 </head>
 
 <body>
