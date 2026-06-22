@@ -686,7 +686,7 @@
 .dark #balances-screen #dash-balances-list .glass-card,
 .dark #balances-screen #dash-balances-list .party-ledger-balance-stripe-v40,
 .dark #balances-screen #dash-balances-list .list-enter {
-  border-left-width: 7px !important;
+  border-left-width: 3px !important;
   border-left-style: solid !important;
 }
 
@@ -846,7 +846,7 @@
 /* Base stripe shape/thickness for milk customer cards */
 #milk-screen #milk-list .glass-card,
 #milk-screen #milk-list .list-enter {
-  border-left-width: 7px !important;
+  border-left-width: 3px !important;
   border-left-style: solid !important;
   border-left-color: transparent !important;
   border-radius: 24px !important;
@@ -887,7 +887,7 @@
 #milk-screen #milk-list [class*="border-l-[#34C759]"],
 #milk-screen #milk-list [style*="#34C759"],
 #milk-screen #milk-list [style*="52, 199, 89"] {
-  border-left-width: 7px !important;
+  border-left-width: 3px !important;
   border-left-style: solid !important;
   border-left-color: #34C759 !important;
 }
@@ -896,7 +896,7 @@
 #milk-screen #milk-list [class*="border-l-[#FF3B30]"],
 #milk-screen #milk-list [style*="#FF3B30"],
 #milk-screen #milk-list [style*="255, 59, 48"] {
-  border-left-width: 7px !important;
+  border-left-width: 3px !important;
   border-left-style: solid !important;
   border-left-color: #FF3B30 !important;
 }
@@ -934,7 +934,7 @@
 @media (max-width: 380px) {
   #milk-screen #milk-list .glass-card,
   #milk-screen #milk-list .list-enter {
-    border-left-width: 6.5px !important;
+    border-left-width: 3px !important;
   }
 }
 </style>
@@ -1109,7 +1109,7 @@
    - white/gray normal text => app blue
    - amount/status semantic colors stay green/red/yellow/orange
    - delete buttons always red
-   - left curved stripe keeps light-mode thickness: list screens 3px, Party Ledger 4px
+   - left curved stripe keeps light-mode thickness: list screens 3px, Party Ledger 3px
    - positive => green stripe, negative => red stripe
    - total cards keep green/red background logic from existing JS, but labels + amount match green/red
    - CSS-only: no Firebase, no JS loop, no render/data changes
@@ -1496,7 +1496,7 @@
 .dark #balances-screen #dash-balances-list .glass-card,
 .dark #balances-screen #dash-balances-list .party-ledger-balance-stripe-v40,
 .dark #balances-screen #dash-balances-list .list-enter {
-  border-left-width: 4px !important;
+  border-left-width: 3px !important;
   border-left-style: solid !important;
 }
 
@@ -1663,6 +1663,665 @@
 }
 
 /* Do not change bottom nav dynamic V50/V51/V52/V54 logic */
+</style>
+
+
+
+<style id="aarish-party-ledger-true-stripe-v65">
+/* AARISH_PARTY_LEDGER_TRUE_STRIPE_V65
+   Party Ledger left curved stripe final fix:
+   - positive / TO RECEIVE / +₹ => GREEN stripe
+   - negative / TO PAY / -₹ => RED stripe
+   - no white stripe
+   - dark mode + light mode both safe
+   - thickness normal 3px, not too fat
+   - text blue from V61 remains untouched
+   - amount green/red logic untouched
+*/
+#balances-screen #dash-balances-list .glass-card,
+#balances-screen #dash-balances-list .list-enter,
+#balances-screen #dash-balances-list .party-ledger-balance-stripe-v40 {
+  border-left-width: 3px !important;
+  border-left-style: solid !important;
+  border-left-color: transparent !important;
+}
+
+#balances-screen #dash-balances-list .glass-card[data-aarish-party-stripe-v65="positive"],
+#balances-screen #dash-balances-list .list-enter[data-aarish-party-stripe-v65="positive"],
+#balances-screen #dash-balances-list .party-ledger-balance-stripe-v40[data-aarish-party-stripe-v65="positive"] {
+  border-left-color: #34C759 !important;
+  box-shadow: -4px 0 14px rgba(52,199,89,0.24), inset 1px 0 0 rgba(52,199,89,0.60) !important;
+}
+
+#balances-screen #dash-balances-list .glass-card[data-aarish-party-stripe-v65="negative"],
+#balances-screen #dash-balances-list .list-enter[data-aarish-party-stripe-v65="negative"],
+#balances-screen #dash-balances-list .party-ledger-balance-stripe-v40[data-aarish-party-stripe-v65="negative"] {
+  border-left-color: #FF3B30 !important;
+  box-shadow: -4px 0 14px rgba(255,59,48,0.24), inset 1px 0 0 rgba(255,59,48,0.60) !important;
+}
+
+/* CSS fallback if JS is late */
+#balances-screen #dash-balances-list .glass-card:has([class*="text-[#34C759]"]),
+#balances-screen #dash-balances-list .glass-card:has([class*="text-[#10B981]"]),
+#balances-screen #dash-balances-list .glass-card:has(.text-green-400),
+#balances-screen #dash-balances-list .glass-card:has(.text-green-500),
+#balances-screen #dash-balances-list .glass-card:has(.text-green-600) {
+  border-left-color: #34C759 !important;
+}
+
+#balances-screen #dash-balances-list .glass-card:has([class*="text-[#FF3B30]"]),
+#balances-screen #dash-balances-list .glass-card:has([class*="text-[#FF4B4B]"]),
+#balances-screen #dash-balances-list .glass-card:has(.text-red-400),
+#balances-screen #dash-balances-list .glass-card:has(.text-red-500),
+#balances-screen #dash-balances-list .glass-card:has(.text-red-600) {
+  border-left-color: #FF3B30 !important;
+}
+
+/* kill white inherited left-border in dark mode */
+.dark #balances-screen #dash-balances-list .glass-card:not([data-aarish-party-stripe-v65]),
+.dark #balances-screen #dash-balances-list .list-enter:not([data-aarish-party-stripe-v65]) {
+  border-left-color: transparent !important;
+}
+</style>
+
+
+
+<style id="aarish-uniform-stripe-width-v66">
+/* AARISH_UNIFORM_STRIPE_WIDTH_V66
+   Final sequence fix:
+   Milk + Party Ledger + Credit/Expense/Salary/Diary/Business list stripes all use same thin Credit Book thickness = 3px.
+   Green/red/yellow/blue stripe color logic remains unchanged.
+   No Firebase, no data/render logic, no broad UI override.
+*/
+
+/* universal list stripe thickness sequence */
+#milk-screen #milk-list .glass-card,
+#milk-screen #milk-list .list-enter,
+#balances-screen #dash-balances-list .glass-card,
+#balances-screen #dash-balances-list .list-enter,
+#balances-screen #dash-balances-list .party-ledger-balance-stripe-v40,
+#udhar-screen #udhar-list .glass-card,
+#udhar-screen #udhar-list .list-enter,
+#expenses-screen #expense-list-container .glass-card,
+#expenses-screen #expense-list-container .list-enter,
+#salary-screen #salary-list .glass-card,
+#salary-screen #salary-list .list-enter,
+#diary-screen #diary-list .glass-card,
+#diary-screen #diary-list .list-enter,
+#projects-screen #project-list .glass-card,
+#projects-screen #project-list .list-enter {
+  border-left-width: 3px !important;
+  border-left-style: solid !important;
+}
+
+/* Milk: keep green/red stripe color, only width normalized */
+#milk-screen #milk-list .glass-card:has(.text-green-400),
+#milk-screen #milk-list .glass-card:has(.text-green-500),
+#milk-screen #milk-list .glass-card:has(.text-green-600),
+#milk-screen #milk-list .glass-card:has([class*="text-[#34C759]"]),
+#milk-screen #milk-list .glass-card:has([class*="text-[#10B981]"]) {
+  border-left-color: #34C759 !important;
+  box-shadow: -3px 0 10px rgba(52,199,89,0.20), inset 1px 0 0 rgba(52,199,89,0.44) !important;
+}
+
+#milk-screen #milk-list .glass-card:has(.text-red-400),
+#milk-screen #milk-list .glass-card:has(.text-red-500),
+#milk-screen #milk-list .glass-card:has(.text-red-600),
+#milk-screen #milk-list .glass-card:has([class*="text-[#FF3B30]"]),
+#milk-screen #milk-list .glass-card:has([class*="text-[#FF4B4B]"]) {
+  border-left-color: #FF3B30 !important;
+  box-shadow: -3px 0 10px rgba(255,59,48,0.20), inset 1px 0 0 rgba(255,59,48,0.44) !important;
+}
+
+/* Party Ledger: true green/red, never white, only 3px */
+#balances-screen #dash-balances-list .glass-card[data-aarish-party-stripe-v65="positive"],
+#balances-screen #dash-balances-list .list-enter[data-aarish-party-stripe-v65="positive"],
+#balances-screen #dash-balances-list .glass-card:has(.text-green-400),
+#balances-screen #dash-balances-list .glass-card:has(.text-green-500),
+#balances-screen #dash-balances-list .glass-card:has(.text-green-600),
+#balances-screen #dash-balances-list .glass-card:has([class*="text-[#34C759]"]),
+#balances-screen #dash-balances-list .glass-card:has([class*="text-[#10B981]"]) {
+  border-left-color: #34C759 !important;
+  box-shadow: -3px 0 10px rgba(52,199,89,0.20), inset 1px 0 0 rgba(52,199,89,0.44) !important;
+}
+
+#balances-screen #dash-balances-list .glass-card[data-aarish-party-stripe-v65="negative"],
+#balances-screen #dash-balances-list .list-enter[data-aarish-party-stripe-v65="negative"],
+#balances-screen #dash-balances-list .glass-card:has(.text-red-400),
+#balances-screen #dash-balances-list .glass-card:has(.text-red-500),
+#balances-screen #dash-balances-list .glass-card:has(.text-red-600),
+#balances-screen #dash-balances-list .glass-card:has([class*="text-[#FF3B30]"]),
+#balances-screen #dash-balances-list .glass-card:has([class*="text-[#FF4B4B]"]) {
+  border-left-color: #FF3B30 !important;
+  box-shadow: -3px 0 10px rgba(255,59,48,0.20), inset 1px 0 0 rgba(255,59,48,0.44) !important;
+}
+
+/* prevent old white left line from surviving */
+.dark #balances-screen #dash-balances-list .glass-card:not([data-aarish-party-stripe-v65]):not(:has(.text-green-400)):not(:has(.text-green-500)):not(:has(.text-green-600)):not(:has(.text-red-400)):not(:has(.text-red-500)):not(:has(.text-red-600)),
+.dark #milk-screen #milk-list .glass-card:not(:has(.text-green-400)):not(:has(.text-green-500)):not(:has(.text-green-600)):not(:has(.text-red-400)):not(:has(.text-red-500)):not(:has(.text-red-600)) {
+  border-left-color: transparent !important;
+}
+</style>
+
+
+
+<style id="aarish-credit-book-dynamic-color-v67">
+/* AARISH_CREDIT_BOOK_DYNAMIC_COLOR_V67
+   Credit Book dark-mode color restore:
+   - global Credit Book title/top card/button/tab follows old light-mode net logic
+   - net positive => green
+   - net negative => red
+   - net zero => blue
+   - each credit list card follows its own card net: green/red
+   - delete stays red
+   - stripe width stays Credit Book sequence 3px
+   - CSS + small DOM paint only; no Firebase/data calculation change
+*/
+.dark #udhar-screen {
+  --aarish-credit-green-v67: #34C759;
+  --aarish-credit-red-v67: #FF3B30;
+  --aarish-credit-blue-v67: var(--ios-blue, #007AFF);
+  --aarish-credit-green-shadow-v67: rgba(52,199,89,0.36);
+  --aarish-credit-red-shadow-v67: rgba(255,59,48,0.36);
+  --aarish-credit-blue-shadow-v67: rgba(0,122,255,0.34);
+}
+
+/* Credit Book screen global state colors */
+.dark #udhar-screen[data-aarish-credit-net-v67="positive"] .header-sticky h1,
+.dark #udhar-screen[data-aarish-credit-net-v67="positive"] #udhar-search,
+.dark #udhar-screen[data-aarish-credit-net-v67="positive"] .fa-search {
+  color: var(--aarish-credit-green-v67) !important;
+  text-shadow: 0 0 12px var(--aarish-credit-green-shadow-v67) !important;
+}
+
+.dark #udhar-screen[data-aarish-credit-net-v67="negative"] .header-sticky h1,
+.dark #udhar-screen[data-aarish-credit-net-v67="negative"] #udhar-search,
+.dark #udhar-screen[data-aarish-credit-net-v67="negative"] .fa-search {
+  color: var(--aarish-credit-red-v67) !important;
+  text-shadow: 0 0 12px var(--aarish-credit-red-shadow-v67) !important;
+}
+
+.dark #udhar-screen[data-aarish-credit-net-v67="zero"] .header-sticky h1,
+.dark #udhar-screen[data-aarish-credit-net-v67="zero"] #udhar-search,
+.dark #udhar-screen[data-aarish-credit-net-v67="zero"] .fa-search {
+  color: var(--aarish-credit-blue-v67) !important;
+  text-shadow: 0 0 12px var(--aarish-credit-blue-shadow-v67) !important;
+}
+
+/* Placeholder also follows Credit Book global state */
+.dark #udhar-screen[data-aarish-credit-net-v67="positive"] #udhar-search::placeholder,
+.dark #udhar-screen[data-aarish-credit-net-v67="positive"] #udhar-search::-webkit-input-placeholder {
+  color: rgba(52,199,89,0.78) !important;
+  opacity: 1 !important;
+}
+
+.dark #udhar-screen[data-aarish-credit-net-v67="negative"] #udhar-search::placeholder,
+.dark #udhar-screen[data-aarish-credit-net-v67="negative"] #udhar-search::-webkit-input-placeholder {
+  color: rgba(255,59,48,0.78) !important;
+  opacity: 1 !important;
+}
+
+.dark #udhar-screen[data-aarish-credit-net-v67="zero"] #udhar-search::placeholder,
+.dark #udhar-screen[data-aarish-credit-net-v67="zero"] #udhar-search::-webkit-input-placeholder {
+  color: rgba(0,122,255,0.76) !important;
+  opacity: 1 !important;
+}
+
+/* Top Credit Book summary card: positive/negative/zero background */
+.dark #udhar-screen[data-aarish-credit-net-v67="positive"] .glass-card:has(#udhar-total-lena) {
+  background: linear-gradient(135deg, rgba(0,64,24,0.96), rgba(0,36,16,0.98)) !important;
+  border-color: rgba(52,199,89,0.38) !important;
+  box-shadow: 0 10px 30px rgba(52,199,89,0.18), inset 0 1px 0 rgba(52,199,89,0.22) !important;
+}
+
+.dark #udhar-screen[data-aarish-credit-net-v67="negative"] .glass-card:has(#udhar-total-lena) {
+  background: linear-gradient(135deg, rgba(92,8,8,0.96), rgba(48,0,0,0.98)) !important;
+  border-color: rgba(255,59,48,0.38) !important;
+  box-shadow: 0 10px 30px rgba(255,59,48,0.18), inset 0 1px 0 rgba(255,59,48,0.22) !important;
+}
+
+.dark #udhar-screen[data-aarish-credit-net-v67="zero"] .glass-card:has(#udhar-total-lena) {
+  background: linear-gradient(135deg, rgba(0,42,88,0.96), rgba(0,18,44,0.98)) !important;
+  border-color: rgba(0,122,255,0.38) !important;
+  box-shadow: 0 10px 30px rgba(0,122,255,0.16), inset 0 1px 0 rgba(0,122,255,0.20) !important;
+}
+
+/* Top card text follows global state, both labels and totals */
+.dark #udhar-screen[data-aarish-credit-net-v67="positive"] .glass-card:has(#udhar-total-lena) :is(p,h3,span,div) {
+  color: var(--aarish-credit-green-v67) !important;
+  text-shadow: 0 0 12px var(--aarish-credit-green-shadow-v67) !important;
+  opacity: 1 !important;
+}
+
+.dark #udhar-screen[data-aarish-credit-net-v67="negative"] .glass-card:has(#udhar-total-lena) :is(p,h3,span,div) {
+  color: var(--aarish-credit-red-v67) !important;
+  text-shadow: 0 0 12px var(--aarish-credit-red-shadow-v67) !important;
+  opacity: 1 !important;
+}
+
+.dark #udhar-screen[data-aarish-credit-net-v67="zero"] .glass-card:has(#udhar-total-lena) :is(p,h3,span,div) {
+  color: var(--aarish-credit-blue-v67) !important;
+  text-shadow: 0 0 12px var(--aarish-credit-blue-shadow-v67) !important;
+  opacity: 1 !important;
+}
+
+/* Individual party cards: remove forced blue and follow own plus/minus */
+.dark #udhar-list .glass-card[data-aarish-credit-card-v67="positive"] :is(h3,h4,p,.font-bold,.font-extrabold,.fa-chevron-right) {
+  color: var(--aarish-credit-green-v67) !important;
+  text-shadow: 0 0 10px var(--aarish-credit-green-shadow-v67) !important;
+  opacity: 1 !important;
+}
+
+.dark #udhar-list .glass-card[data-aarish-credit-card-v67="negative"] :is(h3,h4,p,.font-bold,.font-extrabold,.fa-chevron-right) {
+  color: var(--aarish-credit-red-v67) !important;
+  text-shadow: 0 0 10px var(--aarish-credit-red-shadow-v67) !important;
+  opacity: 1 !important;
+}
+
+.dark #udhar-list .glass-card[data-aarish-credit-card-v67="zero"] :is(h3,h4,p,.font-bold,.font-extrabold,.fa-chevron-right) {
+  color: var(--aarish-credit-blue-v67) !important;
+  text-shadow: 0 0 10px var(--aarish-credit-blue-shadow-v67) !important;
+  opacity: 1 !important;
+}
+
+/* Amount text semantic safety */
+.dark #udhar-list .glass-card[data-aarish-credit-card-v67="positive"] :is(.text-green-400,.text-green-500,.text-green-600,[class*="text-[#34C759]"],[class*="text-[#10B981]"]) {
+  color: var(--aarish-credit-green-v67) !important;
+}
+
+.dark #udhar-list .glass-card[data-aarish-credit-card-v67="negative"] :is(.text-red-400,.text-red-500,.text-red-600,[class*="text-[#FF3B30]"],[class*="text-[#FF4B4B]"]) {
+  color: var(--aarish-credit-red-v67) !important;
+}
+
+/* Stripe remains same thin 3px sequence */
+#udhar-screen #udhar-list .glass-card,
+#udhar-screen #udhar-list .list-enter {
+  border-left-width: 3px !important;
+  border-left-style: solid !important;
+}
+
+#udhar-screen #udhar-list .glass-card[data-aarish-credit-card-v67="positive"] {
+  border-left-color: var(--aarish-credit-green-v67) !important;
+  box-shadow: -3px 0 10px rgba(52,199,89,0.20), inset 1px 0 0 rgba(52,199,89,0.44) !important;
+}
+
+#udhar-screen #udhar-list .glass-card[data-aarish-credit-card-v67="negative"] {
+  border-left-color: var(--aarish-credit-red-v67) !important;
+  box-shadow: -3px 0 10px rgba(255,59,48,0.20), inset 1px 0 0 rgba(255,59,48,0.44) !important;
+}
+
+#udhar-screen #udhar-list .glass-card[data-aarish-credit-card-v67="zero"] {
+  border-left-color: var(--aarish-credit-blue-v67) !important;
+  box-shadow: -3px 0 10px rgba(0,122,255,0.16), inset 1px 0 0 rgba(0,122,255,0.36) !important;
+}
+
+/* Delete remains red */
+.dark #udhar-screen .action-btn,
+.dark #udhar-screen .action-btn *,
+.dark #udhar-screen i.fa-trash {
+  color: var(--aarish-credit-red-v67) !important;
+}
+</style>
+
+
+
+<style id="aarish-expense-salary-dynamic-v68">
+/* AARISH_EXPENSE_SALARY_DYNAMIC_COLOR_V68
+   Dark-mode restore for Expenses + Salary:
+   - Salary plus / lene_wala => green
+   - Salary minus / dena_wala => red
+   - Salary zero => blue
+   - Expense non-zero outgoing => red
+   - Expense zero => blue
+   - Text/button/tab/top cards/list cards follow same logic
+   - Delete stays red
+   - Stripe stays same thin 3px sequence
+   - CSS + small DOM paint only; no Firebase/data calculation change
+*/
+.dark #expenses-screen,
+.dark #expense-detail-screen,
+.dark #salary-screen,
+.dark #salary-detail-screen {
+  --aarish-es-green-v68: #34C759;
+  --aarish-es-green2-v68: #10B981;
+  --aarish-es-red-v68: #FF3B30;
+  --aarish-es-blue-v68: var(--ios-blue, #007AFF);
+  --aarish-es-green-shadow-v68: rgba(52,199,89,0.36);
+  --aarish-es-red-shadow-v68: rgba(255,59,48,0.36);
+  --aarish-es-blue-shadow-v68: rgba(0,122,255,0.34);
+}
+
+/* ================= EXPENSE GLOBAL STATE ================= */
+.dark #expenses-screen[data-aarish-expense-net-v68="negative"] .header-sticky h1,
+.dark #expenses-screen[data-aarish-expense-net-v68="negative"] .fa-search,
+.dark #expenses-screen[data-aarish-expense-net-v68="negative"] #expense-search,
+.dark #expense-detail-screen[data-aarish-expense-net-v68="negative"] .header-sticky h1,
+.dark #expense-detail-screen[data-aarish-expense-net-v68="negative"] .header-sticky button i {
+  color: var(--aarish-es-red-v68) !important;
+  text-shadow: 0 0 12px var(--aarish-es-red-shadow-v68) !important;
+}
+
+.dark #expenses-screen[data-aarish-expense-net-v68="zero"] .header-sticky h1,
+.dark #expenses-screen[data-aarish-expense-net-v68="zero"] .fa-search,
+.dark #expenses-screen[data-aarish-expense-net-v68="zero"] #expense-search,
+.dark #expense-detail-screen[data-aarish-expense-net-v68="zero"] .header-sticky h1,
+.dark #expense-detail-screen[data-aarish-expense-net-v68="zero"] .header-sticky button i {
+  color: var(--aarish-es-blue-v68) !important;
+  text-shadow: 0 0 12px var(--aarish-es-blue-shadow-v68) !important;
+}
+
+/* Expense placeholder */
+.dark #expenses-screen[data-aarish-expense-net-v68="negative"] #expense-search::placeholder,
+.dark #expenses-screen[data-aarish-expense-net-v68="negative"] #expense-search::-webkit-input-placeholder {
+  color: rgba(255,59,48,0.78) !important;
+  opacity: 1 !important;
+}
+
+.dark #expenses-screen[data-aarish-expense-net-v68="zero"] #expense-search::placeholder,
+.dark #expenses-screen[data-aarish-expense-net-v68="zero"] #expense-search::-webkit-input-placeholder {
+  color: rgba(0,122,255,0.76) !important;
+  opacity: 1 !important;
+}
+
+/* Expense Add button + bottom tab */
+.dark #expenses-screen[data-aarish-expense-net-v68="negative"] #expense-add-btn-v52,
+.dark #tab-expenses[data-aarish-expense-v68="negative"] {
+  color: #FFFFFF !important;
+}
+
+.dark #expenses-screen[data-aarish-expense-net-v68="negative"] #expense-add-btn-v52 {
+  background: var(--aarish-es-red-v68) !important;
+  border-color: transparent !important;
+  box-shadow: 0 8px 24px rgba(255,59,48,0.24) !important;
+}
+
+.dark #tab-expenses[data-aarish-expense-v68="negative"],
+.dark #tab-expenses[data-aarish-expense-v68="negative"] i {
+  color: var(--aarish-es-red-v68) !important;
+  text-shadow: 0 0 12px var(--aarish-es-red-shadow-v68) !important;
+}
+
+/* Expense zero blue */
+.dark #expenses-screen[data-aarish-expense-net-v68="zero"] #expense-add-btn-v52 {
+  background: var(--aarish-es-blue-v68) !important;
+  color: #FFFFFF !important;
+  border-color: transparent !important;
+  box-shadow: 0 8px 24px rgba(0,122,255,0.22) !important;
+}
+
+.dark #tab-expenses[data-aarish-expense-v68="zero"],
+.dark #tab-expenses[data-aarish-expense-v68="zero"] i {
+  color: var(--aarish-es-blue-v68) !important;
+  text-shadow: 0 0 12px var(--aarish-es-blue-shadow-v68) !important;
+}
+
+/* Expense total/top card */
+.dark #expenses-screen[data-aarish-expense-net-v68="negative"] :is(.glass-card:has(#total-expense-display), .glass-card.bg-red-500\/10, .glass-card.border-red-500\/20) {
+  background: linear-gradient(135deg, rgba(92,8,8,0.96), rgba(48,0,0,0.98)) !important;
+  border-color: rgba(255,59,48,0.38) !important;
+  box-shadow: 0 10px 30px rgba(255,59,48,0.18), inset 0 1px 0 rgba(255,59,48,0.22) !important;
+}
+
+.dark #expenses-screen[data-aarish-expense-net-v68="negative"] :is(.glass-card:has(#total-expense-display), .glass-card.bg-red-500\/10, .glass-card.border-red-500\/20) :is(p,h3,span,div,#total-expense-display) {
+  color: var(--aarish-es-red-v68) !important;
+  text-shadow: 0 0 12px var(--aarish-es-red-shadow-v68) !important;
+  opacity: 1 !important;
+}
+
+.dark #expenses-screen[data-aarish-expense-net-v68="zero"] :is(.glass-card:has(#total-expense-display), .glass-card.bg-red-500\/10, .glass-card.border-red-500\/20) {
+  background: linear-gradient(135deg, rgba(0,42,88,0.96), rgba(0,18,44,0.98)) !important;
+  border-color: rgba(0,122,255,0.38) !important;
+  box-shadow: 0 10px 30px rgba(0,122,255,0.16), inset 0 1px 0 rgba(0,122,255,0.20) !important;
+}
+
+.dark #expenses-screen[data-aarish-expense-net-v68="zero"] :is(.glass-card:has(#total-expense-display), .glass-card.bg-red-500\/10, .glass-card.border-red-500\/20) :is(p,h3,span,div,#total-expense-display) {
+  color: var(--aarish-es-blue-v68) !important;
+  text-shadow: 0 0 12px var(--aarish-es-blue-shadow-v68) !important;
+  opacity: 1 !important;
+}
+
+/* Expense list cards: outgoing red, zero blue */
+.dark #expense-list-container .glass-card[data-aarish-expense-card-v68="negative"] :is(h3,h4,p,.font-bold,.font-extrabold,.fa-chevron-right) {
+  color: var(--aarish-es-red-v68) !important;
+  text-shadow: 0 0 10px var(--aarish-es-red-shadow-v68) !important;
+  opacity: 1 !important;
+}
+
+.dark #expense-list-container .glass-card[data-aarish-expense-card-v68="zero"] :is(h3,h4,p,.font-bold,.font-extrabold,.fa-chevron-right) {
+  color: var(--aarish-es-blue-v68) !important;
+  text-shadow: 0 0 10px var(--aarish-es-blue-shadow-v68) !important;
+  opacity: 1 !important;
+}
+
+#expense-list-container .glass-card,
+#expense-list-container .list-enter {
+  border-left-width: 3px !important;
+  border-left-style: solid !important;
+}
+
+#expense-list-container .glass-card[data-aarish-expense-card-v68="negative"] {
+  border-left-color: var(--aarish-es-red-v68) !important;
+  box-shadow: -3px 0 10px rgba(255,59,48,0.20), inset 1px 0 0 rgba(255,59,48,0.44) !important;
+}
+
+#expense-list-container .glass-card[data-aarish-expense-card-v68="zero"] {
+  border-left-color: var(--aarish-es-blue-v68) !important;
+  box-shadow: -3px 0 10px rgba(0,122,255,0.16), inset 1px 0 0 rgba(0,122,255,0.36) !important;
+}
+
+/* ================= SALARY GLOBAL STATE ================= */
+.dark #salary-screen[data-aarish-salary-net-v68="positive"] .header-sticky h1,
+.dark #salary-screen[data-aarish-salary-net-v68="positive"] .fa-search,
+.dark #salary-screen[data-aarish-salary-net-v68="positive"] #salary-search,
+.dark #salary-detail-screen[data-aarish-salary-net-v68="positive"] .header-sticky h1,
+.dark #salary-detail-screen[data-aarish-salary-net-v68="positive"] .header-sticky button i {
+  color: var(--aarish-es-green-v68) !important;
+  text-shadow: 0 0 12px var(--aarish-es-green-shadow-v68) !important;
+}
+
+.dark #salary-screen[data-aarish-salary-net-v68="negative"] .header-sticky h1,
+.dark #salary-screen[data-aarish-salary-net-v68="negative"] .fa-search,
+.dark #salary-screen[data-aarish-salary-net-v68="negative"] #salary-search,
+.dark #salary-detail-screen[data-aarish-salary-net-v68="negative"] .header-sticky h1,
+.dark #salary-detail-screen[data-aarish-salary-net-v68="negative"] .header-sticky button i {
+  color: var(--aarish-es-red-v68) !important;
+  text-shadow: 0 0 12px var(--aarish-es-red-shadow-v68) !important;
+}
+
+.dark #salary-screen[data-aarish-salary-net-v68="zero"] .header-sticky h1,
+.dark #salary-screen[data-aarish-salary-net-v68="zero"] .fa-search,
+.dark #salary-screen[data-aarish-salary-net-v68="zero"] #salary-search,
+.dark #salary-detail-screen[data-aarish-salary-net-v68="zero"] .header-sticky h1,
+.dark #salary-detail-screen[data-aarish-salary-net-v68="zero"] .header-sticky button i {
+  color: var(--aarish-es-blue-v68) !important;
+  text-shadow: 0 0 12px var(--aarish-es-blue-shadow-v68) !important;
+}
+
+/* Salary placeholder */
+.dark #salary-screen[data-aarish-salary-net-v68="positive"] #salary-search::placeholder,
+.dark #salary-screen[data-aarish-salary-net-v68="positive"] #salary-search::-webkit-input-placeholder {
+  color: rgba(52,199,89,0.78) !important;
+  opacity: 1 !important;
+}
+
+.dark #salary-screen[data-aarish-salary-net-v68="negative"] #salary-search::placeholder,
+.dark #salary-screen[data-aarish-salary-net-v68="negative"] #salary-search::-webkit-input-placeholder {
+  color: rgba(255,59,48,0.78) !important;
+  opacity: 1 !important;
+}
+
+.dark #salary-screen[data-aarish-salary-net-v68="zero"] #salary-search::placeholder,
+.dark #salary-screen[data-aarish-salary-net-v68="zero"] #salary-search::-webkit-input-placeholder {
+  color: rgba(0,122,255,0.76) !important;
+  opacity: 1 !important;
+}
+
+/* Salary New button + bottom tab */
+.dark #salary-screen[data-aarish-salary-net-v68="positive"] #salary-new-btn-v52 {
+  background: var(--aarish-es-green-v68) !important;
+  color: #FFFFFF !important;
+  border-color: transparent !important;
+  box-shadow: 0 8px 24px rgba(52,199,89,0.24) !important;
+}
+
+.dark #salary-screen[data-aarish-salary-net-v68="negative"] #salary-new-btn-v52 {
+  background: var(--aarish-es-red-v68) !important;
+  color: #FFFFFF !important;
+  border-color: transparent !important;
+  box-shadow: 0 8px 24px rgba(255,59,48,0.24) !important;
+}
+
+.dark #salary-screen[data-aarish-salary-net-v68="zero"] #salary-new-btn-v52 {
+  background: var(--aarish-es-blue-v68) !important;
+  color: #FFFFFF !important;
+  border-color: transparent !important;
+  box-shadow: 0 8px 24px rgba(0,122,255,0.22) !important;
+}
+
+.dark #tab-salary[data-aarish-salary-v68="positive"],
+.dark #tab-salary[data-aarish-salary-v68="positive"] i {
+  color: var(--aarish-es-green-v68) !important;
+  text-shadow: 0 0 12px var(--aarish-es-green-shadow-v68) !important;
+}
+
+.dark #tab-salary[data-aarish-salary-v68="negative"],
+.dark #tab-salary[data-aarish-salary-v68="negative"] i {
+  color: var(--aarish-es-red-v68) !important;
+  text-shadow: 0 0 12px var(--aarish-es-red-shadow-v68) !important;
+}
+
+.dark #tab-salary[data-aarish-salary-v68="zero"],
+.dark #tab-salary[data-aarish-salary-v68="zero"] i {
+  color: var(--aarish-es-blue-v68) !important;
+  text-shadow: 0 0 12px var(--aarish-es-blue-shadow-v68) !important;
+}
+
+/* Salary list cards follow own type/net */
+.dark #salary-list .glass-card[data-aarish-salary-card-v68="positive"] :is(h3,h4,p,.font-bold,.font-extrabold,.fa-chevron-right) {
+  color: var(--aarish-es-green-v68) !important;
+  text-shadow: 0 0 10px var(--aarish-es-green-shadow-v68) !important;
+  opacity: 1 !important;
+}
+
+.dark #salary-list .glass-card[data-aarish-salary-card-v68="negative"] :is(h3,h4,p,.font-bold,.font-extrabold,.fa-chevron-right) {
+  color: var(--aarish-es-red-v68) !important;
+  text-shadow: 0 0 10px var(--aarish-es-red-shadow-v68) !important;
+  opacity: 1 !important;
+}
+
+.dark #salary-list .glass-card[data-aarish-salary-card-v68="zero"] :is(h3,h4,p,.font-bold,.font-extrabold,.fa-chevron-right) {
+  color: var(--aarish-es-blue-v68) !important;
+  text-shadow: 0 0 10px var(--aarish-es-blue-shadow-v68) !important;
+  opacity: 1 !important;
+}
+
+#salary-list .glass-card,
+#salary-list .list-enter {
+  border-left-width: 3px !important;
+  border-left-style: solid !important;
+}
+
+#salary-list .glass-card[data-aarish-salary-card-v68="positive"] {
+  border-left-color: var(--aarish-es-green-v68) !important;
+  box-shadow: -3px 0 10px rgba(52,199,89,0.20), inset 1px 0 0 rgba(52,199,89,0.44) !important;
+}
+
+#salary-list .glass-card[data-aarish-salary-card-v68="negative"] {
+  border-left-color: var(--aarish-es-red-v68) !important;
+  box-shadow: -3px 0 10px rgba(255,59,48,0.20), inset 1px 0 0 rgba(255,59,48,0.44) !important;
+}
+
+#salary-list .glass-card[data-aarish-salary-card-v68="zero"] {
+  border-left-color: var(--aarish-es-blue-v68) !important;
+  box-shadow: -3px 0 10px rgba(0,122,255,0.16), inset 1px 0 0 rgba(0,122,255,0.36) !important;
+}
+
+/* Salary detail card text follows employee type */
+.dark #salary-detail-screen[data-aarish-salary-net-v68="positive"] .glass-card:has(#salary-detail-total) :is(p,h3,span,div,#salary-detail-total) {
+  color: var(--aarish-es-green-v68) !important;
+  text-shadow: 0 0 12px var(--aarish-es-green-shadow-v68) !important;
+  opacity: 1 !important;
+}
+
+.dark #salary-detail-screen[data-aarish-salary-net-v68="negative"] .glass-card:has(#salary-detail-total) :is(p,h3,span,div,#salary-detail-total) {
+  color: var(--aarish-es-red-v68) !important;
+  text-shadow: 0 0 12px var(--aarish-es-red-shadow-v68) !important;
+  opacity: 1 !important;
+}
+
+.dark #salary-detail-screen[data-aarish-salary-net-v68="zero"] .glass-card:has(#salary-detail-total) :is(p,h3,span,div,#salary-detail-total) {
+  color: var(--aarish-es-blue-v68) !important;
+  text-shadow: 0 0 12px var(--aarish-es-blue-shadow-v68) !important;
+  opacity: 1 !important;
+}
+
+/* Detail table headings/normal text follow screen state */
+.dark :is(#expense-detail-screen,#salary-detail-screen) .table-custom th,
+.dark :is(#expense-detail-screen,#salary-detail-screen) .table-custom td:not(:has(.action-btn)):not([class*="text-[#10B981]"]):not([class*="text-[#34C759]"]):not([class*="text-[#FF3B30]"]):not([class*="text-[#FF4B4B]"]) {
+  color: inherit !important;
+}
+
+/* Delete stays red */
+.dark :is(#expenses-screen,#expense-detail-screen,#salary-screen,#salary-detail-screen) .action-btn,
+.dark :is(#expenses-screen,#expense-detail-screen,#salary-screen,#salary-detail-screen) .action-btn *,
+.dark :is(#expenses-screen,#expense-detail-screen,#salary-screen,#salary-detail-screen) i.fa-trash {
+  color: var(--aarish-es-red-v68) !important;
+}
+</style>
+
+
+
+<style id="aarish-credit-top-bg-v69">
+/* AARISH_CREDIT_TOP_BG_V69
+   Credit Book top Net Balance card:
+   + positive => green background
+   + negative => red background
+   + neutral  => blue background
+   Only top summary card fixed. No full-version rewrite.
+*/
+
+.dark #udhar-screen {
+  --aarish-v69-green: #34C759;
+  --aarish-v69-red: #FF3B30;
+  --aarish-v69-blue: #007AFF;
+  --aarish-v69-green-glow: rgba(52,199,89,0.38);
+  --aarish-v69-red-glow: rgba(255,59,48,0.38);
+  --aarish-v69-blue-glow: rgba(0,122,255,0.34);
+}
+
+/* top card only */
+.dark #udhar-screen .glass-card[data-aarish-credit-top-v69="positive"] {
+  background: linear-gradient(135deg, rgba(2,54,24,0.96), rgba(0,28,14,0.98)) !important;
+  border: 1px solid rgba(52,199,89,0.38) !important;
+  box-shadow: 0 10px 28px rgba(52,199,89,0.18), inset 0 1px 0 rgba(52,199,89,0.20) !important;
+}
+
+.dark #udhar-screen .glass-card[data-aarish-credit-top-v69="negative"] {
+  background: linear-gradient(135deg, rgba(62,8,8,0.96), rgba(28,0,0,0.98)) !important;
+  border: 1px solid rgba(255,59,48,0.38) !important;
+  box-shadow: 0 10px 28px rgba(255,59,48,0.18), inset 0 1px 0 rgba(255,59,48,0.20) !important;
+}
+
+.dark #udhar-screen .glass-card[data-aarish-credit-top-v69="neutral"] {
+  background: linear-gradient(135deg, rgba(0,58,122,0.96), rgba(0,28,68,0.98)) !important;
+  border: 1px solid rgba(0,122,255,0.38) !important;
+  box-shadow: 0 10px 28px rgba(0,122,255,0.18), inset 0 1px 0 rgba(0,122,255,0.20) !important;
+}
+
+.dark #udhar-screen .glass-card[data-aarish-credit-top-v69="positive"] :is(p,h3,span,div) {
+  color: var(--aarish-v69-green) !important;
+  text-shadow: 0 0 12px var(--aarish-v69-green-glow) !important;
+}
+
+.dark #udhar-screen .glass-card[data-aarish-credit-top-v69="negative"] :is(p,h3,span,div) {
+  color: var(--aarish-v69-red) !important;
+  text-shadow: 0 0 12px var(--aarish-v69-red-glow) !important;
+}
+
+.dark #udhar-screen .glass-card[data-aarish-credit-top-v69="neutral"] :is(p,h3,span,div) {
+  color: var(--aarish-v69-blue) !important;
+  text-shadow: 0 0 12px var(--aarish-v69-blue-glow) !important;
+}
 </style>
 
 </head>
@@ -9307,6 +9966,820 @@ window.onload = function(){ setTimeout(function(){ window.focus(); window.print(
   }, { passive: true });
 
   scheduleV64();
+})();
+</script>
+
+
+
+<script id="aarish-party-ledger-true-stripe-v65-js">
+// AARISH_PARTY_LEDGER_TRUE_STRIPE_V65_JS
+// one-shot DOM styling only; no Firebase write, no data logic change, no observer, no interval.
+(function () {
+  if (window.__AARISH_PARTY_LEDGER_TRUE_STRIPE_V65_READY) return;
+  window.__AARISH_PARTY_LEDGER_TRUE_STRIPE_V65_READY = true;
+
+  var GREEN = "#34C759";
+  var RED = "#FF3B30";
+
+  function textOf(el) {
+    try { return (el && (el.innerText || el.textContent) || "").replace(/\s+/g, " ").trim(); }
+    catch (e) { return ""; }
+  }
+
+  function hasGreenSignal(card) {
+    if (!card) return false;
+    if (card.querySelector(".text-green-400,.text-green-500,.text-green-600,[class*='text-[#34C759]'],[class*='text-[#10B981]']")) return true;
+    var t = textOf(card).toUpperCase();
+    return t.indexOf("TO RECEIVE") !== -1 || /\+\s*₹/.test(t) || /\+\s*[0-9]/.test(t);
+  }
+
+  function hasRedSignal(card) {
+    if (!card) return false;
+    if (card.querySelector(".text-red-400,.text-red-500,.text-red-600,[class*='text-[#FF3B30]'],[class*='text-[#FF4B4B]']")) return true;
+    var t = textOf(card).toUpperCase();
+    return t.indexOf("TO PAY") !== -1 || /-\s*₹/.test(t) || /-\s*[0-9]/.test(t);
+  }
+
+  function applyOne(card) {
+    if (!card || !card.style) return;
+
+    var side = "";
+    if (hasRedSignal(card)) side = "negative";
+    else if (hasGreenSignal(card)) side = "positive";
+
+    if (!side) {
+      card.removeAttribute("data-aarish-party-stripe-v65");
+      card.style.setProperty("border-left-width", "3px", "important");
+      card.style.setProperty("border-left-style", "solid", "important");
+      card.style.setProperty("border-left-color", "transparent", "important");
+      return;
+    }
+
+    var color = side === "negative" ? RED : GREEN;
+    var shadow = side === "negative"
+      ? "-4px 0 14px rgba(255,59,48,0.24), inset 1px 0 0 rgba(255,59,48,0.60)"
+      : "-4px 0 14px rgba(52,199,89,0.24), inset 1px 0 0 rgba(52,199,89,0.60)";
+
+    card.setAttribute("data-aarish-party-stripe-v65", side);
+    card.style.setProperty("border-left-width", "3px", "important");
+    card.style.setProperty("border-left-style", "solid", "important");
+    card.style.setProperty("border-left-color", color, "important");
+    card.style.setProperty("box-shadow", shadow, "important");
+
+    try {
+      card.querySelectorAll(".party-ledger-balance-stripe-v40,[class*='border-l-']").forEach(function (node) {
+        node.setAttribute("data-aarish-party-stripe-v65", side);
+        node.style.setProperty("border-left-width", "3px", "important");
+        node.style.setProperty("border-left-style", "solid", "important");
+        node.style.setProperty("border-left-color", color, "important");
+      });
+    } catch (e) {}
+  }
+
+  window.updatePartyLedgerTrueStripeV65 = function () {
+    try {
+      var list = document.getElementById("dash-balances-list");
+      if (!list) return;
+      list.querySelectorAll(".glass-card,.list-enter,.party-ledger-balance-stripe-v40").forEach(applyOne);
+    } catch (e) {}
+  };
+
+  function scheduleV65() {
+    requestAnimationFrame(function () {
+      try { window.updatePartyLedgerTrueStripeV65(); } catch (e) {}
+    });
+  }
+
+  function wrapOnce(name) {
+    try {
+      var old = window[name];
+      if (typeof old !== "function" || old.__aarishPartyStripeV65Wrapped) return;
+      var wrapped = function () {
+        var result = old.apply(this, arguments);
+        scheduleV65();
+        return result;
+      };
+      wrapped.__aarishPartyStripeV65Wrapped = true;
+      window[name] = wrapped;
+      try { Function("wrapped", name + " = wrapped;")(wrapped); } catch (e) {}
+    } catch (e) {}
+  }
+
+  ["renderDashboardBalances", "openAllBalances", "filterBalances", "switchTab", "updateActiveScreen"].forEach(wrapOnce);
+
+  document.addEventListener("DOMContentLoaded", scheduleV65, { passive: true, once: true });
+  window.addEventListener("load", scheduleV65, { passive: true, once: true });
+  document.addEventListener("visibilitychange", function () {
+    if (!document.hidden) scheduleV65();
+  }, { passive: true });
+  document.addEventListener("click", function (ev) {
+    try {
+      if (ev.target && ev.target.closest && ev.target.closest("#balances-screen, [onclick*='openAllBalances']")) scheduleV65();
+    } catch (e) {}
+  }, { passive: true });
+
+  scheduleV65();
+})();
+</script>
+
+
+
+<script id="aarish-uniform-stripe-width-v66-js">
+// AARISH_UNIFORM_STRIPE_WIDTH_V66_JS
+// Final tiny one-shot width normalizer. No Firebase write, no observer, no interval.
+(function () {
+  if (window.__AARISH_UNIFORM_STRIPE_WIDTH_V66_READY) return;
+  window.__AARISH_UNIFORM_STRIPE_WIDTH_V66_READY = true;
+
+  function normalizeStripeWidthV66() {
+    try {
+      document.querySelectorAll([
+        "#milk-screen #milk-list .glass-card",
+        "#milk-screen #milk-list .list-enter",
+        "#balances-screen #dash-balances-list .glass-card",
+        "#balances-screen #dash-balances-list .list-enter",
+        "#balances-screen #dash-balances-list .party-ledger-balance-stripe-v40",
+        "#udhar-screen #udhar-list .glass-card",
+        "#expenses-screen #expense-list-container .glass-card",
+        "#salary-screen #salary-list .glass-card",
+        "#diary-screen #diary-list .glass-card",
+        "#projects-screen #project-list .glass-card"
+      ].join(",")).forEach(function (el) {
+        el.style.setProperty("border-left-width", "3px", "important");
+        el.style.setProperty("border-left-style", "solid", "important");
+      });
+    } catch (e) {}
+  }
+
+  window.updateUniformStripeWidthV66 = normalizeStripeWidthV66;
+
+  function schedule() {
+    requestAnimationFrame(function () {
+      try { normalizeStripeWidthV66(); } catch (e) {}
+    });
+  }
+
+  function wrapOnce(name) {
+    try {
+      var old = window[name];
+      if (typeof old !== "function" || old.__aarishUniformStripeV66Wrapped) return;
+      var wrapped = function () {
+        var result = old.apply(this, arguments);
+        schedule();
+        return result;
+      };
+      wrapped.__aarishUniformStripeV66Wrapped = true;
+      window[name] = wrapped;
+      try { Function("wrapped", name + " = wrapped;")(wrapped); } catch (e) {}
+    } catch (e) {}
+  }
+
+  [
+    "renderMilkList",
+    "renderDashboardBalances",
+    "openAllBalances",
+    "renderUdharList",
+    "renderExpenseList",
+    "renderSalaryList",
+    "renderDiaryList",
+    "renderProjectsList",
+    "switchTab",
+    "updateActiveScreen"
+  ].forEach(wrapOnce);
+
+  document.addEventListener("DOMContentLoaded", schedule, { passive: true, once: true });
+  window.addEventListener("load", schedule, { passive: true, once: true });
+  document.addEventListener("click", schedule, { passive: true });
+  schedule();
+})();
+</script>
+
+
+
+<script id="aarish-credit-book-dynamic-color-v67-js">
+// AARISH_CREDIT_BOOK_DYNAMIC_COLOR_V67_JS
+// Restores Credit Book light-mode net color logic in dark mode.
+// No Firebase write, no data mutation, no observer, no interval.
+(function () {
+  if (window.__AARISH_CREDIT_BOOK_DYNAMIC_COLOR_V67_READY) return;
+  window.__AARISH_CREDIT_BOOK_DYNAMIC_COLOR_V67_READY = true;
+
+  var GREEN = "#34C759";
+  var RED = "#FF3B30";
+  var BLUE = "#007AFF";
+
+  function getUdharDBV67() {
+    try {
+      var db = Function("return (typeof udharDB !== 'undefined' && Array.isArray(udharDB)) ? udharDB : [];")();
+      return Array.isArray(db) ? db : [];
+    } catch (e) {
+      return [];
+    }
+  }
+
+  function numV67(v) {
+    var n = Number(v);
+    return isFinite(n) ? n : 0;
+  }
+
+  function creditNetV67() {
+    var net = 0;
+    getUdharDBV67().forEach(function (u) {
+      if (!u) return;
+      var amount = numV67(u.amount);
+      var type = String(u.type || u.entryType || u.mode || u.status || "").toLowerCase();
+      if (type === "credit" || type.indexOf("receive") !== -1 || type.indexOf("lena") !== -1 || type.indexOf("given") !== -1 || type.indexOf("plus") !== -1) {
+        net += amount;
+      } else {
+        net -= amount;
+      }
+    });
+    return net;
+  }
+
+  function stateFromNetV67(net) {
+    return net > 0 ? "positive" : (net < 0 ? "negative" : "zero");
+  }
+
+  function colorPackV67(state) {
+    if (state === "positive") return { color: GREEN, shadow: "0 0 12px rgba(52,199,89,0.38)", bg: GREEN, box: "0 8px 24px rgba(52,199,89,0.24)" };
+    if (state === "negative") return { color: RED, shadow: "0 0 12px rgba(255,59,48,0.38)", bg: RED, box: "0 8px 24px rgba(255,59,48,0.24)" };
+    return { color: BLUE, shadow: "0 0 12px rgba(0,122,255,0.36)", bg: BLUE, box: "0 8px 24px rgba(0,122,255,0.22)" };
+  }
+
+  function textOfV67(el) {
+    try { return (el && (el.innerText || el.textContent) || "").replace(/\s+/g, " ").trim(); }
+    catch (e) { return ""; }
+  }
+
+  function cardStateV67(card) {
+    if (!card) return "zero";
+    if (card.querySelector(".text-red-400,.text-red-500,.text-red-600,[class*='text-[#FF3B30]'],[class*='text-[#FF4B4B]']")) return "negative";
+    if (card.querySelector(".text-green-400,.text-green-500,.text-green-600,[class*='text-[#34C759]'],[class*='text-[#10B981]']")) return "positive";
+    var t = textOfV67(card).toUpperCase();
+    if (t.indexOf("TO PAY") !== -1 || /-\s*₹/.test(t) || /-\s*[0-9]/.test(t)) return "negative";
+    if (t.indexOf("TO RECEIVE") !== -1 || /\+\s*₹/.test(t) || /\+\s*[0-9]/.test(t)) return "positive";
+    return "zero";
+  }
+
+  function paintTextV67(el, pack) {
+    if (!el || !el.style) return;
+    el.style.setProperty("color", pack.color, "important");
+    el.style.setProperty("text-shadow", pack.shadow, "important");
+    el.style.setProperty("transition", "color 0.18s ease, text-shadow 0.18s ease", "important");
+  }
+
+  function paintCreditButtonTabV67(state) {
+    var pack = colorPackV67(state);
+
+    var title = document.querySelector("#udhar-screen .header-sticky h1");
+    paintTextV67(title, pack);
+
+    var screen = document.getElementById("udhar-screen");
+    if (screen) screen.setAttribute("data-aarish-credit-net-v67", state);
+
+    var btn = document.getElementById("credit-entry-btn-v52");
+    if (btn) {
+      btn.style.setProperty("background", pack.bg, "important");
+      btn.style.setProperty("background-color", pack.bg, "important");
+      btn.style.setProperty("color", "#FFFFFF", "important");
+      btn.style.setProperty("border-color", "transparent", "important");
+      btn.style.setProperty("box-shadow", pack.box, "important");
+      btn.setAttribute("data-aarish-credit-v67", state);
+      var bi = btn.querySelector("i");
+      if (bi) bi.style.setProperty("color", "#FFFFFF", "important");
+    }
+
+    var tab = document.getElementById("tab-udhar");
+    if (tab) {
+      tab.style.setProperty("color", pack.color, "important");
+      tab.style.setProperty("text-shadow", pack.shadow, "important");
+      tab.setAttribute("data-aarish-credit-v67", state);
+      var ti = tab.querySelector("i");
+      if (ti) {
+        ti.style.setProperty("color", pack.color, "important");
+        ti.style.setProperty("text-shadow", pack.shadow, "important");
+      }
+    }
+  }
+
+  function paintCreditCardsV67() {
+    try {
+      document.querySelectorAll("#udhar-list .glass-card, #udhar-list .list-enter").forEach(function (card) {
+        var state = cardStateV67(card);
+        var pack = colorPackV67(state);
+
+        card.setAttribute("data-aarish-credit-card-v67", state);
+        card.style.setProperty("border-left-width", "3px", "important");
+        card.style.setProperty("border-left-style", "solid", "important");
+        card.style.setProperty("border-left-color", pack.color, "important");
+        card.style.setProperty("box-shadow", "-3px 0 10px " + (state === "negative" ? "rgba(255,59,48,0.20)" : state === "positive" ? "rgba(52,199,89,0.20)" : "rgba(0,122,255,0.16)") + ", inset 1px 0 0 " + (state === "negative" ? "rgba(255,59,48,0.44)" : state === "positive" ? "rgba(52,199,89,0.44)" : "rgba(0,122,255,0.36)"), "important");
+
+        card.querySelectorAll("h3,h4,p,.font-bold,.font-extrabold,.fa-chevron-right").forEach(function (el) {
+          if (el.matches && el.matches(".text-green-400,.text-green-500,.text-green-600,[class*='text-[#34C759]'],[class*='text-[#10B981]']")) return;
+          if (el.matches && el.matches(".text-red-400,.text-red-500,.text-red-600,[class*='text-[#FF3B30]'],[class*='text-[#FF4B4B]']")) return;
+          paintTextV67(el, pack);
+        });
+      });
+    } catch (e) {}
+  }
+
+  window.updateCreditBookDynamicColorV67 = function () {
+    var state = stateFromNetV67(creditNetV67());
+    paintCreditButtonTabV67(state);
+    paintCreditCardsV67();
+    try { if (typeof window.updateFinanceActionNavColorsV52 === "function") window.updateFinanceActionNavColorsV52(); } catch (e) {}
+    paintCreditButtonTabV67(state);
+  };
+
+  function scheduleV67() {
+    requestAnimationFrame(function () {
+      try { window.updateCreditBookDynamicColorV67(); } catch (e) {}
+    });
+  }
+
+  function wrapOnceV67(name) {
+    try {
+      var old = window[name];
+      if (typeof old !== "function" || old.__aarishCreditDynamicV67Wrapped) return;
+      var wrapped = function () {
+        var result = old.apply(this, arguments);
+        scheduleV67();
+        return result;
+      };
+      wrapped.__aarishCreditDynamicV67Wrapped = true;
+      window[name] = wrapped;
+      try { Function("wrapped", name + " = wrapped;")(wrapped); } catch (e) {}
+    } catch (e) {}
+  }
+
+  [
+    "renderUdharList",
+    "renderUdharRecords",
+    "saveUdharEntry",
+    "deleteUdhar",
+    "deleteUdharPersonProfile",
+    "deleteActiveCreditProfileV29",
+    "updateDashboard",
+    "switchTab",
+    "updateActiveScreen",
+    "filterUdharList"
+  ].forEach(wrapOnceV67);
+
+  document.addEventListener("DOMContentLoaded", scheduleV67, { passive: true, once: true });
+  window.addEventListener("load", scheduleV67, { passive: true, once: true });
+  document.addEventListener("visibilitychange", function () {
+    if (!document.hidden) scheduleV67();
+  }, { passive: true });
+  document.addEventListener("click", function (ev) {
+    try {
+      if (ev.target && ev.target.closest && ev.target.closest("#udhar-screen,#tab-udhar,#credit-entry-btn-v52")) scheduleV67();
+    } catch (e) {}
+  }, { passive: true });
+  scheduleV67();
+})();
+</script>
+
+
+
+<script id="aarish-expense-salary-dynamic-v68-js">
+// AARISH_EXPENSE_SALARY_DYNAMIC_COLOR_V68_JS
+// Expenses + Salary dark-mode dynamic color restore.
+// No Firebase write, no data mutation, no observer, no interval.
+(function () {
+  if (window.__AARISH_EXPENSE_SALARY_DYNAMIC_V68_READY) return;
+  window.__AARISH_EXPENSE_SALARY_DYNAMIC_V68_READY = true;
+
+  var GREEN = "#34C759";
+  var RED = "#FF3B30";
+  var BLUE = "#007AFF";
+
+  function numV68(v) {
+    var n = Number(v);
+    return isFinite(n) ? n : 0;
+  }
+
+  function arrV68(v) {
+    return Array.isArray(v) ? v : [];
+  }
+
+  function getExpenseDBV68() {
+    try {
+      var db = Function("return (typeof expenseDB !== 'undefined' && Array.isArray(expenseDB)) ? expenseDB : [];")();
+      return arrV68(db);
+    } catch (e) {
+      return [];
+    }
+  }
+
+  function getSalaryDBV68() {
+    try {
+      var db = Function("return (typeof salaryDB !== 'undefined' && salaryDB && typeof salaryDB === 'object') ? salaryDB : {};")();
+      return (db && typeof db === "object") ? db : {};
+    } catch (e) {
+      return {};
+    }
+  }
+
+  function monthFilterV68(records) {
+    try {
+      if (typeof filterByMonth === "function") return filterByMonth(records || []);
+    } catch (e) {}
+    return records || [];
+  }
+
+  function stateFromNetV68(net) {
+    return net > 0 ? "positive" : (net < 0 ? "negative" : "zero");
+  }
+
+  function packV68(state) {
+    if (state === "positive") return { color: GREEN, bg: GREEN, shadow: "0 0 12px rgba(52,199,89,0.38)", box: "0 8px 24px rgba(52,199,89,0.24)" };
+    if (state === "negative") return { color: RED, bg: RED, shadow: "0 0 12px rgba(255,59,48,0.38)", box: "0 8px 24px rgba(255,59,48,0.24)" };
+    return { color: BLUE, bg: BLUE, shadow: "0 0 12px rgba(0,122,255,0.36)", box: "0 8px 24px rgba(0,122,255,0.22)" };
+  }
+
+  function textOfV68(el) {
+    try { return (el && (el.innerText || el.textContent) || "").replace(/\s+/g, " ").trim(); }
+    catch (e) { return ""; }
+  }
+
+  function expenseNetV68() {
+    var total = 0;
+    getExpenseDBV68().forEach(function (e) {
+      total += numV68(e && e.amount);
+    });
+    return -total;
+  }
+
+  function salaryPersonNetV68(s) {
+    if (!s) return 0;
+    var total = 0;
+    monthFilterV68(arrV68(s.records)).forEach(function (r) {
+      total += numV68(r && r.amount);
+    });
+    var isLeneWala = String(s.type || "").toLowerCase() === "lene_wala";
+    return isLeneWala ? total : -total;
+  }
+
+  function salaryNetV68() {
+    var db = getSalaryDBV68();
+    var net = 0;
+    Object.keys(db || {}).forEach(function (name) {
+      net += salaryPersonNetV68(db[name]);
+    });
+    return net;
+  }
+
+  function activeSalaryPersonV68() {
+    try {
+      var n = Function("return (typeof activeSalaryPerson !== 'undefined') ? activeSalaryPerson : null;")();
+      return n || null;
+    } catch (e) {
+      return null;
+    }
+  }
+
+  function paintTextV68(el, pack) {
+    if (!el || !el.style) return;
+    el.style.setProperty("color", pack.color, "important");
+    el.style.setProperty("text-shadow", pack.shadow, "important");
+    el.style.setProperty("transition", "color 0.18s ease, text-shadow 0.18s ease", "important");
+  }
+
+  function paintBtnV68(id, state, attrName) {
+    var pack = packV68(state);
+    var btn = document.getElementById(id);
+    if (!btn) return;
+    btn.setAttribute(attrName, state);
+    btn.style.setProperty("background", pack.bg, "important");
+    btn.style.setProperty("background-color", pack.bg, "important");
+    btn.style.setProperty("color", "#FFFFFF", "important");
+    btn.style.setProperty("border-color", "transparent", "important");
+    btn.style.setProperty("box-shadow", pack.box, "important");
+    try {
+      btn.querySelectorAll("i,span").forEach(function (x) {
+        x.style.setProperty("color", "#FFFFFF", "important");
+      });
+    } catch (e) {}
+  }
+
+  function paintTabV68(id, state, attrName) {
+    var pack = packV68(state);
+    var tab = document.getElementById(id);
+    if (!tab) return;
+    tab.setAttribute(attrName, state);
+    tab.style.setProperty("color", pack.color, "important");
+    tab.style.setProperty("text-shadow", pack.shadow, "important");
+    try {
+      tab.querySelectorAll("i,span").forEach(function (x) {
+        x.style.setProperty("color", pack.color, "important");
+        x.style.setProperty("text-shadow", pack.shadow, "important");
+      });
+    } catch (e) {}
+  }
+
+  function paintScreenTitleSearchV68(screenId, searchId, state) {
+    var pack = packV68(state);
+    var screen = document.getElementById(screenId);
+    if (!screen) return;
+    var title = screen.querySelector(".header-sticky h1");
+    var search = document.getElementById(searchId);
+    var searchIcon = screen.querySelector(".fa-search");
+    paintTextV68(title, pack);
+    paintTextV68(search, pack);
+    paintTextV68(searchIcon, pack);
+  }
+
+  function detectCardStateV68(card, fallback) {
+    if (!card) return fallback || "zero";
+    if (card.querySelector(".text-green-400,.text-green-500,.text-green-600,[class*='text-[#34C759]'],[class*='text-[#10B981]']")) return "positive";
+    if (card.querySelector(".text-red-400,.text-red-500,.text-red-600,[class*='text-[#FF3B30]'],[class*='text-[#FF4B4B]']")) return "negative";
+    var t = textOfV68(card).toUpperCase();
+    if (t.indexOf("RECEIVE") !== -1 || /\+\s*₹/.test(t) || /\+\s*[0-9]/.test(t)) return "positive";
+    if (t.indexOf("PAY") !== -1 || t.indexOf("EXPENSE") !== -1 || /-\s*₹/.test(t) || /-\s*[0-9]/.test(t)) return "negative";
+    return fallback || "zero";
+  }
+
+  function paintListCardV68(card, state, attr) {
+    if (!card || !card.style) return;
+    var pack = packV68(state);
+    card.setAttribute(attr, state);
+    card.style.setProperty("border-left-width", "3px", "important");
+    card.style.setProperty("border-left-style", "solid", "important");
+    card.style.setProperty("border-left-color", pack.color, "important");
+    card.style.setProperty("box-shadow",
+      "-3px 0 10px " + (state === "positive" ? "rgba(52,199,89,0.20)" : state === "negative" ? "rgba(255,59,48,0.20)" : "rgba(0,122,255,0.16)") +
+      ", inset 1px 0 0 " + (state === "positive" ? "rgba(52,199,89,0.44)" : state === "negative" ? "rgba(255,59,48,0.44)" : "rgba(0,122,255,0.36)"),
+      "important"
+    );
+    try {
+      card.querySelectorAll("h3,h4,p,.font-bold,.font-extrabold,.fa-chevron-right").forEach(function (el) {
+        if (el.matches && el.matches(".action-btn,.action-btn *,.fa-trash")) return;
+        if (el.matches && el.matches(".text-green-400,.text-green-500,.text-green-600,[class*='text-[#34C759]'],[class*='text-[#10B981]']")) return;
+        if (el.matches && el.matches(".text-red-400,.text-red-500,.text-red-600,[class*='text-[#FF3B30]'],[class*='text-[#FF4B4B]']")) return;
+        paintTextV68(el, pack);
+      });
+    } catch (e) {}
+  }
+
+  function paintExpenseV68() {
+    var eState = stateFromNetV68(expenseNetV68());
+    if (eState === "positive") eState = "negative"; // Expense module normally stays outgoing; avoid accidental green from refunds.
+    var screen = document.getElementById("expenses-screen");
+    var detail = document.getElementById("expense-detail-screen");
+    if (screen) screen.setAttribute("data-aarish-expense-net-v68", eState);
+    if (detail) detail.setAttribute("data-aarish-expense-net-v68", eState);
+
+    paintScreenTitleSearchV68("expenses-screen", "expense-search", eState);
+    paintScreenTitleSearchV68("expense-detail-screen", "", eState);
+    paintBtnV68("expense-add-btn-v52", eState, "data-aarish-expense-v68");
+    paintTabV68("tab-expenses", eState, "data-aarish-expense-v68");
+
+    try {
+      document.querySelectorAll("#expense-list-container .glass-card, #expense-list-container .list-enter").forEach(function (card) {
+        var state = detectCardStateV68(card, eState);
+        if (state === "positive") state = "negative";
+        paintListCardV68(card, state, "data-aarish-expense-card-v68");
+      });
+    } catch (e) {}
+  }
+
+  function paintSalaryV68() {
+    var sState = stateFromNetV68(salaryNetV68());
+    var screen = document.getElementById("salary-screen");
+    if (screen) screen.setAttribute("data-aarish-salary-net-v68", sState);
+
+    paintScreenTitleSearchV68("salary-screen", "salary-search", sState);
+    paintBtnV68("salary-new-btn-v52", sState, "data-aarish-salary-v68");
+    paintTabV68("tab-salary", sState, "data-aarish-salary-v68");
+
+    try {
+      var db = getSalaryDBV68();
+      document.querySelectorAll("#salary-list .glass-card, #salary-list .list-enter").forEach(function (card) {
+        var state = detectCardStateV68(card, "zero");
+        var nameEl = card.querySelector("h4,h3,.font-bold");
+        var name = textOfV68(nameEl);
+        if (name && db[name]) state = stateFromNetV68(salaryPersonNetV68(db[name]));
+        paintListCardV68(card, state, "data-aarish-salary-card-v68");
+      });
+    } catch (e) {}
+
+    try {
+      var active = activeSalaryPersonV68();
+      var db2 = getSalaryDBV68();
+      var detailState = active && db2[active] ? stateFromNetV68(salaryPersonNetV68(db2[active])) : sState;
+      var detail = document.getElementById("salary-detail-screen");
+      if (detail) detail.setAttribute("data-aarish-salary-net-v68", detailState);
+      paintScreenTitleSearchV68("salary-detail-screen", "", detailState);
+    } catch (e) {}
+  }
+
+  window.updateExpenseSalaryDynamicColorV68 = function () {
+    try { if (typeof window.updateFinanceActionNavColorsV52 === "function") window.updateFinanceActionNavColorsV52(); } catch (e) {}
+    paintExpenseV68();
+    paintSalaryV68();
+  };
+
+  function scheduleV68() {
+    requestAnimationFrame(function () {
+      try { window.updateExpenseSalaryDynamicColorV68(); } catch (e) {}
+    });
+  }
+
+  function wrapOnceV68(name) {
+    try {
+      var old = window[name];
+      if (typeof old !== "function" || old.__aarishExpenseSalaryV68Wrapped) return;
+      var wrapped = function () {
+        var result = old.apply(this, arguments);
+        scheduleV68();
+        return result;
+      };
+      wrapped.__aarishExpenseSalaryV68Wrapped = true;
+      window[name] = wrapped;
+      try { Function("wrapped", name + " = wrapped;")(wrapped); } catch (e) {}
+    } catch (e) {}
+  }
+
+  [
+    "renderExpenseList",
+    "renderExpenseRecords",
+    "saveExpenseEntry",
+    "deleteExpense",
+    "deleteExpenseCategoryProfile",
+    "deleteActiveExpenseCategoryV30",
+    "renderSalaryList",
+    "renderSalaryRecords",
+    "saveSalaryEntry",
+    "addSalaryPerson",
+    "deleteSalarySingleEntry",
+    "deleteSalaryPersonProfile",
+    "updateDashboard",
+    "switchTab",
+    "updateActiveScreen",
+    "filterExpenseList",
+    "filterSalaryList"
+  ].forEach(wrapOnceV68);
+
+  document.addEventListener("DOMContentLoaded", scheduleV68, { passive: true, once: true });
+  window.addEventListener("load", scheduleV68, { passive: true, once: true });
+  document.addEventListener("visibilitychange", function () {
+    if (!document.hidden) scheduleV68();
+  }, { passive: true });
+  document.addEventListener("click", function (ev) {
+    try {
+      if (ev.target && ev.target.closest && ev.target.closest("#expenses-screen,#expense-detail-screen,#salary-screen,#salary-detail-screen,#tab-expenses,#tab-salary,#expense-add-btn-v52,#salary-new-btn-v52")) scheduleV68();
+    } catch (e) {}
+  }, { passive: true });
+
+  scheduleV68();
+})();
+</script>
+
+
+
+<script id="aarish-credit-top-bg-v69-js">
+// AARISH_CREDIT_TOP_BG_V69_JS
+// Fix only Credit Book top summary card background.
+// No Firebase write. No interval. No observer.
+(function () {
+  if (window.__AARISH_CREDIT_TOP_BG_V69_READY) return;
+  window.__AARISH_CREDIT_TOP_BG_V69_READY = true;
+
+  function numV69(v) {
+    var n = Number(v);
+    return isFinite(n) ? n : 0;
+  }
+
+  function listV69(v) {
+    if (Array.isArray(v)) return v.filter(Boolean);
+    if (v && typeof v === "object") {
+      return Object.keys(v).map(function (k) { return v[k]; }).filter(Boolean);
+    }
+    return [];
+  }
+
+  function objV69(name) {
+    try {
+      if (typeof window[name] !== "undefined" && window[name]) return window[name];
+    } catch (e) {}
+    try {
+      return Function("return (typeof " + name + " !== 'undefined') ? " + name + " : null;")() || null;
+    } catch (e) {}
+    return null;
+  }
+
+  function amountV69(x) {
+    return numV69(x && (x.amount ?? x.amt ?? x.total ?? x.price ?? x.value));
+  }
+
+  function signedCreditV69(entry) {
+    var amount = amountV69(entry);
+    var raw = String((entry && (entry.type || entry.entryType || entry.flow || entry.direction || entry.status || entry.mode)) || "").toLowerCase();
+
+    if (raw.indexOf("dena") !== -1 || raw.indexOf("pay") !== -1 || raw.indexOf("debit") !== -1 || raw.indexOf("minus") !== -1 || raw.indexOf("given") !== -1 || raw === "out") {
+      return -Math.abs(amount);
+    }
+    if (raw.indexOf("lena") !== -1 || raw.indexOf("receive") !== -1 || raw.indexOf("credit") !== -1 || raw.indexOf("plus") !== -1 || raw.indexOf("taken") !== -1 || raw === "in") {
+      return Math.abs(amount);
+    }
+    return amount;
+  }
+
+  function creditNetV69() {
+    var db = objV69("udharDB") || [];
+    return listV69(db).reduce(function (sum, entry) {
+      return sum + signedCreditV69(entry);
+    }, 0);
+  }
+
+  function stateV69(net) {
+    if (net > 0.0001) return "positive";
+    if (net < -0.0001) return "negative";
+    return "neutral";
+  }
+
+  function topCardV69() {
+    var total = document.getElementById("credit-net-total-v27");
+    if (total && total.closest) {
+      var c = total.closest(".glass-card");
+      if (c && c.closest("#udhar-screen")) return c;
+    }
+
+    var oldLena = document.getElementById("udhar-total-lena");
+    if (oldLena && oldLena.closest) {
+      var c2 = oldLena.closest(".glass-card");
+      if (c2 && c2.closest("#udhar-screen")) return c2;
+    }
+
+    return document.querySelector("#udhar-screen .p-5 > .glass-card");
+  }
+
+  function applyV69() {
+    var screen = document.getElementById("udhar-screen");
+    var card = topCardV69();
+    if (!screen || !card) return;
+
+    var net = creditNetV69();
+    var state = stateV69(net);
+
+    screen.setAttribute("data-aarish-credit-top-v69", state);
+    card.setAttribute("data-aarish-credit-top-v69", state);
+  }
+
+  window.updateCreditTopBgV69 = applyV69;
+
+  function scheduleV69() {
+    requestAnimationFrame(function () {
+      try { applyV69(); } catch (e) {}
+    });
+  }
+
+  function wrapOnceV69(name) {
+    try {
+      var old = window[name];
+      if (typeof old !== "function" || old.__aarishCreditTopBgV69Wrapped) return;
+
+      var wrapped = function () {
+        var result = old.apply(this, arguments);
+        scheduleV69();
+        return result;
+      };
+
+      wrapped.__aarishCreditTopBgV69Wrapped = true;
+      window[name] = wrapped;
+
+      try { Function("wrapped", name + " = wrapped;")(wrapped); } catch (e) {}
+    } catch (e) {}
+  }
+
+  [
+    "updateCreditBookNetV27",
+    "updateActiveScreen",
+    "renderUdharList",
+    "renderUdharRecords",
+    "saveUdharEntry",
+    "deleteUdhar",
+    "deleteUdharPersonProfile",
+    "deleteActiveCreditProfileV29",
+    "switchTab"
+  ].forEach(wrapOnceV69);
+
+  document.addEventListener("DOMContentLoaded", scheduleV69, { passive: true, once: true });
+  window.addEventListener("load", scheduleV69, { passive: true, once: true });
+  document.addEventListener("visibilitychange", function () {
+    if (!document.hidden) scheduleV69();
+  }, { passive: true });
+
+  document.addEventListener("click", function (e) {
+    try {
+      if (e.target && e.target.closest && e.target.closest("#udhar-screen, #tab-udhar, #credit-entry-btn-v52")) {
+        scheduleV69();
+      }
+    } catch (err) {}
+  }, { passive: true });
+
+  scheduleV69();
 })();
 </script>
 
