@@ -109,8 +109,9 @@
             border-radius: 24px; padding: 22px; 
             box-shadow: 0 8px 32px rgba(0, 0, 0, 0.04), inset 0 1px 2px rgba(255, 255, 255, 0.6); 
             border: 1px solid rgba(255, 255, 255, 0.5); 
-            transition: all 0.3s cubic-bezier(0.32, 0.72, 0, 1) !important; 
+            transition: transform 0.18s cubic-bezier(0.32, 0.72, 0, 1), box-shadow 0.18s ease, background-color 0.18s ease, border-color 0.18s ease !important; 
             flex-shrink: 0 !important;
+            contain: layout style paint;
         }
         .dark .glass-card { 
             background: rgba(28, 28, 30, 0.65); 
@@ -206,10 +207,14 @@
             overscroll-behavior: none !important;
             -webkit-overflow-scrolling: touch !important;
         }
-        html, body, .app-container, * {
+        /* AARISH_TOUCH_SCOPE_FIX_V48: touch-action only on interactive elements, not every scrolling container. */
+        html, body, .app-container {
             -webkit-text-size-adjust: 100% !important;
             -moz-text-size-adjust: 100% !important;
             text-size-adjust: 100% !important;
+        }
+        button, .nav-item, .btn-primary, .btn-ios-share, .btn-ios-add, .btn-google,
+        [onclick], .action-btn {
             touch-action: manipulation !important;
             -webkit-tap-highlight-color: transparent !important;
         }
@@ -1228,17 +1233,34 @@
         const t = document.getElementById('toast'); document.getElementById('toast-msg').innerHTML = msg;
         t.classList.add('show'); setTimeout(() => t.classList.remove('show'), 2500);
     }
+    // AARISH_MODAL_STALE_TIMER_FIX_V48: clear stale close timer before reopening same modal.
+    const __aarishModalCloseTimersV48 = {};
     function openModal(id) { 
         const m = document.getElementById(id);
+        if (!m) return;
+        if (__aarishModalCloseTimersV48[id]) {
+            clearTimeout(__aarishModalCloseTimersV48[id]);
+            delete __aarishModalCloseTimersV48[id];
+        }
+        m.style.pointerEvents = 'auto';
+        m.style.opacity = '0';
         m.style.display = 'flex';
-        document.getElementById('main-app').classList.add('app-scale-down'); // 3D depth effect
-        setTimeout(() => m.style.opacity = '1', 10);
+        const app = document.getElementById('main-app');
+        if (app) app.classList.add('app-scale-down');
+        requestAnimationFrame(() => requestAnimationFrame(() => { m.style.opacity = '1'; }));
     }
     function closeModal(id) { 
         const m = document.getElementById(id);
+        if (!m) return;
+        if (__aarishModalCloseTimersV48[id]) clearTimeout(__aarishModalCloseTimersV48[id]);
         m.style.opacity = '0';
-        document.getElementById('main-app').classList.remove('app-scale-down');
-        setTimeout(() => m.style.display = 'none', 400);
+        m.style.pointerEvents = 'none';
+        const app = document.getElementById('main-app');
+        if (app) app.classList.remove('app-scale-down');
+        __aarishModalCloseTimersV48[id] = setTimeout(() => {
+            m.style.display = 'none';
+            delete __aarishModalCloseTimersV48[id];
+        }, 260);
     }
     
     // Empty State Helper Function
@@ -1385,6 +1407,13 @@
 
          function loadUserData() {
     showLoader("SYNCING DATA...");
+
+    // AARISH_FIREBASE_LISTENER_DEDUPE_V49:
+    // Prevent duplicate .on('value') listener stacking if auth/session restore fires twice.
+    if (appDataRef && typeof appDataRef.off === "function") {
+        try { appDataRef.off(); } catch (e) { console.warn("Old Firebase listeners detach failed:", e); }
+    }
+
     appDataRef = database.ref(`users/${currentUserUID}/appData`);
     
     // 🔥 THE MASTER ENGINE: Null values hatane aur ID jodne ke liye
@@ -1472,23 +1501,22 @@
         
 
     // ========================== DASHBOARD & UI UPDATES ==========================
+        // AARISH_UPDATE_ACTIVE_SCREEN_FIX_V48: no duplicate dashboard render.
         function updateActiveScreen() {
-        const activeTab = document.querySelector('.nav-item.active').id.replace('tab-', '');
+        const activeTab = document.querySelector('.nav-item.active')?.id.replace('tab-', '') || 'home';
         if (activeTab === 'home') updateDashboard();
-        else if (activeTab === 'milk') renderMilkList();
-        else if (activeTab === 'salary') renderSalaryList();
-        else if (activeTab === 'udhar') renderUdharList();
+        else if (activeTab === 'milk') { renderMilkList(); try { if (typeof updateMilkRecordHeaderColorV24 === 'function') updateMilkRecordHeaderColorV24(); } catch(e) {} }
+        else if (activeTab === 'salary') { renderSalaryList(); try { if (typeof updateSalaryRecordHeadingColorV28 === 'function') updateSalaryRecordHeadingColorV28(); } catch(e) {} }
+        else if (activeTab === 'udhar') { renderUdharList(); updateDashboard(); try { if (typeof updateCreditBookNetV27 === 'function') updateCreditBookNetV27(); } catch(e) {} }
         else if (activeTab === 'expenses') renderExpenseList();
         else if (activeTab === 'diary') renderDiaryList();
         else if (activeTab === 'projects') renderProjectsList();
         
         if(document.getElementById('milk-detail-screen').classList.contains('active')) renderMilkRecords();
-        if(document.getElementById('salary-detail-screen').classList.contains('active')) renderSalaryRecords();
-        if(document.getElementById('udhar-detail-screen').classList.contains('active')) renderUdharRecords();
-        if(document.getElementById('expense-detail-screen').classList.contains('active')) renderExpenseRecords();
+        if(document.getElementById('salary-detail-screen').classList.contains('active')) { renderSalaryRecords(); try { if (typeof ensureSalaryDetailDeleteButtonV31 === 'function') ensureSalaryDetailDeleteButtonV31(); } catch(e) {} }
+        if(document.getElementById('udhar-detail-screen').classList.contains('active')) { renderUdharRecords(); try { if (typeof ensureCreditDetailDeleteButtonV29 === 'function') ensureCreditDetailDeleteButtonV29(); } catch(e) {} }
+        if(document.getElementById('expense-detail-screen').classList.contains('active')) { renderExpenseRecords(); try { if (typeof ensureExpenseDetailDeleteButtonV30 === 'function') ensureExpenseDetailDeleteButtonV30(); } catch(e) {} }
         if(document.getElementById('project-detail-screen').classList.contains('active')) renderProjectRecords();
-        
-        updateDashboard(); 
     }
 
 
@@ -1652,13 +1680,13 @@ async function saveDiaryEntry() {
         const entry = diaryDB.find(d => d.id === activeDiaryIndex);
         if(entry) {
             entry.date = date; entry.title = title; entry.content = content; entry.updated = Date.now();
-            if (currentUserUID) await appDataRef.child(`diaryDB/${activeDiaryIndex}`).set(entry);
+            if (currentUserUID) window.aarishFirebaseLaterV48(`diaryDB/${activeDiaryIndex}`, "set", entry)
         }
     } else {
         const uniqueId = "dia_" + Date.now();
         const entry = { id: uniqueId, date, title, content, updated: Date.now() };
         diaryDB.unshift(entry);
-        if (currentUserUID) await appDataRef.child(`diaryDB/${uniqueId}`).set(entry);
+        if (currentUserUID) window.aarishFirebaseLaterV48(`diaryDB/${uniqueId}`, "set", entry)
         activeDiaryIndex = uniqueId;
     }
     
@@ -1698,7 +1726,11 @@ function renderDiaryList() {
 
     
     
-    function filterDiaryList() { renderDiaryList(); }
+    let __diaryFilterTimerV49 = null;
+function filterDiaryList() {
+    clearTimeout(__diaryFilterTimerV49);
+    __diaryFilterTimerV49 = setTimeout(renderDiaryList, 180);
+}
 
     function openDiaryDetail(id) {
     activeDiaryIndex = id; 
@@ -1717,7 +1749,7 @@ function renderDiaryList() {
   async function deleteDiary(id, goBack = false) { 
     if(confirm('Delete this page permanently?')) { 
         diaryDB = diaryDB.filter(d => d.id !== id); 
-        if (currentUserUID) await appDataRef.child(`diaryDB/${id}`).remove();
+        if (currentUserUID) window.aarishFirebaseLaterV48(`diaryDB/${id}`, "remove")
         
         if(goBack) switchTab('diary');
         else renderDiaryList();
@@ -1741,7 +1773,7 @@ function renderDiaryList() {
     salaryDB[name] = { company: company, type: type, records: [] }; 
     
     if (currentUserUID) {
-        await appDataRef.child(`salaryDB/${name}`).set(salaryDB[name]); 
+        window.aarishFirebaseLaterV48(`salaryDB/${name}`, "set", salaryDB[name]) 
     }
     
     closeModal('add-salary-person-modal'); 
@@ -1765,7 +1797,7 @@ async function deleteSalaryPersonProfile(name) {
         delete salaryDB[name]; 
         
         if (currentUserUID) {
-            await appDataRef.child(`salaryDB/${name}`).remove();      
+            window.aarishFirebaseLaterV48(`salaryDB/${name}`, "remove")      
         }
         
         if(activeSalaryPerson === name) activeSalaryPerson = null; 
@@ -1813,7 +1845,11 @@ async function deleteSalaryPersonProfile(name) {
         document.getElementById('salary-list').innerHTML = html || getEmptyState('fa-users', 'No employees found');
     }
 
-    function filterSalaryList() { renderSalaryList(); }
+    let __salaryFilterTimerV49 = null;
+function filterSalaryList() {
+    clearTimeout(__salaryFilterTimerV49);
+    __salaryFilterTimerV49 = setTimeout(renderSalaryList, 180);
+}
 
     function openSalaryDetail(name) {
         if(isLongPress) { isLongPress = false; return; } // Touch conflict fix
@@ -1850,7 +1886,7 @@ async function deleteSalaryPersonProfile(name) {
         salaryDB[activeSalaryPerson].records.push(newEntry);
         
         if (currentUserUID) {
-            await appDataRef.child(`salaryDB/${activeSalaryPerson}/records/${uniqueId}`).set(newEntry);
+            window.aarishFirebaseLaterV48(`salaryDB/${activeSalaryPerson}/records/${uniqueId}`, "set", newEntry)
         }
         
         closeModal('add-salary-entry-modal'); 
@@ -1904,7 +1940,7 @@ async function deleteSalaryPersonProfile(name) {
             salaryDB[activeSalaryPerson].records = salaryDB[activeSalaryPerson].records.filter(r => r.id !== id);
             
             if (currentUserUID) {
-                await appDataRef.child(`salaryDB/${activeSalaryPerson}/records/${id}`).remove();
+                window.aarishFirebaseLaterV48(`salaryDB/${activeSalaryPerson}/records/${id}`, "remove")
             }
             
             renderSalaryRecords();
@@ -1930,7 +1966,7 @@ async function addMilkCustomer() {
     milkDB[name] = { rate: rate, type: type, records: [] }; 
     
     if (currentUserUID) {
-        await appDataRef.child(`milkDB/${name}`).set(milkDB[name]); 
+        window.aarishFirebaseLaterV48(`milkDB/${name}`, "set", milkDB[name]) 
     }
     
     closeModal('add-milk-customer-modal'); 
@@ -1957,7 +1993,7 @@ async function addMilkCustomer() {
         delete milkDB[name]; 
         
         if (currentUserUID) {
-            await appDataRef.child(`milkDB/${name}`).remove();      
+            window.aarishFirebaseLaterV48(`milkDB/${name}`, "remove")      
         }
         
         if(activeMilkCustomer === name) activeMilkCustomer = null; 
@@ -2005,7 +2041,11 @@ async function addMilkCustomer() {
         document.getElementById('milk-list').innerHTML = html || getEmptyState('fa-jug-detergent', 'No customers found');
     }
 
-    function filterMilkList() { renderMilkList(); }
+    let __milkFilterTimerV49 = null;
+function filterMilkList() {
+    clearTimeout(__milkFilterTimerV49);
+    __milkFilterTimerV49 = setTimeout(renderMilkList, 180);
+}
 
     function openMilkDetail(name) {
         if(isLongPress) { isLongPress = false; return; } // Touch conflict fix
@@ -2080,7 +2120,7 @@ async function addMilkCustomer() {
         milkDB[activeMilkCustomer].records.push(newEntry);
 
         if (currentUserUID) {
-            await appDataRef.child(`milkDB/${activeMilkCustomer}/records/${uniqueId}`).set(newEntry);
+            window.aarishFirebaseLaterV48(`milkDB/${activeMilkCustomer}/records/${uniqueId}`, "set", newEntry)
         }
 
         closeModal('add-milk-entry-modal'); 
@@ -2106,7 +2146,7 @@ async function addMilkCustomer() {
             milkDB[activeMilkCustomer].records = milkDB[activeMilkCustomer].records.filter(r => r.id !== id);
             
             if (currentUserUID) {
-                await appDataRef.child(`milkDB/${activeMilkCustomer}/records/${id}`).remove();
+                window.aarishFirebaseLaterV48(`milkDB/${activeMilkCustomer}/records/${id}`, "remove")
             }
             
             renderMilkRecords();
@@ -2383,7 +2423,7 @@ async function shareDiaryBill(id) {
         udharDB.unshift(newEntry);
         
         if (currentUserUID) {
-            await appDataRef.child(`udharDB/${uniqueId}`).set(newEntry);
+            window.aarishFirebaseLaterV48(`udharDB/${uniqueId}`, "set", newEntry)
         }
         
         closeModal('add-udhar-modal'); 
@@ -2448,7 +2488,11 @@ async function shareDiaryBill(id) {
         document.getElementById('udhar-list').innerHTML = html || getEmptyState('fa-handshake', 'No credit records found');
     }
 
-        function filterUdharList() { renderUdharList(); }
+        let __udharFilterTimerV49 = null;
+function filterUdharList() {
+    clearTimeout(__udharFilterTimerV49);
+    __udharFilterTimerV49 = setTimeout(renderUdharList, 180);
+}
 
     let udharPressTimer;
     function startUdharLongPress(name) {
@@ -2466,13 +2510,19 @@ async function shareDiaryBill(id) {
             // 1. Pehle us insaan ki saari entries dhoondo
             const entriesToDelete = udharDB.filter(u => u.name === name);
             
-            // 2. Local app se unhe hatao
+            // 2. Local app se unhe hatao — instant optimistic UI
             udharDB = udharDB.filter(u => u.name !== name); 
             
-            // 3. 🔥 FIREBASE SE SIRF WAHI ENTRIES HATAO (Purana saveDB hata diya)
-            if (currentUserUID) {
+            // 3. AARISH_BATCH_DELETE_V49: N removes -> 1 atomic Firebase update
+            if (currentUserUID && appDataRef) {
+                const updates = {};
                 for (let e of entriesToDelete) {
-                    await appDataRef.child(`udharDB/${e.id}`).remove();
+                    if (e && e.id) updates[`udharDB/${e.id}`] = null;
+                }
+                if (Object.keys(updates).length) {
+                    setTimeout(() => {
+                        appDataRef.update(updates).catch(() => showToast('Sync issue, internet check karo'));
+                    }, 0);
                 }
             }
             
@@ -2539,7 +2589,7 @@ async function shareDiaryBill(id) {
             udharDB = udharDB.filter(u => u.id !== id); 
             
             if (currentUserUID) {
-                await appDataRef.child(`udharDB/${id}`).remove();
+                window.aarishFirebaseLaterV48(`udharDB/${id}`, "remove")
             }
             
             renderUdharList();
@@ -2607,7 +2657,7 @@ async function shareDiaryBill(id) {
 
         // SIRF EK EENT FIREBASE PAR BHEJI
         if (currentUserUID) {
-            await appDataRef.child(`expenseDB/${uniqueId}`).set(newEntry);
+            window.aarishFirebaseLaterV48(`expenseDB/${uniqueId}`, "set", newEntry)
         }
         
         closeModal('add-expense-modal'); 
@@ -2671,9 +2721,16 @@ async function deleteExpenseCategoryProfile(category) {
         const entriesToDelete = expenseDB.filter(e => e.category === category);
         expenseDB = expenseDB.filter(e => e.category !== category); 
         
-        if (currentUserUID) {
+        // AARISH_BATCH_DELETE_V49: N removes -> 1 atomic Firebase update
+        if (currentUserUID && appDataRef) {
+            const updates = {};
             for (let e of entriesToDelete) {
-                await appDataRef.child(`expenseDB/${e.id}`).remove();
+                if (e && e.id) updates[`expenseDB/${e.id}`] = null;
+            }
+            if (Object.keys(updates).length) {
+                setTimeout(() => {
+                    appDataRef.update(updates).catch(() => showToast('Sync issue, internet check karo'));
+                }, 0);
             }
         }
         
@@ -2723,7 +2780,7 @@ async function deleteExpenseCategoryProfile(category) {
             
             // SIRF WAHI ENTRY FIREBASE SE UDAAYI
             if (currentUserUID) {
-                await appDataRef.child(`expenseDB/${id}`).remove();
+                window.aarishFirebaseLaterV48(`expenseDB/${id}`, "remove")
             }
             
             renderExpenseList();
@@ -2754,7 +2811,7 @@ async function saveNewProject() {
     projectDB[name] = { records: [], created: Date.now() }; 
     
     if (currentUserUID) {
-        await appDataRef.child(`projectDB/${name}`).set(projectDB[name]); 
+        window.aarishFirebaseLaterV48(`projectDB/${name}`, "set", projectDB[name]) 
     }
     
     closeModal('add-project-modal'); 
@@ -2786,14 +2843,18 @@ async function saveNewProject() {
         document.getElementById('project-list').innerHTML = html || getEmptyState('fa-folder-open', 'No business khatas added yet');
     }
 
-    function filterProjectList() { renderProjectsList(); }
+    let __projectFilterTimerV49 = null;
+function filterProjectList() {
+    clearTimeout(__projectFilterTimerV49);
+    __projectFilterTimerV49 = setTimeout(renderProjectsList, 180);
+}
 
     async function deleteProject(name) {
     if (confirm(`Delete account "${name}" permanently?`)) {
         delete projectDB[name]; 
         
         if (currentUserUID) {
-            await appDataRef.child(`projectDB/${name}`).remove(); 
+            window.aarishFirebaseLaterV48(`projectDB/${name}`, "remove") 
         }
         
         renderProjectsList(); 
@@ -2853,7 +2914,7 @@ async function saveNewProject() {
     
     // 3. 🔥 SIRF NAYI ENTRY FIREBASE BHEJI (saveDB() hata diya)
     if (currentUserUID) {
-        await appDataRef.child(`projectDB/${activeProject}/records/${uniqueId}`).set(newEntry);
+        window.aarishFirebaseLaterV48(`projectDB/${activeProject}/records/${uniqueId}`, "set", newEntry)
     }
     
     closeModal('add-project-entry-modal'); 
@@ -2924,7 +2985,7 @@ async function saveNewProject() {
             
             // FIREBASE SE SIRF WOHI ENTRY HATAYI
             if (currentUserUID) {
-                await appDataRef.child(`projectDB/${activeProject}/records/${id}`).remove();
+                window.aarishFirebaseLaterV48(`projectDB/${activeProject}/records/${id}`, "remove")
             }
             
             renderProjectRecords(); 
@@ -4650,7 +4711,7 @@ window.onload = function(){ setTimeout(function(){ window.focus(); window.print(
     milkDB[activeMilkCustomer].records.push(newEntry);
 
     if (currentUserUID) {
-      await appDataRef.child(`milkDB/${activeMilkCustomer}/records/${uniqueId}`).set(newEntry);
+      window.aarishFirebaseLaterV48(`milkDB/${activeMilkCustomer}/records/${uniqueId}`, "set", newEntry)
     }
 
     closeModal("add-milk-entry-modal");
@@ -4677,7 +4738,7 @@ window.onload = function(){ setTimeout(function(){ window.focus(); window.print(
       milkDB[activeMilkCustomer].records = arr(milkDB[activeMilkCustomer].records).filter(r => r.id !== id);
 
       if (currentUserUID) {
-        await appDataRef.child(`milkDB/${activeMilkCustomer}/records/${id}`).remove();
+        window.aarishFirebaseLaterV48(`milkDB/${activeMilkCustomer}/records/${id}`, "remove")
       }
 
       renderMilkRecords();
@@ -5015,7 +5076,7 @@ window.onload = function(){ setTimeout(function(){ window.focus(); window.print(
       milkDB[sourceKey].records = arr(milkDB[sourceKey].records).filter(r => r.id !== id);
 
       if (currentUserUID) {
-        await appDataRef.child(`milkDB/${sourceKey}/records/${id}`).remove();
+        window.aarishFirebaseLaterV48(`milkDB/${sourceKey}/records/${id}`, "remove")
       }
 
       renderMilkRecords();
@@ -5190,7 +5251,7 @@ window.onload = function(){ setTimeout(function(){ window.focus(); window.print(
     window.milkDB = db;
 
     if (typeof currentUserUID !== "undefined" && currentUserUID && typeof appDataRef !== "undefined" && appDataRef) {
-      await appDataRef.child(`milkDB/${finalKey}`).set(db[finalKey]);
+      window.aarishFirebaseLaterV48(`milkDB/${finalKey}`, "set", db[finalKey])
     }
 
     try { closeModal("add-milk-customer-modal"); } catch(e) {}
@@ -5341,7 +5402,7 @@ window.onload = function(){ setTimeout(function(){ window.focus(); window.print(
     } catch(e) {}
 
     if (typeof currentUserUID !== "undefined" && currentUserUID && typeof appDataRef !== "undefined" && appDataRef) {
-      await appDataRef.child("milkDB_DELETE_BACKUP_V19/" + stamp).set(payload);
+      window.aarishFirebaseLaterV48("milkDB_DELETE_BACKUP_V19/" + stamp, "set", payload)
     }
 
     return stamp;
@@ -5384,7 +5445,7 @@ window.onload = function(){ setTimeout(function(){ window.focus(); window.print(
         delete db[key];
 
         if (typeof currentUserUID !== "undefined" && currentUserUID && typeof appDataRef !== "undefined" && appDataRef) {
-          await appDataRef.child(`milkDB/${key}`).remove();
+          window.aarishFirebaseLaterV48(`milkDB/${key}`, "remove")
         }
       }
 
@@ -6016,18 +6077,12 @@ window.onload = function(){ setTimeout(function(){ window.focus(); window.print(
     "renderDashboardBalances"
   ].forEach(wrapAfterV24);
 
-  document.addEventListener("DOMContentLoaded", scheduleV24);
-  window.addEventListener("load", scheduleV24);
+  // AARISH_COLD_START_DEDUPE_V49: V48 already refreshes on DOMContentLoaded/load.
   document.addEventListener("visibilitychange", scheduleV24);
 
   setTimeout(scheduleV24, 500);
   setTimeout(scheduleV24, 1500);
-  setInterval(function () {
-    var screen = document.getElementById("milk-screen");
-    if (screen && screen.classList.contains("active")) {
-      window.updateMilkRecordHeaderColorV24();
-    }
-  }, 2000);
+/* AARISH_V48_REMOVED_SETINTERVAL_POLLER */
 
   window.__milkHeaderNetColorStatusV24 = function () {
     var status = {
@@ -6203,32 +6258,16 @@ window.onload = function(){ setTimeout(function(){ window.focus(); window.print(
     setTimeout(window.updateCreditBookNetV27, 900);
   }
 
-  document.addEventListener("DOMContentLoaded", scheduleV27);
-  window.addEventListener("load", scheduleV27);
+  // AARISH_COLD_START_DEDUPE_V49: V48 already refreshes on DOMContentLoaded/load.
   document.addEventListener("visibilitychange", scheduleV27);
 
   var screenV27 = document.getElementById("udhar-screen");
-  if (screenV27 && window.MutationObserver) {
-    new MutationObserver(function () {
-      if (applyingV27) return;
-      scheduleV27();
-    }).observe(screenV27, {
-      childList: true,
-      subtree: true,
-      attributes: true,
-      attributeFilter: ["class"]
-    });
-  }
+/* AARISH_V48_REMOVED_MUTATION_OBSERVER_BLOCK */
 
   setTimeout(scheduleV27, 500);
   setTimeout(scheduleV27, 1500);
 
-  setInterval(function () {
-    var screen = document.getElementById("udhar-screen");
-    if (screen && screen.classList.contains("active")) {
-      window.updateCreditBookNetV27();
-    }
-  }, 1200);
+/* AARISH_V48_REMOVED_SETINTERVAL_POLLER */
 
   window.__creditBookNetStatusV27 = function () {
     var status = {
@@ -6347,32 +6386,16 @@ window.onload = function(){ setTimeout(function(){ window.focus(); window.print(
     setTimeout(window.updateSalaryRecordHeadingColorV28, 900);
   }
 
-  document.addEventListener("DOMContentLoaded", scheduleV28);
-  window.addEventListener("load", scheduleV28);
+  // AARISH_COLD_START_DEDUPE_V49: V48 already refreshes on DOMContentLoaded/load.
   document.addEventListener("visibilitychange", scheduleV28);
 
   var screenV28 = document.getElementById("salary-screen");
-  if (screenV28 && window.MutationObserver) {
-    new MutationObserver(function () {
-      if (applyingV28) return;
-      scheduleV28();
-    }).observe(screenV28, {
-      childList: true,
-      subtree: true,
-      attributes: true,
-      attributeFilter: ["class"]
-    });
-  }
+/* AARISH_V48_REMOVED_MUTATION_OBSERVER_BLOCK */
 
   setTimeout(scheduleV28, 500);
   setTimeout(scheduleV28, 1500);
 
-  setInterval(function () {
-    var screen = document.getElementById("salary-screen");
-    if (screen && screen.classList.contains("active")) {
-      window.updateSalaryRecordHeadingColorV28();
-    }
-  }, 1200);
+/* AARISH_V48_REMOVED_SETINTERVAL_POLLER */
 
   window.__salaryHeadingNetColorStatusV28 = function () {
     var status = {
@@ -6492,7 +6515,7 @@ window.onload = function(){ setTimeout(function(){ window.focus(); window.print(
 
     try {
       if (typeof currentUserUID !== "undefined" && currentUserUID && typeof appDataRef !== "undefined" && appDataRef) {
-        await appDataRef.child("udharDB_DELETE_BACKUP_V29/" + Date.now()).set(backup);
+        window.aarishFirebaseLaterV48("udharDB_DELETE_BACKUP_V29/" + Date.now(), "set", backup)
       }
     } catch (e) {
       console.warn("Credit delete backup Firebase failed V29:", e);
@@ -6522,9 +6545,18 @@ window.onload = function(){ setTimeout(function(){ window.focus(); window.print(
 
       try {
         if (typeof currentUserUID !== "undefined" && currentUserUID && typeof appDataRef !== "undefined" && appDataRef) {
+          var batchUpdatesV29 = {};
           for (var i = 0; i < entries.length; i++) {
             var id = entries[i] && entries[i].id;
-            if (id) await appDataRef.child("udharDB/" + id).remove();
+            if (id) batchUpdatesV29["udharDB/" + id] = null;
+          }
+          if (Object.keys(batchUpdatesV29).length > 0) {
+            setTimeout(function () {
+              appDataRef.update(batchUpdatesV29).catch(function (e) {
+                console.error("Credit Firebase batch delete failed V29:", e);
+                try { toastV29("Local deleted. Firebase sync issue!"); } catch (_) {}
+              });
+            }, 0);
           }
         }
       } catch (firebaseErr) {
@@ -6651,28 +6683,13 @@ window.onload = function(){ setTimeout(function(){ window.focus(); window.print(
   try { cancelUdharLongPress = disabledCancelV29; } catch (e) {}
   try { deleteUdharPersonProfile = disabledProfileDeleteV29; } catch (e) {}
 
-  document.addEventListener("DOMContentLoaded", scheduleV29);
-  window.addEventListener("load", scheduleV29);
+  // AARISH_COLD_START_DEDUPE_V49: V48 already refreshes on DOMContentLoaded/load.
   document.addEventListener("visibilitychange", scheduleV29);
 
   var screenV29 = document.getElementById("udhar-detail-screen");
-  if (screenV29 && window.MutationObserver) {
-    new MutationObserver(function () {
-      scheduleV29();
-    }).observe(screenV29, {
-      childList: true,
-      subtree: true,
-      attributes: true,
-      attributeFilter: ["class"]
-    });
-  }
+/* AARISH_V48_REMOVED_MUTATION_OBSERVER_BLOCK */
 
-  setInterval(function () {
-    var screen = document.getElementById("udhar-detail-screen");
-    if (screen && screen.classList.contains("active")) {
-      window.ensureCreditDetailDeleteButtonV29();
-    }
-  }, 1000);
+/* AARISH_V48_REMOVED_SETINTERVAL_POLLER */
 
   window.__creditDetailDeleteStatusV29 = function () {
     var status = {
@@ -6789,7 +6806,7 @@ window.onload = function(){ setTimeout(function(){ window.focus(); window.print(
 
     try {
       if (typeof currentUserUID !== "undefined" && currentUserUID && typeof appDataRef !== "undefined" && appDataRef) {
-        await appDataRef.child("expenseDB_DELETE_BACKUP_V30/" + Date.now()).set(backup);
+        window.aarishFirebaseLaterV48("expenseDB_DELETE_BACKUP_V30/" + Date.now(), "set", backup)
       }
     } catch (e) {
       console.warn("Expense delete backup Firebase failed V30:", e);
@@ -6819,9 +6836,18 @@ window.onload = function(){ setTimeout(function(){ window.focus(); window.print(
 
       try {
         if (typeof currentUserUID !== "undefined" && currentUserUID && typeof appDataRef !== "undefined" && appDataRef) {
+          var batchUpdatesV30 = {};
           for (var i = 0; i < entries.length; i++) {
             var id = entries[i] && entries[i].id;
-            if (id) await appDataRef.child("expenseDB/" + id).remove();
+            if (id) batchUpdatesV30["expenseDB/" + id] = null;
+          }
+          if (Object.keys(batchUpdatesV30).length > 0) {
+            setTimeout(function () {
+              appDataRef.update(batchUpdatesV30).catch(function (e) {
+                console.error("Expense Firebase batch delete failed V30:", e);
+                try { toastV30("Local deleted. Firebase sync issue!"); } catch (_) {}
+              });
+            }, 0);
           }
         }
       } catch (firebaseErr) {
@@ -6948,28 +6974,13 @@ window.onload = function(){ setTimeout(function(){ window.focus(); window.print(
   try { cancelExpenseLongPress = disabledCancelV30; } catch (e) {}
   try { deleteExpenseCategoryProfile = disabledCategoryDeleteV30; } catch (e) {}
 
-  document.addEventListener("DOMContentLoaded", scheduleV30);
-  window.addEventListener("load", scheduleV30);
+  // AARISH_COLD_START_DEDUPE_V49: V48 already refreshes on DOMContentLoaded/load.
   document.addEventListener("visibilitychange", scheduleV30);
 
   var screenV30 = document.getElementById("expense-detail-screen");
-  if (screenV30 && window.MutationObserver) {
-    new MutationObserver(function () {
-      scheduleV30();
-    }).observe(screenV30, {
-      childList: true,
-      subtree: true,
-      attributes: true,
-      attributeFilter: ["class"]
-    });
-  }
+/* AARISH_V48_REMOVED_MUTATION_OBSERVER_BLOCK */
 
-  setInterval(function () {
-    var screen = document.getElementById("expense-detail-screen");
-    if (screen && screen.classList.contains("active")) {
-      window.ensureExpenseDetailDeleteButtonV30();
-    }
-  }, 1000);
+/* AARISH_V48_REMOVED_SETINTERVAL_POLLER */
 
   window.__expenseDetailDeleteStatusV30 = function () {
     var status = {
@@ -7091,7 +7102,7 @@ window.onload = function(){ setTimeout(function(){ window.focus(); window.print(
 
     try {
       if (typeof currentUserUID !== "undefined" && currentUserUID && typeof appDataRef !== "undefined" && appDataRef) {
-        await appDataRef.child("salaryDB_DELETE_BACKUP_V31/" + Date.now()).set(backup);
+        window.aarishFirebaseLaterV48("salaryDB_DELETE_BACKUP_V31/" + Date.now(), "set", backup)
       }
     } catch (e) {
       console.warn("Salary delete backup Firebase failed V31:", e);
@@ -7123,7 +7134,7 @@ window.onload = function(){ setTimeout(function(){ window.focus(); window.print(
 
       try {
         if (typeof currentUserUID !== "undefined" && currentUserUID && typeof appDataRef !== "undefined" && appDataRef) {
-          await appDataRef.child("salaryDB/" + name).remove();
+          window.aarishFirebaseLaterV48("salaryDB/" + name, "remove")
         }
       } catch (firebaseErr) {
         console.error("Salary Firebase delete failed V31:", firebaseErr);
@@ -7249,28 +7260,13 @@ window.onload = function(){ setTimeout(function(){ window.focus(); window.print(
   try { cancelSalaryLongPress = disabledCancelV31; } catch (e) {}
   try { deleteSalaryPersonProfile = disabledSalaryProfileDeleteV31; } catch (e) {}
 
-  document.addEventListener("DOMContentLoaded", scheduleV31);
-  window.addEventListener("load", scheduleV31);
+  // AARISH_COLD_START_DEDUPE_V49: V48 already refreshes on DOMContentLoaded/load.
   document.addEventListener("visibilitychange", scheduleV31);
 
   var screenV31 = document.getElementById("salary-detail-screen");
-  if (screenV31 && window.MutationObserver) {
-    new MutationObserver(function () {
-      scheduleV31();
-    }).observe(screenV31, {
-      childList: true,
-      subtree: true,
-      attributes: true,
-      attributeFilter: ["class"]
-    });
-  }
+/* AARISH_V48_REMOVED_MUTATION_OBSERVER_BLOCK */
 
-  setInterval(function () {
-    var screen = document.getElementById("salary-detail-screen");
-    if (screen && screen.classList.contains("active")) {
-      window.ensureSalaryDetailDeleteButtonV31();
-    }
-  }, 1000);
+/* AARISH_V48_REMOVED_SETINTERVAL_POLLER */
 
   window.__salaryDetailDeleteStatusV31 = function () {
     var selected = getActiveSalaryNameV31();
@@ -7301,6 +7297,82 @@ window.onload = function(){ setTimeout(function(){ window.focus(); window.print(
 
 
 
+
+
+
+<script>
+// AARISH_BACKGROUND_FIREBASE_EVENT_REFRESH_V48
+// Event-only helper: no setInterval, no MutationObserver, no recursive wrapper.
+(function () {
+  if (window.__AARISH_BACKGROUND_FIREBASE_EVENT_REFRESH_V48_READY) return;
+  window.__AARISH_BACKGROUND_FIREBASE_EVENT_REFRESH_V48_READY = true;
+
+  window.aarishFirebaseLaterV48 = function (path, action, payload) {
+    try {
+      setTimeout(function () {
+        try {
+          if (typeof currentUserUID === "undefined" || !currentUserUID) return;
+          if (typeof appDataRef === "undefined" || !appDataRef) return;
+          var ref = appDataRef.child(path);
+          var job = action === "remove" ? ref.remove() : (action === "update" ? ref.update(payload) : ref.set(payload));
+          if (job && typeof job.catch === "function") {
+            job.catch(function () {
+              try { if (typeof showToast === "function") showToast("Sync issue, internet check karo"); } catch (e) {}
+            });
+          }
+        } catch (e) {}
+      }, 0);
+    } catch (e) {}
+  };
+
+  function refreshV48() {
+    setTimeout(function () {
+      try { if (typeof updateMilkRecordHeaderColorV24 === "function") updateMilkRecordHeaderColorV24(); } catch(e) {}
+      try { if (typeof updateCreditBookNetV27 === "function") updateCreditBookNetV27(); } catch(e) {}
+      try { if (typeof updateSalaryRecordHeadingColorV28 === "function") updateSalaryRecordHeadingColorV28(); } catch(e) {}
+      try { if (typeof ensureCreditDetailDeleteButtonV29 === "function") ensureCreditDetailDeleteButtonV29(); } catch(e) {}
+      try { if (typeof ensureExpenseDetailDeleteButtonV30 === "function") ensureExpenseDetailDeleteButtonV30(); } catch(e) {}
+      try { if (typeof ensureSalaryDetailDeleteButtonV31 === "function") ensureSalaryDetailDeleteButtonV31(); } catch(e) {}
+    }, 0);
+  }
+
+  function wrapOnceV48(name) {
+    try {
+      var old = window[name];
+      if (typeof old !== "function" || old.__aarishV48Wrapped) return;
+      var wrapped = function () {
+        var result = old.apply(this, arguments);
+        refreshV48();
+        return result;
+      };
+      wrapped.__aarishV48Wrapped = true;
+      window[name] = wrapped;
+      try { Function("wrapped", name + " = wrapped;")(wrapped); } catch (e) {}
+    } catch (e) {}
+  }
+
+  [
+    "switchTab",
+    "updateActiveScreen",
+    "openMilkDetail",
+    "openUdharDetail",
+    "openExpenseDetail",
+    "openSalaryDetail",
+    "renderMilkList",
+    "renderUdharList",
+    "renderExpenseList",
+    "renderSalaryList",
+    "renderMilkRecords",
+    "renderUdharRecords",
+    "renderExpenseRecords",
+    "renderSalaryRecords"
+  ].forEach(wrapOnceV48);
+
+  document.addEventListener("DOMContentLoaded", refreshV48, { passive: true, once: true });
+  window.addEventListener("load", refreshV48, { passive: true, once: true });
+  refreshV48();
+})();
+</script>
 
 </body>
 </html>
