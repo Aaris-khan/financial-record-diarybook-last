@@ -1683,13 +1683,13 @@ async function saveDiaryEntry() {
         const entry = diaryDB.find(d => d.id === activeDiaryIndex);
         if(entry) {
             entry.date = date; entry.title = title; entry.content = content; entry.updated = Date.now();
-            if (currentUserUID) await appDataRef.child(`diaryDB/${activeDiaryIndex}`).set(entry);
+            if (currentUserUID) window.aarishFirebaseLaterV43(`diaryDB/${activeDiaryIndex}`, "set", entry)
         }
     } else {
         const uniqueId = "dia_" + Date.now();
         const entry = { id: uniqueId, date, title, content, updated: Date.now() };
         diaryDB.unshift(entry);
-        if (currentUserUID) await appDataRef.child(`diaryDB/${uniqueId}`).set(entry);
+        if (currentUserUID) window.aarishFirebaseLaterV43(`diaryDB/${uniqueId}`, "set", entry)
         activeDiaryIndex = uniqueId;
     }
     
@@ -1748,7 +1748,7 @@ function renderDiaryList() {
   async function deleteDiary(id, goBack = false) { 
     if(confirm('Delete this page permanently?')) { 
         diaryDB = diaryDB.filter(d => d.id !== id); 
-        if (currentUserUID) await appDataRef.child(`diaryDB/${id}`).remove();
+        if (currentUserUID) window.aarishFirebaseLaterV43(`diaryDB/${id}`, "remove")
         
         if(goBack) switchTab('diary');
         else renderDiaryList();
@@ -1772,7 +1772,7 @@ function renderDiaryList() {
     salaryDB[name] = { company: company, type: type, records: [] }; 
     
     if (currentUserUID) {
-        await appDataRef.child(`salaryDB/${name}`).set(salaryDB[name]); 
+        window.aarishFirebaseLaterV43(`salaryDB/${name}`, "set", salaryDB[name]) 
     }
     
     closeModal('add-salary-person-modal'); 
@@ -1796,7 +1796,7 @@ async function deleteSalaryPersonProfile(name) {
         delete salaryDB[name]; 
         
         if (currentUserUID) {
-            await appDataRef.child(`salaryDB/${name}`).remove();      
+            window.aarishFirebaseLaterV43(`salaryDB/${name}`, "remove")      
         }
         
         if(activeSalaryPerson === name) activeSalaryPerson = null; 
@@ -1881,7 +1881,7 @@ async function deleteSalaryPersonProfile(name) {
         salaryDB[activeSalaryPerson].records.push(newEntry);
         
         if (currentUserUID) {
-            await appDataRef.child(`salaryDB/${activeSalaryPerson}/records/${uniqueId}`).set(newEntry);
+            window.aarishFirebaseLaterV43(`salaryDB/${activeSalaryPerson}/records/${uniqueId}`, "set", newEntry)
         }
         
         closeModal('add-salary-entry-modal'); 
@@ -1935,7 +1935,7 @@ async function deleteSalaryPersonProfile(name) {
             salaryDB[activeSalaryPerson].records = salaryDB[activeSalaryPerson].records.filter(r => r.id !== id);
             
             if (currentUserUID) {
-                await appDataRef.child(`salaryDB/${activeSalaryPerson}/records/${id}`).remove();
+                window.aarishFirebaseLaterV43(`salaryDB/${activeSalaryPerson}/records/${id}`, "remove")
             }
             
             renderSalaryRecords();
@@ -1961,7 +1961,7 @@ async function addMilkCustomer() {
     milkDB[name] = { rate: rate, type: type, records: [] }; 
     
     if (currentUserUID) {
-        await appDataRef.child(`milkDB/${name}`).set(milkDB[name]); 
+        window.aarishFirebaseLaterV43(`milkDB/${name}`, "set", milkDB[name]) 
     }
     
     closeModal('add-milk-customer-modal'); 
@@ -1988,7 +1988,7 @@ async function addMilkCustomer() {
         delete milkDB[name]; 
         
         if (currentUserUID) {
-            await appDataRef.child(`milkDB/${name}`).remove();      
+            window.aarishFirebaseLaterV43(`milkDB/${name}`, "remove")      
         }
         
         if(activeMilkCustomer === name) activeMilkCustomer = null; 
@@ -2111,7 +2111,7 @@ async function addMilkCustomer() {
         milkDB[activeMilkCustomer].records.push(newEntry);
 
         if (currentUserUID) {
-            await appDataRef.child(`milkDB/${activeMilkCustomer}/records/${uniqueId}`).set(newEntry);
+            window.aarishFirebaseLaterV43(`milkDB/${activeMilkCustomer}/records/${uniqueId}`, "set", newEntry)
         }
 
         closeModal('add-milk-entry-modal'); 
@@ -2137,7 +2137,7 @@ async function addMilkCustomer() {
             milkDB[activeMilkCustomer].records = milkDB[activeMilkCustomer].records.filter(r => r.id !== id);
             
             if (currentUserUID) {
-                await appDataRef.child(`milkDB/${activeMilkCustomer}/records/${id}`).remove();
+                window.aarishFirebaseLaterV43(`milkDB/${activeMilkCustomer}/records/${id}`, "remove")
             }
             
             renderMilkRecords();
@@ -2414,7 +2414,7 @@ async function shareDiaryBill(id) {
         udharDB.unshift(newEntry);
         
         if (currentUserUID) {
-            await appDataRef.child(`udharDB/${uniqueId}`).set(newEntry);
+            window.aarishFirebaseLaterV43(`udharDB/${uniqueId}`, "set", newEntry)
         }
         
         closeModal('add-udhar-modal'); 
@@ -2503,7 +2503,7 @@ async function shareDiaryBill(id) {
             // 3. 🔥 FIREBASE SE SIRF WAHI ENTRIES HATAO (Purana saveDB hata diya)
             if (currentUserUID) {
                 for (let e of entriesToDelete) {
-                    await appDataRef.child(`udharDB/${e.id}`).remove();
+                    window.aarishFirebaseLaterV43(`udharDB/${e.id}`, "remove")
                 }
             }
             
@@ -2570,7 +2570,7 @@ async function shareDiaryBill(id) {
             udharDB = udharDB.filter(u => u.id !== id); 
             
             if (currentUserUID) {
-                await appDataRef.child(`udharDB/${id}`).remove();
+                window.aarishFirebaseLaterV43(`udharDB/${id}`, "remove")
             }
             
             renderUdharList();
@@ -2638,7 +2638,7 @@ async function shareDiaryBill(id) {
 
         // SIRF EK EENT FIREBASE PAR BHEJI
         if (currentUserUID) {
-            await appDataRef.child(`expenseDB/${uniqueId}`).set(newEntry);
+            window.aarishFirebaseLaterV43(`expenseDB/${uniqueId}`, "set", newEntry)
         }
         
         closeModal('add-expense-modal'); 
@@ -2704,7 +2704,7 @@ async function deleteExpenseCategoryProfile(category) {
         
         if (currentUserUID) {
             for (let e of entriesToDelete) {
-                await appDataRef.child(`expenseDB/${e.id}`).remove();
+                window.aarishFirebaseLaterV43(`expenseDB/${e.id}`, "remove")
             }
         }
         
@@ -2754,7 +2754,7 @@ async function deleteExpenseCategoryProfile(category) {
             
             // SIRF WAHI ENTRY FIREBASE SE UDAAYI
             if (currentUserUID) {
-                await appDataRef.child(`expenseDB/${id}`).remove();
+                window.aarishFirebaseLaterV43(`expenseDB/${id}`, "remove")
             }
             
             renderExpenseList();
@@ -2785,7 +2785,7 @@ async function saveNewProject() {
     projectDB[name] = { records: [], created: Date.now() }; 
     
     if (currentUserUID) {
-        await appDataRef.child(`projectDB/${name}`).set(projectDB[name]); 
+        window.aarishFirebaseLaterV43(`projectDB/${name}`, "set", projectDB[name]) 
     }
     
     closeModal('add-project-modal'); 
@@ -2824,7 +2824,7 @@ async function saveNewProject() {
         delete projectDB[name]; 
         
         if (currentUserUID) {
-            await appDataRef.child(`projectDB/${name}`).remove(); 
+            window.aarishFirebaseLaterV43(`projectDB/${name}`, "remove") 
         }
         
         renderProjectsList(); 
@@ -2884,7 +2884,7 @@ async function saveNewProject() {
     
     // 3. 🔥 SIRF NAYI ENTRY FIREBASE BHEJI (saveDB() hata diya)
     if (currentUserUID) {
-        await appDataRef.child(`projectDB/${activeProject}/records/${uniqueId}`).set(newEntry);
+        window.aarishFirebaseLaterV43(`projectDB/${activeProject}/records/${uniqueId}`, "set", newEntry)
     }
     
     closeModal('add-project-entry-modal'); 
@@ -2955,7 +2955,7 @@ async function saveNewProject() {
             
             // FIREBASE SE SIRF WOHI ENTRY HATAYI
             if (currentUserUID) {
-                await appDataRef.child(`projectDB/${activeProject}/records/${id}`).remove();
+                window.aarishFirebaseLaterV43(`projectDB/${activeProject}/records/${id}`, "remove")
             }
             
             renderProjectRecords(); 
@@ -4448,7 +4448,7 @@ window.onload = function(){ setTimeout(function(){ window.focus(); window.print(
     milkDB[activeMilkCustomer].records.push(newEntry);
 
     if (currentUserUID) {
-      await appDataRef.child(`milkDB/${activeMilkCustomer}/records/${uniqueId}`).set(newEntry);
+      window.aarishFirebaseLaterV43(`milkDB/${activeMilkCustomer}/records/${uniqueId}`, "set", newEntry)
     }
 
     closeModal("add-milk-entry-modal");
@@ -4475,7 +4475,7 @@ window.onload = function(){ setTimeout(function(){ window.focus(); window.print(
       milkDB[activeMilkCustomer].records = arr(milkDB[activeMilkCustomer].records).filter(r => r.id !== id);
 
       if (currentUserUID) {
-        await appDataRef.child(`milkDB/${activeMilkCustomer}/records/${id}`).remove();
+        window.aarishFirebaseLaterV43(`milkDB/${activeMilkCustomer}/records/${id}`, "remove")
       }
 
       renderMilkRecords();
@@ -4813,7 +4813,7 @@ window.onload = function(){ setTimeout(function(){ window.focus(); window.print(
       milkDB[sourceKey].records = arr(milkDB[sourceKey].records).filter(r => r.id !== id);
 
       if (currentUserUID) {
-        await appDataRef.child(`milkDB/${sourceKey}/records/${id}`).remove();
+        window.aarishFirebaseLaterV43(`milkDB/${sourceKey}/records/${id}`, "remove")
       }
 
       renderMilkRecords();
@@ -4988,7 +4988,7 @@ window.onload = function(){ setTimeout(function(){ window.focus(); window.print(
     window.milkDB = db;
 
     if (typeof currentUserUID !== "undefined" && currentUserUID && typeof appDataRef !== "undefined" && appDataRef) {
-      await appDataRef.child(`milkDB/${finalKey}`).set(db[finalKey]);
+      window.aarishFirebaseLaterV43(`milkDB/${finalKey}`, "set", db[finalKey])
     }
 
     try { closeModal("add-milk-customer-modal"); } catch(e) {}
@@ -5139,7 +5139,7 @@ window.onload = function(){ setTimeout(function(){ window.focus(); window.print(
     } catch(e) {}
 
     if (typeof currentUserUID !== "undefined" && currentUserUID && typeof appDataRef !== "undefined" && appDataRef) {
-      await appDataRef.child("milkDB_DELETE_BACKUP_V19/" + stamp).set(payload);
+      window.aarishFirebaseLaterV43("milkDB_DELETE_BACKUP_V19/" + stamp, "set", payload)
     }
 
     return stamp;
@@ -5182,7 +5182,7 @@ window.onload = function(){ setTimeout(function(){ window.focus(); window.print(
         delete db[key];
 
         if (typeof currentUserUID !== "undefined" && currentUserUID && typeof appDataRef !== "undefined" && appDataRef) {
-          await appDataRef.child(`milkDB/${key}`).remove();
+          window.aarishFirebaseLaterV43(`milkDB/${key}`, "remove")
         }
       }
 
@@ -6290,7 +6290,7 @@ window.onload = function(){ setTimeout(function(){ window.focus(); window.print(
 
     try {
       if (typeof currentUserUID !== "undefined" && currentUserUID && typeof appDataRef !== "undefined" && appDataRef) {
-        await appDataRef.child("udharDB_DELETE_BACKUP_V29/" + Date.now()).set(backup);
+        window.aarishFirebaseLaterV43("udharDB_DELETE_BACKUP_V29/" + Date.now(), "set", backup)
       }
     } catch (e) {
       console.warn("Credit delete backup Firebase failed V29:", e);
@@ -6322,7 +6322,7 @@ window.onload = function(){ setTimeout(function(){ window.focus(); window.print(
         if (typeof currentUserUID !== "undefined" && currentUserUID && typeof appDataRef !== "undefined" && appDataRef) {
           for (var i = 0; i < entries.length; i++) {
             var id = entries[i] && entries[i].id;
-            if (id) await appDataRef.child("udharDB/" + id).remove();
+            if (id) window.aarishFirebaseLaterV43("udharDB/" + id, "remove")
           }
         }
       } catch (firebaseErr) {
@@ -6587,7 +6587,7 @@ window.onload = function(){ setTimeout(function(){ window.focus(); window.print(
 
     try {
       if (typeof currentUserUID !== "undefined" && currentUserUID && typeof appDataRef !== "undefined" && appDataRef) {
-        await appDataRef.child("expenseDB_DELETE_BACKUP_V30/" + Date.now()).set(backup);
+        window.aarishFirebaseLaterV43("expenseDB_DELETE_BACKUP_V30/" + Date.now(), "set", backup)
       }
     } catch (e) {
       console.warn("Expense delete backup Firebase failed V30:", e);
@@ -6619,7 +6619,7 @@ window.onload = function(){ setTimeout(function(){ window.focus(); window.print(
         if (typeof currentUserUID !== "undefined" && currentUserUID && typeof appDataRef !== "undefined" && appDataRef) {
           for (var i = 0; i < entries.length; i++) {
             var id = entries[i] && entries[i].id;
-            if (id) await appDataRef.child("expenseDB/" + id).remove();
+            if (id) window.aarishFirebaseLaterV43("expenseDB/" + id, "remove")
           }
         }
       } catch (firebaseErr) {
@@ -6889,7 +6889,7 @@ window.onload = function(){ setTimeout(function(){ window.focus(); window.print(
 
     try {
       if (typeof currentUserUID !== "undefined" && currentUserUID && typeof appDataRef !== "undefined" && appDataRef) {
-        await appDataRef.child("salaryDB_DELETE_BACKUP_V31/" + Date.now()).set(backup);
+        window.aarishFirebaseLaterV43("salaryDB_DELETE_BACKUP_V31/" + Date.now(), "set", backup)
       }
     } catch (e) {
       console.warn("Salary delete backup Firebase failed V31:", e);
@@ -6921,7 +6921,7 @@ window.onload = function(){ setTimeout(function(){ window.focus(); window.print(
 
       try {
         if (typeof currentUserUID !== "undefined" && currentUserUID && typeof appDataRef !== "undefined" && appDataRef) {
-          await appDataRef.child("salaryDB/" + name).remove();
+          window.aarishFirebaseLaterV43("salaryDB/" + name, "remove")
         }
       } catch (firebaseErr) {
         console.error("Salary Firebase delete failed V31:", firebaseErr);
@@ -7099,6 +7099,55 @@ window.onload = function(){ setTimeout(function(){ window.focus(); window.print(
 
 
 
+
+
+
+<script>
+// AARISH_OPTIMISTIC_FIREBASE_WRITE_V43
+// Local UI/render pehle chalega; Firebase write background me jayega.
+// Old logic/data structure same: set/remove/update same paths par hi hota rahega.
+(function () {
+  if (window.__AARISH_OPTIMISTIC_FIREBASE_WRITE_V43_READY) return;
+  window.__AARISH_OPTIMISTIC_FIREBASE_WRITE_V43_READY = true;
+
+  window.aarishFirebaseLaterV43 = function (path, action, payload) {
+    try {
+      setTimeout(function () {
+        try {
+          if (typeof currentUserUID === "undefined" || !currentUserUID) return;
+          if (typeof appDataRef === "undefined" || !appDataRef) return;
+
+          var ref = appDataRef.child(path);
+          var job;
+
+          if (action === "remove") {
+            job = ref.remove();
+          } else if (action === "update") {
+            job = ref.update(payload);
+          } else {
+            job = ref.set(payload);
+          }
+
+          if (job && typeof job.catch === "function") {
+            job.catch(function (err) {
+              console.error("AARISH V43 background Firebase sync failed:", err);
+              try {
+                if (typeof showToast === "function") showToast("Sync failed, internet check karo");
+              } catch (e) {}
+            });
+          }
+        } catch (err) {
+          console.error("AARISH V43 background Firebase sync error:", err);
+        }
+      }, 0);
+    } catch (err) {
+      console.error("AARISH V43 schedule error:", err);
+    }
+  };
+
+  console.log("✅ AARISH_OPTIMISTIC_FIREBASE_WRITE_V43 active: Firebase writes are now background/non-blocking.");
+})();
+</script>
 
 </body>
 </html>
