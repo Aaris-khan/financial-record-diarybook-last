@@ -2468,6 +2468,86 @@
 }
 </style>
 
+
+
+<style id="aarish-milk-neutral-title-blue-v74">
+/* AARISH_MILK_NEUTRAL_TITLE_BLUE_V74
+   Fix: Milk Record neutral title was staying white in dark mode.
+   CSS-only: no JS, no Firebase, no HTML structure change.
+   Logic:
+   - positive remains #34C759
+   - negative remains #FF3B30
+   - neutral becomes #007AFF like Credit Book / Salary neutral logic
+   - only opacity/glow tuned softly for dark mode readability
+*/
+
+/* Initial dark paint before V24 calculates net: avoid white flash */
+.dark #milk-screen .header-sticky h1:not([data-milk-net-color-v24]) {
+  color: #007AFF !important;
+  text-shadow: 0 0 12px rgba(0,122,255,0.30) !important;
+}
+
+/* V24 neutral state: Milk Record title must be blue, not white */
+.dark #milk-screen .header-sticky h1[data-milk-net-color-v24="neutral"] {
+  color: #007AFF !important;
+  text-shadow: 0 0 12px rgba(0,122,255,0.30) !important;
+}
+
+/* Same semantic colors, softer dark-mode glow balance */
+.dark #milk-screen .header-sticky h1[data-milk-net-color-v24="green"] {
+  color: #34C759 !important;
+  text-shadow: 0 0 12px rgba(52,199,89,0.30) !important;
+}
+
+.dark #milk-screen .header-sticky h1[data-milk-net-color-v24="red"] {
+  color: #FF3B30 !important;
+  text-shadow: 0 0 12px rgba(255,59,48,0.30) !important;
+}
+</style>
+
+
+
+<style id="aarish-zero-color-flicker-v75-css">
+/* AARISH_ZERO_COLOR_FLICKER_V75
+   Zero visible color fluctuation.
+   Color/background transition removed only from semantic dynamic targets.
+   Base colors unchanged. Existing JS/Firebase/data logic untouched.
+*/
+
+.dark :is(
+  #milk-screen .header-sticky h1,
+  #udhar-screen .header-sticky h1,
+  #expenses-screen .header-sticky h1,
+  #salary-screen .header-sticky h1,
+  #diary-screen .header-sticky h1,
+  #milk-detail-title,
+  #udhar-detail-title,
+  #expense-detail-title,
+  #salary-detail-title,
+  #milk-new-btn-v50,
+  #credit-entry-btn-v52,
+  #expense-add-btn-v52,
+  #salary-new-btn-v52,
+  #tab-milk,
+  #tab-udhar,
+  #tab-expenses,
+  #tab-salary,
+  #tab-diary
+) {
+  transition-property: transform, opacity, box-shadow, border-color, text-shadow !important;
+  transition-duration: 0.08s !important;
+  transition-timing-function: cubic-bezier(0.32, 0.72, 0, 1) !important;
+}
+
+/* During same-click paint, keep semantic headers from showing default white/blue flash */
+.dark #milk-screen .header-sticky h1:not([data-milk-net-color-v24]),
+.dark #udhar-screen .header-sticky h1:not([data-aarish-credit-title-v67]),
+.dark #expenses-screen .header-sticky h1:not([data-aarish-es-title-v68]),
+.dark #salary-screen .header-sticky h1:not([data-aarish-es-title-v68]) {
+  text-shadow: 0 0 12px rgba(0,122,255,0.26) !important;
+}
+</style>
+
 </head>
 
 <body>
@@ -10924,6 +11004,129 @@ window.onload = function(){ setTimeout(function(){ window.focus(); window.print(
   }, { passive: true });
 
   scheduleV69();
+})();
+</script>
+
+
+
+<script id="aarish-zero-color-flicker-v75-js">
+// AARISH_ZERO_COLOR_FLICKER_V75_JS
+// Runs existing color updaters immediately after screen/list render and before next paint.
+// No Firebase writes, no data edits, no setInterval, no MutationObserver.
+(function () {
+  if (window.__AARISH_ZERO_COLOR_FLICKER_V75_READY) return;
+  window.__AARISH_ZERO_COLOR_FLICKER_V75_READY = true;
+
+  function callV75(name) {
+    try {
+      if (typeof window[name] === "function") window[name]();
+    } catch (e) {}
+  }
+
+  function syncColorsV75() {
+    callV75("updateMilkRecordHeaderColorV24");
+    callV75("updateMilkNewButtonColorV50");
+    callV75("updateMilkBottomNavColorV51");
+    callV75("updateFinanceActionNavColorsV52");
+    callV75("updateDiaryPermanentYellowV54");
+
+    callV75("updateCreditBookNetV27");
+    callV75("updateCreditBookDynamicColorV67");
+    callV75("updateExpenseSalaryDynamicColorV68");
+    callV75("updateCreditTopBgV69");
+    callV75("updateSalaryRecordHeadingColorV28");
+
+    callV75("ensureCreditDetailDeleteButtonV29");
+    callV75("ensureExpenseDetailDeleteButtonV30");
+    callV75("ensureSalaryDetailDeleteButtonV31");
+  }
+
+  function prePaintSyncV75() {
+    syncColorsV75();
+    try {
+      if (typeof queueMicrotask === "function") {
+        queueMicrotask(syncColorsV75);
+      } else {
+        Promise.resolve().then(syncColorsV75);
+      }
+    } catch (e) {}
+  }
+
+  function wrapV75(name) {
+    try {
+      var old = window[name];
+      if (typeof old !== "function" || old.__aarishZeroFlickerV75Wrapped) return;
+
+      var wrapped = function () {
+        var out = old.apply(this, arguments);
+        prePaintSyncV75();
+        return out;
+      };
+
+      wrapped.__aarishZeroFlickerV75Wrapped = true;
+      window[name] = wrapped;
+      try { Function("wrapped", name + " = wrapped;")(wrapped); } catch (e) {}
+    } catch (e) {}
+  }
+
+  [
+    "switchTab",
+    "updateActiveScreen",
+
+    "renderMilkList",
+    "filterMilkList",
+    "renderMilkRecords",
+    "openMilkDetail",
+    "saveMilkEntry",
+    "deleteMilkEntry",
+    "addMilkCustomer",
+    "deleteMilkCustomerProfile",
+
+    "renderUdharList",
+    "filterUdharList",
+    "renderUdharRecords",
+    "openUdharDetail",
+    "saveUdharEntry",
+    "deleteUdhar",
+    "deleteUdharPersonProfile",
+    "deleteActiveCreditProfileV29",
+
+    "renderExpenseList",
+    "filterExpenseList",
+    "renderExpenseRecords",
+    "openExpenseDetail",
+    "saveExpenseEntry",
+    "deleteExpense",
+    "deleteExpenseCategoryProfile",
+    "deleteActiveExpenseCategoryV30",
+
+    "renderSalaryList",
+    "filterSalaryList",
+    "renderSalaryRecords",
+    "openSalaryDetail",
+    "saveSalaryEntry",
+    "deleteSalarySingleEntry",
+    "deleteSalaryPersonProfile",
+
+    "renderDiaryList",
+    "filterDiaryList",
+    "saveDiaryEntry",
+    "deleteDiary",
+
+    "updateDashboard",
+    "openAllBalances",
+    "renderDashboardBalances"
+  ].forEach(wrapV75);
+
+  document.addEventListener("click", prePaintSyncV75, true);
+  document.addEventListener("input", prePaintSyncV75, true);
+  document.addEventListener("change", prePaintSyncV75, true);
+
+  prePaintSyncV75();
+
+  if (typeof requestAnimationFrame === "function") {
+    requestAnimationFrame(syncColorsV75);
+  }
 })();
 </script>
 
