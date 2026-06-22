@@ -4331,6 +4331,181 @@ html, body {
 */
 </style>
 
+
+
+<style id="aarish-premium-dark-blue-v56">
+/* AARISH_PREMIUM_DARK_BLUE_TEXT_V56
+   Big-Tech dark mode text tuning:
+   - White/gray normal text -> premium blue combo
+   - Red/Green/Yellow semantic colors protected
+   - V50/V51/V52/V54 dynamic inline colors protected
+   - CSS-only: no Firebase, no JS loop, no observer
+*/
+.dark {
+  --aarish-v56-bg: #000000;
+  --aarish-v56-surface: #07111f;
+  --aarish-v56-card: rgba(6, 16, 32, 0.92);
+  --aarish-v56-card-2: rgba(9, 22, 42, 0.92);
+  --aarish-v56-border: rgba(94, 168, 255, 0.20);
+  --aarish-v56-title-blue: #66AFFF;
+  --aarish-v56-main-blue: #8EC5FF;
+  --aarish-v56-muted-blue: #9FCBFF;
+  --aarish-v56-soft-blue: #C9E4FF;
+  --aarish-v56-deep-blue: #4D7CFF;
+}
+
+/* Pure black base + blue readable text */
+.dark body,
+.dark .screen,
+.dark .app-container {
+  background-color: var(--aarish-v56-bg) !important;
+  color: var(--aarish-v56-main-blue) !important;
+}
+
+/* Normal headings: white -> premium blue */
+.dark #main-app :where(h1, h2, h3, h4):not(#diary-title-v54):not([data-aarishDiaryV54]) {
+  color: var(--aarish-v56-title-blue) !important;
+  text-shadow: 0 0 10px rgba(102, 175, 255, 0.22) !important;
+}
+
+/* Normal gray/white utility text -> blue family */
+.dark #main-app :where(
+  .dark\:text-white,
+  .dark\:text-gray-200,
+  .dark\:text-gray-300,
+  .text-gray-900,
+  .text-gray-800,
+  .text-gray-700,
+  .text-gray-600,
+  .text-gray-500,
+  .text-gray-400
+):not(.nav-item):not(button):not(.btn-primary):not(.btn-ios-share):not(.btn-ios-add):not(.action-btn) {
+  color: var(--aarish-v56-muted-blue) !important;
+}
+
+/* Tables and normal content */
+.dark .table-custom td,
+.dark .table-custom th,
+.dark .modal-content label,
+.dark .modal-content p,
+.dark .modal-content span,
+.dark .diary-view-content,
+.dark #diary-view-content {
+  color: var(--aarish-v56-main-blue) !important;
+}
+
+/* Cards: subtle navy surface, not gray-white */
+.dark .glass-card:not([class*="bg-gradient"]) {
+  background-color: var(--aarish-v56-card) !important;
+  border-color: var(--aarish-v56-border) !important;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.55), inset 0 1px 0 rgba(94,168,255,0.08) !important;
+}
+
+.dark .modal-content,
+.dark .diary-paper {
+  background-color: var(--aarish-v56-card-2) !important;
+  border-color: var(--aarish-v56-border) !important;
+}
+
+/* Inputs: navy + readable blue */
+.dark input,
+.dark select,
+.dark textarea,
+.dark .input-box {
+  background-color: rgba(8, 20, 38, 0.92) !important;
+  color: var(--aarish-v56-soft-blue) !important;
+  border-color: rgba(94, 168, 255, 0.22) !important;
+}
+
+.dark input::placeholder,
+.dark textarea::placeholder {
+  color: rgba(159, 203, 255, 0.65) !important;
+}
+
+/* Bottom nav default dark combo. Dynamic V51/V52/V54 inline colors still win. */
+.dark .bottom-nav {
+  background-color: rgba(2, 8, 18, 0.92) !important;
+  border-top-color: rgba(94,168,255,0.12) !important;
+}
+
+.dark .nav-item:not([data-aarishMilkBottomV51]):not([data-aarishFinanceV52]):not([data-aarishDiaryV54]) {
+  color: #6EA8FF !important;
+}
+
+.dark .nav-item.active:not([data-aarishMilkBottomV51]):not([data-aarishFinanceV52]):not([data-aarishDiaryV54]) {
+  color: var(--aarish-v56-title-blue) !important;
+  text-shadow: 0 0 12px rgba(102,175,255,0.35) !important;
+}
+
+/* Header/nav helper icons */
+.dark .header-sticky {
+  background-color: rgba(0, 0, 0, 0.88) !important;
+  border-bottom-color: rgba(94,168,255,0.12) !important;
+}
+
+/* Protect semantic colors: red/green/yellow/orange must not become blue */
+.dark :where(.text-red-500, .text-red-600, .dark\:text-red-400, .text-\[\#FF3B30\], .text-\[\#FF4B4B\], i.fa-trash) {
+  color: #FF453A !important;
+}
+
+.dark :where(.text-green-500, .text-green-600, .dark\:text-green-400, .text-\[\#34C759\], .text-\[\#10B981\]) {
+  color: #32D74B !important;
+}
+
+.dark :where(.text-yellow-400, .text-\[\#F5A623\], .text-orange-500, .text-orange-600) {
+  color: #F5A623 !important;
+}
+
+/* Protect permanent Diary yellow V54 */
+.dark #diary-title-v54,
+.dark #tab-diary[data-aarishDiaryV54],
+.dark #tab-diary[data-aarishDiaryV54] i {
+  color: #F5A623 !important;
+  text-shadow: 0 0 14px rgba(245,166,35,0.45) !important;
+}
+
+/* Protect button readability */
+.dark .btn-primary,
+.dark .btn-primary *,
+.dark button.btn-primary,
+.dark button.btn-primary * {
+  color: #FFFFFF !important;
+}
+
+.dark .btn-ios-share:not([data-aarishFinanceV52]),
+.dark .btn-ios-share:not([data-aarishFinanceV52]) * {
+  color: #66AFFF !important;
+}
+
+.dark .btn-ios-add,
+.dark .btn-ios-add * {
+  color: #32D74B !important;
+}
+
+.dark .action-btn,
+.dark .action-btn * {
+  color: #FF453A !important;
+}
+
+/* Dynamic net-color buttons/tabs from V50/V51/V52 stay untouched by inline !important,
+   but this keeps their text/icon readable if browser strips inline styles. */
+.dark #milk-new-btn-v50,
+.dark #credit-entry-btn-v52,
+.dark #expense-add-btn-v52,
+.dark #salary-new-btn-v52,
+.dark #diary-new-btn-v54 {
+  color: #FFFFFF !important;
+}
+
+.dark #milk-new-btn-v50 *,
+.dark #credit-entry-btn-v52 *,
+.dark #expense-add-btn-v52 *,
+.dark #salary-new-btn-v52 *,
+.dark #diary-new-btn-v54 * {
+  color: #FFFFFF !important;
+}
+</style>
+
 </head>
 <body>
 <div class="report">
