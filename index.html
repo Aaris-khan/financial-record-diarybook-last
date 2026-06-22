@@ -102,28 +102,26 @@
         }
 
 
-        /* AARISH_DARK_GLASS_BACKGROUND_COLOR_FIX_V38: background shorthand changed to background-color so Tailwind tint/gradient is not killed in dark mode */
         /* Advanced Frosted Glass Cards + Premium Active Glow */
         .glass-card { 
-            background-color: rgba(255, 255, 255, 0.65); 
+            background: rgba(255, 255, 255, 0.65); 
             backdrop-filter: blur(24px) saturate(180%); -webkit-backdrop-filter: blur(24px) saturate(180%);
             border-radius: 24px; padding: 22px; 
-            box-shadow: 0 10px 34px rgba(15, 23, 42, 0.055), inset 0 1px 2px rgba(255, 255, 255, 0.62); 
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.04), inset 0 1px 2px rgba(255, 255, 255, 0.6); 
             border: 1px solid rgba(255, 255, 255, 0.5); 
             transition: all 0.3s cubic-bezier(0.32, 0.72, 0, 1) !important; 
             flex-shrink: 0 !important;
         }
         .dark .glass-card { 
-            background-color: rgba(28, 28, 30, 0.65); 
+            background: rgba(28, 28, 30, 0.65); 
             border-color: rgba(255, 255, 255, 0.08); 
-            box-shadow: 0 12px 36px rgba(0, 0, 0, 0.34), inset 0 1px 1px rgba(255, 255, 255, 0.06); 
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3), inset 0 1px 1px rgba(255, 255, 255, 0.05); 
         }
         .glass-card:active { 
             transform: scale(0.96) !important; 
             box-shadow: 0 8px 30px rgba(0, 122, 255, 0.15) !important; /* Apple Blue Glow on tap */
         }
         
-        /* AARISH_BIG_TECH_UI_HYGIENE_V39: existing CSS hygiene only; no overlay style block, no JS/Firebase/data logic change */
         /* Scrollable Bottom Tab Bar */
         .bottom-nav { 
             position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); 
@@ -131,11 +129,10 @@
             backdrop-filter: blur(30px) saturate(200%); -webkit-backdrop-filter: blur(30px) saturate(200%);
             border-top: 0.5px solid rgba(0, 0, 0, 0.05); 
             display: flex; overflow-x: auto; scroll-behavior: smooth;
-            padding: 12px 8px calc(12px + env(safe-area-inset-bottom)); z-index: 50;
-            box-shadow: 0 -10px 30px rgba(15, 23, 42, 0.07);
+            padding: 12px 8px calc(12px + env(safe-area-inset-bottom)); z-index: 50; 
         }
         .bottom-nav::-webkit-scrollbar { display: none; }
-        .dark .bottom-nav { background: rgba(28, 28, 30, 0.85); border-top-color: rgba(255, 255, 255, 0.1);  box-shadow: 0 -14px 34px rgba(0, 0, 0, 0.42);}
+        .dark .bottom-nav { background: rgba(28, 28, 30, 0.85); border-top-color: rgba(255, 255, 255, 0.1); }
         
         /* Nav Item with Premium Text Shadow Glow */
         .nav-item { 
@@ -201,9 +198,8 @@
             background: rgba(245, 245, 247, 0.75); backdrop-filter: blur(30px) saturate(180%); -webkit-backdrop-filter: blur(30px) saturate(180%);
             position: sticky; top: 0; z-index: 10; display: flex; align-items: center; justify-content: space-between; 
             padding: calc(16px + env(safe-area-inset-top)) 24px 16px; border-bottom: 0.5px solid rgba(0,0,0,0.03); gap: 8px;
-            box-shadow: 0 6px 20px rgba(15, 23, 42, 0.035);
         }
-        .dark .header-sticky { background: rgba(0, 0, 0, 0.75); border-bottom-color: rgba(255,255,255,0.08);  box-shadow: 0 8px 22px rgba(0, 0, 0, 0.30);}
+        .dark .header-sticky { background: rgba(0, 0, 0, 0.75); border-bottom-color: rgba(255,255,255,0.08); }
         
         /* ==================== ULTIMATE ANTI-BROWSER LOCK ==================== */
         html, body {
@@ -241,7 +237,7 @@
         .input-box { 
             width: 100%; 
             background: rgba(118, 118, 128, 0.08); 
-            border: 1px solid rgba(0,0,0,0.04); 
+            border: 1px solid rgba(0,0,0,0.02); 
             border-radius: 16px; 
             padding: 16px 20px !important; 
             outline: none; 
@@ -251,7 +247,7 @@
             font-size: 16px !important;
             min-height: 52px !important;
         }
-        .dark .input-box { background: rgba(118, 118, 128, 0.18); border-color: rgba(255,255,255,0.02); color: #FFFFFF;  border-color: rgba(255,255,255,0.05);}
+        .dark .input-box { background: rgba(118, 118, 128, 0.18); border-color: rgba(255,255,255,0.02); color: #FFFFFF; }
         .input-box:focus { background: rgba(118, 118, 128, 0.12); box-shadow: 0 0 0 4px rgba(0, 122, 255, 0.15); border-color: transparent; }
 
         /* Premium iOS Buttons */
@@ -400,33 +396,39 @@
         .dark .offline-title { color: #FFFFFF; }
         .offline-desc { font-size: 15px; color: #8E8E93; font-weight: 500; max-width: 300px; line-height: 1.5; margin-bottom: 36px; font-family: 'Inter', sans-serif; }
 
-        
-        /* AARISH_PARTY_LEDGER_STRIPE_WIDTH_V40: Party Ledger red/green side stripe normal thickness; no overlay block, no data logic change */
-        .party-ledger-balance-stripe-v40 {
-            border-left-width: 5px !important;
-            border-left-style: solid !important;
+                
+        /* AARISH_LOW_RAM_VISUAL_SAFE_V47: no JS loop, only light visual mode for low RAM phones */
+        .ambient-glow,
+        .ambient-glow-2 {
+            display: none !important;
         }
-
-
-        /* AARISH_CREDIT_BOOK_TOTAL_SIZE_MATCH_V41: Credit Book net card amount made same premium visual weight as Expense total; scoped only, no overlay block, no data logic change */
-        #udhar-screen #credit-net-label-v27 {
-            font-size: 13px !important;
-            line-height: 1.1 !important;
-            font-weight: 800 !important;
-            letter-spacing: 0.9px !important;
-            opacity: 0.96 !important;
+        .glass-card,
+        .bottom-nav,
+        .header-sticky,
+        .modal-overlay,
+        .btn-ios-share,
+        #toast,
+        #global-loader,
+        #offline-screen {
+            backdrop-filter: none !important;
+            -webkit-backdrop-filter: none !important;
         }
-        #udhar-screen #credit-net-total-v27 {
-            font-size: 44px !important;
-            line-height: 0.98 !important;
-            font-weight: 800 !important;
-            letter-spacing: -1.2px !important;
-            margin-top: 10px !important;
+        .list-enter {
+            animation: none !important;
+            opacity: 1 !important;
+            transform: none !important;
         }
-        @media (max-width: 380px) {
-            #udhar-screen #credit-net-total-v27 {
-                font-size: 40px !important;
-            }
+        .screen.active {
+            animation-duration: 0.14s !important;
+        }
+        button,
+        .glass-card,
+        .nav-item,
+        .btn-primary,
+        .btn-ios-share,
+        .btn-ios-add,
+        .action-btn {
+            transition-duration: 0.12s !important;
         }
 
         /* GEMINI AI LOCAL CSS */
@@ -471,7 +473,7 @@
 <div id="login-screen" style="position: fixed; inset: 0; background: #000; display: flex; align-items: center; justify-content: center; z-index: 9999; overflow: hidden;">
     <div style="position:absolute; top:-20%; left:-20%; width: 70%; height: 70%; background: radial-gradient(circle, #007AFF 0%, transparent 70%); opacity: 0.3; filter: blur(80px);"></div>
     <div class="glass-card" style="width: 90%; max-width: 360px; text-align: center; position: relative; z-index: 1; background: rgba(28,28,30,0.8); border: 1px solid rgba(255,255,255,0.1);">
-        <div class="w-20 h-20 mx-auto bg-blue-500/20 shrink-0 rounded-[20px] flex items-center justify-center mb-6" style="box-shadow: 0 0 20px rgba(0,122,255,0.3);"><i class="fa-solid fa-leaf text-4xl text-blue-500"></i></div>
+        <div class="w-20 h-20 mx-auto bg-blue-500/20 shrink-0 rounded-[20px] flex items-center justify-center mb-6 box-shadow: 0 0 20px rgba(0,122,255,0.3);"><i class="fa-solid fa-leaf text-4xl text-blue-500"></i></div>
         <h2 style="font-size:28px; font-weight:800; color:#FFF; margin-bottom: 4px; letter-spacing: -0.5px;" class="truncate w-full min-w-0">Aarish Dairy</h2>
         <p style="color:#8E8E93; font-size:12px; margin-bottom: 36px; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px;" class="truncate w-full min-w-0">Pro Financial Hub</p>
         <button onclick="haptic(); handleGoogleLogin()" class="btn-primary btn-google shrink-0 w-full flex items-center justify-center gap-3" style="background:#FFF; color:#000;">
@@ -485,7 +487,7 @@
     <div id="global-loader"><div class="spinner"></div><div style="margin-top: 18px; font-size: 12px; font-weight: 700; color:#8E8E93; letter-spacing: 1.5px;" id="loader-text">SYNCING DATA...</div></div>
     <div id="toast"><i class="fa-solid fa-circle-check" style="color: #34C759; text-shadow: 0 0 10px rgba(52,199,89,0.5);"></i><span id="toast-msg" class="ml-1">Success</span></div>
 
-    <!-- AARISH_DASHBOARD_TAILWIND_TINT_CARDS_V37: only existing Tailwind bg-* classes added to four dashboard cards; no CSS overlay, no JS/Firebase/style.css change -->
+    <!-- AARISH_DASHBOARD_TAILWIND_TINT_CARDS_V37: only Tailwind bg-* classes added to four dashboard cards; no CSS overlay, no JS/Firebase/style.css change -->
 <div id="home-screen" class="screen active">
         <div class="header-sticky">
             <div class="min-w-0 flex-1">
@@ -495,7 +497,7 @@
             
             <div class="flex items-center gap-1.5 mt-0.5 min-h-[44px]"> <p class="text-[10px] text-[#007AFF] font-bold tracking-widest uppercase truncate m-0">Aarish Dairy</p>
                 
-                <button onclick="haptic(); handleGeminiIconClick()" class="transition-transform active:scale-95 origin-left scale-[2.2] ml-2 mb-1" style="background:none; border:none; padding:0; outline:none; cursor:pointer; display:flex;" aria-label="Open AI assistant">
+                <button onclick="haptic(); handleGeminiIconClick()" class="transition-transform active:scale-95 origin-left scale-[2.2] ml-2 mb-1" style="background:none; border:none; padding:0; outline:none; cursor:pointer; display:flex;">
                     <svg viewBox="0 0 24 24" width="16" height="16"> <path d="M12 24C12 17.3726 6.62742 12 0 12C6.62742 12 12 6.62742 12 0C12 6.62742 17.3726 12 24 12C17.3726 12 12 17.3726 12 24Z" fill="url(#gemini-header-grad-fab)"/>
                         <defs><linearGradient id="gemini-header-grad-fab" x1="0" y1="0" x2="24" y2="24"><stop stop-color="#4285F4"/><stop offset="0.5" stop-color="#9b72cb"/><stop offset="1" stop-color="#d96570"/></linearGradient></defs>
                     </svg>
@@ -506,10 +508,10 @@
                   
             </div>
             <div class="flex gap-2 items-center shrink-0">
-                <button id="install-app-btn" onclick="haptic(); installAppPWA()" class="hidden w-10 h-10 shrink-0 rounded-full bg-[#007AFF]/10 text-[#007AFF] flex items-center justify-center shadow-sm font-bold transition-transform active:scale-95" title="Install App" aria-label="Install app"><i class="fa-solid fa-download text-[15px]"></i></button>
-                <button onclick="haptic(); downloadExcel()" class="w-10 h-10 shrink-0 rounded-full bg-green-500/10 text-green-600 flex items-center justify-center shadow-sm transition-transform active:scale-95" title="Download PDF" aria-label="Download PDF"><i class="fa-solid fa-file-pdf text-[15px]"></i></button>
-                <button onclick="haptic(); toggleTheme()" class="w-10 h-10 shrink-0 rounded-full bg-black/5 dark:bg-white/10 flex items-center justify-center transition-transform active:scale-95" aria-label="Toggle dark mode" title="Toggle theme"><i class="fa-solid fa-moon text-[15px] dark:hidden text-gray-700"></i><i class="fa-solid fa-sun text-[15px] hidden dark:block text-yellow-400 drop-shadow-[0_0_8px_rgba(250,204,21,0.5)]"></i></button>
-                <button onclick="haptic(); logout()" class="w-10 h-10 shrink-0 rounded-full bg-red-500/10 text-red-500 flex items-center justify-center transition-transform active:scale-95" aria-label="Logout" title="Logout"><i class="fa-solid fa-arrow-right-from-bracket text-[15px]"></i></button>
+                <button id="install-app-btn" onclick="haptic(); installAppPWA()" class="hidden w-10 h-10 shrink-0 rounded-full bg-[#007AFF]/10 text-[#007AFF] flex items-center justify-center shadow-sm font-bold transition-transform active:scale-95" title="Install App"><i class="fa-solid fa-download text-[15px]"></i></button>
+                <button onclick="haptic(); downloadExcel()" class="w-10 h-10 shrink-0 rounded-full bg-green-500/10 text-green-600 flex items-center justify-center shadow-sm transition-transform active:scale-95" title="Download PDF"><i class="fa-solid fa-file-pdf text-[15px]"></i></button>
+                <button onclick="haptic(); toggleTheme()" class="w-10 h-10 shrink-0 rounded-full bg-black/5 dark:bg-white/10 flex items-center justify-center transition-transform active:scale-95"><i class="fa-solid fa-moon text-[15px] dark:hidden text-gray-700"></i><i class="fa-solid fa-sun text-[15px] hidden dark:block text-yellow-400 drop-shadow-[0_0_8px_rgba(250,204,21,0.5)]"></i></button>
+                <button onclick="haptic(); logout()" class="w-10 h-10 shrink-0 rounded-full bg-red-500/10 text-red-500 flex items-center justify-center transition-transform active:scale-95"><i class="fa-solid fa-arrow-right-from-bracket text-[15px]"></i></button>
             </div>
         </div>
         <div class="p-5">
@@ -1226,50 +1228,17 @@
         const t = document.getElementById('toast'); document.getElementById('toast-msg').innerHTML = msg;
         t.classList.add('show'); setTimeout(() => t.classList.remove('show'), 2500);
     }
-    function openModal(id) {
-        // AARISH_MODAL_CLICK_UNBLOCK_V42: robust modal open, no overlay-block bug
+    function openModal(id) { 
         const m = document.getElementById(id);
-        if (!m) return;
-
-        if (m.__aarishCloseTimerV42) {
-            clearTimeout(m.__aarishCloseTimerV42);
-            m.__aarishCloseTimerV42 = null;
-        }
-
         m.style.display = 'flex';
-        m.style.pointerEvents = 'auto';
-        m.style.opacity = '0';
-
-        const app = document.getElementById('main-app');
-        if (app) app.classList.add('app-scale-down');
-
-        requestAnimationFrame(() => {
-            m.style.opacity = '1';
-            m.style.pointerEvents = 'auto';
-        });
+        document.getElementById('main-app').classList.add('app-scale-down'); // 3D depth effect
+        setTimeout(() => m.style.opacity = '1', 10);
     }
-    function closeModal(id) {
-        // AARISH_MODAL_CLICK_UNBLOCK_V42: invisible closing modal cannot block Add/Share clicks
+    function closeModal(id) { 
         const m = document.getElementById(id);
-        if (!m) return;
-
-        if (m.__aarishCloseTimerV42) {
-            clearTimeout(m.__aarishCloseTimerV42);
-            m.__aarishCloseTimerV42 = null;
-        }
-
         m.style.opacity = '0';
-        m.style.pointerEvents = 'none';
-
-        const app = document.getElementById('main-app');
-        if (app) app.classList.remove('app-scale-down');
-
-        m.__aarishCloseTimerV42 = setTimeout(() => {
-            if (m.style.opacity === '0') {
-                m.style.display = 'none';
-                m.style.pointerEvents = 'none';
-            }
-        }, 240);
+        document.getElementById('main-app').classList.remove('app-scale-down');
+        setTimeout(() => m.style.display = 'none', 400);
     }
     
     // Empty State Helper Function
@@ -1683,13 +1652,13 @@ async function saveDiaryEntry() {
         const entry = diaryDB.find(d => d.id === activeDiaryIndex);
         if(entry) {
             entry.date = date; entry.title = title; entry.content = content; entry.updated = Date.now();
-            if (currentUserUID) window.aarishFirebaseLaterV43(`diaryDB/${activeDiaryIndex}`, "set", entry)
+            if (currentUserUID) await appDataRef.child(`diaryDB/${activeDiaryIndex}`).set(entry);
         }
     } else {
         const uniqueId = "dia_" + Date.now();
         const entry = { id: uniqueId, date, title, content, updated: Date.now() };
         diaryDB.unshift(entry);
-        if (currentUserUID) window.aarishFirebaseLaterV43(`diaryDB/${uniqueId}`, "set", entry)
+        if (currentUserUID) await appDataRef.child(`diaryDB/${uniqueId}`).set(entry);
         activeDiaryIndex = uniqueId;
     }
     
@@ -1748,7 +1717,7 @@ function renderDiaryList() {
   async function deleteDiary(id, goBack = false) { 
     if(confirm('Delete this page permanently?')) { 
         diaryDB = diaryDB.filter(d => d.id !== id); 
-        if (currentUserUID) window.aarishFirebaseLaterV43(`diaryDB/${id}`, "remove")
+        if (currentUserUID) await appDataRef.child(`diaryDB/${id}`).remove();
         
         if(goBack) switchTab('diary');
         else renderDiaryList();
@@ -1772,7 +1741,7 @@ function renderDiaryList() {
     salaryDB[name] = { company: company, type: type, records: [] }; 
     
     if (currentUserUID) {
-        window.aarishFirebaseLaterV43(`salaryDB/${name}`, "set", salaryDB[name]) 
+        await appDataRef.child(`salaryDB/${name}`).set(salaryDB[name]); 
     }
     
     closeModal('add-salary-person-modal'); 
@@ -1796,7 +1765,7 @@ async function deleteSalaryPersonProfile(name) {
         delete salaryDB[name]; 
         
         if (currentUserUID) {
-            window.aarishFirebaseLaterV43(`salaryDB/${name}`, "remove")      
+            await appDataRef.child(`salaryDB/${name}`).remove();      
         }
         
         if(activeSalaryPerson === name) activeSalaryPerson = null; 
@@ -1881,7 +1850,7 @@ async function deleteSalaryPersonProfile(name) {
         salaryDB[activeSalaryPerson].records.push(newEntry);
         
         if (currentUserUID) {
-            window.aarishFirebaseLaterV43(`salaryDB/${activeSalaryPerson}/records/${uniqueId}`, "set", newEntry)
+            await appDataRef.child(`salaryDB/${activeSalaryPerson}/records/${uniqueId}`).set(newEntry);
         }
         
         closeModal('add-salary-entry-modal'); 
@@ -1935,7 +1904,7 @@ async function deleteSalaryPersonProfile(name) {
             salaryDB[activeSalaryPerson].records = salaryDB[activeSalaryPerson].records.filter(r => r.id !== id);
             
             if (currentUserUID) {
-                window.aarishFirebaseLaterV43(`salaryDB/${activeSalaryPerson}/records/${id}`, "remove")
+                await appDataRef.child(`salaryDB/${activeSalaryPerson}/records/${id}`).remove();
             }
             
             renderSalaryRecords();
@@ -1961,7 +1930,7 @@ async function addMilkCustomer() {
     milkDB[name] = { rate: rate, type: type, records: [] }; 
     
     if (currentUserUID) {
-        window.aarishFirebaseLaterV43(`milkDB/${name}`, "set", milkDB[name]) 
+        await appDataRef.child(`milkDB/${name}`).set(milkDB[name]); 
     }
     
     closeModal('add-milk-customer-modal'); 
@@ -1988,7 +1957,7 @@ async function addMilkCustomer() {
         delete milkDB[name]; 
         
         if (currentUserUID) {
-            window.aarishFirebaseLaterV43(`milkDB/${name}`, "remove")      
+            await appDataRef.child(`milkDB/${name}`).remove();      
         }
         
         if(activeMilkCustomer === name) activeMilkCustomer = null; 
@@ -2111,7 +2080,7 @@ async function addMilkCustomer() {
         milkDB[activeMilkCustomer].records.push(newEntry);
 
         if (currentUserUID) {
-            window.aarishFirebaseLaterV43(`milkDB/${activeMilkCustomer}/records/${uniqueId}`, "set", newEntry)
+            await appDataRef.child(`milkDB/${activeMilkCustomer}/records/${uniqueId}`).set(newEntry);
         }
 
         closeModal('add-milk-entry-modal'); 
@@ -2137,7 +2106,7 @@ async function addMilkCustomer() {
             milkDB[activeMilkCustomer].records = milkDB[activeMilkCustomer].records.filter(r => r.id !== id);
             
             if (currentUserUID) {
-                window.aarishFirebaseLaterV43(`milkDB/${activeMilkCustomer}/records/${id}`, "remove")
+                await appDataRef.child(`milkDB/${activeMilkCustomer}/records/${id}`).remove();
             }
             
             renderMilkRecords();
@@ -2265,7 +2234,7 @@ async function shareDiaryBill(id) {
         overlay.innerHTML = `
             <div class="modal-content" onclick="event.stopImmediatePropagation()">
                 <div class="w-12 h-1.5 bg-gray-300 dark:bg-gray-600 shrink-0 rounded-full mx-auto mb-6"></div>
-                <h2 class="text-2xl font-extrabold mb-2 text-center w-full">Compact PDF Export</h2>
+                <h2 class="text-2xl font-extrabold mb-2 text-center w-full">Compact PDF Export V12</h2>
                 <p class="text-[11px] text-center text-gray-500 mb-6 font-bold uppercase tracking-wider">Open compact formal PDF report</p>
 
                 <div class="grid grid-cols-2 gap-3 mb-6 w-full">
@@ -2414,7 +2383,7 @@ async function shareDiaryBill(id) {
         udharDB.unshift(newEntry);
         
         if (currentUserUID) {
-            window.aarishFirebaseLaterV43(`udharDB/${uniqueId}`, "set", newEntry)
+            await appDataRef.child(`udharDB/${uniqueId}`).set(newEntry);
         }
         
         closeModal('add-udhar-modal'); 
@@ -2503,7 +2472,7 @@ async function shareDiaryBill(id) {
             // 3. 🔥 FIREBASE SE SIRF WAHI ENTRIES HATAO (Purana saveDB hata diya)
             if (currentUserUID) {
                 for (let e of entriesToDelete) {
-                    window.aarishFirebaseLaterV43(`udharDB/${e.id}`, "remove")
+                    await appDataRef.child(`udharDB/${e.id}`).remove();
                 }
             }
             
@@ -2570,7 +2539,7 @@ async function shareDiaryBill(id) {
             udharDB = udharDB.filter(u => u.id !== id); 
             
             if (currentUserUID) {
-                window.aarishFirebaseLaterV43(`udharDB/${id}`, "remove")
+                await appDataRef.child(`udharDB/${id}`).remove();
             }
             
             renderUdharList();
@@ -2638,7 +2607,7 @@ async function shareDiaryBill(id) {
 
         // SIRF EK EENT FIREBASE PAR BHEJI
         if (currentUserUID) {
-            window.aarishFirebaseLaterV43(`expenseDB/${uniqueId}`, "set", newEntry)
+            await appDataRef.child(`expenseDB/${uniqueId}`).set(newEntry);
         }
         
         closeModal('add-expense-modal'); 
@@ -2704,7 +2673,7 @@ async function deleteExpenseCategoryProfile(category) {
         
         if (currentUserUID) {
             for (let e of entriesToDelete) {
-                window.aarishFirebaseLaterV43(`expenseDB/${e.id}`, "remove")
+                await appDataRef.child(`expenseDB/${e.id}`).remove();
             }
         }
         
@@ -2754,7 +2723,7 @@ async function deleteExpenseCategoryProfile(category) {
             
             // SIRF WAHI ENTRY FIREBASE SE UDAAYI
             if (currentUserUID) {
-                window.aarishFirebaseLaterV43(`expenseDB/${id}`, "remove")
+                await appDataRef.child(`expenseDB/${id}`).remove();
             }
             
             renderExpenseList();
@@ -2785,7 +2754,7 @@ async function saveNewProject() {
     projectDB[name] = { records: [], created: Date.now() }; 
     
     if (currentUserUID) {
-        window.aarishFirebaseLaterV43(`projectDB/${name}`, "set", projectDB[name]) 
+        await appDataRef.child(`projectDB/${name}`).set(projectDB[name]); 
     }
     
     closeModal('add-project-modal'); 
@@ -2824,7 +2793,7 @@ async function saveNewProject() {
         delete projectDB[name]; 
         
         if (currentUserUID) {
-            window.aarishFirebaseLaterV43(`projectDB/${name}`, "remove") 
+            await appDataRef.child(`projectDB/${name}`).remove(); 
         }
         
         renderProjectsList(); 
@@ -2884,7 +2853,7 @@ async function saveNewProject() {
     
     // 3. 🔥 SIRF NAYI ENTRY FIREBASE BHEJI (saveDB() hata diya)
     if (currentUserUID) {
-        window.aarishFirebaseLaterV43(`projectDB/${activeProject}/records/${uniqueId}`, "set", newEntry)
+        await appDataRef.child(`projectDB/${activeProject}/records/${uniqueId}`).set(newEntry);
     }
     
     closeModal('add-project-entry-modal'); 
@@ -2955,7 +2924,7 @@ async function saveNewProject() {
             
             // FIREBASE SE SIRF WOHI ENTRY HATAYI
             if (currentUserUID) {
-                window.aarishFirebaseLaterV43(`projectDB/${activeProject}/records/${id}`, "remove")
+                await appDataRef.child(`projectDB/${activeProject}/records/${id}`).remove();
             }
             
             renderProjectRecords(); 
@@ -4037,8 +4006,241 @@ ${css()}
 </style>
 
 
+<style id="aarish-premium-soft-glass-ui-v33">
+/* AARISH_PREMIUM_SOFT_GLASS_UI_V33 */
+/* Tailwind safe overlay: no Tailwind generated class rewrite, no data/function logic, no semantic color replacement. */
 
+:root {
+  --aarish-v33-surface-border: rgba(255, 255, 255, 0.58);
+  --aarish-v33-surface-shadow: 0 14px 42px rgba(15, 23, 42, 0.075), inset 0 1px 0 rgba(255,255,255,0.52);
+  --aarish-v33-surface-shadow-soft: 0 8px 26px rgba(15, 23, 42, 0.055), inset 0 1px 0 rgba(255,255,255,0.44);
+  --aarish-v33-header-shadow: 0 10px 32px rgba(15, 23, 42, 0.055);
+  --aarish-v33-nav-shadow: 0 -14px 38px rgba(15, 23, 42, 0.08), inset 0 1px 0 rgba(255,255,255,0.55);
+  --aarish-v33-input-shadow: inset 0 1px 0 rgba(255,255,255,0.62), 0 8px 24px rgba(15,23,42,0.035);
+  --aarish-v33-focus-ring: 0 0 0 4px rgba(0, 122, 255, 0.13);
+  --aarish-v33-press-scale-card: 0.985;
+  --aarish-v33-press-scale-button: 0.955;
+  --aarish-v33-ease: cubic-bezier(.2,.8,.2,1);
+}
 
+.dark {
+  --aarish-v33-surface-border: rgba(255, 255, 255, 0.105);
+  --aarish-v33-surface-shadow: 0 18px 52px rgba(0, 0, 0, 0.36), inset 0 1px 0 rgba(255,255,255,0.075);
+  --aarish-v33-surface-shadow-soft: 0 12px 34px rgba(0, 0, 0, 0.30), inset 0 1px 0 rgba(255,255,255,0.06);
+  --aarish-v33-header-shadow: 0 10px 34px rgba(0,0,0,0.34);
+  --aarish-v33-nav-shadow: 0 -16px 42px rgba(0,0,0,0.42), inset 0 1px 0 rgba(255,255,255,0.075);
+  --aarish-v33-input-shadow: inset 0 1px 0 rgba(255,255,255,0.055), 0 10px 28px rgba(0,0,0,0.22);
+  --aarish-v33-focus-ring: 0 0 0 4px rgba(10, 132, 255, 0.16);
+}
+
+html, body {
+  text-rendering: geometricPrecision;
+}
+
+.app-container {
+  isolation: isolate;
+}
+
+.header-sticky {
+  box-shadow: var(--aarish-v33-header-shadow) !important;
+  border-bottom: 1px solid rgba(255,255,255,0.36) !important;
+  transform: translate3d(0,0,0);
+}
+
+.dark .header-sticky {
+  border-bottom: 1px solid rgba(255,255,255,0.075) !important;
+}
+
+.header-sticky h1,
+.header-sticky h2,
+.header-sticky h3 {
+  line-height: 1.08 !important;
+}
+
+.glass-card {
+  border: 1px solid var(--aarish-v33-surface-border) !important;
+  box-shadow: var(--aarish-v33-surface-shadow) !important;
+  transform: translate3d(0,0,0);
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  will-change: transform;
+}
+
+.glass-card:active {
+  transform: scale(var(--aarish-v33-press-scale-card)) translate3d(0,0,0) !important;
+  box-shadow: var(--aarish-v33-surface-shadow-soft) !important;
+}
+
+#milk-list > *,
+#udhar-list > *,
+#expense-list-container > *,
+#salary-list > *,
+#project-list > *,
+#diary-list > *,
+#dash-balances-list > * {
+  border-radius: 24px;
+  transform: translate3d(0,0,0);
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+
+.btn-primary,
+.btn-ios-share,
+.btn-ios-add,
+.action-btn,
+.header-sticky button,
+.bottom-nav .nav-item {
+  transform: translate3d(0,0,0);
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  transition:
+    transform 150ms var(--aarish-v33-ease),
+    opacity 150ms ease,
+    box-shadow 180ms ease,
+    background-color 180ms ease,
+    border-color 180ms ease !important;
+}
+
+.btn-primary:active,
+.btn-ios-share:active,
+.btn-ios-add:active,
+.action-btn:active,
+.header-sticky button:active,
+.bottom-nav .nav-item:active {
+  transform: scale(var(--aarish-v33-press-scale-button)) translate3d(0,0,0) !important;
+  opacity: 0.88 !important;
+}
+
+.input-box {
+  box-shadow: var(--aarish-v33-input-shadow) !important;
+  border-color: rgba(255,255,255,0.50) !important;
+  transform: translate3d(0,0,0);
+  transition:
+    box-shadow 180ms ease,
+    border-color 180ms ease,
+    background-color 180ms ease,
+    transform 150ms var(--aarish-v33-ease) !important;
+}
+
+.dark .input-box {
+  border-color: rgba(255,255,255,0.075) !important;
+}
+
+.input-box:focus {
+  box-shadow: var(--aarish-v33-focus-ring), var(--aarish-v33-input-shadow) !important;
+  transform: translate3d(0,-1px,0);
+}
+
+.bottom-nav {
+  box-shadow: var(--aarish-v33-nav-shadow) !important;
+  border-top: 1px solid rgba(255,255,255,0.50) !important;
+}
+
+.dark .bottom-nav {
+  border-top: 1px solid rgba(255,255,255,0.08) !important;
+}
+
+.nav-item {
+  min-height: 54px;
+  position: relative;
+}
+
+.nav-item.active {
+  background: rgba(0, 122, 255, 0.095) !important;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.42), 0 8px 20px rgba(0,122,255,0.11);
+}
+
+.dark .nav-item.active {
+  background: rgba(10, 132, 255, 0.155) !important;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.08), 0 8px 22px rgba(10,132,255,0.11);
+}
+
+.table-custom {
+  border-collapse: separate !important;
+  border-spacing: 0 !important;
+}
+
+.table-custom tbody tr {
+  transition: background-color 150ms ease, transform 150ms var(--aarish-v33-ease);
+}
+
+.table-custom tbody tr:active {
+  transform: scale(0.995);
+  background: rgba(0,122,255,0.035);
+}
+
+.dark .table-custom tbody tr:active {
+  background: rgba(10,132,255,0.08);
+}
+
+.modal-content {
+  border: 1px solid rgba(255,255,255,0.55) !important;
+  box-shadow: 0 -22px 70px rgba(15,23,42,0.18), inset 0 1px 0 rgba(255,255,255,0.46) !important;
+  transform: translate3d(0,0,0);
+}
+
+.dark .modal-content {
+  border: 1px solid rgba(255,255,255,0.08) !important;
+  box-shadow: 0 -24px 80px rgba(0,0,0,0.55), inset 0 1px 0 rgba(255,255,255,0.06) !important;
+}
+
+#toast {
+  box-shadow: 0 14px 44px rgba(15,23,42,0.22) !important;
+}
+
+#milk-customer-delete-btn-v19,
+#credit-profile-delete-btn-v29,
+#expense-category-delete-btn-v30,
+#salary-profile-delete-btn-v31 {
+  box-shadow: 0 10px 26px rgba(255,59,48,0.16), inset 0 1px 0 rgba(255,255,255,0.18) !important;
+  border: 1px solid rgba(255,59,48,0.12) !important;
+}
+
+#milk-customer-delete-btn-v19:active,
+#credit-profile-delete-btn-v29:active,
+#expense-category-delete-btn-v30:active,
+#salary-profile-delete-btn-v31:active {
+  transform: scale(0.93) translate3d(0,0,0) !important;
+  box-shadow: 0 8px 20px rgba(255,59,48,0.20), inset 0 1px 0 rgba(255,255,255,0.16) !important;
+}
+
+.aarish-confirm-box-v32 {
+  border: 1px solid rgba(255,255,255,0.55) !important;
+  box-shadow: 0 22px 70px rgba(15,23,42,0.20), inset 0 1px 0 rgba(255,255,255,0.44) !important;
+}
+
+.dark .aarish-confirm-box-v32 {
+  border: 1px solid rgba(255,255,255,0.08) !important;
+  box-shadow: 0 24px 80px rgba(0,0,0,0.56), inset 0 1px 0 rgba(255,255,255,0.06) !important;
+}
+
+@supports (padding: max(0px)) {
+  .bottom-nav {
+    padding-bottom: max(12px, calc(12px + env(safe-area-inset-bottom))) !important;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .glass-card,
+  .btn-primary,
+  .btn-ios-share,
+  .btn-ios-add,
+  .action-btn,
+  .nav-item,
+  .input-box,
+  .table-custom tbody tr {
+    transition: none !important;
+  }
+}
+
+/* V33 status flags:
+   tailwindGeneratedCssEdited: false
+   firebaseLogicChanged: false
+   semanticColorsChanged: false
+   layoutHeavyRewrite: false
+   polishOnly: true
+*/
+</style>
 
 </head>
 <body>
@@ -4448,7 +4650,7 @@ window.onload = function(){ setTimeout(function(){ window.focus(); window.print(
     milkDB[activeMilkCustomer].records.push(newEntry);
 
     if (currentUserUID) {
-      window.aarishFirebaseLaterV43(`milkDB/${activeMilkCustomer}/records/${uniqueId}`, "set", newEntry)
+      await appDataRef.child(`milkDB/${activeMilkCustomer}/records/${uniqueId}`).set(newEntry);
     }
 
     closeModal("add-milk-entry-modal");
@@ -4475,7 +4677,7 @@ window.onload = function(){ setTimeout(function(){ window.focus(); window.print(
       milkDB[activeMilkCustomer].records = arr(milkDB[activeMilkCustomer].records).filter(r => r.id !== id);
 
       if (currentUserUID) {
-        window.aarishFirebaseLaterV43(`milkDB/${activeMilkCustomer}/records/${id}`, "remove")
+        await appDataRef.child(`milkDB/${activeMilkCustomer}/records/${id}`).remove();
       }
 
       renderMilkRecords();
@@ -4813,7 +5015,7 @@ window.onload = function(){ setTimeout(function(){ window.focus(); window.print(
       milkDB[sourceKey].records = arr(milkDB[sourceKey].records).filter(r => r.id !== id);
 
       if (currentUserUID) {
-        window.aarishFirebaseLaterV43(`milkDB/${sourceKey}/records/${id}`, "remove")
+        await appDataRef.child(`milkDB/${sourceKey}/records/${id}`).remove();
       }
 
       renderMilkRecords();
@@ -4988,7 +5190,7 @@ window.onload = function(){ setTimeout(function(){ window.focus(); window.print(
     window.milkDB = db;
 
     if (typeof currentUserUID !== "undefined" && currentUserUID && typeof appDataRef !== "undefined" && appDataRef) {
-      window.aarishFirebaseLaterV43(`milkDB/${finalKey}`, "set", db[finalKey])
+      await appDataRef.child(`milkDB/${finalKey}`).set(db[finalKey]);
     }
 
     try { closeModal("add-milk-customer-modal"); } catch(e) {}
@@ -5139,7 +5341,7 @@ window.onload = function(){ setTimeout(function(){ window.focus(); window.print(
     } catch(e) {}
 
     if (typeof currentUserUID !== "undefined" && currentUserUID && typeof appDataRef !== "undefined" && appDataRef) {
-      window.aarishFirebaseLaterV43("milkDB_DELETE_BACKUP_V19/" + stamp, "set", payload)
+      await appDataRef.child("milkDB_DELETE_BACKUP_V19/" + stamp).set(payload);
     }
 
     return stamp;
@@ -5182,7 +5384,7 @@ window.onload = function(){ setTimeout(function(){ window.focus(); window.print(
         delete db[key];
 
         if (typeof currentUserUID !== "undefined" && currentUserUID && typeof appDataRef !== "undefined" && appDataRef) {
-          window.aarishFirebaseLaterV43(`milkDB/${key}`, "remove")
+          await appDataRef.child(`milkDB/${key}`).remove();
         }
       }
 
@@ -5635,7 +5837,7 @@ window.onload = function(){ setTimeout(function(){ window.focus(); window.print(
       const amount = Math.round(Math.abs(net)).toLocaleString("en-IN");
       const first = row.name && row.name[0] ? row.name[0].toUpperCase() : "?";
 
-      return `<div class="glass-card list-enter flex items-center justify-between border-l-[4px] ${border} party-ledger-balance-stripe-v40 w-full cursor-pointer"
+      return `<div class="glass-card list-enter flex items-center justify-between border-l-[4px] ${border} w-full cursor-pointer"
         style="animation-delay:${i * 0.04}s;">
         <div class="flex items-center gap-4 min-w-0 flex-1">
           <div class="w-12 h-12 shrink-0 squircle ${bg} ${color} font-extrabold flex items-center justify-center text-lg">${first}</div>
@@ -5931,8 +6133,8 @@ window.onload = function(){ setTimeout(function(){ window.focus(); window.print(
 
     card.innerHTML = [
       '<div class="flex-1 min-w-0">',
-        '<p id="credit-net-label-v27" class="font-bold uppercase opacity-90 tracking-wider truncate w-full drop-shadow-sm">Net Balance</p>',
-        '<h3 id="credit-net-total-v27" class="font-extrabold tracking-tight truncate w-full drop-shadow-md">₹0</h3>',
+        '<p id="credit-net-label-v27" class="text-[11px] font-bold uppercase opacity-90 tracking-wider truncate w-full drop-shadow-sm">Net Balance</p>',
+        '<h3 id="credit-net-total-v27" class="text-[34px] font-extrabold mt-2 tracking-tight truncate w-full drop-shadow-md">₹0</h3>',
       '</div>',
       '<div aria-hidden="true" style="display:none !important; visibility:hidden !important; width:0 !important; height:0 !important; overflow:hidden !important;">',
         '<span id="udhar-total-lena">₹0</span>',
@@ -6290,7 +6492,7 @@ window.onload = function(){ setTimeout(function(){ window.focus(); window.print(
 
     try {
       if (typeof currentUserUID !== "undefined" && currentUserUID && typeof appDataRef !== "undefined" && appDataRef) {
-        window.aarishFirebaseLaterV43("udharDB_DELETE_BACKUP_V29/" + Date.now(), "set", backup)
+        await appDataRef.child("udharDB_DELETE_BACKUP_V29/" + Date.now()).set(backup);
       }
     } catch (e) {
       console.warn("Credit delete backup Firebase failed V29:", e);
@@ -6322,7 +6524,7 @@ window.onload = function(){ setTimeout(function(){ window.focus(); window.print(
         if (typeof currentUserUID !== "undefined" && currentUserUID && typeof appDataRef !== "undefined" && appDataRef) {
           for (var i = 0; i < entries.length; i++) {
             var id = entries[i] && entries[i].id;
-            if (id) window.aarishFirebaseLaterV43("udharDB/" + id, "remove")
+            if (id) await appDataRef.child("udharDB/" + id).remove();
           }
         }
       } catch (firebaseErr) {
@@ -6587,7 +6789,7 @@ window.onload = function(){ setTimeout(function(){ window.focus(); window.print(
 
     try {
       if (typeof currentUserUID !== "undefined" && currentUserUID && typeof appDataRef !== "undefined" && appDataRef) {
-        window.aarishFirebaseLaterV43("expenseDB_DELETE_BACKUP_V30/" + Date.now(), "set", backup)
+        await appDataRef.child("expenseDB_DELETE_BACKUP_V30/" + Date.now()).set(backup);
       }
     } catch (e) {
       console.warn("Expense delete backup Firebase failed V30:", e);
@@ -6619,7 +6821,7 @@ window.onload = function(){ setTimeout(function(){ window.focus(); window.print(
         if (typeof currentUserUID !== "undefined" && currentUserUID && typeof appDataRef !== "undefined" && appDataRef) {
           for (var i = 0; i < entries.length; i++) {
             var id = entries[i] && entries[i].id;
-            if (id) window.aarishFirebaseLaterV43("expenseDB/" + id, "remove")
+            if (id) await appDataRef.child("expenseDB/" + id).remove();
           }
         }
       } catch (firebaseErr) {
@@ -6889,7 +7091,7 @@ window.onload = function(){ setTimeout(function(){ window.focus(); window.print(
 
     try {
       if (typeof currentUserUID !== "undefined" && currentUserUID && typeof appDataRef !== "undefined" && appDataRef) {
-        window.aarishFirebaseLaterV43("salaryDB_DELETE_BACKUP_V31/" + Date.now(), "set", backup)
+        await appDataRef.child("salaryDB_DELETE_BACKUP_V31/" + Date.now()).set(backup);
       }
     } catch (e) {
       console.warn("Salary delete backup Firebase failed V31:", e);
@@ -6921,7 +7123,7 @@ window.onload = function(){ setTimeout(function(){ window.focus(); window.print(
 
       try {
         if (typeof currentUserUID !== "undefined" && currentUserUID && typeof appDataRef !== "undefined" && appDataRef) {
-          window.aarishFirebaseLaterV43("salaryDB/" + name, "remove")
+          await appDataRef.child("salaryDB/" + name).remove();
         }
       } catch (firebaseErr) {
         console.error("Salary Firebase delete failed V31:", firebaseErr);
@@ -7099,55 +7301,6 @@ window.onload = function(){ setTimeout(function(){ window.focus(); window.print(
 
 
 
-
-
-
-<script>
-// AARISH_OPTIMISTIC_FIREBASE_WRITE_V43
-// Local UI/render pehle chalega; Firebase write background me jayega.
-// Old logic/data structure same: set/remove/update same paths par hi hota rahega.
-(function () {
-  if (window.__AARISH_OPTIMISTIC_FIREBASE_WRITE_V43_READY) return;
-  window.__AARISH_OPTIMISTIC_FIREBASE_WRITE_V43_READY = true;
-
-  window.aarishFirebaseLaterV43 = function (path, action, payload) {
-    try {
-      setTimeout(function () {
-        try {
-          if (typeof currentUserUID === "undefined" || !currentUserUID) return;
-          if (typeof appDataRef === "undefined" || !appDataRef) return;
-
-          var ref = appDataRef.child(path);
-          var job;
-
-          if (action === "remove") {
-            job = ref.remove();
-          } else if (action === "update") {
-            job = ref.update(payload);
-          } else {
-            job = ref.set(payload);
-          }
-
-          if (job && typeof job.catch === "function") {
-            job.catch(function (err) {
-              console.error("AARISH V43 background Firebase sync failed:", err);
-              try {
-                if (typeof showToast === "function") showToast("Sync failed, internet check karo");
-              } catch (e) {}
-            });
-          }
-        } catch (err) {
-          console.error("AARISH V43 background Firebase sync error:", err);
-        }
-      }, 0);
-    } catch (err) {
-      console.error("AARISH V43 schedule error:", err);
-    }
-  };
-
-  console.log("✅ AARISH_OPTIMISTIC_FIREBASE_WRITE_V43 active: Firebase writes are now background/non-blocking.");
-})();
-</script>
 
 </body>
 </html>
