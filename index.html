@@ -575,7 +575,7 @@
     <div id="milk-screen" class="screen">
         <div class="header-sticky">
             <h1 class="text-2xl font-extrabold truncate flex-1 min-w-0">Milk Record</h1>
-            <button onclick="haptic(); openModal('add-milk-customer-modal')" class="btn-primary w-auto px-5 py-2 !min-h-[38px] text-sm !rounded-[14px]"><i class="fa-solid fa-plus"></i> New</button>
+            <button id="milk-new-btn-v50" onclick="haptic(); openModal('add-milk-customer-modal')" class="btn-primary w-auto px-5 py-2 !min-h-[38px] text-sm !rounded-[14px]"><i class="fa-solid fa-plus"></i> New</button>
         </div>
 
         <div class="p-5">
@@ -633,7 +633,7 @@
     <div id="salary-screen" class="screen">
         <div class="header-sticky">
             <h1 class="text-2xl font-extrabold truncate flex-1 min-w-0">Salary Record</h1>
-            <button onclick="haptic(); openModal('add-salary-person-modal')" class="btn-primary w-auto px-5 py-2 !min-h-[38px] text-sm !rounded-[14px] !bg-[#10B981] !shadow-[0_4px_14px_rgba(16,185,129,0.25)]"><i class="fa-solid fa-plus"></i> New</button>
+            <button id="salary-new-btn-v52" onclick="haptic(); openModal('add-salary-person-modal')" class="btn-primary w-auto px-5 py-2 !min-h-[38px] text-sm !rounded-[14px] !bg-[#10B981] !shadow-[0_4px_14px_rgba(16,185,129,0.25)]"><i class="fa-solid fa-plus"></i> New</button>
         </div>
         <div class="p-5">
             <div class="relative w-full mb-6">
@@ -686,7 +686,7 @@
     <div id="udhar-screen" class="screen">
         <div class="header-sticky">
             <h1 class="text-2xl font-extrabold truncate flex-1 min-w-0">Credit Book</h1>
-            <button onclick="haptic(); openUdharModal()" class="btn-primary w-auto px-5 py-2 !min-h-[38px] text-sm !rounded-[14px] !bg-[#007AFF] !shadow-[0_4px_14px_rgba(0,122,255,0.25)]"><i class="fa-solid fa-plus"></i> Entry</button>
+            <button id="credit-entry-btn-v52" onclick="haptic(); openUdharModal()" class="btn-primary w-auto px-5 py-2 !min-h-[38px] text-sm !rounded-[14px] !bg-[#007AFF] !shadow-[0_4px_14px_rgba(0,122,255,0.25)]"><i class="fa-solid fa-plus"></i> Entry</button>
         </div>
         <div class="p-5">
             <div class="glass-card mb-6 flex justify-between items-center bg-gradient-to-br from-[#007AFF] to-[#0056b3] text-white border-none shadow-[0_8px_24px_rgba(0,122,255,0.3)] ring-1 ring-white/30 w-full min-w-0 gap-3">
@@ -747,7 +747,7 @@
             <h1 class="text-2xl font-extrabold truncate flex-1 min-w-0">Expenses</h1>
             <div class="flex gap-2 shrink-0">
                 <button onclick="haptic(); shareAllExpensesBill()" class="btn-ios-share !rounded-full !px-3 !py-2"><i class="fa-solid fa-arrow-up-right-from-square m-0"></i></button>
-                <button onclick="haptic(); openModal('add-expense-modal')" class="btn-primary w-auto px-5 py-2 !min-h-[38px] text-sm !rounded-[14px] !bg-[#FF3B30] !shadow-[0_4px_14px_rgba(255,59,48,0.25)]"><i class="fa-solid fa-plus"></i> Add</button>
+                <button id="expense-add-btn-v52" onclick="haptic(); openModal('add-expense-modal')" class="btn-primary w-auto px-5 py-2 !min-h-[38px] text-sm !rounded-[14px] !bg-[#FF3B30] !shadow-[0_4px_14px_rgba(255,59,48,0.25)]"><i class="fa-solid fa-plus"></i> Add</button>
             </div>
         </div>
         <div class="p-5">
@@ -7371,6 +7371,526 @@ window.onload = function(){ setTimeout(function(){ window.focus(); window.print(
   document.addEventListener("DOMContentLoaded", refreshV48, { passive: true, once: true });
   window.addEventListener("load", refreshV48, { passive: true, once: true });
   refreshV48();
+})();
+</script>
+
+
+
+<script>
+// AARISH_MILK_NEW_BUTTON_NET_COLOR_V50
+// Milk Record title ke net color ke saath +New button background bhi sync.
+// No Firebase write, no loop, no MutationObserver, no setInterval.
+(function () {
+  if (window.__AARISH_MILK_NEW_BUTTON_NET_COLOR_V50_READY) return;
+  window.__AARISH_MILK_NEW_BUTTON_NET_COLOR_V50_READY = true;
+
+  function nV50(v) {
+    return Number(v) || 0;
+  }
+
+  function milkDbV50() {
+    try {
+      if (typeof milkDB !== "undefined" && milkDB && typeof milkDB === "object") return milkDB;
+    } catch (e) {}
+    return window.milkDB || {};
+  }
+
+  function recordsV50(v) {
+    if (Array.isArray(v)) return v.filter(Boolean);
+    if (v && typeof v === "object") {
+      return Object.keys(v).map(function (k) { return v[k]; }).filter(Boolean);
+    }
+    return [];
+  }
+
+  function qtyV50(record) {
+    return nV50(record && record.morning) + nV50(record && record.evening);
+  }
+
+  function rateV50(customer, record) {
+    var rr = nV50(record && record.rate);
+    if (rr > 0) return rr;
+
+    var cr = nV50(customer && customer.rate);
+    if (cr > 0) return cr;
+
+    try {
+      if (typeof DEFAULT_RATE !== "undefined") return nV50(DEFAULT_RATE);
+    } catch (e) {}
+
+    return 0;
+  }
+
+  function flowV50(record, customer) {
+    var raw = String((record && (record.flow || record.milkFlow || record.direction || record.entryType || record.type)) || "").toLowerCase();
+
+    if (["taken", "take", "minus", "debit", "pay", "dene_wala"].indexOf(raw) !== -1) return "taken";
+    if (["given", "give", "plus", "credit", "receive", "lene_wala"].indexOf(raw) !== -1) return "given";
+
+    return customer && customer.type === "dene_wala" ? "taken" : "given";
+  }
+
+  function allMilkNetV50() {
+    var db = milkDbV50();
+    var net = 0;
+
+    Object.keys(db || {}).forEach(function (name) {
+      var customer = db[name] || {};
+      recordsV50(customer.records).forEach(function (record) {
+        var amount = qtyV50(record) * rateV50(customer, record);
+        if (!amount) return;
+        net += flowV50(record, customer) === "taken" ? -amount : amount;
+      });
+    });
+
+    return net;
+  }
+
+  function buttonV50() {
+    return document.getElementById("milk-new-btn-v50") || document.querySelector("#milk-screen .header-sticky button[onclick*=\"add-milk-customer-modal\"]");
+  }
+
+  window.updateMilkNewButtonColorV50 = function () {
+    var btn = buttonV50();
+    if (!btn) return;
+
+    var net = allMilkNetV50();
+
+    btn.style.transition = "background-color 0.18s ease, box-shadow 0.18s ease, transform 0.12s ease, color 0.18s ease";
+    btn.style.color = "#FFFFFF";
+    btn.style.borderColor = "transparent";
+
+    if (net > 0.0001) {
+      btn.style.background = "#34C759";
+      btn.style.boxShadow = "0 8px 22px rgba(52,199,89,0.34)";
+      btn.dataset.aarishMilkNewV50 = "green";
+    } else if (net < -0.0001) {
+      btn.style.background = "#FF3B30";
+      btn.style.boxShadow = "0 8px 22px rgba(255,59,48,0.34)";
+      btn.dataset.aarishMilkNewV50 = "red";
+    } else {
+      btn.style.background = "#007AFF";
+      btn.style.boxShadow = "0 8px 22px rgba(0,122,255,0.30)";
+      btn.dataset.aarishMilkNewV50 = "blue";
+    }
+  };
+
+  function scheduleV50() {
+    setTimeout(window.updateMilkNewButtonColorV50, 0);
+    setTimeout(window.updateMilkNewButtonColorV50, 220);
+  }
+
+  function wrapOnceV50(name) {
+    try {
+      var old = window[name];
+      if (typeof old !== "function" || old.__aarishMilkNewV50Wrapped) return;
+      var wrapped = function () {
+        var result = old.apply(this, arguments);
+        scheduleV50();
+        return result;
+      };
+      wrapped.__aarishMilkNewV50Wrapped = true;
+      window[name] = wrapped;
+      try { Function("wrapped", name + " = wrapped;")(wrapped); } catch (e) {}
+    } catch (e) {}
+  }
+
+  [
+    "updateMilkRecordHeaderColorV24",
+    "updateActiveScreen",
+    "renderMilkList",
+    "saveMilkEntry",
+    "deleteMilkEntry",
+    "addMilkCustomer",
+    "deleteMilkCustomerProfile",
+    "switchTab"
+  ].forEach(wrapOnceV50);
+
+  document.addEventListener("DOMContentLoaded", scheduleV50, { passive: true, once: true });
+  window.addEventListener("load", scheduleV50, { passive: true, once: true });
+  document.addEventListener("visibilitychange", function () {
+    if (!document.hidden) scheduleV50();
+  }, { passive: true });
+
+  scheduleV50();
+  console.log("✅ AARISH_MILK_NEW_BUTTON_NET_COLOR_V50 active");
+})();
+</script>
+
+
+
+<script>
+// AARISH_MILK_BOTTOM_NAV_NET_COLOR_V51
+// Bottom Milk tab color sync with Milk net value.
+// Positive = green, Negative = red, Neutral = blue.
+// No Firebase write, no polling loop, no MutationObserver, no setInterval.
+(function () {
+  if (window.__AARISH_MILK_BOTTOM_NAV_NET_COLOR_V51_READY) return;
+  window.__AARISH_MILK_BOTTOM_NAV_NET_COLOR_V51_READY = true;
+
+  function nV51(v) {
+    return Number(v) || 0;
+  }
+
+  function milkDbV51() {
+    try {
+      if (typeof milkDB !== "undefined" && milkDB && typeof milkDB === "object") return milkDB;
+    } catch (e) {}
+    return window.milkDB || {};
+  }
+
+  function recordsV51(v) {
+    if (Array.isArray(v)) return v.filter(Boolean);
+    if (v && typeof v === "object") {
+      return Object.keys(v).map(function (k) { return v[k]; }).filter(Boolean);
+    }
+    return [];
+  }
+
+  function qtyV51(record) {
+    return nV51(record && record.morning) + nV51(record && record.evening);
+  }
+
+  function rateV51(customer, record) {
+    var rr = nV51(record && record.rate);
+    if (rr > 0) return rr;
+
+    var cr = nV51(customer && customer.rate);
+    if (cr > 0) return cr;
+
+    try {
+      if (typeof DEFAULT_RATE !== "undefined") return nV51(DEFAULT_RATE);
+    } catch (e) {}
+
+    return 0;
+  }
+
+  function flowV51(record, customer) {
+    var raw = String((record && (record.flow || record.milkFlow || record.direction || record.entryType || record.type)) || "").toLowerCase();
+
+    if (["taken", "take", "minus", "debit", "pay", "dene_wala"].indexOf(raw) !== -1) return "taken";
+    if (["given", "give", "plus", "credit", "receive", "lene_wala"].indexOf(raw) !== -1) return "given";
+
+    return customer && customer.type === "dene_wala" ? "taken" : "given";
+  }
+
+  function allMilkNetV51() {
+    var db = milkDbV51();
+    var net = 0;
+
+    Object.keys(db || {}).forEach(function (name) {
+      var customer = db[name] || {};
+      recordsV51(customer.records).forEach(function (record) {
+        var amount = qtyV51(record) * rateV51(customer, record);
+        if (!amount) return;
+        net += flowV51(record, customer) === "taken" ? -amount : amount;
+      });
+    });
+
+    return net;
+  }
+
+  window.updateMilkBottomNavColorV51 = function () {
+    var tab = document.getElementById("tab-milk");
+    if (!tab) return;
+
+    var icon = tab.querySelector("i");
+    var net = allMilkNetV51();
+
+    var color = "#007AFF";
+    var shadow = "0 0 12px rgba(0,122,255,0.40)";
+    var state = "blue";
+
+    if (net > 0.0001) {
+      color = "#34C759";
+      shadow = "0 0 12px rgba(52,199,89,0.42)";
+      state = "green";
+    } else if (net < -0.0001) {
+      color = "#FF3B30";
+      shadow = "0 0 12px rgba(255,59,48,0.42)";
+      state = "red";
+    }
+
+    tab.style.setProperty("color", color, "important");
+    tab.style.setProperty("text-shadow", shadow, "important");
+    tab.style.setProperty("transition", "color 0.18s ease, text-shadow 0.18s ease, transform 0.12s ease", "important");
+    tab.dataset.aarishMilkBottomV51 = state;
+
+    if (icon) {
+      icon.style.setProperty("color", color, "important");
+      icon.style.setProperty("text-shadow", shadow, "important");
+      icon.style.setProperty("transition", "color 0.18s ease, text-shadow 0.18s ease, transform 0.12s ease", "important");
+    }
+  };
+
+  function scheduleV51() {
+    requestAnimationFrame(function () {
+      try { window.updateMilkBottomNavColorV51(); } catch (e) {}
+    });
+  }
+
+  function wrapOnceV51(name) {
+    try {
+      var old = window[name];
+      if (typeof old !== "function" || old.__aarishMilkBottomNavV51Wrapped) return;
+
+      var wrapped = function () {
+        var result = old.apply(this, arguments);
+        scheduleV51();
+        return result;
+      };
+
+      wrapped.__aarishMilkBottomNavV51Wrapped = true;
+      window[name] = wrapped;
+
+      try { Function("wrapped", name + " = wrapped;")(wrapped); } catch (e) {}
+    } catch (e) {}
+  }
+
+  [
+    "updateMilkRecordHeaderColorV24",
+    "updateMilkNewButtonColorV50",
+    "updateActiveScreen",
+    "renderMilkList",
+    "renderMilkRecords",
+    "saveMilkEntry",
+    "deleteMilkEntry",
+    "addMilkCustomer",
+    "deleteMilkCustomerProfile",
+    "switchTab"
+  ].forEach(wrapOnceV51);
+
+  document.addEventListener("DOMContentLoaded", scheduleV51, { passive: true, once: true });
+  window.addEventListener("load", scheduleV51, { passive: true, once: true });
+  document.addEventListener("visibilitychange", function () {
+    if (!document.hidden) scheduleV51();
+  }, { passive: true });
+
+  var milkTab = document.getElementById("tab-milk");
+  if (milkTab) milkTab.addEventListener("click", scheduleV51, { passive: true });
+
+  scheduleV51();
+  console.log("✅ AARISH_MILK_BOTTOM_NAV_NET_COLOR_V51 active");
+})();
+</script>
+
+
+
+<script>
+// AARISH_FINANCE_ACTION_NAV_NET_COLOR_V52
+// Credit, Expenses, Salary top button + bottom tab color sync with net value.
+// Positive = green, Negative = red, Neutral = blue.
+// No Firebase write, no idle scan, no observer.
+(function () {
+  if (window.__AARISH_FINANCE_ACTION_NAV_NET_COLOR_V52_READY) return;
+  window.__AARISH_FINANCE_ACTION_NAV_NET_COLOR_V52_READY = true;
+
+  var GREEN = "#34C759";
+  var RED = "#FF3B30";
+  var BLUE = "#007AFF";
+
+  function nV52(v) {
+    var x = Number(v);
+    return isFinite(x) ? x : 0;
+  }
+
+  function listV52(v) {
+    if (Array.isArray(v)) return v.filter(Boolean);
+    if (v && typeof v === "object") return Object.keys(v).map(function (k) { return v[k]; }).filter(Boolean);
+    return [];
+  }
+
+  function objV52(name) {
+    try {
+      if (typeof window[name] !== "undefined" && window[name]) return window[name];
+    } catch (e) {}
+    try {
+      return Function("return (typeof " + name + " !== 'undefined') ? " + name + " : null;")() || null;
+    } catch (e) {}
+    return null;
+  }
+
+  function amountV52(x) {
+    return nV52(x && (x.amount ?? x.amt ?? x.total ?? x.price ?? x.value));
+  }
+
+  function creditSignedV52(entry) {
+    var amount = amountV52(entry);
+    var raw = String((entry && (entry.type || entry.entryType || entry.flow || entry.direction || entry.status || entry.mode)) || "").toLowerCase();
+
+    if (raw.indexOf("dena") !== -1 || raw.indexOf("pay") !== -1 || raw.indexOf("debit") !== -1 || raw.indexOf("minus") !== -1 || raw.indexOf("given") !== -1 || raw === "out") {
+      return -Math.abs(amount);
+    }
+
+    if (raw.indexOf("lena") !== -1 || raw.indexOf("receive") !== -1 || raw.indexOf("credit") !== -1 || raw.indexOf("plus") !== -1 || raw.indexOf("taken") !== -1 || raw === "in") {
+      return Math.abs(amount);
+    }
+
+    return amount;
+  }
+
+  function creditNetV52() {
+    var db = objV52("udharDB") || [];
+    return listV52(db).reduce(function (sum, entry) {
+      return sum + creditSignedV52(entry);
+    }, 0);
+  }
+
+  function expenseNetV52() {
+    var db = objV52("expenseDB") || [];
+    var totalExpense = listV52(db).reduce(function (sum, entry) {
+      return sum + Math.abs(amountV52(entry));
+    }, 0);
+    return -totalExpense;
+  }
+
+  function salaryNetV52() {
+    var db = objV52("salaryDB") || {};
+    var totalSalary = 0;
+
+    Object.keys(db || {}).forEach(function (name) {
+      var person = db[name] || {};
+      listV52(person.records).forEach(function (record) {
+        totalSalary += Math.abs(amountV52(record));
+      });
+    });
+
+    return -totalSalary;
+  }
+
+  function colorPackV52(net) {
+    if (net > 0.0001) {
+      return {
+        color: GREEN,
+        state: "green",
+        shadow: "0 0 12px rgba(52,199,89,0.42)",
+        box: "0 8px 22px rgba(52,199,89,0.34)"
+      };
+    }
+
+    if (net < -0.0001) {
+      return {
+        color: RED,
+        state: "red",
+        shadow: "0 0 12px rgba(255,59,48,0.42)",
+        box: "0 8px 22px rgba(255,59,48,0.34)"
+      };
+    }
+
+    return {
+      color: BLUE,
+      state: "blue",
+      shadow: "0 0 12px rgba(0,122,255,0.40)",
+      box: "0 8px 22px rgba(0,122,255,0.30)"
+    };
+  }
+
+  function paintButtonV52(id, pack) {
+    var btn = document.getElementById(id);
+    if (!btn) return;
+
+    btn.style.setProperty("background", pack.color, "important");
+    btn.style.setProperty("background-color", pack.color, "important");
+    btn.style.setProperty("color", "#FFFFFF", "important");
+    btn.style.setProperty("border-color", "transparent", "important");
+    btn.style.setProperty("box-shadow", pack.box, "important");
+    btn.style.setProperty("transition", "background-color 0.18s ease, box-shadow 0.18s ease, transform 0.12s ease, color 0.18s ease", "important");
+    btn.dataset.aarishFinanceV52 = pack.state;
+
+    var icon = btn.querySelector("i");
+    if (icon) icon.style.setProperty("color", "#FFFFFF", "important");
+  }
+
+  function paintTabV52(id, pack) {
+    var tab = document.getElementById(id);
+    if (!tab) return;
+
+    tab.style.setProperty("color", pack.color, "important");
+    tab.style.setProperty("text-shadow", pack.shadow, "important");
+    tab.style.setProperty("transition", "color 0.18s ease, text-shadow 0.18s ease, transform 0.12s ease", "important");
+    tab.dataset.aarishFinanceV52 = pack.state;
+
+    var icon = tab.querySelector("i");
+    if (icon) {
+      icon.style.setProperty("color", pack.color, "important");
+      icon.style.setProperty("text-shadow", pack.shadow, "important");
+      icon.style.setProperty("transition", "color 0.18s ease, text-shadow 0.18s ease, transform 0.12s ease", "important");
+    }
+  }
+
+  function applyOneV52(buttonId, tabId, net) {
+    var pack = colorPackV52(net);
+    paintButtonV52(buttonId, pack);
+    paintTabV52(tabId, pack);
+  }
+
+  window.updateFinanceActionNavColorsV52 = function () {
+    applyOneV52("credit-entry-btn-v52", "tab-udhar", creditNetV52());
+    applyOneV52("expense-add-btn-v52", "tab-expenses", expenseNetV52());
+    applyOneV52("salary-new-btn-v52", "tab-salary", salaryNetV52());
+  };
+
+  function scheduleV52() {
+    requestAnimationFrame(function () {
+      try { window.updateFinanceActionNavColorsV52(); } catch (e) {}
+    });
+  }
+
+  function wrapOnceV52(name) {
+    try {
+      var old = window[name];
+      if (typeof old !== "function" || old.__aarishFinanceV52Wrapped) return;
+
+      var wrapped = function () {
+        var result = old.apply(this, arguments);
+        scheduleV52();
+        return result;
+      };
+
+      wrapped.__aarishFinanceV52Wrapped = true;
+      window[name] = wrapped;
+
+      try { Function("wrapped", name + " = wrapped;")(wrapped); } catch (e) {}
+    } catch (e) {}
+  }
+
+  [
+    "updateActiveScreen",
+    "updateDashboard",
+    "renderUdharList",
+    "renderUdharRecords",
+    "saveUdharEntry",
+    "deleteUdhar",
+    "deleteUdharPersonProfile",
+    "deleteActiveCreditProfileV29",
+    "renderExpenseList",
+    "renderExpenseRecords",
+    "saveExpenseEntry",
+    "deleteExpense",
+    "deleteExpenseCategoryProfile",
+    "deleteActiveExpenseCategoryV30",
+    "renderSalaryList",
+    "renderSalaryRecords",
+    "saveSalaryEntry",
+    "addSalaryPerson",
+    "deleteSalarySingleEntry",
+    "deleteSalaryPersonProfile",
+    "switchTab"
+  ].forEach(wrapOnceV52);
+
+  document.addEventListener("DOMContentLoaded", scheduleV52, { passive: true, once: true });
+  window.addEventListener("load", scheduleV52, { passive: true, once: true });
+  document.addEventListener("visibilitychange", function () {
+    if (!document.hidden) scheduleV52();
+  }, { passive: true });
+
+  ["tab-udhar", "tab-expenses", "tab-salary"].forEach(function (id) {
+    var el = document.getElementById(id);
+    if (el) el.addEventListener("click", scheduleV52, { passive: true });
+  });
+
+  scheduleV52();
+  console.log("✅ AARISH_FINANCE_ACTION_NAV_NET_COLOR_V52 active");
 })();
 </script>
 
