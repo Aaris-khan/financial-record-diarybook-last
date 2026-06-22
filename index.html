@@ -76,7 +76,7 @@
             transition: transform 0.4s cubic-bezier(0.32, 0.72, 0, 1), border-radius 0.4s ease, opacity 0.4s ease;
             transform-origin: top center;
         }
-        .dark .app-container { box-shadow: 0 0 50px rgba(10,132,255,0.04); }
+        .dark .app-container { box-shadow: 0 0 50px rgba(10,132,255,0.08); }
         
         /* 1. THE iOS MODAL PUSH-BACK EFFECT */
         .app-scale-down {
@@ -114,9 +114,9 @@
             contain: layout style paint;
         }
         .dark .glass-card { 
-            background: rgba(15, 23, 42, 0.72); 
-            border-color: rgba(148, 163, 184, 0.14); 
-            box-shadow: 0 10px 34px rgba(0, 0, 0, 0.42), inset 0 1px 1px rgba(255, 255, 255, 0.06); 
+            background: rgba(15, 23, 42, 0.78); 
+            border-color: rgba(148, 163, 184, 0.16); 
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.36), inset 0 1px 1px rgba(255, 255, 255, 0.10); 
         }
         .glass-card:active { 
             transform: scale(0.96) !important; 
@@ -133,7 +133,7 @@
             padding: 12px 8px calc(12px + env(safe-area-inset-bottom)); z-index: 50; 
         }
         .bottom-nav::-webkit-scrollbar { display: none; }
-        .dark .bottom-nav { background: rgba(15, 23, 42, 0.92); border-top-color: rgba(148, 163, 184, 0.16); box-shadow: 0 -10px 32px rgba(0,0,0,0.42), inset 0 1px 0 rgba(255,255,255,0.04); }
+        .dark .bottom-nav { background: rgba(15, 23, 42, 0.88); border-top-color: rgba(148, 163, 184, 0.20); box-shadow: 0 -8px 26px rgba(0,0,0,0.34), inset 0 1px 0 rgba(255,255,255,0.06); }
         
         /* Nav Item with Premium Text Shadow Glow */
         .nav-item { 
@@ -163,7 +163,7 @@
             animation: slideUpSheet 0.4s cubic-bezier(0.32, 0.72, 0, 1); max-height: 90vh; max-height: 90dvh; overflow-y: auto; 
             box-shadow: 0 -10px 40px rgba(0,0,0,0.1);
         }
-        .dark .modal-content { background: #0F172A; color: rgba(248,250,252,0.96); border: 1px solid rgba(148,163,184,0.14); box-shadow: 0 -14px 44px rgba(0,0,0,0.62), inset 0 1px 0 rgba(255,255,255,0.05); }
+        .dark .modal-content { background: #0F172A; color: rgba(248,250,252,0.96); border: 1px solid rgba(148,163,184,0.18); box-shadow: 0 -12px 38px rgba(0,0,0,0.54), inset 0 1px 0 rgba(255,255,255,0.07); }
         @keyframes slideUpSheet { from { transform: translateY(100%); } to { transform: translateY(0); } }
         
         /* Tables */
@@ -280,7 +280,7 @@
         .btn-primary:active { transform: scale(0.96); opacity: 0.85; }
         
         .btn-google { background: #FFFFFF; color: #000000; box-shadow: 0 4px 14px rgba(0,0,0,0.06), inset 0 1px 1px #FFF; }
-        .dark .btn-google { background: #2C2C2E; color: #FFFFFF; box-shadow: 0 4px 14px rgba(0,0,0,0.3), inset 0 1px 1px rgba(255,255,255,0.1); }
+        .dark .btn-google { background: #2C2C2E; color: #FFFFFF; box-shadow: 0 6px 18px rgba(0,0,0,0.36), inset 0 1px 1px rgba(255,255,255,0.12); }
 
         /* Tinted Premium Action Buttons */
         .btn-ios-share {
@@ -312,6 +312,7 @@
             transition: all 0.2s ease;
         }
         .btn-ios-add:active { transform: scale(0.95); background: rgba(52, 199, 89, 0.2); }
+        .dark .btn-ios-add { background: rgba(52, 199, 89, 0.16); border-color: rgba(52, 199, 89, 0.32); box-shadow: 0 6px 18px rgba(52,199,89,0.14); }
 
         .action-btn { 
             background: rgba(255,59,48,0.1) !important; 
@@ -328,6 +329,7 @@
             flex-shrink: 0 !important;
         }
         .action-btn:active { transform: scale(0.85) !important; background: rgba(255,59,48,0.2) !important; }
+        .dark .action-btn { background: rgba(255,59,48,0.16) !important; border: 1px solid rgba(255,59,48,0.24) !important; box-shadow: 0 6px 18px rgba(255,59,48,0.14) !important; }
 
         select, input[type="date"], input[type="number"] { font-size: 16px !important; }
         .w-8, .w-9, .w-10, .w-12 { flex-shrink: 0 !important; }
@@ -344,7 +346,7 @@
         .dark .diary-paper {
             background-color: #0F172A;
             border: 1px solid rgba(245,166,35,0.16);
-            box-shadow: 0 10px 34px rgba(0,0,0,0.46), inset 0 1px 0 rgba(255,255,255,0.04), 0 0 18px rgba(245,166,35,0.08);
+            box-shadow: 0 10px 34px rgba(0,0,0,0.44), inset 0 1px 0 rgba(255,255,255,0.06), 0 0 22px rgba(245,166,35,0.14);
         }
         .diary-textarea {
             line-height: 1.8; 
@@ -398,6 +400,7 @@
         .dark #offline-screen { background-color: rgba(2, 6, 23, 0.92); }
         #offline-screen.show { display: flex; opacity: 1; }
         .offline-icon-box { width: 88px; height: 88px; background: rgba(255, 59, 48, 0.1); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-bottom: 24px; box-shadow: inset 0 0 20px rgba(255,59,48,0.05); }
+        .dark .offline-icon-box { background: rgba(255, 59, 48, 0.18); box-shadow: inset 0 0 22px rgba(255,59,48,0.14), 0 0 22px rgba(255,59,48,0.16); }
         .offline-title { font-size: 26px; font-weight: 800; color: #1C1C1E; margin-bottom: 10px; letter-spacing: -0.5px; font-family: 'Inter', sans-serif; }
         .dark .offline-title { color: #FFFFFF; }
         .offline-desc { font-size: 15px; color: #8E8E93; font-weight: 500; max-width: 300px; line-height: 1.5; margin-bottom: 36px; font-family: 'Inter', sans-serif; }
@@ -473,7 +476,7 @@
         .gemini-spinning { animation: geminiSpin 1.5s linear infinite; }
         @keyframes geminiSpin { 100% { transform: rotate(360deg); } }
         #gemini-chat-window { position: fixed; bottom: 150px; right: 20px; width: 330px; height: 440px; background: #fff; border-radius: 24px; box-shadow: 0 10px 40px rgba(0,0,0,0.2); display: flex; flex-direction: column; overflow: hidden; z-index: 999998; border: 1px solid rgba(155, 114, 203, 0.2); transition: 0.3s; }
-        .dark #gemini-chat-window { background: #0F172A; border-color: rgba(148,163,184,0.16); box-shadow: 0 14px 42px rgba(0,0,0,0.55), 0 0 18px rgba(10,132,255,0.10); }
+        .dark #gemini-chat-window { background: #0F172A; border-color: rgba(148,163,184,0.16); box-shadow: 0 14px 42px rgba(0,0,0,0.50), 0 0 22px rgba(10,132,255,0.16); }
         .hidden-chat { display: none !important; opacity: 0; transform: translateY(20px); }
         .chat-msg { padding: 10px 14px; border-radius: 18px; font-size: 14px; max-width: 85%; line-height: 1.4; }
         .chat-ai { background: rgba(0,0,0,0.04); color: #000; align-self: flex-start; border-bottom-left-radius: 4px; }
@@ -588,8 +591,8 @@
   --aarish-party-blue-glow-v61: rgba(0, 122, 255, 0.34);
   --aarish-party-green-v61: #34C759;
   --aarish-party-red-v61: #FF3B30;
-  --aarish-party-card-v61: rgba(18, 18, 20, 0.94);
-  --aarish-party-border-v61: rgba(255, 255, 255, 0.09);
+  --aarish-party-card-v61: rgba(18, 18, 20, 0.78);
+  --aarish-party-border-v61: rgba(255, 255, 255, 0.13);
 }
 
 /* Page title + back icon blue */
@@ -915,7 +918,7 @@
 .dark #milk-screen #milk-list .list-enter:has([class*="text-[#34C759]"]),
 .dark #milk-screen #milk-list .list-enter:has([class*="text-[#10B981]"]) {
   border-left-color: #34C759 !important;
-  box-shadow: -8px 0 22px rgba(52,199,89,0.28), inset 1px 0 0 rgba(52,199,89,0.60) !important;
+  box-shadow: -3px 0 14px rgba(52,199,89,0.24), inset 1px 0 0 rgba(52,199,89,0.52) !important;
 }
 
 .dark #milk-screen #milk-list .glass-card:has(.text-red-400),
@@ -929,7 +932,7 @@
 .dark #milk-screen #milk-list .list-enter:has([class*="text-[#FF3B30]"]),
 .dark #milk-screen #milk-list .list-enter:has([class*="text-[#FF4B4B]"]) {
   border-left-color: #FF3B30 !important;
-  box-shadow: -8px 0 22px rgba(255,59,48,0.28), inset 1px 0 0 rgba(255,59,48,0.60) !important;
+  box-shadow: -3px 0 14px rgba(255,59,48,0.24), inset 1px 0 0 rgba(255,59,48,0.52) !important;
 }
 
 /* Small phones: keep stripe visible but not too fat */
@@ -958,11 +961,11 @@
   --aarish-md-blue-soft-v64: #0A84FF;
   --aarish-md-blue-glow-v64: rgba(0, 122, 255, 0.34);
   --aarish-md-green-v64: #34C759;
-  --aarish-md-green-dark-v64: rgba(0, 64, 24, 0.96);
-  --aarish-md-green-dark2-v64: rgba(0, 36, 16, 0.98);
+  --aarish-md-green-dark-v64: rgba(0, 64, 24, 0.90);
+  --aarish-md-green-dark2-v64: rgba(0, 36, 16, 0.94);
   --aarish-md-red-v64: #FF3B30;
-  --aarish-md-red-dark-v64: rgba(92, 8, 8, 0.96);
-  --aarish-md-red-dark2-v64: rgba(48, 0, 0, 0.98);
+  --aarish-md-red-dark-v64: rgba(92, 8, 8, 0.90);
+  --aarish-md-red-dark2-v64: rgba(48, 0, 0, 0.94);
 }
 
 /* Header title/back icon/month/year/Daily Entries -> blue */
@@ -1823,9 +1826,9 @@
   --aarish-credit-green-v67: #34C759;
   --aarish-credit-red-v67: #FF3B30;
   --aarish-credit-blue-v67: var(--ios-blue, #007AFF);
-  --aarish-credit-green-shadow-v67: rgba(52,199,89,0.36);
-  --aarish-credit-red-shadow-v67: rgba(255,59,48,0.36);
-  --aarish-credit-blue-shadow-v67: rgba(0,122,255,0.34);
+  --aarish-credit-green-shadow-v67: rgba(52,199,89,0.28);
+  --aarish-credit-red-shadow-v67: rgba(255,59,48,0.28);
+  --aarish-credit-blue-shadow-v67: rgba(0,122,255,0.26);
 }
 
 /* Credit Book screen global state colors */
@@ -1988,9 +1991,9 @@
   --aarish-es-green2-v68: #10B981;
   --aarish-es-red-v68: #FF3B30;
   --aarish-es-blue-v68: var(--ios-blue, #007AFF);
-  --aarish-es-green-shadow-v68: rgba(52,199,89,0.36);
-  --aarish-es-red-shadow-v68: rgba(255,59,48,0.36);
-  --aarish-es-blue-shadow-v68: rgba(0,122,255,0.34);
+  --aarish-es-green-shadow-v68: rgba(52,199,89,0.28);
+  --aarish-es-red-shadow-v68: rgba(255,59,48,0.28);
+  --aarish-es-blue-shadow-v68: rgba(0,122,255,0.26);
 }
 
 /* ================= EXPENSE GLOBAL STATE ================= */
@@ -2327,6 +2330,144 @@
 </style>
 
 <!-- AARISH_DARK_VISUAL_CLEANUP_V71: removed broad V70 fallback; clean direct CSS fixes retained. No JS/Firebase change. -->
+
+
+<style id="aarish-alpha-tuning-v72">
+/* AARISH_ALPHA_TUNING_V72
+   Alpha/opacity/glow tuning only.
+   No JS, no Firebase, no structural HTML, no semantic base color changes.
+*/
+
+/* Glass balance: readable but still premium */
+.dark .glass-card {
+  background: rgba(15,23,42,0.78) !important;
+  border-color: rgba(148,163,184,0.16) !important;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.36), inset 0 1px 1px rgba(255,255,255,0.10) !important;
+}
+
+/* Softer bottom nav + modal depth */
+.dark .bottom-nav {
+  background: rgba(15,23,42,0.88) !important;
+  border-top-color: rgba(148,163,184,0.20) !important;
+  box-shadow: 0 -8px 26px rgba(0,0,0,0.34), inset 0 1px 0 rgba(255,255,255,0.06) !important;
+}
+
+.dark .modal-content {
+  border-color: rgba(148,163,184,0.18) !important;
+  box-shadow: 0 -12px 38px rgba(0,0,0,0.54), inset 0 1px 0 rgba(255,255,255,0.07) !important;
+}
+
+/* Green/Red action alpha boost on dark surfaces */
+.dark .btn-ios-add {
+  background: rgba(52,199,89,0.16) !important;
+  border-color: rgba(52,199,89,0.32) !important;
+  box-shadow: 0 6px 18px rgba(52,199,89,0.14) !important;
+}
+
+.dark .action-btn {
+  background: rgba(255,59,48,0.16) !important;
+  border: 1px solid rgba(255,59,48,0.24) !important;
+  box-shadow: 0 6px 18px rgba(255,59,48,0.14) !important;
+}
+
+.dark .offline-icon-box {
+  background: rgba(255,59,48,0.18) !important;
+  box-shadow: inset 0 0 22px rgba(255,59,48,0.14), 0 0 22px rgba(255,59,48,0.16) !important;
+}
+
+/* Neutral Google button tactile dark depth */
+.dark .btn-google {
+  box-shadow: 0 6px 18px rgba(0,0,0,0.36), inset 0 1px 1px rgba(255,255,255,0.12) !important;
+}
+
+/* Party Ledger: restore glass alpha while keeping same color family */
+.dark #balances-screen {
+  --aarish-party-card-v61: rgba(18,18,20,0.78);
+  --aarish-party-border-v61: rgba(255,255,255,0.13);
+}
+
+/* Milk detail total cards: semantic green/red stays, only alpha gets softer */
+.dark #milk-detail-screen {
+  --aarish-md-green-dark-v64: rgba(0,64,24,0.90);
+  --aarish-md-green-dark2-v64: rgba(0,36,16,0.94);
+  --aarish-md-red-dark-v64: rgba(92,8,8,0.90);
+  --aarish-md-red-dark2-v64: rgba(48,0,0,0.94);
+}
+
+/* Credit + Expense/Salary glow: same colors, calmer shadow alpha */
+.dark #udhar-screen {
+  --aarish-credit-green-shadow-v67: rgba(52,199,89,0.28);
+  --aarish-credit-red-shadow-v67: rgba(255,59,48,0.28);
+  --aarish-credit-blue-shadow-v67: rgba(0,122,255,0.26);
+}
+
+.dark #expenses-screen,
+.dark #expense-detail-screen,
+.dark #salary-screen,
+.dark #salary-detail-screen {
+  --aarish-es-green-shadow-v68: rgba(52,199,89,0.28);
+  --aarish-es-red-shadow-v68: rgba(255,59,48,0.28);
+  --aarish-es-blue-shadow-v68: rgba(0,122,255,0.26);
+}
+
+/* Milk list stripe glow tightened so 3px stripe does not look fat */
+.dark #milk-screen #milk-list .glass-card:has(.text-green-400),
+.dark #milk-screen #milk-list .glass-card:has(.text-green-500),
+.dark #milk-screen #milk-list .glass-card:has(.text-green-600),
+.dark #milk-screen #milk-list .glass-card:has([class*="text-[#34C759]"]),
+.dark #milk-screen #milk-list .glass-card:has([class*="text-[#10B981]"]),
+.dark #milk-screen #milk-list .list-enter:has(.text-green-400),
+.dark #milk-screen #milk-list .list-enter:has(.text-green-500),
+.dark #milk-screen #milk-list .list-enter:has(.text-green-600),
+.dark #milk-screen #milk-list .list-enter:has([class*="text-[#34C759]"]),
+.dark #milk-screen #milk-list .list-enter:has([class*="text-[#10B981]"]) {
+  box-shadow: -3px 0 14px rgba(52,199,89,0.24), inset 1px 0 0 rgba(52,199,89,0.52) !important;
+}
+
+.dark #milk-screen #milk-list .glass-card:has(.text-red-400),
+.dark #milk-screen #milk-list .glass-card:has(.text-red-500),
+.dark #milk-screen #milk-list .glass-card:has(.text-red-600),
+.dark #milk-screen #milk-list .glass-card:has([class*="text-[#FF3B30]"]),
+.dark #milk-screen #milk-list .glass-card:has([class*="text-[#FF4B4B]"]),
+.dark #milk-screen #milk-list .list-enter:has(.text-red-400),
+.dark #milk-screen #milk-list .list-enter:has(.text-red-500),
+.dark #milk-screen #milk-list .list-enter:has(.text-red-600),
+.dark #milk-screen #milk-list .list-enter:has([class*="text-[#FF3B30]"]),
+.dark #milk-screen #milk-list .list-enter:has([class*="text-[#FF4B4B]"]) {
+  box-shadow: -3px 0 14px rgba(255,59,48,0.24), inset 1px 0 0 rgba(255,59,48,0.52) !important;
+}
+</style>
+
+
+
+<style id="aarish-alpha-micro-tuning-v73">
+/* AARISH_ALPHA_MICRO_TUNING_V73
+   Kilode-AI alpha notes refined with Big-Tech dark-mode balance.
+   Only opacity / transparency / glow / shadow changed.
+   No base colors changed. No JS. No Firebase. No HTML structure change.
+*/
+
+/* App container halo: barely visible premium backlit panel */
+.dark .app-container {
+  box-shadow: 0 0 50px rgba(10,132,255,0.08) !important;
+}
+
+/* Glass card specular: crisp top edge, slightly softer outer depth */
+.dark .glass-card {
+  box-shadow: 0 10px 30px rgba(0,0,0,0.36), inset 0 1px 1px rgba(255,255,255,0.10) !important;
+}
+
+/* Diary section: warmer amber glow without changing yellow family */
+.dark .diary-paper {
+  box-shadow: 0 10px 34px rgba(0,0,0,0.44), inset 0 1px 0 rgba(255,255,255,0.06), 0 0 22px rgba(245,166,35,0.14) !important;
+}
+
+/* Gemini AI panel: stronger but soft blue aura, no color-family change */
+.dark #gemini-chat-window {
+  box-shadow: 0 14px 42px rgba(0,0,0,0.50), 0 0 22px rgba(10,132,255,0.16) !important;
+}
+</style>
+
 </head>
 
 <body>
