@@ -4506,6 +4506,229 @@ html, body {
 }
 </style>
 
+
+
+<style id="aarish-dark-mode-color-restore-v57">
+/* AARISH_DARK_MODE_COLOR_RESTORE_V57
+   Big-Tech dark mode correction after V56:
+   - keep premium black + blue text vibe
+   - restore semantic light-mode colors in dark mode
+   - protect red/green/yellow/orange/blue amounts, cards, icons, buttons
+   - fix table color override, sub-label contrast, placeholders, share buttons, Gemini dividers
+   CSS-only: no Firebase, no JS loop, no observer.
+*/
+.dark {
+  --aarish-v57-text: #8EC5FF;
+  --aarish-v57-title: #66AFFF;
+  --aarish-v57-muted: #9CA3AF;
+  --aarish-v57-muted-blue: #A7CFFF;
+  --aarish-v57-blue: #0A84FF;
+  --aarish-v57-green: #32D74B;
+  --aarish-v57-green-2: #34C759;
+  --aarish-v57-red: #FF453A;
+  --aarish-v57-red-2: #FF3B30;
+  --aarish-v57-yellow: #F5A623;
+  --aarish-v57-orange: #FF9F0A;
+  --aarish-v57-purple: #BF5AF2;
+}
+
+/* FIX 1: table td must not kill colored Tailwind amount classes */
+.dark .table-custom td {
+  color: inherit !important;
+}
+.dark .table-custom th {
+  color: var(--aarish-v57-muted) !important;
+  border-bottom-color: rgba(255,255,255,0.08) !important;
+}
+.dark .table-custom td {
+  border-bottom-color: rgba(255,255,255,0.07) !important;
+}
+
+/* Strong semantic color restore: works for static + JS-generated Tailwind classes */
+.dark #main-app [class*="text-[#34C759]"],
+.dark #main-app [class*="text-[#10B981]"],
+.dark #main-app .text-green-400,
+.dark #main-app .text-green-500,
+.dark #main-app .text-green-600,
+.dark #main-app .dark\:text-green-400 {
+  color: var(--aarish-v57-green) !important;
+}
+
+.dark #main-app [class*="text-[#FF3B30]"],
+.dark #main-app [class*="text-[#FF4B4B]"],
+.dark #main-app .text-red-400,
+.dark #main-app .text-red-500,
+.dark #main-app .text-red-600,
+.dark #main-app .dark\:text-red-400,
+.dark #main-app i.fa-trash {
+  color: var(--aarish-v57-red) !important;
+}
+
+.dark #main-app [class*="text-[#F5A623]"],
+.dark #main-app .text-yellow-400,
+.dark #main-app .text-orange-400,
+.dark #main-app .text-orange-500,
+.dark #main-app .text-orange-600 {
+  color: var(--aarish-v57-yellow) !important;
+}
+
+.dark #main-app [class*="text-[#007AFF]"],
+.dark #main-app .text-blue-400,
+.dark #main-app .text-blue-500,
+.dark #main-app .text-blue-600 {
+  color: var(--aarish-v57-blue) !important;
+}
+
+.dark #main-app .text-purple-400,
+.dark #main-app .text-purple-500,
+.dark #main-app .text-purple-600 {
+  color: var(--aarish-v57-purple) !important;
+}
+
+/* FIX 2: sub-labels should be readable gray/blue-gray, not invisible and not overly neon */
+.dark #main-app .text-gray-500,
+.dark #main-app .text-gray-400,
+.dark #main-app .text-gray-600,
+.dark #main-app .text-xs,
+.dark #main-app .text-\[10px\],
+.dark #main-app .text-\[11px\],
+.dark #main-app .text-\[12px\],
+.dark #main-app .text-\[13px\] {
+  color: var(--aarish-v57-muted) !important;
+}
+
+/* Names and normal headings remain premium blue unless a module script sets green/red/yellow inline */
+.dark #main-app h1:not(#diary-title-v54):not([data-aarishDiaryV54]),
+.dark #main-app h2:not(#diary-title-v54):not([data-aarishDiaryV54]),
+.dark #main-app h3:not([id*="dash-"]):not([data-aarishDiaryV54]),
+.dark #main-app h4:not([data-aarishDiaryV54]) {
+  color: var(--aarish-v57-title) !important;
+}
+
+/* FIX 3: placeholders visible on Android/Chrome/iOS WebKit */
+.dark input::placeholder,
+.dark textarea::placeholder,
+.dark .input-box::placeholder {
+  color: rgba(156, 163, 175, 0.92) !important;
+}
+.dark input::-webkit-input-placeholder,
+.dark textarea::-webkit-input-placeholder,
+.dark .input-box::-webkit-input-placeholder {
+  color: rgba(156, 163, 175, 0.92) !important;
+}
+.dark .input-box {
+  background-color: rgba(12, 22, 38, 0.92) !important;
+  color: #CDE7FF !important;
+  border-color: rgba(102,175,255,0.24) !important;
+}
+
+/* FIX 4: share/action blue should be Apple dark blue, not purple */
+.dark .btn-ios-share:not([class*="FF3B30"]):not([class*="F5A623"]):not([data-aarishFinanceV52]) {
+  background-color: rgba(10, 132, 255, 0.20) !important;
+  color: var(--aarish-v57-blue) !important;
+  border-color: rgba(10, 132, 255, 0.30) !important;
+}
+.dark .btn-ios-share:not([class*="FF3B30"]):not([class*="F5A623"]):not([data-aarishFinanceV52]) i,
+.dark .btn-ios-share:not([class*="FF3B30"]):not([class*="F5A623"]):not([data-aarishFinanceV52]) span {
+  color: var(--aarish-v57-blue) !important;
+}
+
+/* Red/Yellow secondary action buttons keep their identity */
+.dark .btn-ios-share[class*="FF3B30"],
+.dark .btn-ios-share[class*="FF3B30"] * {
+  color: var(--aarish-v57-red) !important;
+  border-color: rgba(255,69,58,0.30) !important;
+  background-color: rgba(255,69,58,0.15) !important;
+}
+.dark .btn-ios-share[class*="F5A623"],
+.dark .btn-ios-share[class*="F5A623"] * {
+  color: var(--aarish-v57-yellow) !important;
+  border-color: rgba(245,166,35,0.30) !important;
+  background-color: rgba(245,166,35,0.15) !important;
+}
+
+/* Cards: V56 navy is good, but semantic tinted cards must keep light-mode identity */
+.dark .glass-card[class*="bg-green"],
+.dark .glass-card[data-aarish-tailwind-tint-v37="receive"] {
+  background-color: rgba(50, 215, 75, 0.12) !important;
+  border-color: rgba(50, 215, 75, 0.24) !important;
+  box-shadow: 0 8px 24px rgba(50,215,75,0.06), inset 0 1px 0 rgba(50,215,75,0.10) !important;
+}
+.dark .glass-card[class*="bg-red"],
+.dark .glass-card[data-aarish-tailwind-tint-v37="pay"] {
+  background-color: rgba(255, 69, 58, 0.12) !important;
+  border-color: rgba(255, 69, 58, 0.24) !important;
+  box-shadow: 0 8px 24px rgba(255,69,58,0.06), inset 0 1px 0 rgba(255,69,58,0.10) !important;
+}
+.dark .glass-card[class*="bg-orange"],
+.dark .glass-card[data-aarish-tailwind-tint-v37="expense"] {
+  background-color: rgba(255, 159, 10, 0.12) !important;
+  border-color: rgba(255, 159, 10, 0.24) !important;
+  box-shadow: 0 8px 24px rgba(255,159,10,0.06), inset 0 1px 0 rgba(255,159,10,0.10) !important;
+}
+.dark .glass-card[class*="bg-blue"],
+.dark .glass-card[data-aarish-tailwind-tint-v37="profit"] {
+  background-color: rgba(10, 132, 255, 0.13) !important;
+  border-color: rgba(10, 132, 255, 0.26) !important;
+  box-shadow: 0 8px 24px rgba(10,132,255,0.07), inset 0 1px 0 rgba(10,132,255,0.12) !important;
+}
+.dark .glass-card[class*="bg-purple"] {
+  background-color: rgba(191, 90, 242, 0.12) !important;
+  border-color: rgba(191, 90, 242, 0.24) !important;
+}
+
+/* Gradient cards must keep white text, otherwise dark-blue text looks wrong on colored backgrounds */
+.dark .glass-card[class*="bg-gradient"] *,
+.dark .glass-card.text-white *,
+.dark .glass-card[class*="text-white"] * {
+  color: #FFFFFF !important;
+}
+
+/* But inside non-gradient cards, semantic spans still win */
+.dark .glass-card:not([class*="bg-gradient"]) [class*="text-[#34C759]"],
+.dark .glass-card:not([class*="bg-gradient"]) .text-green-500,
+.dark .glass-card:not([class*="bg-gradient"]) .text-green-600 {
+  color: var(--aarish-v57-green) !important;
+}
+.dark .glass-card:not([class*="bg-gradient"]) [class*="text-[#FF3B30]"],
+.dark .glass-card:not([class*="bg-gradient"]) .text-red-500,
+.dark .glass-card:not([class*="bg-gradient"]) .text-red-600 {
+  color: var(--aarish-v57-red) !important;
+}
+
+/* FIX 5: Gemini dividers visible in dark mode */
+.dark #gemini-chat-window {
+  background-color: #07111f !important;
+  border-color: rgba(102,175,255,0.18) !important;
+}
+.dark #gemini-header {
+  border-bottom: 1px solid rgba(255,255,255,0.09) !important;
+}
+.dark #gemini-chat-window > div:last-child {
+  border-top: 1px solid rgba(255,255,255,0.09) !important;
+}
+
+/* Keep permanent/dynamic UI patch colors protected */
+.dark #diary-title-v54,
+.dark #tab-diary[data-aarishDiaryV54],
+.dark #tab-diary[data-aarishDiaryV54] i {
+  color: var(--aarish-v57-yellow) !important;
+  text-shadow: 0 0 14px rgba(245,166,35,0.45) !important;
+}
+.dark #milk-new-btn-v50,
+.dark #credit-entry-btn-v52,
+.dark #expense-add-btn-v52,
+.dark #salary-new-btn-v52,
+.dark #diary-new-btn-v54,
+.dark #milk-new-btn-v50 *,
+.dark #credit-entry-btn-v52 *,
+.dark #expense-add-btn-v52 *,
+.dark #salary-new-btn-v52 *,
+.dark #diary-new-btn-v54 * {
+  color: #FFFFFF !important;
+}
+</style>
+
 </head>
 <body>
 <div class="report">
