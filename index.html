@@ -1933,6 +1933,21 @@
   opacity: 1 !important;
 }
 
+
+/* AARISH_CREDIT_PARTY_NAME_LAST_ENTRY_BLUE_V1
+   Credit list left text only:
+   Party name + Last entry always blue.
+   Amount/status/stripe/card/title still follow plus-minus red/green logic.
+*/
+.dark #udhar-screen #udhar-list .glass-card[data-aarish-credit-card-v67] > div.flex-1 h4,
+.dark #udhar-screen #udhar-list .glass-card[data-aarish-credit-card-v67] > div.flex-1 p,
+.dark #udhar-screen #udhar-list .glass-card[data-aarish-credit-card-v67] > div.flex-1 [data-aarish-credit-party-blue-v1] {
+  color: var(--aarish-credit-blue-v67, #007AFF) !important;
+  text-shadow: 0 0 10px var(--aarish-credit-blue-shadow-v67, rgba(0,122,255,0.26)) !important;
+  opacity: 1 !important;
+}
+/* END_AARISH_CREDIT_PARTY_NAME_LAST_ENTRY_BLUE_V1 */
+
 /* Amount text semantic safety */
 .dark #udhar-list .glass-card[data-aarish-credit-card-v67="positive"] :is(.text-green-400,.text-green-500,.text-green-600,[class*="text-[#34C759]"],[class*="text-[#10B981]"]) {
   color: var(--aarish-credit-green-v67) !important;
@@ -2276,6 +2291,54 @@
 .dark :is(#expenses-screen,#expense-detail-screen,#salary-screen,#salary-detail-screen) i.fa-trash {
   color: var(--aarish-es-red-v68) !important;
 }
+
+
+/* AARISH_SALARY_SEARCH_NAME_PERMANENT_BLUE_SAFE_V1
+   Salary screen only:
+   - Search icon + Search name placeholder/input permanent blue.
+   - Employee/customer name + company/detail permanent blue.
+   - Amount, Receives/Pays, stripe, top total card plus-minus logic untouched.
+*/
+.dark #salary-screen #salary-search,
+.dark #salary-screen[data-aarish-salary-net-v68="positive"] #salary-search,
+.dark #salary-screen[data-aarish-salary-net-v68="negative"] #salary-search,
+.dark #salary-screen[data-aarish-salary-net-v68="zero"] #salary-search {
+  color: var(--aarish-es-blue-v68, #007AFF) !important;
+  caret-color: var(--aarish-es-blue-v68, #007AFF) !important;
+  text-shadow: 0 0 10px var(--aarish-es-blue-shadow-v68, rgba(0,122,255,0.26)) !important;
+}
+
+.dark #salary-screen #salary-search::placeholder,
+.dark #salary-screen #salary-search::-webkit-input-placeholder,
+.dark #salary-screen[data-aarish-salary-net-v68="positive"] #salary-search::placeholder,
+.dark #salary-screen[data-aarish-salary-net-v68="positive"] #salary-search::-webkit-input-placeholder,
+.dark #salary-screen[data-aarish-salary-net-v68="negative"] #salary-search::placeholder,
+.dark #salary-screen[data-aarish-salary-net-v68="negative"] #salary-search::-webkit-input-placeholder,
+.dark #salary-screen[data-aarish-salary-net-v68="zero"] #salary-search::placeholder,
+.dark #salary-screen[data-aarish-salary-net-v68="zero"] #salary-search::-webkit-input-placeholder {
+  color: rgba(0,122,255,0.78) !important;
+  opacity: 1 !important;
+}
+
+.dark #salary-screen .fa-search,
+.dark #salary-screen[data-aarish-salary-net-v68="positive"] .fa-search,
+.dark #salary-screen[data-aarish-salary-net-v68="negative"] .fa-search,
+.dark #salary-screen[data-aarish-salary-net-v68="zero"] .fa-search {
+  color: var(--aarish-es-blue-v68, #007AFF) !important;
+  text-shadow: 0 0 10px var(--aarish-es-blue-shadow-v68, rgba(0,122,255,0.26)) !important;
+  opacity: 1 !important;
+}
+
+.dark #salary-screen #salary-list [data-aarish-salary-party-blue-v1],
+.dark #salary-screen #salary-list .glass-card[data-aarish-salary-card-v68="positive"] [data-aarish-salary-party-blue-v1],
+.dark #salary-screen #salary-list .glass-card[data-aarish-salary-card-v68="negative"] [data-aarish-salary-party-blue-v1],
+.dark #salary-screen #salary-list .glass-card[data-aarish-salary-card-v68="zero"] [data-aarish-salary-party-blue-v1] {
+  color: var(--aarish-es-blue-v68, #007AFF) !important;
+  text-shadow: 0 0 10px var(--aarish-es-blue-shadow-v68, rgba(0,122,255,0.26)) !important;
+  opacity: 1 !important;
+}
+/* END_AARISH_SALARY_SEARCH_NAME_PERMANENT_BLUE_SAFE_V1 */
+
 </style>
 
 
@@ -3941,8 +4004,8 @@ async function deleteSalaryPersonProfile(name) {
                 <div class="flex items-center gap-4 w-full min-w-0">
                     <div class="w-12 h-12 shrink-0 squircle ${bgClass} ${colorClass} font-bold flex items-center justify-center text-lg"><i class="fa-solid fa-indian-rupee-sign"></i></div>
                     <div class="flex-1 min-w-0">
-                        <h4 class="font-bold text-[17px] leading-tight truncate w-full flex items-center ${colorClass}">${name}</h4>
-                        <p class="text-[13px] ${colorClass} font-medium truncate w-full mt-0.5 tracking-tight">${s.company} • <span class="${colorClass} font-extrabold text-[15px] ml-1">${sign}₹${Math.round(totalAmt).toLocaleString('en-IN')}</span></p>
+                        <h4 class="font-bold text-[17px] leading-tight truncate w-full flex items-center text-[#007AFF]" data-aarish-salary-party-blue-v1="name">${name}</h4>
+                        <p class="text-[13px] text-[#007AFF] font-medium truncate w-full mt-0.5 tracking-tight" data-aarish-salary-party-blue-v1="company">${s.company} • <span class="${colorClass} font-extrabold text-[15px] ml-1">${sign}₹${Math.round(totalAmt).toLocaleString('en-IN')}</span></p>
                     </div>
                 </div>
                 <i class="fa-solid fa-chevron-right ${colorClass} shrink-0 ml-3 text-[13px]"></i>
@@ -4582,10 +4645,10 @@ async function shareDiaryBill(id) {
                     class="glass-card mb-3.5 flex items-center justify-between cursor-pointer border-l-[3px] ${borderClass} w-full min-w-0 ring-1 ring-white/40 dark:ring-white/5 list-enter" style="animation-delay: ${index * 0.05}s;">
                     <div class="flex-1 min-w-0 mr-3">
 
-                        <h4 class="font-bold text-[17px] truncate w-full min-w-0 text-gray-900 dark:text-white flex items-center gap-2">
+                        <h4 class="font-bold text-[17px] truncate w-full min-w-0 text-[#007AFF] flex items-center gap-2" data-aarish-credit-party-blue-v1="name">
                             ${g.name}
                         </h4>
-                        <p class="text-[13px] text-gray-500 font-medium truncate w-full min-w-0 mt-0.5 tracking-tight">Last entry: ${formatDisplayDate(g.lastDate)}</p>
+                        <p class="text-[13px] text-[#007AFF] font-medium truncate w-full min-w-0 mt-0.5 tracking-tight" data-aarish-credit-party-blue-v1="last">Last entry: ${formatDisplayDate(g.lastDate)}</p>
                     </div>
                     <div class="flex flex-col items-end gap-1 shrink-0">
                         <span class="text-[9px] font-extrabold uppercase tracking-wider ${colorClass} bg-current/10 px-2 py-0.5 rounded-full">${label}</span>
