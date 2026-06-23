@@ -988,8 +988,8 @@
 }
 
 /* TOTAL summary card default/fallback positive */
-.dark #milk-detail-screen .glass-card:has(#milk-detail-bill),
-.dark #milk-detail-screen .milk-detail-total-card-v64 {
+.dark #milk-detail-screen .glass-card:has(#milk-detail-bill):not([data-milk-net-v64]),
+.dark #milk-detail-screen .milk-detail-total-card-v64:not([data-milk-net-v64]) {
   background: linear-gradient(135deg, var(--aarish-md-green-dark-v64), var(--aarish-md-green-dark2-v64)) !important;
   border: 1px solid rgba(52,199,89,0.48) !important;
   box-shadow: 0 10px 32px rgba(52,199,89,0.16), inset 0 1px 0 rgba(52,199,89,0.22) !important;
@@ -1004,9 +1004,9 @@
 
 /* Negative card */
 .dark #milk-detail-screen .milk-detail-total-card-v64[data-milk-net-v64="negative"] {
-  background: linear-gradient(135deg, var(--aarish-md-red-dark-v64), var(--aarish-md-red-dark2-v64)) !important;
-  border-color: rgba(255,59,48,0.52) !important;
-  box-shadow: 0 10px 34px rgba(255,59,48,0.20), inset 0 1px 0 rgba(255,59,48,0.26) !important;
+  background: linear-gradient(135deg, rgba(121,22,25,0.76), rgba(84,12,16,0.70)) !important;
+  border-color: rgba(255,59,48,0.38) !important;
+  box-shadow: 0 14px 34px rgba(0,0,0,0.46), 0 0 22px rgba(255,59,48,0.18), inset 0 1px 0 rgba(255,255,255,0.08) !important;
 }
 
 /* Zero card */
@@ -1030,8 +1030,8 @@
 .dark #milk-detail-screen .milk-detail-total-card-v64[data-milk-net-v64="negative"] h3,
 .dark #milk-detail-screen .milk-detail-total-card-v64[data-milk-net-v64="negative"] #milk-detail-bill,
 .dark #milk-detail-screen .milk-detail-total-card-v64[data-milk-net-v64="negative"] #milk-detail-kg {
-  color: var(--aarish-md-red-v64) !important;
-  text-shadow: 0 0 14px rgba(255,59,48,0.36) !important;
+  color: #FF5A52 !important;
+  text-shadow: 0 0 10px rgba(255,59,48,0.22) !important;
   opacity: 1 !important;
 }
 
@@ -1045,9 +1045,9 @@
 }
 
 /* Fallback before JS sets data attribute: current positive card text green */
-.dark #milk-detail-screen .glass-card:has(#milk-detail-bill) p,
-.dark #milk-detail-screen .glass-card:has(#milk-detail-bill) #milk-detail-bill,
-.dark #milk-detail-screen .glass-card:has(#milk-detail-bill) #milk-detail-kg {
+.dark #milk-detail-screen .glass-card:has(#milk-detail-bill):not([data-milk-net-v64]) p,
+.dark #milk-detail-screen .glass-card:has(#milk-detail-bill):not([data-milk-net-v64]) #milk-detail-bill,
+.dark #milk-detail-screen .glass-card:has(#milk-detail-bill):not([data-milk-net-v64]) #milk-detail-kg {
   color: var(--aarish-md-green-v64) !important;
   text-shadow: 0 0 14px rgba(52,199,89,0.34) !important;
   opacity: 1 !important;
@@ -1831,48 +1831,51 @@
   --aarish-credit-red-shadow-v67: rgba(255,59,48,0.28);
   --aarish-credit-blue-shadow-v67: rgba(0,122,255,0.26);
 }
+/* AARISH_CREDIT_SEARCH_PERMANENT_BLUE_IN_V67
+   Credit Book search only:
+   Search icon + Search name placeholder + typed text always blue.
+   Plus/minus net title/card/button/tab logic untouched.
+*/
+#udhar-screen #udhar-search,
+.dark #udhar-screen #udhar-search {
+  color: var(--aarish-credit-blue-v67, #007AFF) !important;
+  caret-color: var(--aarish-credit-blue-v67, #007AFF) !important;
+  text-shadow: 0 0 12px var(--aarish-credit-blue-shadow-v67, rgba(0,122,255,0.26)) !important;
+}
+
+#udhar-screen #udhar-search::placeholder,
+#udhar-screen #udhar-search::-webkit-input-placeholder,
+.dark #udhar-screen #udhar-search::placeholder,
+.dark #udhar-screen #udhar-search::-webkit-input-placeholder {
+  color: rgba(0,122,255,0.78) !important;
+  opacity: 1 !important;
+}
+
+#udhar-screen .relative .fa-search,
+.dark #udhar-screen .relative .fa-search {
+  color: var(--aarish-credit-blue-v67, #007AFF) !important;
+  text-shadow: 0 0 12px var(--aarish-credit-blue-shadow-v67, rgba(0,122,255,0.26)) !important;
+  opacity: 1 !important;
+}
+/* END_AARISH_CREDIT_SEARCH_PERMANENT_BLUE_IN_V67 */
 
 /* Credit Book screen global state colors */
-.dark #udhar-screen[data-aarish-credit-net-v67="positive"] .header-sticky h1,
-.dark #udhar-screen[data-aarish-credit-net-v67="positive"] #udhar-search,
-.dark #udhar-screen[data-aarish-credit-net-v67="positive"] .fa-search {
+.dark #udhar-screen[data-aarish-credit-net-v67="positive"] .header-sticky h1 {
   color: var(--aarish-credit-green-v67) !important;
   text-shadow: 0 0 12px var(--aarish-credit-green-shadow-v67) !important;
 }
 
-.dark #udhar-screen[data-aarish-credit-net-v67="negative"] .header-sticky h1,
-.dark #udhar-screen[data-aarish-credit-net-v67="negative"] #udhar-search,
-.dark #udhar-screen[data-aarish-credit-net-v67="negative"] .fa-search {
+.dark #udhar-screen[data-aarish-credit-net-v67="negative"] .header-sticky h1 {
   color: var(--aarish-credit-red-v67) !important;
   text-shadow: 0 0 12px var(--aarish-credit-red-shadow-v67) !important;
 }
 
-.dark #udhar-screen[data-aarish-credit-net-v67="zero"] .header-sticky h1,
-.dark #udhar-screen[data-aarish-credit-net-v67="zero"] #udhar-search,
-.dark #udhar-screen[data-aarish-credit-net-v67="zero"] .fa-search {
+.dark #udhar-screen[data-aarish-credit-net-v67="zero"] .header-sticky h1 {
   color: var(--aarish-credit-blue-v67) !important;
   text-shadow: 0 0 12px var(--aarish-credit-blue-shadow-v67) !important;
 }
 
 /* Placeholder also follows Credit Book global state */
-.dark #udhar-screen[data-aarish-credit-net-v67="positive"] #udhar-search::placeholder,
-.dark #udhar-screen[data-aarish-credit-net-v67="positive"] #udhar-search::-webkit-input-placeholder {
-  color: rgba(52,199,89,0.78) !important;
-  opacity: 1 !important;
-}
-
-.dark #udhar-screen[data-aarish-credit-net-v67="negative"] #udhar-search::placeholder,
-.dark #udhar-screen[data-aarish-credit-net-v67="negative"] #udhar-search::-webkit-input-placeholder {
-  color: rgba(255,59,48,0.78) !important;
-  opacity: 1 !important;
-}
-
-.dark #udhar-screen[data-aarish-credit-net-v67="zero"] #udhar-search::placeholder,
-.dark #udhar-screen[data-aarish-credit-net-v67="zero"] #udhar-search::-webkit-input-placeholder {
-  color: rgba(0,122,255,0.76) !important;
-  opacity: 1 !important;
-}
-
 /* Top Credit Book summary card: positive/negative/zero background */
 .dark #udhar-screen[data-aarish-credit-net-v67="positive"] .glass-card:has(#udhar-total-lena) {
   background: linear-gradient(135deg, rgba(0,64,24,0.96), rgba(0,36,16,0.98)) !important;
