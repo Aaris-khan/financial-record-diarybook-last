@@ -42,8 +42,7 @@
             overflow-x: hidden; 
             transition: background-color 0.5s ease, color 0.5s ease; 
         }
-        .dark body { background-color: #000000; color: rgba(248,250,252,0.96); }
-.dark .screen { background-color: #000000; }
+        .dark body { background-color: #020617; color: rgba(248,250,252,0.96); }
 
         /* Ambient Background Glow */
         .ambient-glow {
@@ -77,7 +76,7 @@
             transition: transform 0.4s cubic-bezier(0.32, 0.72, 0, 1), border-radius 0.4s ease, opacity 0.4s ease;
             transform-origin: top center;
         }
-        .dark .app-container { box-shadow: 0 0 72px rgba(10,132,255,0.10), 0 0 1px rgba(255,255,255,0.06); }
+        .dark .app-container { box-shadow: 0 0 50px rgba(10,132,255,0.08); }
         
         /* 1. THE iOS MODAL PUSH-BACK EFFECT */
         .app-scale-down {
@@ -115,9 +114,9 @@
             contain: layout style paint;
         }
         .dark .glass-card { 
-            background: linear-gradient(180deg, rgba(17, 24, 39, 0.64), rgba(2, 6, 23, 0.54)); 
-            border-color: rgba(255, 255, 255, 0.105); 
-            box-shadow: 0 18px 44px rgba(0,0,0,0.58), 0 0 0 0.5px rgba(148,163,184,0.10), inset 0 1px 0 rgba(255,255,255,0.15), inset 0 -1px 0 rgba(0,0,0,0.34); 
+            background: rgba(12, 18, 36, 0.84); 
+            border-color: rgba(148, 163, 184, 0.16); 
+            box-shadow: 0 12px 36px rgba(0, 0, 0, 0.50), inset 0 1px 0 rgba(255, 255, 255, 0.13), inset 0 -1px 0 rgba(0, 0, 0, 0.28); 
         }
         .glass-card:active { 
             transform: scale(0.96) !important; 
@@ -134,7 +133,7 @@
             padding: 12px 8px calc(12px + env(safe-area-inset-bottom)); z-index: 50; 
         }
         .bottom-nav::-webkit-scrollbar { display: none; }
-        .dark .bottom-nav { background: rgba(3, 7, 18, 0.74); border-top-color: rgba(255,255,255,0.09); box-shadow: 0 -18px 44px rgba(0,0,0,0.72), inset 0 1px 0 rgba(255,255,255,0.115); }
+        .dark .bottom-nav { background: rgba(6, 10, 22, 0.96); border-top-color: rgba(10, 132, 255, 0.14); box-shadow: 0 -14px 36px rgba(0,0,0,0.56), inset 0 1px 0 rgba(10,132,255,0.14); }
         
         /* Nav Item with Premium Text Shadow Glow */
         .nav-item { 
@@ -165,7 +164,7 @@
             animation: slideUpSheet 0.4s cubic-bezier(0.32, 0.72, 0, 1); max-height: 90vh; max-height: 90dvh; overflow-y: auto; 
             box-shadow: 0 -10px 40px rgba(0,0,0,0.1);
         }
-        .dark .modal-content { background: linear-gradient(180deg, rgba(15,23,42,0.92), rgba(2,6,23,0.96)); color: rgba(248,250,252,0.96); border: 1px solid rgba(255,255,255,0.105); backdrop-filter: blur(20px) saturate(165%); -webkit-backdrop-filter: blur(20px) saturate(165%); box-shadow: 0 -24px 70px rgba(0,0,0,0.70), inset 0 1px 0 rgba(255,255,255,0.13), inset 0 -1px 0 rgba(0,0,0,0.38); }
+        .dark .modal-content { background: #0F172A; color: rgba(248,250,252,0.96); border: 1px solid rgba(148,163,184,0.18); box-shadow: 0 -12px 38px rgba(0,0,0,0.54), inset 0 1px 0 rgba(255,255,255,0.07); }
         @keyframes slideUpSheet { from { transform: translateY(100%); } to { transform: translateY(0); } }
         
         /* Tables */
@@ -203,7 +202,7 @@
             position: sticky; top: 0; z-index: 10; display: flex; align-items: center; justify-content: space-between; 
             padding: calc(16px + env(safe-area-inset-top)) 24px 16px; border-bottom: 0.5px solid rgba(0,0,0,0.03); gap: 8px;
         }
-        .dark .header-sticky { background: rgba(2,6,23,0.70); border-bottom-color: rgba(255,255,255,0.085); backdrop-filter: blur(20px) saturate(180%); -webkit-backdrop-filter: blur(20px) saturate(180%); box-shadow: 0 12px 34px rgba(0,0,0,0.48), inset 0 -1px 0 rgba(255,255,255,0.075); }
+        .dark .header-sticky { background: rgba(3, 7, 22, 0.93); border-bottom-color: rgba(10,132,255,0.12); box-shadow: 0 8px 28px rgba(0,0,0,0.40), inset 0 -1px 0 rgba(10,132,255,0.10); }
         
         /* ==================== ULTIMATE ANTI-BROWSER LOCK ==================== */
         html, body {
@@ -255,7 +254,7 @@
             font-size: 16px !important;
             min-height: 52px !important;
         }
-        .dark .input-box { background: rgba(2,6,23,0.46); border-color: rgba(148,163,184,0.13); color: rgba(226,232,240,0.96); line-height: 1.2; backdrop-filter: blur(10px) saturate(145%); -webkit-backdrop-filter: blur(10px) saturate(145%); box-shadow: inset 0 2px 9px rgba(0,0,0,0.56), inset 0 1px 0 rgba(255,255,255,0.055), 0 1px 0 rgba(255,255,255,0.035); }
+        .dark .input-box { background: rgba(15, 23, 42, 0.78); border-color: rgba(10,132,255,0.18); color: rgba(226,232,240,0.96); box-shadow: inset 0 1px 0 rgba(255,255,255,0.04); }
         .input-box:focus { background: rgba(118, 118, 128, 0.12); box-shadow: 0 0 0 4px rgba(0, 122, 255, 0.15); border-color: transparent; }
 
         /* Premium iOS Buttons */
@@ -387,18 +386,6 @@
             min-width: 40px !important;
             min-height: 40px !important;
         }
-
-        .header-sticky .btn-primary.w-auto {
-            height: auto !important;
-            min-height: clamp(38px, 10.5vw, 42px) !important;
-            padding: clamp(8px, 2.4vw, 10px) clamp(12px, 4vw, 18px) !important;
-            border-radius: clamp(12px, 3.5vw, 14px) !important;
-            gap: clamp(5px, 1.6vw, 7px) !important;
-            font-size: clamp(13px, 3.6vw, 14px) !important;
-            line-height: 1 !important;
-            max-width: min(44vw, 168px) !important;
-            flex: 0 1 auto !important;
-        }
         .glass-card, .list-enter, .nav-item, .squircle {
             flex-shrink: 0 !important;
             min-width: 0 !important;
@@ -426,12 +413,12 @@
         .ambient-glow-2 {
             display: none !important;
         }
-        .dark .ambient-glow,
-        .dark .ambient-glow-2 {
-            display: block !important;
-            pointer-events: none !important;
-            opacity: 1 !important;
-        }
+        .glass-card,
+        .bottom-nav,
+        .header-sticky,
+        .modal-overlay,
+        .btn-ios-share,
+        #toast,
         #global-loader,
         #offline-screen {
             backdrop-filter: none !important;
@@ -460,17 +447,17 @@
            Party Ledger left curved stripe normal-thick like other list cards.
            CSS-only fix: no data logic, no Firebase, no JS loop. */
         #balances-screen #dash-balances-list .glass-card {
-            border-left-width: 3px !important;
+            border-left-width: 7px !important;
             border-left-style: solid !important;
         }
 
         #balances-screen #dash-balances-list .party-ledger-balance-stripe-v40 {
-            border-left-width: 3px !important;
+            border-left-width: 7px !important;
             border-left-style: solid !important;
         }
 
         #balances-screen #dash-balances-list .list-enter {
-            border-left-width: 3px !important;
+            border-left-width: 7px !important;
             border-left-style: solid !important;
         }
 
@@ -478,7 +465,7 @@
             #balances-screen #dash-balances-list .glass-card,
             #balances-screen #dash-balances-list .party-ledger-balance-stripe-v40,
             #balances-screen #dash-balances-list .list-enter {
-                border-left-width: 3px !important;
+                border-left-width: 6.5px !important;
             }
         }
         /* END_AARISH_PARTY_LEDGER_STRIPE_THICK_V55 */
@@ -2238,35 +2225,21 @@
 #salary-list .list-enter {
   border-left-width: 3px !important;
   border-left-style: solid !important;
-  transition-property: transform, opacity !important;
-  transition-duration: 0.10s !important;
 }
 
 #salary-list .glass-card[data-aarish-salary-card-v68="positive"] {
   border-left-color: var(--aarish-es-green-v68) !important;
-  box-shadow: -1px 0 12px rgba(52,199,89,0.14), inset 2px 0 0 rgba(52,199,89,0.50) !important;
+  box-shadow: -3px 0 10px rgba(52,199,89,0.20), inset 1px 0 0 rgba(52,199,89,0.44) !important;
 }
 
 #salary-list .glass-card[data-aarish-salary-card-v68="negative"] {
   border-left-color: var(--aarish-es-red-v68) !important;
-  box-shadow: -1px 0 12px rgba(255,59,48,0.14), inset 2px 0 0 rgba(255,59,48,0.50) !important;
+  box-shadow: -3px 0 10px rgba(255,59,48,0.20), inset 1px 0 0 rgba(255,59,48,0.44) !important;
 }
 
 #salary-list .glass-card[data-aarish-salary-card-v68="zero"] {
   border-left-color: var(--aarish-es-blue-v68) !important;
-  box-shadow: -1px 0 12px rgba(0,122,255,0.12), inset 2px 0 0 rgba(0,122,255,0.44) !important;
-}
-
-.dark #salary-list .glass-card[data-aarish-salary-card-v68="positive"] {
-  box-shadow: -1px 0 12px rgba(52,199,89,0.14), 0 14px 34px rgba(0,0,0,0.44), inset 2px 0 0 rgba(52,199,89,0.50), inset 0 1px 0 rgba(255,255,255,0.12) !important;
-}
-
-.dark #salary-list .glass-card[data-aarish-salary-card-v68="negative"] {
-  box-shadow: -1px 0 12px rgba(255,59,48,0.14), 0 14px 34px rgba(0,0,0,0.44), inset 2px 0 0 rgba(255,59,48,0.50), inset 0 1px 0 rgba(255,255,255,0.12) !important;
-}
-
-.dark #salary-list .glass-card[data-aarish-salary-card-v68="zero"] {
-  box-shadow: -1px 0 12px rgba(0,122,255,0.12), 0 14px 34px rgba(0,0,0,0.44), inset 2px 0 0 rgba(0,122,255,0.44), inset 0 1px 0 rgba(255,255,255,0.12) !important;
+  box-shadow: -3px 0 10px rgba(0,122,255,0.16), inset 1px 0 0 rgba(0,122,255,0.36) !important;
 }
 
 /* Salary detail card text follows employee type */
@@ -2368,29 +2341,21 @@
 
 /* Glass balance: readable but still premium */
 .dark .glass-card {
-  background: linear-gradient(180deg, rgba(17,24,39,0.64), rgba(2,6,23,0.54)) !important;
-  border-color: rgba(255,255,255,0.105) !important;
-  backdrop-filter: blur(18px) saturate(170%) !important;
-  -webkit-backdrop-filter: blur(18px) saturate(170%) !important;
-  box-shadow: 0 18px 44px rgba(0,0,0,0.58), 0 0 0 0.5px rgba(148,163,184,0.10), inset 0 1px 0 rgba(255,255,255,0.15), inset 0 -1px 0 rgba(0,0,0,0.34) !important;
+  background: rgba(12,18,36,0.84) !important;
+  border-color: rgba(148,163,184,0.16) !important;
+  box-shadow: 0 12px 36px rgba(0,0,0,0.50), inset 0 1px 0 rgba(255,255,255,0.13), inset 0 -1px 0 rgba(0,0,0,0.28) !important;
 }
 
 /* Softer bottom nav + modal depth */
 .dark .bottom-nav {
-  align-items: stretch !important;
-  gap: 3px !important;
-  background: rgba(3,7,18,0.74) !important;
-  border-top-color: rgba(255,255,255,0.09) !important;
-  backdrop-filter: blur(22px) saturate(190%) !important;
-  -webkit-backdrop-filter: blur(22px) saturate(190%) !important;
-  box-shadow: 0 -18px 44px rgba(0,0,0,0.72), inset 0 1px 0 rgba(255,255,255,0.115) !important;
+  background: rgba(6,10,22,0.96) !important;
+  border-top-color: rgba(10,132,255,0.14) !important;
+  box-shadow: 0 -14px 36px rgba(0,0,0,0.56), inset 0 1px 0 rgba(10,132,255,0.14) !important;
 }
 
 .dark .modal-content {
-  border-color: rgba(255,255,255,0.105) !important;
-  backdrop-filter: blur(20px) saturate(165%) !important;
-  -webkit-backdrop-filter: blur(20px) saturate(165%) !important;
-  box-shadow: 0 -24px 70px rgba(0,0,0,0.70), inset 0 1px 0 rgba(255,255,255,0.13), inset 0 -1px 0 rgba(0,0,0,0.38) !important;
+  border-color: rgba(148,163,184,0.18) !important;
+  box-shadow: 0 -12px 38px rgba(0,0,0,0.54), inset 0 1px 0 rgba(255,255,255,0.07) !important;
 }
 
 /* Green/Red action alpha boost on dark surfaces */
@@ -2485,12 +2450,12 @@
 
 /* App container halo: barely visible premium backlit panel */
 .dark .app-container {
-  box-shadow: 0 0 72px rgba(10,132,255,0.10), 0 0 1px rgba(255,255,255,0.06) !important;
+  box-shadow: 0 0 50px rgba(10,132,255,0.08) !important;
 }
 
 /* Glass card specular: crisp top edge, slightly softer outer depth */
 .dark .glass-card {
-  box-shadow: 0 18px 44px rgba(0,0,0,0.58), 0 0 0 0.5px rgba(148,163,184,0.10), inset 0 1px 0 rgba(255,255,255,0.15), inset 0 -1px 0 rgba(0,0,0,0.34) !important;
+  box-shadow: 0 12px 36px rgba(0,0,0,0.50), inset 0 1px 0 rgba(255,255,255,0.13), inset 0 -1px 0 rgba(0,0,0,0.28) !important;
 }
 
 /* Diary section: warmer amber glow without changing yellow family */
@@ -2725,7 +2690,7 @@
                 <select id="filter-year-milk" class="input-box w-[100px] shrink-0 py-2 px-4 text-[15px] font-semibold cursor-pointer" onchange="updateMonthFilter()"></select>
             </div>
 
-            <div class="glass-card mb-6 flex justify-between items-center bg-gradient-to-br from-[#34C759] to-[#28a745] text-white border-none shadow-[0_8px_24px_rgba(52,199,89,0.3)] dark:shadow-[0_10px_34px_rgba(52,199,89,0.42)] ring-1 ring-white/30 w-full min-w-0 gap-3">
+            <div class="glass-card mb-6 flex justify-between items-center bg-gradient-to-br from-[#34C759] to-[#28a745] text-white border-none shadow-[0_8px_24px_rgba(52,199,89,0.3)] ring-1 ring-white/30 w-full min-w-0 gap-3">
                 <div class="flex-1 min-w-0">
                     <p class="text-[11px] font-bold uppercase opacity-90 tracking-wider truncate w-full drop-shadow-sm">Month Bill</p>
                     <h3 id="milk-detail-bill" class="text-[32px] font-extrabold mt-1 tracking-tight truncate w-full drop-shadow-md">₹0</h3>
@@ -2898,7 +2863,7 @@
             </div>
         </div>
         <div class="p-5">
-            <div class="glass-card mb-6 flex justify-between items-center bg-gradient-to-br from-[#FF4B4B] to-[#D92A2A] text-white border-none shadow-[0_8px_24px_rgba(255,59,48,0.3)] dark:shadow-[0_10px_34px_rgba(255,59,48,0.42)] ring-1 ring-white/30 w-full min-w-0 gap-3">
+            <div class="glass-card mb-6 flex justify-between items-center bg-gradient-to-br from-[#FF4B4B] to-[#D92A2A] text-white border-none shadow-[0_8px_24px_rgba(255,59,48,0.3)] ring-1 ring-white/30 w-full min-w-0 gap-3">
                 <div class="flex-1 min-w-0">
                     <p class="text-[11px] font-bold uppercase opacity-90 tracking-wider truncate w-full drop-shadow-sm">Total Product Expense</p>
                     <h3 id="expense-detail-total" class="text-[32px] font-extrabold mt-1 tracking-tight truncate w-full drop-shadow-md">₹0</h3>
