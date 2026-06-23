@@ -1,0 +1,12 @@
+*.bak
+*.backup
+*.tmp
+*before_*
+*.old
+*.orig
+__pycache__/
+node_modules/
+.cache/
+*.mp4
+*.mov
+*.zip
