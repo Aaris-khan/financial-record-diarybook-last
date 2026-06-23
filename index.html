@@ -2982,16 +2982,16 @@
 
         <div class="modal-content" onclick="event.stopImmediatePropagation()">
             <div class="w-12 h-1.5 bg-gray-300 dark:bg-gray-600 shrink-0 rounded-full mx-auto mb-8"></div>
-            <h2 class="text-2xl font-extrabold mb-6 truncate w-full">New Customer</h2>
-            <input id="new-milk-name" class="input-box mb-4 w-full" placeholder="Customer Name">
-            <input id="new-milk-rate" type="number" class="input-box mb-8 w-full" placeholder="Rate per KG (₹)">
+            <h2 class="text-2xl font-extrabold mb-6 truncate w-full text-[#007AFF] drop-shadow-[0_0_10px_rgba(0,122,255,0.28)]">New Customer</h2>
+            <input id="new-milk-name" class="input-box mb-4 w-full text-[#007AFF] placeholder:text-[#007AFF]" placeholder="Customer Name">
+            <input id="new-milk-rate" type="number" class="input-box mb-8 w-full text-[#007AFF] placeholder:text-[#007AFF]" placeholder="Rate per KG (₹)">
             <input type="hidden" id="new-milk-type" value="lene_wala">
             
 
             <div class="flex gap-4 w-full min-w-0">
-    <button onclick="document.getElementById('new-milk-type').value='lene_wala'; haptic(); addMilkCustomer();" class="btn-primary flex-1 min-w-0 !bg-[#34C759] !shadow-[0_4px_14px_rgba(52,199,89,0.25)]"><i class="fa-solid fa-plus text-lg"></i> Seller</button>
+    <button onclick="document.getElementById('new-milk-type').value='lene_wala'; haptic(); addMilkCustomer();" class="btn-primary flex-1 min-w-0 !bg-[#34C759] !text-[#007AFF] !shadow-[0_4px_14px_rgba(52,199,89,0.25)]"><i class="fa-solid fa-plus text-lg"></i> Seller</button>
     
-    <button onclick="document.getElementById('new-milk-type').value='dene_wala'; haptic(); addMilkCustomer();" class="btn-primary flex-1 min-w-0 !bg-[#FF3B30] !shadow-[0_4px_14px_rgba(255,59,48,0.25)]"><i class="fa-solid fa-minus text-lg"></i> Buyer</button>
+    <button onclick="document.getElementById('new-milk-type').value='dene_wala'; haptic(); addMilkCustomer();" class="btn-primary flex-1 min-w-0 !bg-[#FF3B30] !text-[#007AFF] !shadow-[0_4px_14px_rgba(255,59,48,0.25)]"><i class="fa-solid fa-minus text-lg"></i> Buyer</button>
 </div>
 
 
@@ -3001,27 +3001,27 @@
     <div id="add-milk-entry-modal" class="modal-overlay" onclick="if(event.target.id==='add-milk-entry-modal')closeModal('add-milk-entry-modal')">
         <div class="modal-content" onclick="event.stopImmediatePropagation()">
             <div class="w-12 h-1.5 bg-gray-300 dark:bg-gray-600 shrink-0 rounded-full mx-auto mb-8"></div>
-            <h2 class="text-2xl font-extrabold mb-6 truncate w-full">Daily Milk Entry</h2>
-            <input type="date" id="milk-entry-date" class="input-box mb-4 w-full">
+            <h2 class="text-2xl font-extrabold mb-6 truncate w-full text-[#007AFF] drop-shadow-[0_0_10px_rgba(0,122,255,0.28)]">Daily Milk Entry</h2>
+            <input type="date" id="milk-entry-date" class="input-box mb-4 w-full text-[#007AFF]" style="color:#007AFF;">
             <div class="grid grid-cols-2 gap-4 mb-8 w-full">
-                <input type="number" step="0.01" id="milk-morning-kg" class="input-box w-full" placeholder="Morning KG">
-                <input type="number" step="0.01" id="milk-evening-kg" class="input-box w-full" placeholder="Evening KG">
+                <input type="number" step="0.01" id="milk-morning-kg" class="input-box w-full text-[#007AFF] placeholder:text-[#007AFF]" style="color:#007AFF;" placeholder="Morning KG">
+                <input type="number" step="0.01" id="milk-evening-kg" class="input-box w-full text-[#007AFF] placeholder:text-[#007AFF]" style="color:#007AFF;" placeholder="Evening KG">
             </div>
-            <button onclick="haptic(); saveMilkEntry()" class="btn-primary shrink-0 w-full !bg-[#34C759] !shadow-[0_4px_14px_rgba(52,199,89,0.25)]"><i class="fa-solid fa-check"></i> Save Entry</button>
+            <button onclick="haptic(); saveMilkEntry()" class="btn-primary shrink-0 w-full !bg-[#34C759] !text-[#007AFF] !shadow-[0_4px_14px_rgba(52,199,89,0.25)]"><i class="fa-solid fa-check"></i> Save Entry</button>
         </div>
     </div>
 
     <div id="add-salary-person-modal" class="modal-overlay" onclick="if(event.target.id==='add-salary-person-modal')closeModal('add-salary-person-modal')">
         <div class="modal-content" onclick="event.stopImmediatePropagation()">
             <div class="w-12 h-1.5 bg-gray-300 dark:bg-gray-600 shrink-0 rounded-full mx-auto mb-8"></div>
-            <h2 class="text-2xl font-extrabold mb-6 truncate w-full">New Employee</h2>
-            <input id="new-salary-name" class="input-box mb-4 w-full" placeholder="Employee Name">
-            <input id="new-salary-company" class="input-box mb-8 w-full" placeholder="Company / Details">
+            <h2 class="text-2xl font-extrabold mb-6 truncate w-full text-[#007AFF] drop-shadow-[0_0_10px_rgba(0,122,255,0.28)]">New Employee</h2>
+            <input id="new-salary-name" class="input-box mb-4 w-full text-[#007AFF] placeholder:text-[#007AFF]" placeholder="Employee Name">
+            <input id="new-salary-company" class="input-box mb-8 w-full text-[#007AFF] placeholder:text-[#007AFF]" placeholder="Company / Details">
             <input type="hidden" id="new-salary-type" value="lene_wala">
             
                         <div class="flex gap-4 w-full min-w-0">
-                <button onclick="document.getElementById('new-salary-type').value='lene_wala'; haptic(); addSalaryPerson();" class="btn-primary flex-1 min-w-0 !bg-[#10B981] !shadow-[0_4px_14px_rgba(16,185,129,0.25)]"><i class="fa-solid fa-plus text-lg"></i> Receives</button>
-                <button onclick="document.getElementById('new-salary-type').value='dene_wala'; haptic(); addSalaryPerson();" class="btn-primary flex-1 min-w-0 !bg-[#FF3B30] !shadow-[0_4px_14px_rgba(255,59,48,0.25)]"><i class="fa-solid fa-minus text-lg"></i> Pays</button>
+                <button onclick="document.getElementById('new-salary-type').value='lene_wala'; haptic(); addSalaryPerson();" class="btn-primary flex-1 min-w-0 !bg-[#10B981] !text-[#007AFF] !shadow-[0_4px_14px_rgba(16,185,129,0.25)]"><i class="fa-solid fa-plus text-lg"></i> Receives</button>
+                <button onclick="document.getElementById('new-salary-type').value='dene_wala'; haptic(); addSalaryPerson();" class="btn-primary flex-1 min-w-0 !bg-[#FF3B30] !text-[#007AFF] !shadow-[0_4px_14px_rgba(255,59,48,0.25)]"><i class="fa-solid fa-minus text-lg"></i> Pays</button>
             </div>
 
         </div>
@@ -3040,13 +3040,13 @@
     <div id="add-udhar-modal" class="modal-overlay" onclick="if(event.target.id==='add-udhar-modal')closeModal('add-udhar-modal')">
         <div class="modal-content" onclick="event.stopImmediatePropagation()">
             <div class="w-12 h-1.5 bg-gray-300 dark:bg-gray-600 shrink-0 rounded-full mx-auto mb-8"></div>
-            <h2 class="text-2xl font-extrabold mb-6 truncate w-full">Credit / Loan Entry</h2>
-            <input type="date" id="udhar-date" class="input-box mb-4 w-full">
-            <input id="udhar-name" type="text" class="input-box mb-4 w-full" placeholder="Name (Given to / Taken from)">
-            <input id="udhar-amount" type="number" class="input-box mb-8 w-full" placeholder="Amount (₹)">
+            <h2 class="text-2xl font-extrabold mb-6 truncate w-full text-[#007AFF] drop-shadow-[0_0_10px_rgba(0,122,255,0.28)]">Credit / Loan Entry</h2>
+            <input type="date" id="udhar-date" class="input-box mb-4 w-full text-[#007AFF]">
+            <input id="udhar-name" type="text" class="input-box mb-4 w-full text-[#007AFF] placeholder:text-[#007AFF]" placeholder="Name (Given to / Taken from)">
+            <input id="udhar-amount" type="number" class="input-box mb-8 w-full text-[#007AFF] placeholder:text-[#007AFF]" placeholder="Amount (₹)">
                         <div class="flex gap-4 w-full min-w-0">
-                <button onclick="haptic(); saveUdharEntry('credit')" class="btn-primary flex-1 min-w-0 !bg-[#34C759] !shadow-[0_4px_14px_rgba(52,199,89,0.25)]"><i class="fa-solid fa-plus text-lg"></i> Given</button>
-                <button onclick="haptic(); saveUdharEntry('debit')" class="btn-primary flex-1 min-w-0 !bg-[#FF3B30] !shadow-[0_4px_14px_rgba(255,59,48,0.25)]"><i class="fa-solid fa-minus text-lg"></i> Taken</button>
+                <button onclick="haptic(); saveUdharEntry('credit')" class="btn-primary flex-1 min-w-0 !bg-[#34C759] !text-[#007AFF] !shadow-[0_4px_14px_rgba(52,199,89,0.25)]"><i class="fa-solid fa-plus text-lg"></i> Given</button>
+                <button onclick="haptic(); saveUdharEntry('debit')" class="btn-primary flex-1 min-w-0 !bg-[#FF3B30] !text-[#007AFF] !shadow-[0_4px_14px_rgba(255,59,48,0.25)]"><i class="fa-solid fa-minus text-lg"></i> Taken</button>
             </div>
 
         </div>
@@ -3055,33 +3055,33 @@
     <div id="add-expense-modal" class="modal-overlay" onclick="if(event.target.id==='add-expense-modal')closeModal('add-expense-modal')">
         <div class="modal-content" onclick="event.stopImmediatePropagation()">
             <div class="w-12 h-1.5 bg-gray-300 dark:bg-gray-600 shrink-0 rounded-full mx-auto mb-8"></div>
-            <h2 class="text-2xl font-extrabold mb-6 truncate w-full">Add Expense</h2>
-            <input type="date" id="expense-date" class="input-box mb-4 w-full">
-            <input id="expense-category" type="text" class="input-box mb-4 w-full" placeholder="Product / Category Name (e.g. Cheeni)">
-            <input id="expense-amount" type="number" class="input-box mb-8 w-full" placeholder="Amount (₹)">
-            <button onclick="haptic(); saveExpenseEntry()" class="btn-primary shrink-0 w-full !bg-[#FF3B30] !shadow-[0_4px_14px_rgba(255,59,48,0.25)]"><i class="fa-solid fa-check"></i> Save Expense</button>
+            <h2 class="text-2xl font-extrabold mb-6 truncate w-full text-[#007AFF] drop-shadow-[0_0_10px_rgba(0,122,255,0.28)]">Add Expense</h2>
+            <input type="date" id="expense-date" class="input-box mb-4 w-full text-[#007AFF]">
+            <input id="expense-category" type="text" class="input-box mb-4 w-full text-[#007AFF] placeholder:text-[#007AFF]" placeholder="Product / Category Name (e.g. Cheeni)">
+            <input id="expense-amount" type="number" class="input-box mb-8 w-full text-[#007AFF] placeholder:text-[#007AFF]" placeholder="Amount (₹)">
+            <button onclick="haptic(); saveExpenseEntry()" class="btn-primary shrink-0 w-full !bg-[#FF3B30] !text-[#007AFF] !shadow-[0_4px_14px_rgba(255,59,48,0.25)]"><i class="fa-solid fa-check"></i> Save Expense</button>
         </div>
     </div>
 
     <div id="diary-entry-modal" class="modal-overlay" onclick="if(event.target.id==='diary-entry-modal')closeModal('diary-entry-modal')">
         <div class="modal-content" onclick="event.stopImmediatePropagation()">
             <div class="w-12 h-1.5 bg-gray-300 dark:bg-gray-600 shrink-0 rounded-full mx-auto mb-6"></div>
-            <h2 class="text-2xl font-extrabold mb-6 truncate w-full" id="diary-modal-title">New Diary Page</h2>
-            <input type="date" id="diary-entry-date" class="input-box mb-4 w-full">
-            <input id="diary-entry-title" type="text" class="input-box mb-6 font-bold w-full text-lg" placeholder="Title of the day">
+            <h2 class="text-2xl font-extrabold mb-6 truncate w-full text-[#007AFF] drop-shadow-[0_0_10px_rgba(0,122,255,0.28)]" id="diary-modal-title">New Diary Page</h2>
+            <input type="date" id="diary-entry-date" class="input-box mb-4 w-full text-[#007AFF]">
+            <input id="diary-entry-title" type="text" class="input-box mb-6 font-bold w-full text-lg text-[#007AFF] placeholder:text-[#007AFF]" placeholder="Title of the day">
             
             <div class="diary-paper w-full h-[320px] mb-8">
-                <textarea id="diary-entry-content" class="w-full h-full bg-transparent resize-none outline-none diary-textarea text-gray-800 dark:text-gray-200" placeholder="What happened today? Write unlimited here..."></textarea>
+                <textarea id="diary-entry-content" class="w-full h-full bg-transparent resize-none outline-none diary-textarea text-[#007AFF] placeholder:text-[#007AFF]" placeholder="What happened today? Write unlimited here..."></textarea>
             </div>
-                        <button onclick="haptic(); saveDiaryEntry()" class="btn-primary shrink-0 w-full !bg-[#F5A623] !shadow-[0_4px_14px_rgba(245,166,35,0.25)] !text-white"><i class="fa-solid fa-check"></i> Save Page</button>
+                        <button onclick="haptic(); saveDiaryEntry()" class="btn-primary shrink-0 w-full !bg-[#F5A623] !shadow-[0_4px_14px_rgba(245,166,35,0.25)] !text-[#007AFF]"><i class="fa-solid fa-check"></i> Save Page</button>
         </div>
     </div>
     <div id="add-project-modal" class="modal-overlay" onclick="if(event.target.id==='add-project-modal')closeModal('add-project-modal')">
         <div class="modal-content" onclick="event.stopImmediatePropagation()">
             <div class="w-12 h-1.5 bg-gray-300 dark:bg-gray-600 shrink-0 rounded-full mx-auto mb-8"></div>
-            <h2 class="text-2xl font-extrabold mb-6 truncate w-full">New Business Khata</h2>
-            <input id="new-project-name" type="text" class="input-box mb-8 w-full font-bold text-lg" placeholder="Enter business name (e.g. shop)">
-            <button onclick="haptic(); saveNewProject()" class="btn-primary shrink-0 w-full !bg-[#000] dark:!bg-[#FFF] dark:!text-[#000] !shadow-[0_4px_14px_rgba(0,0,0,0.25)]"><i class="fa-solid fa-check"></i> Create Khata</button>
+            <h2 class="text-2xl font-extrabold mb-6 truncate w-full text-[#007AFF] drop-shadow-[0_0_10px_rgba(0,122,255,0.28)]">New Business Khata</h2>
+            <input id="new-project-name" type="text" class="input-box mb-8 w-full font-bold text-lg text-[#007AFF] placeholder:text-[#007AFF]" placeholder="Enter business name (e.g. shop)">
+            <button onclick="haptic(); saveNewProject()" class="btn-primary shrink-0 w-full !bg-[#000] dark:!bg-[#FFF] !text-[#007AFF] dark:!text-[#007AFF] !shadow-[0_4px_14px_rgba(0,0,0,0.25)]"><i class="fa-solid fa-check"></i> Create Khata</button>
         </div>
     </div>
 
@@ -3905,9 +3905,11 @@ async function deleteSalaryPersonProfile(name) {
             filterByMonth(s.records || []).forEach(r => totalAmt += Number(r.amount||0));
             
             const isLeneWala = s.type === 'lene_wala';
-            const colorClass = isLeneWala ? 'text-[#34C759]' : 'text-[#FF3B30]';
-            const bgClass = isLeneWala ? 'bg-[#34C759]/10' : 'bg-[#FF3B30]/10';
-            const borderClass = isLeneWala ? 'border-l-[#34C759]' : 'border-l-[#FF3B30]';
+            const netAmt = isLeneWala ? totalAmt : -totalAmt;
+            const salaryState = netAmt > 0 ? 'positive' : (netAmt < 0 ? 'negative' : 'zero');
+            const colorClass = salaryState === 'positive' ? 'text-[#34C759]' : (salaryState === 'negative' ? 'text-[#FF3B30]' : 'text-[#007AFF]');
+            const bgClass = salaryState === 'positive' ? 'bg-[#34C759]/10' : (salaryState === 'negative' ? 'bg-[#FF3B30]/10' : 'bg-[#007AFF]/10');
+            const borderClass = salaryState === 'positive' ? 'border-l-[#34C759]' : (salaryState === 'negative' ? 'border-l-[#FF3B30]' : 'border-l-[#007AFF]');
             const sign = isLeneWala ? '+' : '-';
             const typeLabel = isLeneWala ? 'Receives' : 'Pays';
 
@@ -3919,16 +3921,16 @@ async function deleteSalaryPersonProfile(name) {
                 onmousedown="startSalaryLongPress('${name}')" 
                 onmouseup="cancelSalaryLongPress()" 
                 onmouseleave="cancelSalaryLongPress()"
-                class="glass-card mb-3.5 flex items-center justify-between cursor-pointer border-l-[3px] ${borderClass} w-full ring-1 ring-white/40 dark:ring-white/5 list-enter" style="animation-delay: ${index * 0.05}s;">
+                data-aarish-salary-card-v68="${salaryState}" class="glass-card mb-3.5 flex items-center justify-between cursor-pointer border-l-[3px] ${borderClass} w-full ring-1 ring-white/40 dark:ring-white/5 list-enter" style="animation-delay: ${index * 0.05}s;">
 
                 <div class="flex items-center gap-4 w-full min-w-0">
                     <div class="w-12 h-12 shrink-0 squircle ${bgClass} ${colorClass} font-bold flex items-center justify-center text-lg"><i class="fa-solid fa-indian-rupee-sign"></i></div>
                     <div class="flex-1 min-w-0">
-                        <h4 class="font-bold text-[17px] leading-tight truncate w-full flex items-center text-gray-900 dark:text-white">${name}</h4>
-                        <p class="text-[13px] text-gray-500 font-medium truncate w-full mt-0.5 tracking-tight">${s.company} • <span class="${colorClass} font-extrabold text-[15px] ml-1">${sign}₹${Math.round(totalAmt).toLocaleString('en-IN')}</span></p>
+                        <h4 class="font-bold text-[17px] leading-tight truncate w-full flex items-center ${colorClass}">${name}</h4>
+                        <p class="text-[13px] ${colorClass} font-medium truncate w-full mt-0.5 tracking-tight">${s.company} • <span class="${colorClass} font-extrabold text-[15px] ml-1">${sign}₹${Math.round(totalAmt).toLocaleString('en-IN')}</span></p>
                     </div>
                 </div>
-                <i class="fa-solid fa-chevron-right text-gray-300 shrink-0 ml-3 text-[13px]"></i>
+                <i class="fa-solid fa-chevron-right ${colorClass} shrink-0 ml-3 text-[13px]"></i>
             </div>`;
         }).join('');
         document.getElementById('salary-list').innerHTML = html || getEmptyState('fa-users', 'No employees found');
@@ -4127,7 +4129,12 @@ async function addMilkCustomer() {
                 <i class="fa-solid fa-chevron-right text-gray-300 shrink-0 ml-3 text-[13px]"></i>
             </div>`;
         }).join('');
-        document.getElementById('milk-list').innerHTML = html || getEmptyState('fa-jug-detergent', 'No customers found');
+        document.getElementById('milk-list').innerHTML = html || `<div class="flex flex-col items-center justify-center py-24 text-center select-none">
+  <div class="w-28 h-28 rounded-full bg-[#007AFF]/10 text-[#007AFF] flex items-center justify-center shadow-[0_0_24px_rgba(0,122,255,0.14)]">
+    <i class="fa-solid fa-jug-detergent text-5xl"></i>
+  </div>
+  <p class="mt-8 text-[#007AFF] font-extrabold text-[17px] tracking-tight drop-shadow-[0_0_10px_rgba(0,122,255,0.28)]">No customers found</p>
+</div>`;
     }
 
     let __milkFilterTimerV49 = null;
@@ -6540,10 +6547,10 @@ window.onload = function(){ setTimeout(function(){ window.focus(); window.print(
     holder.id = "milk-given-taken-actions";
     holder.className = "grid grid-cols-2 gap-4 w-full";
     holder.innerHTML = `
-      <button onclick="haptic(); saveMilkEntry('given')" class="btn-primary flex-1 min-w-0 !bg-[#34C759] !shadow-[0_4px_14px_rgba(52,199,89,0.25)]">
+      <button onclick="haptic(); saveMilkEntry('given')" class="btn-primary flex-1 min-w-0 !bg-[#34C759] !text-[#007AFF] !shadow-[0_4px_14px_rgba(52,199,89,0.25)]">
         <i class="fa-solid fa-plus text-lg"></i> Given
       </button>
-      <button onclick="haptic(); saveMilkEntry('taken')" class="btn-primary flex-1 min-w-0 !bg-[#FF3B30] !shadow-[0_4px_14px_rgba(255,59,48,0.25)]">
+      <button onclick="haptic(); saveMilkEntry('taken')" class="btn-primary flex-1 min-w-0 !bg-[#FF3B30] !text-[#007AFF] !shadow-[0_4px_14px_rgba(255,59,48,0.25)]">
         <i class="fa-solid fa-minus text-lg"></i> Taken
       </button>
     `;
@@ -6680,7 +6687,12 @@ window.onload = function(){ setTimeout(function(){ window.focus(); window.print(
       }).join("");
 
     const box = document.getElementById("milk-list");
-    if (box) box.innerHTML = html || getEmptyState("fa-jug-detergent", "No customers found");
+    if (box) box.innerHTML = html || `<div class="flex flex-col items-center justify-center py-24 text-center select-none">
+  <div class="w-28 h-28 rounded-full bg-[#007AFF]/10 text-[#007AFF] flex items-center justify-center shadow-[0_0_24px_rgba(0,122,255,0.14)]">
+    <i class="fa-solid fa-jug-detergent text-5xl"></i>
+  </div>
+  <p class="mt-8 text-[#007AFF] font-extrabold text-[17px] tracking-tight drop-shadow-[0_0_10px_rgba(0,122,255,0.28)]">No customers found</p>
+</div>`;
   };
 
   window.filterMilkList = function () { renderMilkList(); };
@@ -7093,7 +7105,12 @@ window.onload = function(){ setTimeout(function(){ window.focus(); window.print(
     }).join("");
 
     const box = document.getElementById("milk-list");
-    if (box) box.innerHTML = html || getEmptyState("fa-jug-detergent", "No customers found");
+    if (box) box.innerHTML = html || `<div class="flex flex-col items-center justify-center py-24 text-center select-none">
+  <div class="w-28 h-28 rounded-full bg-[#007AFF]/10 text-[#007AFF] flex items-center justify-center shadow-[0_0_24px_rgba(0,122,255,0.14)]">
+    <i class="fa-solid fa-jug-detergent text-5xl"></i>
+  </div>
+  <p class="mt-8 text-[#007AFF] font-extrabold text-[17px] tracking-tight drop-shadow-[0_0_10px_rgba(0,122,255,0.28)]">No customers found</p>
+</div>`;
   };
 
   window.filterMilkList = function () { renderMilkList(); };
@@ -7813,7 +7830,12 @@ window.onload = function(){ setTimeout(function(){ window.focus(); window.print(
         </div>
         <i class="fa-solid fa-chevron-right text-gray-300 shrink-0 ml-3 text-[13px]"></i>
       </div>`;
-    }).join("") || (typeof getEmptyState === "function" ? getEmptyState("fa-jug-detergent", "No customers found") : "");
+    }).join("") || (typeof getEmptyState === "function" ? `<div class="flex flex-col items-center justify-center py-24 text-center select-none">
+  <div class="w-28 h-28 rounded-full bg-[#007AFF]/10 text-[#007AFF] flex items-center justify-center shadow-[0_0_24px_rgba(0,122,255,0.14)]">
+    <i class="fa-solid fa-jug-detergent text-5xl"></i>
+  </div>
+  <p class="mt-8 text-[#007AFF] font-extrabold text-[17px] tracking-tight drop-shadow-[0_0_10px_rgba(0,122,255,0.28)]">No customers found</p>
+</div>` : "");
   };
 
   window.__milkOpenGroupV21 = function (norm) {
