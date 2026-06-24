@@ -3784,6 +3784,7 @@
 }
 </style>
 <style id="aarish-milk-final-salary-style-v109-css">
+/* AARISH_MILK_V109_OBJECT_RECORDS_SAFE_FIX */
 /* AARISH_MILK_FINAL_SALARY_STYLE_V109
    Final milk list visual authority.
    Search stays blue. Positive full green. Negative full red.
@@ -3869,6 +3870,146 @@
   border: 1px solid var(--milkBorder) !important;
   color: var(--milkTone) !important;
   box-shadow: inset 0 1px 0 rgba(255,255,255,0.06), 0 8px 22px var(--milkSoft) !important;
+}
+</style>
+<style id="aarish-v106-milk-dark-salary-style-css">
+/* AARISH_V106_MILK_DARK_SALARY_STYLE_BULLETPROOF_FIXED
+   ONLY dark Milk list.
+   Positive = green, Negative = red, Zero = blue.
+   Search icon/input always blue.
+   Light mode untouched. Backend untouched.
+*/
+
+.dark #milk-screen {
+  --milk-v106-green: #34C759;
+  --milk-v106-red: #FF3B30;
+  --milk-v106-blue: #007AFF;
+  --milk-v106-green-glow: rgba(52,199,89,0.34);
+  --milk-v106-red-glow: rgba(255,59,48,0.34);
+  --milk-v106-blue-glow: rgba(0,122,255,0.30);
+}
+
+.dark #milk-screen #milk-search {
+  color: var(--milk-v106-blue) !important;
+  caret-color: var(--milk-v106-blue) !important;
+  text-shadow: 0 0 10px var(--milk-v106-blue-glow) !important;
+}
+
+.dark #milk-screen #milk-search::placeholder,
+.dark #milk-screen #milk-search::-webkit-input-placeholder {
+  color: rgba(0,122,255,0.78) !important;
+  opacity: 1 !important;
+}
+
+.dark #milk-screen .fa-search {
+  color: var(--milk-v106-blue) !important;
+  text-shadow: 0 0 10px var(--milk-v106-blue-glow) !important;
+  opacity: 1 !important;
+  filter: none !important;
+}
+
+.dark #milk-screen #milk-list .glass-card::before {
+  display: none !important;
+  content: none !important;
+}
+
+.dark #milk-screen #milk-list .glass-card[data-milk-v106-tone] {
+  position: relative !important;
+  overflow: visible !important;
+  contain: layout style !important;
+  border-left-width: 4px !important;
+  border-left-style: solid !important;
+  border-radius: 24px !important;
+}
+
+/* POSITIVE = FULL GREEN */
+.dark #milk-screen #milk-list .glass-card[data-milk-v106-tone="positive"] {
+  border-left-color: var(--milk-v106-green) !important;
+  box-shadow:
+    -4px 0 18px var(--milk-v106-green-glow),
+    0 16px 42px rgba(0,0,0,0.50),
+    inset 1px 0 0 rgba(52,199,89,0.52),
+    inset 0 1px 0 rgba(255,255,255,0.06) !important;
+}
+
+.dark #milk-screen #milk-list .glass-card[data-milk-v106-tone="positive"] h1,
+.dark #milk-screen #milk-list .glass-card[data-milk-v106-tone="positive"] h2,
+.dark #milk-screen #milk-list .glass-card[data-milk-v106-tone="positive"] h3,
+.dark #milk-screen #milk-list .glass-card[data-milk-v106-tone="positive"] h4,
+.dark #milk-screen #milk-list .glass-card[data-milk-v106-tone="positive"] p,
+.dark #milk-screen #milk-list .glass-card[data-milk-v106-tone="positive"] p *,
+.dark #milk-screen #milk-list .glass-card[data-milk-v106-tone="positive"] span,
+.dark #milk-screen #milk-list .glass-card[data-milk-v106-tone="positive"] .squircle,
+.dark #milk-screen #milk-list .glass-card[data-milk-v106-tone="positive"] i.fa-chevron-right,
+.dark #milk-screen #milk-list .glass-card[data-milk-v106-tone="positive"] .v100-title,
+.dark #milk-screen #milk-list .glass-card[data-milk-v106-tone="positive"] .v100-subtitle,
+.dark #milk-screen #milk-list .glass-card[data-milk-v106-tone="positive"] .v100-amount {
+  color: var(--milk-v106-green) !important;
+  text-shadow: 0 0 10px var(--milk-v106-green-glow) !important;
+  opacity: 1 !important;
+}
+
+.dark #milk-screen #milk-list .glass-card[data-milk-v106-tone="positive"] .squircle {
+  background: rgba(52,199,89,0.13) !important;
+  border: 1px solid rgba(52,199,89,0.24) !important;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.06), 0 8px 22px rgba(52,199,89,0.12) !important;
+}
+
+/* NEGATIVE = FULL RED */
+.dark #milk-screen #milk-list .glass-card[data-milk-v106-tone="negative"] {
+  border-left-color: var(--milk-v106-red) !important;
+  box-shadow:
+    -4px 0 18px var(--milk-v106-red-glow),
+    0 16px 42px rgba(0,0,0,0.50),
+    inset 1px 0 0 rgba(255,59,48,0.52),
+    inset 0 1px 0 rgba(255,255,255,0.06) !important;
+}
+
+.dark #milk-screen #milk-list .glass-card[data-milk-v106-tone="negative"] h1,
+.dark #milk-screen #milk-list .glass-card[data-milk-v106-tone="negative"] h2,
+.dark #milk-screen #milk-list .glass-card[data-milk-v106-tone="negative"] h3,
+.dark #milk-screen #milk-list .glass-card[data-milk-v106-tone="negative"] h4,
+.dark #milk-screen #milk-list .glass-card[data-milk-v106-tone="negative"] p,
+.dark #milk-screen #milk-list .glass-card[data-milk-v106-tone="negative"] p *,
+.dark #milk-screen #milk-list .glass-card[data-milk-v106-tone="negative"] span,
+.dark #milk-screen #milk-list .glass-card[data-milk-v106-tone="negative"] .squircle,
+.dark #milk-screen #milk-list .glass-card[data-milk-v106-tone="negative"] i.fa-chevron-right,
+.dark #milk-screen #milk-list .glass-card[data-milk-v106-tone="negative"] .v100-title,
+.dark #milk-screen #milk-list .glass-card[data-milk-v106-tone="negative"] .v100-subtitle,
+.dark #milk-screen #milk-list .glass-card[data-milk-v106-tone="negative"] .v100-amount {
+  color: var(--milk-v106-red) !important;
+  text-shadow: 0 0 10px var(--milk-v106-red-glow) !important;
+  opacity: 1 !important;
+}
+
+.dark #milk-screen #milk-list .glass-card[data-milk-v106-tone="negative"] .squircle {
+  background: rgba(255,59,48,0.13) !important;
+  border: 1px solid rgba(255,59,48,0.24) !important;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.06), 0 8px 22px rgba(255,59,48,0.12) !important;
+}
+
+/* ZERO = BLUE */
+.dark #milk-screen #milk-list .glass-card[data-milk-v106-tone="neutral"] {
+  border-left-color: var(--milk-v106-blue) !important;
+  box-shadow:
+    -4px 0 18px var(--milk-v106-blue-glow),
+    0 16px 42px rgba(0,0,0,0.50),
+    inset 1px 0 0 rgba(0,122,255,0.42),
+    inset 0 1px 0 rgba(255,255,255,0.06) !important;
+}
+
+.dark #milk-screen #milk-list .glass-card[data-milk-v106-tone="neutral"] h4,
+.dark #milk-screen #milk-list .glass-card[data-milk-v106-tone="neutral"] p,
+.dark #milk-screen #milk-list .glass-card[data-milk-v106-tone="neutral"] p *,
+.dark #milk-screen #milk-list .glass-card[data-milk-v106-tone="neutral"] span,
+.dark #milk-screen #milk-list .glass-card[data-milk-v106-tone="neutral"] .squircle,
+.dark #milk-screen #milk-list .glass-card[data-milk-v106-tone="neutral"] i.fa-chevron-right,
+.dark #milk-screen #milk-list .glass-card[data-milk-v106-tone="neutral"] .v100-title,
+.dark #milk-screen #milk-list .glass-card[data-milk-v106-tone="neutral"] .v100-subtitle,
+.dark #milk-screen #milk-list .glass-card[data-milk-v106-tone="neutral"] .v100-amount {
+  color: var(--milk-v106-blue) !important;
+  text-shadow: 0 0 10px var(--milk-v106-blue-glow) !important;
+  opacity: 1 !important;
 }
 </style>
 </head>
@@ -8361,6 +8502,80 @@ window.onload = function(){ setTimeout(function(){ window.focus(); window.print(
 })();
 <\/script>
 
+<script id="aarish-v106-milk-dark-salary-style-js">
+/* AARISH_V106_MILK_DARK_SALARY_STYLE_BULLETPROOF_FIXED
+   UI-only marker. No math/Firebase/save/delete changes.
+*/
+(function () {
+  if (window.__AARISH_V106_MILK_DARK_SALARY_STYLE_READY) return;
+  window.__AARISH_V106_MILK_DARK_SALARY_STYLE_READY = true;
+
+  function toneFromCard(card) {
+    var text = "";
+    try { text = String(card.textContent || "").replace(/\s+/g, " "); } catch(e) {}
+
+    if (/[-−]\s*₹/.test(text)) return "negative";
+    if (/[-−]\s*\d[\d,]*(?:\.\d+)?\s*KG/i.test(text)) return "negative";
+    if (/(^|[\s•])[-−]\d/.test(text)) return "negative";
+
+    if (/\+\s*₹/.test(text)) return "positive";
+    if (/\+\s*\d[\d,]*(?:\.\d+)?\s*KG/i.test(text)) return "positive";
+    if (/(^|[\s•])\+\d/.test(text)) return "positive";
+
+    var oldTone = "";
+    try { oldTone = String(card.getAttribute("data-v99-tone") || card.getAttribute("data-v100-tone") || "").toLowerCase(); } catch(e) {}
+
+    if (oldTone === "positive" || oldTone === "negative") return oldTone;
+    return "neutral";
+  }
+
+  function applyMilkV106() {
+    try {
+      var list = document.getElementById("milk-list");
+      if (!list) return;
+
+      list.querySelectorAll(".glass-card").forEach(function(card) {
+        card.setAttribute("data-milk-v106-tone", toneFromCard(card));
+      });
+    } catch(e) {}
+  }
+
+  function wrapV106(name) {
+    try {
+      var old = window[name];
+      if (typeof old !== "function" || old.__aarishMilkV106Wrapped) return;
+
+      var wrapped = function() {
+        var out = old.apply(this, arguments);
+        setTimeout(applyMilkV106, 0);
+        setTimeout(applyMilkV106, 80);
+        return out;
+      };
+
+      wrapped.__aarishMilkV106Wrapped = true;
+      window[name] = wrapped;
+      try { Function("fn", name + " = fn;")(wrapped); } catch(e) {}
+    } catch(e) {}
+  }
+
+  ["renderMilkList", "filterMilkList", "switchTab", "updateActiveScreen", "updateDashboard"].forEach(wrapV106);
+
+  applyMilkV106();
+  setTimeout(applyMilkV106, 250);
+  setTimeout(applyMilkV106, 1000);
+
+  try {
+    var list = document.getElementById("milk-list");
+    if (list && window.MutationObserver) {
+      new MutationObserver(function(){ applyMilkV106(); }).observe(list, { childList: true, subtree: true, characterData: true });
+    }
+  } catch(e) {}
+
+  document.addEventListener("click", function(){ setTimeout(applyMilkV106, 0); }, { passive: true });
+  document.addEventListener("input", function(){ setTimeout(applyMilkV106, 0); }, { passive: true });
+  window.addEventListener("pageshow", function(){ setTimeout(applyMilkV106, 80); }, { passive: true });
+})();
+</script>
 </body>
 </html>`;
   }
@@ -16644,7 +16859,17 @@ window.onload = function(){ setTimeout(function(){ window.focus(); window.print(
 
   function byId(id){ return document.getElementById(id); }
   function num(v){ var x = Number(v); return isFinite(x) ? x : 0; }
-  function arr(v){ return Array.isArray(v) ? v : []; }
+  function arr(v){
+    if (Array.isArray(v)) return v.filter(Boolean);
+    if (v && typeof v === "object") {
+      return Object.keys(v).map(function(k){
+        var r = v[k];
+        if (r && typeof r === "object" && !r.id) r.id = k;
+        return r;
+      }).filter(Boolean);
+    }
+    return [];
+  }
   function clean(v){ return String(v == null ? "" : v).replace(/[\u0000-\u001F\u007F]/g," ").replace(/\s+/g," ").trim(); }
   function esc(v){ return clean(v).replace(/[&<>"']/g, function(c){ return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]; }); }
   function js(v){ return JSON.stringify(String(v == null ? "" : v)); }
