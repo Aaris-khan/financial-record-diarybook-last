@@ -3617,6 +3617,35 @@
 }
 </style>
 
+<script id="aarish-v102-execution-safety-polyfill">
+/* AARISH_V102_EXECUTION_SAFETY_FIX
+   Older Android WebView safety: Promise.finally + String.normalize fallback.
+   No data logic changed.
+*/
+(function(){
+  try {
+    if (window.Promise && Promise.prototype && typeof Promise.prototype.finally !== "function") {
+      Promise.prototype.finally = function(onFinally) {
+        var P = this.constructor || Promise;
+        return this.then(
+          function(value) {
+            return P.resolve(typeof onFinally === "function" ? onFinally() : onFinally).then(function(){ return value; });
+          },
+          function(reason) {
+            return P.resolve(typeof onFinally === "function" ? onFinally() : onFinally).then(function(){ throw reason; });
+          }
+        );
+      };
+    }
+  } catch(e) {}
+
+  try {
+    if (typeof String.prototype.normalize !== "function") {
+      String.prototype.normalize = function(){ return String(this); };
+    }
+  } catch(e) {}
+})();
+</script>
 </head>
 
 <body>
@@ -4891,18 +4920,31 @@ function installFirebaseCostHooksV81() {
             if (typeof old !== "function" || old.__aarishCostShieldV81) return;
 
             const wrapped = function () {
-                const out = old.apply(this, arguments);
+                var out;
+                try {
+                    out = old.apply(this, arguments);
+                } catch (e) {
+                    throw e;
+                }
+
                 try {
                     if (out && typeof out.then === "function") {
-                        out.finally(function () {
-                            scheduleCacheSaveCostV81(name);
+                        out.then(function () {
+                            try { scheduleCacheSaveCostV81(name); } catch(e) {}
+                        }, function () {
+                            try { scheduleCacheSaveCostV81(name); } catch(e) {}
                         });
                     } else {
                         setTimeout(function () {
-                            scheduleCacheSaveCostV81(name);
+                            try { scheduleCacheSaveCostV81(name); } catch(e) {}
                         }, 80);
                     }
-                } catch (e) {}
+                } catch (e) {
+                    setTimeout(function () {
+                        try { scheduleCacheSaveCostV81(name); } catch(x) {}
+                    }, 80);
+                }
+
                 return out;
             };
 
@@ -16306,7 +16348,12 @@ window.onload = function(){ setTimeout(function(){ window.focus(); window.print(
     });
   }
   function jsArg(v) { return esc(JSON.stringify(String(v == null ? "" : v))); }
-  function safeText(v, max) { return String(v == null ? "" : v).normalize("NFKC").replace(/[\u0000-\u001F\u007F]/g, " ").replace(/\s+/g, " ").trim().slice(0, max || 120); }
+  function safeText(v, max) {
+    var str = "";
+    try { str = String(v == null ? "" : v); } catch(e) { str = ""; }
+    try { if (str && typeof str.normalize === "function") str = str.normalize("NFKC"); } catch(e) {}
+    return str.replace(/[\u0000-\u001F\u007F]/g, " ").replace(/\s+/g, " ").trim().slice(0, max || 120);
+  }
   function safeEntity(v) {
     return safeText(v, 90)
       .replace(/[.#$\[\]\/\\<>`"'{};=]/g, "")
@@ -16766,33 +16813,80 @@ window.onload = function(){ setTimeout(function(){ window.focus(); window.print(
   function wrapAction(name) {
     try {
       var old = window[name];
-      if (typeof old !== "function" || old.__aarishV98ActionWrapped) return;
+      if (typeof old !== "function" || old.__aarishV102ActionWrapped) return;
+
       var wrapped = function() {
         var now = Date.now();
+        var ev = null;
+
+        try {
+          for (var i = 0; i < arguments.length; i++) {
+            if (arguments[i] && typeof arguments[i].preventDefault === "function") {
+              ev = arguments[i];
+              break;
+            }
+          }
+        } catch(e) {}
+
         if (actionLocks[name] && now - actionLocks[name] < LOCK_MS) {
           try { showToast("Processing..."); } catch(e) {}
-          return;
+          try { if (ev) ev.preventDefault(); } catch(e) {}
+          return false;
         }
+
         actionLocks[name] = now;
-        cleanInputsForAction(name);
-        if (!validateBeforeAction(name)) {
-          setTimeout(function(){ delete actionLocks[name]; }, 250);
-          return;
+
+        function cleanup(delay) {
+          setTimeout(function() {
+            try { delete actionLocks[name]; } catch(e) {}
+            try { normalizeAllData(); } catch(e) {}
+            try { setTimeout(refreshCurrent, 0); } catch(e) {}
+          }, typeof delay === "number" ? delay : 80);
         }
+
+        try { if (ev) ev.preventDefault(); } catch(e) {}
+
+        try {
+          cleanInputsForAction(name);
+        } catch(e) {
+          try { console.warn("V102 cleanInputs skipped:", name, e); } catch(x) {}
+        }
+
+        var isValid = true;
+        try {
+          isValid = validateBeforeAction(name);
+        } catch(e) {
+          try { console.warn("V102 validate skipped:", name, e); } catch(x) {}
+          isValid = true;
+        }
+
+        if (!isValid) {
+          cleanup(250);
+          return false;
+        }
+
         var res;
         try {
           res = old.apply(this, arguments);
         } catch(e) {
-          delete actionLocks[name];
+          cleanup(0);
           throw e;
         }
-        Promise.resolve(res).finally(function() {
-          setTimeout(function(){ delete actionLocks[name]; }, 80);
-          normalizeAllData();
-          setTimeout(refreshCurrent, 0);
-        });
+
+        try {
+          if (res && typeof res.then === "function") {
+            res.then(function(){ cleanup(80); }, function(){ cleanup(80); });
+          } else {
+            cleanup(80);
+          }
+        } catch(e) {
+          cleanup(80);
+        }
+
         return res;
       };
+
+      wrapped.__aarishV102ActionWrapped = true;
       wrapped.__aarishV98ActionWrapped = true;
       window[name] = wrapped;
       try { Function("wrapped", name + " = wrapped;")(wrapped); } catch(e) {}
