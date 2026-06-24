@@ -3646,6 +3646,169 @@
   } catch(e) {}
 })();
 </script>
+<style id="aarish-salary-search-icon-permanent-blue-v103">
+/* AARISH_SALARY_SEARCH_ICON_PERMANENT_BLUE_V103
+   Scope: ONLY Salary search icon.
+   Fix: search placeholder/input blue hai, icon bhi permanent same blue.
+   No backend JS, no Firebase, no save/delete logic touched.
+*/
+#salary-screen .relative > i.fa-search,
+#salary-screen .relative > .fa-search,
+#salary-screen i.fa-search,
+.dark #salary-screen .relative > i.fa-search,
+.dark #salary-screen .relative > .fa-search,
+.dark #salary-screen i.fa-search,
+.dark #salary-screen[data-aarish-salary-net-v68="positive"] .relative > i.fa-search,
+.dark #salary-screen[data-aarish-salary-net-v68="negative"] .relative > i.fa-search,
+.dark #salary-screen[data-aarish-salary-net-v68="zero"] .relative > i.fa-search,
+.dark #salary-screen[data-aarish-salary-net-v68="positive"] i.fa-search,
+.dark #salary-screen[data-aarish-salary-net-v68="negative"] i.fa-search,
+.dark #salary-screen[data-aarish-salary-net-v68="zero"] i.fa-search {
+  color: #007AFF !important;
+  text-shadow: 0 0 10px rgba(0,122,255,0.28) !important;
+  opacity: 1 !important;
+  filter: none !important;
+}
+</style>
+<style id="aarish-milk-list-true-green-red-v104">
+/* AARISH_MILK_LIST_TRUE_GREEN_RED_V104
+   Scope: ONLY Milk customer list.
+   Fix:
+   - Positive/+ milk customer = full green text + green curved stripe
+   - Negative/- milk customer = full red text + red curved stripe
+   - Search icon/placeholder blue stays untouched
+   - No backend JS, no Firebase, no save/delete/data logic touched
+*/
+
+/* Base: make curved left stripe visible even after old glass-card paint containment */
+#milk-screen #milk-list .glass-card[data-v99-tone],
+#milk-screen #milk-list .glass-card[data-v100-tone] {
+  position: relative !important;
+  overflow: visible !important;
+  contain: layout style !important;
+  border-left-width: 4px !important;
+  border-left-style: solid !important;
+}
+
+/* Curved premium stripe */
+#milk-screen #milk-list .glass-card[data-v99-tone]::before,
+#milk-screen #milk-list .glass-card[data-v100-tone]::before {
+  content: "" !important;
+  position: absolute !important;
+  left: 0 !important;
+  top: 14px !important;
+  bottom: 14px !important;
+  width: 5px !important;
+  border-radius: 0 999px 999px 0 !important;
+  pointer-events: none !important;
+  z-index: 2 !important;
+}
+
+/* POSITIVE / PLUS = GREEN */
+#milk-screen #milk-list .glass-card[data-v99-tone="positive"],
+#milk-screen #milk-list .glass-card[data-v100-tone="positive"] {
+  border-left-color: #34C759 !important;
+  box-shadow:
+    -5px 0 18px rgba(52,199,89,0.26),
+    0 14px 38px rgba(0,0,0,0.34),
+    inset 1px 0 0 rgba(52,199,89,0.46) !important;
+}
+
+#milk-screen #milk-list .glass-card[data-v99-tone="positive"]::before,
+#milk-screen #milk-list .glass-card[data-v100-tone="positive"]::before {
+  background: #34C759 !important;
+  box-shadow: 0 0 18px rgba(52,199,89,0.55) !important;
+}
+
+#milk-screen #milk-list .glass-card[data-v99-tone="positive"] h4,
+#milk-screen #milk-list .glass-card[data-v99-tone="positive"] p,
+#milk-screen #milk-list .glass-card[data-v99-tone="positive"] p *,
+#milk-screen #milk-list .glass-card[data-v99-tone="positive"] .squircle,
+#milk-screen #milk-list .glass-card[data-v99-tone="positive"] .v100-title,
+#milk-screen #milk-list .glass-card[data-v99-tone="positive"] .v100-subtitle,
+#milk-screen #milk-list .glass-card[data-v99-tone="positive"] .v100-amount,
+#milk-screen #milk-list .glass-card[data-v99-tone="positive"] i.fa-chevron-right,
+#milk-screen #milk-list .glass-card[data-v100-tone="positive"] h4,
+#milk-screen #milk-list .glass-card[data-v100-tone="positive"] p,
+#milk-screen #milk-list .glass-card[data-v100-tone="positive"] p *,
+#milk-screen #milk-list .glass-card[data-v100-tone="positive"] .squircle,
+#milk-screen #milk-list .glass-card[data-v100-tone="positive"] .v100-title,
+#milk-screen #milk-list .glass-card[data-v100-tone="positive"] .v100-subtitle,
+#milk-screen #milk-list .glass-card[data-v100-tone="positive"] .v100-amount,
+#milk-screen #milk-list .glass-card[data-v100-tone="positive"] i.fa-chevron-right {
+  color: #34C759 !important;
+  text-shadow: 0 0 10px rgba(52,199,89,0.35) !important;
+  opacity: 1 !important;
+}
+
+/* NEGATIVE / MINUS = RED */
+#milk-screen #milk-list .glass-card[data-v99-tone="negative"],
+#milk-screen #milk-list .glass-card[data-v100-tone="negative"] {
+  border-left-color: #FF3B30 !important;
+  box-shadow:
+    -5px 0 18px rgba(255,59,48,0.26),
+    0 14px 38px rgba(0,0,0,0.34),
+    inset 1px 0 0 rgba(255,59,48,0.46) !important;
+}
+
+#milk-screen #milk-list .glass-card[data-v99-tone="negative"]::before,
+#milk-screen #milk-list .glass-card[data-v100-tone="negative"]::before {
+  background: #FF3B30 !important;
+  box-shadow: 0 0 18px rgba(255,59,48,0.55) !important;
+}
+
+#milk-screen #milk-list .glass-card[data-v99-tone="negative"] h4,
+#milk-screen #milk-list .glass-card[data-v99-tone="negative"] p,
+#milk-screen #milk-list .glass-card[data-v99-tone="negative"] p *,
+#milk-screen #milk-list .glass-card[data-v99-tone="negative"] .squircle,
+#milk-screen #milk-list .glass-card[data-v99-tone="negative"] .v100-title,
+#milk-screen #milk-list .glass-card[data-v99-tone="negative"] .v100-subtitle,
+#milk-screen #milk-list .glass-card[data-v99-tone="negative"] .v100-amount,
+#milk-screen #milk-list .glass-card[data-v99-tone="negative"] i.fa-chevron-right,
+#milk-screen #milk-list .glass-card[data-v100-tone="negative"] h4,
+#milk-screen #milk-list .glass-card[data-v100-tone="negative"] p,
+#milk-screen #milk-list .glass-card[data-v100-tone="negative"] p *,
+#milk-screen #milk-list .glass-card[data-v100-tone="negative"] .squircle,
+#milk-screen #milk-list .glass-card[data-v100-tone="negative"] .v100-title,
+#milk-screen #milk-list .glass-card[data-v100-tone="negative"] .v100-subtitle,
+#milk-screen #milk-list .glass-card[data-v100-tone="negative"] .v100-amount,
+#milk-screen #milk-list .glass-card[data-v100-tone="negative"] i.fa-chevron-right {
+  color: #FF3B30 !important;
+  text-shadow: 0 0 10px rgba(255,59,48,0.35) !important;
+  opacity: 1 !important;
+}
+
+/* ZERO / NEUTRAL stays blue */
+#milk-screen #milk-list .glass-card[data-v99-tone="neutral"],
+#milk-screen #milk-list .glass-card[data-v100-tone="neutral"] {
+  border-left-color: #007AFF !important;
+}
+
+#milk-screen #milk-list .glass-card[data-v99-tone="neutral"]::before,
+#milk-screen #milk-list .glass-card[data-v100-tone="neutral"]::before {
+  background: #007AFF !important;
+  box-shadow: 0 0 18px rgba(0,122,255,0.45) !important;
+}
+
+/* Dark mode premium glow */
+.dark #milk-screen #milk-list .glass-card[data-v99-tone="positive"],
+.dark #milk-screen #milk-list .glass-card[data-v100-tone="positive"] {
+  box-shadow:
+    -5px 0 20px rgba(52,199,89,0.34),
+    0 16px 42px rgba(0,0,0,0.50),
+    inset 1px 0 0 rgba(52,199,89,0.55),
+    inset 0 1px 0 rgba(255,255,255,0.06) !important;
+}
+
+.dark #milk-screen #milk-list .glass-card[data-v99-tone="negative"],
+.dark #milk-screen #milk-list .glass-card[data-v100-tone="negative"] {
+  box-shadow:
+    -5px 0 20px rgba(255,59,48,0.34),
+    0 16px 42px rgba(0,0,0,0.50),
+    inset 1px 0 0 rgba(255,59,48,0.55),
+    inset 0 1px 0 rgba(255,255,255,0.06) !important;
+}
+</style>
 </head>
 
 <body>
