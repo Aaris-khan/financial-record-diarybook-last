@@ -3783,6 +3783,94 @@
   color: #FF3B30 !important;
 }
 </style>
+<style id="aarish-milk-final-salary-style-v109-css">
+/* AARISH_MILK_FINAL_SALARY_STYLE_V109
+   Final milk list visual authority.
+   Search stays blue. Positive full green. Negative full red.
+   UI-only: no DB/save/delete logic changed.
+*/
+
+/* Search area permanent blue */
+#milk-screen #milk-search,
+.dark #milk-screen #milk-search {
+  color: #007AFF !important;
+  caret-color: #007AFF !important;
+  text-shadow: 0 0 10px rgba(0,122,255,0.28) !important;
+  opacity: 1 !important;
+}
+
+#milk-screen #milk-search::placeholder,
+#milk-screen #milk-search::-webkit-input-placeholder,
+.dark #milk-screen #milk-search::placeholder,
+.dark #milk-screen #milk-search::-webkit-input-placeholder {
+  color: rgba(0,122,255,0.78) !important;
+  opacity: 1 !important;
+}
+
+#milk-screen .fa-search,
+.dark #milk-screen .fa-search {
+  color: #007AFF !important;
+  text-shadow: 0 0 10px rgba(0,122,255,0.28) !important;
+  opacity: 1 !important;
+}
+
+/* Remove old thick pseudo stripes */
+#milk-screen #milk-list .glass-card::before,
+.dark #milk-screen #milk-list .glass-card::before {
+  content: none !important;
+  display: none !important;
+}
+
+/* Salary-like card base */
+#milk-screen #milk-list .milk-final-v109,
+.dark #milk-screen #milk-list .milk-final-v109 {
+  position: relative !important;
+  overflow: visible !important;
+  contain: layout style !important;
+  border-left-width: 4px !important;
+  border-left-style: solid !important;
+  border-left-color: var(--milkTone) !important;
+  border-radius: 24px !important;
+  box-shadow:
+    -4px 0 18px var(--milkGlow),
+    0 16px 42px rgba(0,0,0,0.48),
+    inset 1px 0 0 var(--milkInset),
+    inset 0 1px 0 rgba(255,255,255,0.06) !important;
+}
+
+/* Full card text/icon follows tone */
+#milk-screen #milk-list .milk-final-v109 .milk-final-v109-color,
+#milk-screen #milk-list .milk-final-v109 .milk-final-v109-color *,
+.dark #milk-screen #milk-list .milk-final-v109 .milk-final-v109-color,
+.dark #milk-screen #milk-list .milk-final-v109 .milk-final-v109-color * {
+  color: var(--milkTone) !important;
+  text-shadow: 0 0 10px var(--milkGlow) !important;
+  opacity: 1 !important;
+}
+
+#milk-screen #milk-list .milk-final-v109 h4,
+#milk-screen #milk-list .milk-final-v109 p,
+#milk-screen #milk-list .milk-final-v109 p *,
+#milk-screen #milk-list .milk-final-v109 span,
+#milk-screen #milk-list .milk-final-v109 i.fa-chevron-right,
+.dark #milk-screen #milk-list .milk-final-v109 h4,
+.dark #milk-screen #milk-list .milk-final-v109 p,
+.dark #milk-screen #milk-list .milk-final-v109 p *,
+.dark #milk-screen #milk-list .milk-final-v109 span,
+.dark #milk-screen #milk-list .milk-final-v109 i.fa-chevron-right {
+  color: var(--milkTone) !important;
+  text-shadow: 0 0 10px var(--milkGlow) !important;
+  opacity: 1 !important;
+}
+
+#milk-screen #milk-list .milk-final-v109 .squircle,
+.dark #milk-screen #milk-list .milk-final-v109 .squircle {
+  background: var(--milkTint) !important;
+  border: 1px solid var(--milkBorder) !important;
+  color: var(--milkTone) !important;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.06), 0 8px 22px var(--milkSoft) !important;
+}
+</style>
 </head>
 
 <body>
@@ -8141,78 +8229,6 @@ html, body {
    polishOnly: true
 */
 </style>
-<style id="aarish-milk-salary-exact-ui-v108">
-/* AARISH_MILK_SALARY_EXACT_UI_V108
-   Milk list = Salary list visual logic.
-   Positive full green, negative full red, neutral blue.
-   Search icon/input stays blue. Backend/data logic untouched.
-*/
-
-/* Search area permanently blue */
-#milk-screen .fa-search,
-.dark #milk-screen .fa-search,
-#milk-screen #milk-search,
-.dark #milk-screen #milk-search {
-  color: #007AFF !important;
-  caret-color: #007AFF !important;
-  text-shadow: 0 0 10px rgba(0,122,255,0.28) !important;
-  opacity: 1 !important;
-}
-
-#milk-screen #milk-search::placeholder,
-#milk-screen #milk-search::-webkit-input-placeholder,
-.dark #milk-screen #milk-search::placeholder,
-.dark #milk-screen #milk-search::-webkit-input-placeholder {
-  color: rgba(0,122,255,0.78) !important;
-  opacity: 1 !important;
-}
-
-/* Previous fat pseudo stripe off */
-#milk-screen #milk-list .glass-card::before,
-.dark #milk-screen #milk-list .glass-card::before {
-  content: none !important;
-  display: none !important;
-}
-
-/* Exact Salary-like milk card */
-#milk-screen #milk-list .milk-salary-v108,
-.dark #milk-screen #milk-list .milk-salary-v108 {
-  border-left-width: 3px !important;
-  border-left-style: solid !important;
-  border-left-color: var(--milkTone) !important;
-  border-radius: 24px !important;
-  overflow: visible !important;
-  contain: layout style !important;
-  box-shadow:
-    -4px 0 18px var(--milkGlow),
-    0 16px 42px rgba(0,0,0,0.48),
-    inset 1px 0 0 var(--milkInset),
-    inset 0 1px 0 rgba(255,255,255,0.06) !important;
-}
-
-#milk-screen #milk-list .milk-salary-v108 .milk-v108-color,
-#milk-screen #milk-list .milk-salary-v108 .milk-v108-color *,
-.dark #milk-screen #milk-list .milk-salary-v108 .milk-v108-color,
-.dark #milk-screen #milk-list .milk-salary-v108 .milk-v108-color * {
-  color: var(--milkTone) !important;
-  text-shadow: 0 0 10px var(--milkGlow) !important;
-  opacity: 1 !important;
-}
-
-#milk-screen #milk-list .milk-salary-v108 .squircle,
-.dark #milk-screen #milk-list .milk-salary-v108 .squircle {
-  background: var(--milkTint) !important;
-  border: 1px solid var(--milkBorder) !important;
-  color: var(--milkTone) !important;
-  box-shadow: inset 0 1px 0 rgba(255,255,255,0.06), 0 8px 22px var(--milkSoftShadow) !important;
-}
-
-#milk-screen #milk-list .milk-salary-v108 i.fa-chevron-right,
-.dark #milk-screen #milk-list .milk-salary-v108 i.fa-chevron-right {
-  color: var(--milkTone) !important;
-  text-shadow: 0 0 10px var(--milkGlow) !important;
-}
-</style>
 </head>
 <body>
 <div class="report">
@@ -8825,322 +8841,7 @@ window.onload = function(){ setTimeout(function(){ window.focus(); window.print(
 
 
 
-<script>
-// AARISH_MILK_LIST_CLEAN_NET_V15
-// Keeps V14 net logic, but Milk list card UI becomes compact old-style:
-// Total Milk + Total Amount only. Duplicate same-name customers are grouped for display and dashboard net.
-(function () {
-  function n(v) { return Number(v) || 0; }
-  function arr(v) { return Array.isArray(v) ? v : []; }
-  function normName(name) { return String(name || "").trim().replace(/\s+/g, " ").toLowerCase(); }
-  function displayName(name) { return String(name || "").trim().replace(/\s+/g, " ") || "Unknown"; }
-  function rupeeAbs(v) { return Math.round(Math.abs(n(v))).toLocaleString("en-IN"); }
-  function signedMoney(v) { return (n(v) >= 0 ? "+₹" : "-₹") + rupeeAbs(v); }
-  function signedKg(v) { return (n(v) >= 0 ? "+" : "-") + Math.abs(n(v)).toFixed(2) + " KG"; }
-  function qty(r) { return n(r && r.morning) + n(r && r.evening); }
 
-  function flowOf(record, customer) {
-    const raw = String((record && (record.flow || record.milkFlow || record.direction || record.entryType || record.type)) || "").toLowerCase();
-    if (["taken", "take", "minus", "debit", "pay", "dene_wala"].includes(raw)) return "taken";
-    if (["given", "give", "plus", "credit", "receive", "lene_wala"].includes(raw)) return "given";
-    return customer && customer.type === "dene_wala" ? "taken" : "given";
-  }
-
-  function monthRecords(customer) {
-    try { return filterByMonth(arr(customer.records)); } catch(e) { return arr(customer.records); }
-  }
-
-  function groups() {
-    const map = {};
-    Object.keys(milkDB || {}).forEach(key => {
-      const k = normName(key);
-      if (!k) return;
-      if (!map[k]) map[k] = { norm:k, name:displayName(key), keys:[] };
-      map[k].keys.push(key);
-    });
-    return map;
-  }
-
-  function entriesForGroup(g, monthOnly) {
-    const out = [];
-    g.keys.forEach(key => {
-      const c = milkDB[key] || {};
-      const rate = n(c.rate || DEFAULT_RATE);
-      const records = monthOnly ? monthRecords(c) : arr(c.records);
-      records.forEach(r => {
-        const q = qty(r);
-        const flow = flowOf(r, c);
-        const sign = flow === "taken" ? -1 : 1;
-        out.push({
-          ...r,
-          sourceKey:key,
-          sourceName:displayName(key),
-          flow,
-          q,
-          signedKg:q * sign,
-          amount:q * rate * sign,
-          rate
-        });
-      });
-    });
-    return out;
-  }
-
-  function totalsForGroup(g, monthOnly) {
-    const es = entriesForGroup(g, monthOnly);
-    let givenKg = 0, takenKg = 0, netKg = 0, givenAmt = 0, takenAmt = 0, netAmt = 0;
-    es.forEach(e => {
-      if (e.flow === "taken") {
-        takenKg += e.q;
-        takenAmt += Math.abs(e.amount);
-      } else {
-        givenKg += e.q;
-        givenAmt += Math.abs(e.amount);
-      }
-      netKg += e.signedKg;
-      netAmt += e.amount;
-    });
-    return { givenKg, takenKg, netKg, givenAmt, takenAmt, netAmt, entries:es };
-  }
-
-  function perKeyV14Totals(monthOnly) {
-    let receive = 0, pay = 0;
-    Object.keys(milkDB || {}).forEach(key => {
-      const c = milkDB[key] || {};
-      let netAmt = 0;
-      const rate = n(c.rate || DEFAULT_RATE);
-      const records = monthOnly ? monthRecords(c) : arr(c.records);
-      records.forEach(r => {
-        const sign = flowOf(r, c) === "taken" ? -1 : 1;
-        netAmt += qty(r) * rate * sign;
-      });
-      if (netAmt >= 0) receive += netAmt;
-      else pay += Math.abs(netAmt);
-    });
-    return { receive, pay };
-  }
-
-  function groupedTotals(monthOnly) {
-    let receive = 0, pay = 0;
-    Object.values(groups()).forEach(g => {
-      const t = totalsForGroup(g, monthOnly);
-      if (t.netAmt >= 0) receive += t.netAmt;
-      else pay += Math.abs(t.netAmt);
-    });
-    return { receive, pay };
-  }
-
-  function parseRs(text) {
-    return Number(String(text || "").replace(/[^\d.-]/g, "")) || 0;
-  }
-
-  const prevUpdateDashboardV15 = window.updateDashboard;
-  window.updateDashboard = function () {
-    if (typeof prevUpdateDashboardV15 === "function") prevUpdateDashboardV15();
-
-    const lifeOld = perKeyV14Totals(false);
-    const lifeNew = groupedTotals(false);
-    const monthOld = perKeyV14Totals(true);
-    const monthNew = groupedTotals(true);
-
-    const lenaEl = document.getElementById("dash-lena");
-    const denaEl = document.getElementById("dash-dena");
-    const expEl = document.getElementById("dash-expenses");
-    const profitEl = document.getElementById("dash-profit");
-
-    if (lenaEl) {
-      const v = parseRs(lenaEl.textContent) - lifeOld.receive + lifeNew.receive;
-      lenaEl.textContent = `₹${Math.round(v).toLocaleString("en-IN")}`;
-    }
-
-    if (denaEl) {
-      const v = parseRs(denaEl.textContent) - lifeOld.pay + lifeNew.pay;
-      denaEl.textContent = `₹${Math.round(v).toLocaleString("en-IN")}`;
-    }
-
-    if (expEl) {
-      const v = parseRs(expEl.textContent) - monthOld.pay + monthNew.pay;
-      expEl.textContent = `₹${Math.round(v).toLocaleString("en-IN")}`;
-    }
-
-    if (profitEl) {
-      const oldProfit = monthOld.receive - monthOld.pay;
-      const newProfit = monthNew.receive - monthNew.pay;
-      const v = parseRs(profitEl.textContent) - oldProfit + newProfit;
-      profitEl.textContent = `₹${Math.round(v).toLocaleString("en-IN")}`;
-      profitEl.style.color = v < 0 ? "#FF3B30" : "#34C759";
-    }
-  };
-
-  function openGroup(g) {
-    window.__activeMilkGroupV15 = g.norm;
-    window.activeMilkCustomer = g.keys[0];
-
-    const oldOpen = window.__originalOpenMilkDetailV15 || window.__baseOpenMilkDetailV15;
-    if (typeof oldOpen === "function") {
-      oldOpen(g.keys[0]);
-    } else {
-      const title = document.getElementById("milk-detail-title");
-      if (title) title.textContent = g.name;
-      if (typeof switchTab === "function") switchTab("milk-detail");
-    }
-
-    const title = document.getElementById("milk-detail-title");
-    if (title) title.textContent = g.name;
-
-    setTimeout(() => {
-      try { renderMilkRecords(); } catch(e) {}
-    }, 60);
-  }
-
-  if (!window.__baseOpenMilkDetailV15 && typeof window.openMilkDetail === "function") {
-    window.__baseOpenMilkDetailV15 = window.openMilkDetail;
-  }
-
-  window.openMilkDetailV15 = function (norm) {
-    const g = groups()[String(norm || "")];
-    if (!g) return;
-    openGroup(g);
-  };
-
-  window.openMilkDetail = function (name) {
-    const k = normName(name);
-    const g = groups()[k] || Object.values(groups()).find(x => x.keys.includes(name));
-    if (g) return openGroup(g);
-
-    if (typeof window.__baseOpenMilkDetailV15 === "function") return window.__baseOpenMilkDetailV15(name);
-  };
-
-  window.renderMilkList = function () {
-    const qText = (document.getElementById("milk-search")?.value || "").toLowerCase();
-    const gs = Object.values(groups()).filter(g => g.name.toLowerCase().includes(qText));
-
-    const html = gs.map((g, index) => {
-      const t = totalsForGroup(g, false);
-      const isPlus = t.netAmt >= 0;
-      const colorClass = isPlus ? "text-[#34C759]" : "text-[#FF3B30]";
-      const bgClass = isPlus ? "bg-[#34C759]/10" : "bg-[#FF3B30]/10";
-      const borderClass = isPlus ? "border-l-[#34C759]" : "border-l-[#FF3B30]";
-      const first = (g.name && g.name[0] ? g.name[0].toUpperCase() : "?");
-
-      return `<div
-        onclick="haptic(); openMilkDetailV15('${g.norm.replace(/'/g, "\\'")}')"
-        class="glass-card mb-3.5 flex items-center justify-between cursor-pointer border-l-[3px] ${borderClass} w-full ring-1 ring-white/40 dark:ring-white/5 list-enter"
-        style="animation-delay:${index * 0.05}s;">
-        <div class="flex items-center gap-4 w-full min-w-0">
-          <div class="w-12 h-12 shrink-0 squircle ${bgClass} ${colorClass} font-extrabold flex items-center justify-center text-lg">${first}</div>
-          <div class="flex-1 min-w-0">
-            <h4 class="font-bold text-[17px] leading-tight truncate w-full flex items-center text-gray-900 dark:text-white">${g.name}</h4>
-            <p class="text-[13px] text-gray-500 font-bold truncate w-full mt-0.5 tracking-tight">
-              Total Milk: <span class="${colorClass}">${signedKg(t.netKg)}</span>
-            </p>
-            <p class="text-[14px] text-gray-500 font-bold truncate w-full mt-0.5 tracking-tight">
-              Total: <span class="${colorClass} font-extrabold text-[17px] ml-1">${signedMoney(t.netAmt)}</span>
-            </p>
-          </div>
-        </div>
-        <i class="fa-solid fa-chevron-right text-gray-300 shrink-0 ml-3 text-[13px]"></i>
-      </div>`;
-    }).join("");
-
-    const box = document.getElementById("milk-list");
-    if (box) box.innerHTML = html || `<div class="flex flex-col items-center justify-center py-24 text-center select-none">
-  <div class="w-28 h-28 rounded-full bg-[#007AFF]/10 text-[#007AFF] flex items-center justify-center shadow-[0_0_24px_rgba(0,122,255,0.14)]">
-    <i class="fa-solid fa-jug-detergent text-5xl"></i>
-  </div>
-  <p class="mt-8 text-[#007AFF] font-extrabold text-[17px] tracking-tight drop-shadow-[0_0_10px_rgba(0,122,255,0.28)]">No customers found</p>
-</div>`;
-  };
-
-  window.filterMilkList = function () { renderMilkList(); };
-
-  const prevRenderMilkRecordsV15 = window.renderMilkRecords;
-  window.renderMilkRecords = function () {
-    const g = groups()[window.__activeMilkGroupV15] || (activeMilkCustomer ? groups()[normName(activeMilkCustomer)] : null);
-    if (!g) {
-      if (typeof prevRenderMilkRecordsV15 === "function") return prevRenderMilkRecordsV15();
-      return;
-    }
-
-    const t = totalsForGroup(g, true);
-    const isPlus = t.netAmt >= 0;
-
-    const records = t.entries.slice().sort((a,b) => String(b.date || '').localeCompare(String(a.date || '')));
-
-    const html = records.map((r, index) => {
-      const sign = r.flow === "taken" ? "-" : "+";
-      const color = r.flow === "taken" ? "#FF3B30" : "#34C759";
-      const label = r.flow === "taken" ? "Taken" : "Given";
-      const badge = r.flow === "taken"
-        ? '<span class="inline-flex items-center rounded-md px-2 py-1 text-[9px] font-extrabold uppercase tracking-wider bg-[#FF3B30]/10 text-[#FF3B30] border border-[#FF3B30]/20">Taken</span>'
-        : '<span class="inline-flex items-center rounded-md px-2 py-1 text-[9px] font-extrabold uppercase tracking-wider bg-[#34C759]/10 text-[#34C759] border border-[#34C759]/20">Given</span>';
-
-      return `<tr class="list-enter" style="animation-delay:${index * 0.05}s;">
-        <td>
-          <div class="font-bold">${formatDisplayDate(r.date)}</div>
-          <div class="mt-1">${badge}</div>
-        </td>
-        <td>${n(r.morning) || "-"}</td>
-        <td>${n(r.evening) || "-"}</td>
-        <td class="font-extrabold" style="color:${color};">${sign}${r.q.toFixed(2)}</td>
-        <td class="text-right">
-          <button onclick="haptic(); deleteMilkEntryV15('${String(r.sourceKey).replace(/'/g, "\\'")}', '${String(r.id).replace(/'/g, "\\'")}')" class="action-btn shrink-0">
-            <i class="fa-solid fa-trash text-xs"></i>
-          </button>
-        </td>
-      </tr>`;
-    }).join("");
-
-    const tbody = document.getElementById("milk-detail-records");
-    if (tbody) tbody.innerHTML = html || `<tr><td colspan="5" class="text-center py-8 text-gray-400 font-semibold">No entries for ${MONTHS[selectedMonth]}</td></tr>`;
-
-    const detailCard = document.querySelector("#milk-detail-screen .glass-card");
-    if (detailCard) {
-      detailCard.className = isPlus
-        ? "glass-card mb-6 flex justify-between items-center bg-gradient-to-br from-[#34C759] to-[#28a745] text-white border-none shadow-[0_8px_24px_rgba(52,199,89,0.3)] ring-1 ring-white/30 w-full min-w-0 gap-3"
-        : "glass-card mb-6 flex justify-between items-center bg-gradient-to-br from-[#FF3B30] to-[#c92a2a] text-white border-none shadow-[0_8px_24px_rgba(255,59,48,0.3)] ring-1 ring-white/30 w-full min-w-0 gap-3";
-
-      const labels = detailCard.querySelectorAll("p");
-      if (labels[0]) labels[0].textContent = "Total";
-      if (labels[1]) labels[1].textContent = "Total Milk";
-    }
-
-    const kgEl = document.getElementById("milk-detail-kg");
-    const billEl = document.getElementById("milk-detail-bill");
-    if (kgEl) kgEl.textContent = signedKg(t.netKg);
-    if (billEl) billEl.textContent = signedMoney(t.netAmt);
-
-    const oldSummary = document.getElementById("milk-net-given-taken-summary");
-    if (oldSummary) oldSummary.remove();
-  };
-
-  window.deleteMilkEntryV15 = async function (sourceKey, id) {
-    if (!milkDB[sourceKey]) return;
-    if (confirm("Are you sure you want to delete this entry?")) {
-      milkDB[sourceKey].records = arr(milkDB[sourceKey].records).filter(r => r.id !== id);
-
-      if (currentUserUID) {
-        window.aarishFirebaseLaterV48(`milkDB/${sourceKey}/records/${id}`, "remove")
-      }
-
-      renderMilkRecords();
-      renderMilkList();
-      updateDashboard();
-      showToast("Deleted!");
-    }
-  };
-
-  document.addEventListener("DOMContentLoaded", function () {
-    try { renderMilkList(); } catch(e) {}
-    try { updateDashboard(); } catch(e) {}
-  });
-
-  setTimeout(function () {
-    try { renderMilkList(); } catch(e) {}
-    try { updateDashboard(); } catch(e) {}
-  }, 300);
-})();
-</script>
 
 
 
@@ -9332,469 +9033,16 @@ window.onload = function(){ setTimeout(function(){ window.focus(); window.print(
 
 
 
-<script>
-// AARISH_MILK_CUSTOMER_DELETE_BUTTON_V19
-// Visible delete button for full milk customer profile.
-// Safe policy:
-// - Button appears on Milk Customer Detail top-right.
-// - Delete only after confirmation.
-// - Backup created before delete.
-// - No full milkDB replace.
-// - V14/V15/V18 logic preserved.
-(function () {
-  if (window.__AARISH_MILK_CUSTOMER_DELETE_BUTTON_V19_READY) return;
-  window.__AARISH_MILK_CUSTOMER_DELETE_BUTTON_V19_READY = true;
 
-  function dbV19() {
-    try {
-      if (typeof milkDB !== "undefined" && milkDB && typeof milkDB === "object") return milkDB;
-    } catch(e) {}
-    if (!window.milkDB || typeof window.milkDB !== "object") window.milkDB = {};
-    return window.milkDB;
-  }
 
-  function cleanNameV19(v) {
-    return String(v || "")
-      .normalize("NFKC")
-      .replace(/[.#$\[\]<>\/\\]/g, " ")
-      .replace(/[\u0000-\u001F\u007F]/g, " ")
-      .replace(/\s+/g, " ")
-      .trim();
-  }
 
-  function normNameV19(v) {
-    return cleanNameV19(v).toLocaleLowerCase("en-IN");
-  }
 
-  function recordCountV19(customer) {
-    const r = customer && customer.records;
-    if (Array.isArray(r)) return r.length;
-    if (r && typeof r === "object") return Object.keys(r).length;
-    return 0;
-  }
 
-  function cloneV19(obj) {
-    try { return JSON.parse(JSON.stringify(obj || {})); }
-    catch(e) { return {}; }
-  }
 
-  function groupKeysByNameV19(name) {
-    const db = dbV19();
-    const target = normNameV19(name);
-    if (!target) return [];
-    return Object.keys(db || {}).filter(k => normNameV19(k) === target);
-  }
 
-  function activeDeleteKeysV19() {
-    const db = dbV19();
 
-    let keys = [];
 
-    try {
-      if (window.__activeMilkGroupV15) {
-        const groupNorm = String(window.__activeMilkGroupV15 || "");
-        keys = Object.keys(db || {}).filter(k => normNameV19(k) === groupNorm);
-      }
-    } catch(e) {}
 
-    if (!keys.length) {
-      try {
-        if (typeof activeMilkCustomer !== "undefined" && activeMilkCustomer && db[activeMilkCustomer]) {
-          keys = [activeMilkCustomer];
-        }
-      } catch(e) {}
-    }
-
-    if (!keys.length) {
-      const title = document.getElementById("milk-detail-title")?.textContent || "";
-      keys = groupKeysByNameV19(title);
-    }
-
-    const seen = new Set();
-    return keys.filter(k => {
-      if (!k || !db[k] || seen.has(k)) return false;
-      seen.add(k);
-      return true;
-    });
-  }
-
-  function displayNameForDeleteV19(keys) {
-    const title = cleanNameV19(document.getElementById("milk-detail-title")?.textContent || "");
-    if (title) return title;
-    return keys && keys[0] ? keys[0] : "Customer";
-  }
-
-  async function backupBeforeDeleteV19(keys) {
-    const db = dbV19();
-    const stamp = new Date().toISOString().replace(/[:.]/g, "-");
-    const deletedData = {};
-
-    keys.forEach(k => {
-      deletedData[k] = cloneV19(db[k]);
-    });
-
-    const payload = {
-      version: "AARISH_MILK_CUSTOMER_DELETE_BUTTON_V19",
-      reason: "before-delete-full-milk-customer",
-      createdAt: new Date().toISOString(),
-      deletedKeys: keys.slice(),
-      deletedData
-    };
-
-    try {
-      localStorage.setItem("AARISH_MILK_DELETE_BACKUP_V19_" + stamp, JSON.stringify(payload));
-    } catch(e) {}
-
-    if (typeof currentUserUID !== "undefined" && currentUserUID && typeof appDataRef !== "undefined" && appDataRef) {
-      window.aarishFirebaseLaterV48("milkDB_DELETE_BACKUP_V19/" + stamp, "set", payload)
-    }
-
-    return stamp;
-  }
-
-  window.deleteActiveMilkCustomerV19 = async function () {
-    const db = dbV19();
-    const keys = activeDeleteKeysV19();
-
-    if (!keys.length) {
-      try { showToast("Customer not found!"); } catch(e) {}
-      return;
-    }
-
-    const name = displayNameForDeleteV19(keys);
-    const totalRecords = keys.reduce((s, k) => s + recordCountV19(db[k]), 0);
-
-    const msg =
-      `Delete customer "${name}"?\n\n` +
-      `This will delete:\n` +
-      `• ${keys.length} customer profile${keys.length > 1 ? "s" : ""}\n` +
-      `• ${totalRecords} milk entr${totalRecords === 1 ? "y" : "ies"}\n\n` +
-      `A backup will be created before delete.\n\n` +
-      `Continue?`;
-
-    if (!confirm(msg)) return;
-
-    const finalConfirm =
-      `Final confirmation:\n\n` +
-      `"${name}" ka complete milk customer data delete hoga.\n\n` +
-      `Backup banega, phir Firebase se delete hoga.\n\n` +
-      `OK दबाओगे तो delete होगा.`;
-
-    if (!confirm(finalConfirm)) return;
-
-    try {
-      const stamp = await backupBeforeDeleteV19(keys);
-
-      for (const key of keys) {
-        delete db[key];
-
-        if (typeof currentUserUID !== "undefined" && currentUserUID && typeof appDataRef !== "undefined" && appDataRef) {
-          window.aarishFirebaseLaterV48(`milkDB/${key}`, "remove")
-        }
-      }
-
-      try { milkDB = db; } catch(e) {}
-      window.milkDB = db;
-
-      try { activeMilkCustomer = null; } catch(e) {}
-      try { window.__activeMilkGroupV15 = null; } catch(e) {}
-
-      try { switchTab("milk"); } catch(e) {}
-      try { renderMilkList(); } catch(e) {}
-      try { updateDashboard(); } catch(e) {}
-
-      try { showToast("Customer deleted. Backup saved."); } catch(e) {}
-      console.log("AARISH V19 customer deleted with backup:", { keys, backup: stamp });
-
-    } catch (err) {
-      console.error("AARISH V19 customer delete failed:", err);
-      alert("Delete failed. Data may still be safe. Please check internet/Firebase and try again.");
-    }
-  };
-
-  function ensureMilkCustomerDeleteButtonV19() {
-    const screen = document.getElementById("milk-detail-screen");
-    if (!screen) return;
-
-    const header = screen.querySelector(".header-sticky");
-    if (!header) return;
-
-    let row = header.querySelector(".flex.items-center.gap-3");
-    if (!row) row = header;
-
-    const old = document.getElementById("milk-customer-delete-btn-v19");
-    if (old) old.remove();
-
-    const btn = document.createElement("button");
-    btn.id = "milk-customer-delete-btn-v19";
-    btn.type = "button";
-    btn.title = "Delete Customer";
-    btn.setAttribute("aria-label", "Delete Customer");
-    btn.className = "w-10 h-10 shrink-0 rounded-full bg-red-500/10 text-red-500 flex items-center justify-center transition-transform active:scale-95 ml-2";
-    btn.innerHTML = '<i class="fa-solid fa-trash text-[15px]"></i>';
-
-    btn.onclick = function (ev) {
-      ev.preventDefault();
-      ev.stopPropagation();
-      try { haptic(); } catch(e) {}
-      window.deleteActiveMilkCustomerV19();
-    };
-
-    row.appendChild(btn);
-  }
-
-  const oldOpenMilkDetailV19 = window.openMilkDetail;
-  if (typeof oldOpenMilkDetailV19 === "function") {
-    window.openMilkDetail = function () {
-      const result = oldOpenMilkDetailV19.apply(this, arguments);
-      setTimeout(ensureMilkCustomerDeleteButtonV19, 60);
-      setTimeout(ensureMilkCustomerDeleteButtonV19, 250);
-      return result;
-    };
-  }
-
-  const oldOpenMilkDetailV15_V19 = window.openMilkDetailV15;
-  if (typeof oldOpenMilkDetailV15_V19 === "function") {
-    window.openMilkDetailV15 = function () {
-      const result = oldOpenMilkDetailV15_V19.apply(this, arguments);
-      setTimeout(ensureMilkCustomerDeleteButtonV19, 60);
-      setTimeout(ensureMilkCustomerDeleteButtonV19, 250);
-      return result;
-    };
-  }
-
-  const oldRenderMilkRecordsV19 = window.renderMilkRecords;
-  if (typeof oldRenderMilkRecordsV19 === "function") {
-    window.renderMilkRecords = function () {
-      const result = oldRenderMilkRecordsV19.apply(this, arguments);
-      setTimeout(ensureMilkCustomerDeleteButtonV19, 0);
-      return result;
-    };
-  }
-
-  const oldSwitchTabV19 = window.switchTab;
-  if (typeof oldSwitchTabV19 === "function") {
-    window.switchTab = function (tab) {
-      const result = oldSwitchTabV19.apply(this, arguments);
-      if (tab === "milk-detail") {
-        setTimeout(ensureMilkCustomerDeleteButtonV19, 60);
-        setTimeout(ensureMilkCustomerDeleteButtonV19, 250);
-      }
-      return result;
-    };
-  }
-
-  window.ensureMilkCustomerDeleteButtonV19 = ensureMilkCustomerDeleteButtonV19;
-
-  document.addEventListener("DOMContentLoaded", function () {
-    setTimeout(ensureMilkCustomerDeleteButtonV19, 800);
-  });
-
-  setTimeout(ensureMilkCustomerDeleteButtonV19, 1200);
-
-  console.log("✅ AARISH_MILK_CUSTOMER_DELETE_BUTTON_V19 active");
-})();
-</script>
-
-
-
-
-
-
-
-
-<script>
-// AARISH_MILK_LIST_OLD_STYLE_NET_V21
-(function () {
-  if (window.__AARISH_MILK_LIST_OLD_STYLE_NET_V21_READY) return;
-  window.__AARISH_MILK_LIST_OLD_STYLE_NET_V21_READY = true;
-
-  function dbV21() {
-    try {
-      if (typeof milkDB !== "undefined" && milkDB && typeof milkDB === "object") return milkDB;
-    } catch(e) {}
-    return window.milkDB || {};
-  }
-
-  function n(v) { return Number(v) || 0; }
-
-  function cleanNameV21(v) {
-    return String(v || "").normalize("NFKC").replace(/\s+/g, " ").trim();
-  }
-
-  function normNameV21(v) {
-    return cleanNameV21(v).toLocaleLowerCase("en-IN");
-  }
-
-  function jsArgV21(v) {
-    return String(v || "")
-      .replace(/\\/g, "\\\\")
-      .replace(/'/g, "\\'")
-      .replace(/\n/g, "\\n")
-      .replace(/\r/g, "");
-  }
-
-  function recordsArrayV21(customer) {
-    const r = customer && customer.records;
-    if (Array.isArray(r)) return r.filter(Boolean);
-    if (r && typeof r === "object") return Object.keys(r).map(k => r[k]).filter(Boolean);
-    return [];
-  }
-
-  function qtyV21(r) {
-    return n(r && r.morning) + n(r && r.evening);
-  }
-
-  function flowOfV21(record, customer) {
-    const raw = String((record && (record.flow || record.milkFlow || record.direction || record.entryType || record.type)) || "").toLowerCase();
-    if (["taken", "take", "minus", "debit", "pay", "dene_wala"].includes(raw)) return "taken";
-    if (["given", "give", "plus", "credit", "receive", "lene_wala"].includes(raw)) return "given";
-    return customer && customer.type === "dene_wala" ? "taken" : "given";
-  }
-
-  function rateOfV21(customer, record) {
-    const rr = n(record && record.rate);
-    if (rr > 0) return rr;
-    const cr = n(customer && customer.rate);
-    if (cr > 0) return cr;
-    return n(typeof DEFAULT_RATE !== "undefined" ? DEFAULT_RATE : 0);
-  }
-
-  function groupsV21() {
-    const db = dbV21();
-    const map = {};
-
-    Object.keys(db || {}).forEach(key => {
-      const norm = normNameV21(key);
-      if (!norm) return;
-
-      if (!map[norm]) {
-        map[norm] = {
-          norm: norm,
-          name: cleanNameV21(key) || "Unknown",
-          keys: []
-        };
-      }
-
-      map[norm].keys.push(key);
-    });
-
-    return map;
-  }
-
-  function totalsForGroupV21(group) {
-    const db = dbV21();
-    let givenKg = 0;
-    let takenKg = 0;
-    let givenAmt = 0;
-    let takenAmt = 0;
-
-    (group.keys || []).forEach(key => {
-      const customer = db[key] || {};
-      recordsArrayV21(customer).forEach(record => {
-        const q = qtyV21(record);
-        if (!q) return;
-
-        const amt = q * rateOfV21(customer, record);
-        const flow = flowOfV21(record, customer);
-
-        if (flow === "taken") {
-          takenKg += q;
-          takenAmt += amt;
-        } else {
-          givenKg += q;
-          givenAmt += amt;
-        }
-      });
-    });
-
-    return {
-      netKg: givenKg - takenKg,
-      netAmt: givenAmt - takenAmt
-    };
-  }
-
-  function moneyV21(v) {
-    const sign = n(v) >= 0 ? "+₹" : "-₹";
-    return sign + String(Math.round(Math.abs(n(v))));
-  }
-
-  function kgV21(v) {
-    return Math.abs(n(v)).toFixed(2) + " KG";
-  }
-
-  function openGroupV21(group) {
-    try { window.__activeMilkGroupV15 = group.norm; } catch(e) {}
-
-    if (typeof openMilkDetailV15 === "function") {
-      openMilkDetailV15(group.norm);
-      return;
-    }
-
-    if (typeof openMilkDetail === "function") {
-      openMilkDetail(group.name);
-      return;
-    }
-  }
-
-  window.renderMilkList = function () {
-    const q = (document.getElementById("milk-search")?.value || "").toLocaleLowerCase("en-IN");
-    const box = document.getElementById("milk-list");
-    if (!box) return;
-
-    const list = Object.values(groupsV21()).filter(g => g.name.toLocaleLowerCase("en-IN").includes(q));
-
-    box.innerHTML = list.map((g, i) => {
-      const t = totalsForGroupV21(g);
-      const plus = t.netAmt >= 0;
-      const color = plus ? "text-[#34C759]" : "text-[#FF3B30]";
-      const bg = plus ? "bg-[#34C759]/10" : "bg-[#FF3B30]/10";
-      const border = plus ? "border-l-[#34C759]" : "border-l-[#FF3B30]";
-      const first = (g.name && g.name[0] ? g.name[0].toUpperCase() : "?");
-      const norm = jsArgV21(g.norm);
-
-      return `<div onclick="haptic(); window.__milkOpenGroupV21 && window.__milkOpenGroupV21('${norm}')"
-        class="glass-card mb-3.5 flex items-center justify-between cursor-pointer border-l-[3px] ${border} w-full ring-1 ring-white/40 dark:ring-white/5 list-enter"
-        style="animation-delay:${i * 0.05}s;">
-        <div class="flex items-center gap-4 w-full min-w-0">
-          <div class="w-12 h-12 shrink-0 squircle ${bg} ${color} font-extrabold flex items-center justify-center text-lg">${first}</div>
-          <div class="flex-1 min-w-0">
-            <h4 class="font-bold text-[17px] leading-tight truncate w-full flex items-center text-gray-900 dark:text-white">${g.name}</h4>
-            <p class="text-[14px] text-gray-500 font-bold truncate w-full mt-1 tracking-tight">
-              <span>${kgV21(t.netKg)}</span>
-              <span class="mx-1 text-gray-400">•</span>
-              <span class="${color} font-extrabold text-[18px]">${moneyV21(t.netAmt)}</span>
-            </p>
-          </div>
-        </div>
-        <i class="fa-solid fa-chevron-right text-gray-300 shrink-0 ml-3 text-[13px]"></i>
-      </div>`;
-    }).join("") || (typeof getEmptyState === "function" ? `<div class="flex flex-col items-center justify-center py-24 text-center select-none">
-  <div class="w-28 h-28 rounded-full bg-[#007AFF]/10 text-[#007AFF] flex items-center justify-center shadow-[0_0_24px_rgba(0,122,255,0.14)]">
-    <i class="fa-solid fa-jug-detergent text-5xl"></i>
-  </div>
-  <p class="mt-8 text-[#007AFF] font-extrabold text-[17px] tracking-tight drop-shadow-[0_0_10px_rgba(0,122,255,0.28)]">No customers found</p>
-</div>` : "");
-  };
-
-  window.__milkOpenGroupV21 = function (norm) {
-    const group = groupsV21()[norm];
-    if (group) openGroupV21(group);
-  };
-
-  window.filterMilkList = function () {
-    window.renderMilkList();
-  };
-
-  document.addEventListener("DOMContentLoaded", function () {
-    setTimeout(function () { try { window.renderMilkList(); } catch(e) {} }, 300);
-  });
-
-  setTimeout(function () { try { window.renderMilkList(); } catch(e) {} }, 700);
-
-  console.log("✅ AARISH_MILK_LIST_OLD_STYLE_NET_V21 active");
-})();
-</script>
 
 
 
@@ -16508,708 +15756,7 @@ window.onload = function(){ setTimeout(function(){ window.focus(); window.print(
   console.log("✅ AARISH_ULTRA_RUNTIME_GUARD_V97 active");
 })();
 </script>
-<script id="aarish-v98-total-connectivity-patch">
-/* AARISH_V98_TOTAL_CONNECTIVITY_PATCH
-   Logic-only patch: global connectivity, safe render, action de-dupe, ID collision guard,
-   raw-date month selection, service-worker rejection shield, and AI-context data hygiene.
-*/
-(function () {
-  if (window.__AARISH_V98_TOTAL_CONNECTIVITY_PATCH_READY) return;
-  window.__AARISH_V98_TOTAL_CONNECTIVITY_PATCH_READY = true;
-  window.__AARISH_V98_TOTAL_CONNECTIVITY_PATCH = true;
 
-  var LOCK_MS = 700;
-  var actionLocks = Object.create(null);
-  var parentByScreen = {
-    "milk-detail-screen":"milk",
-    "salary-detail-screen":"salary",
-    "udhar-detail-screen":"udhar",
-    "expense-detail-screen":"expenses",
-    "diary-detail-screen":"diary",
-    "project-detail-screen":"projects"
-  };
-  var screenByTab = {
-    "home":"home-screen",
-    "milk":"milk-screen",
-    "salary":"salary-screen",
-    "udhar":"udhar-screen",
-    "expenses":"expenses-screen",
-    "diary":"diary-screen",
-    "projects":"projects-screen",
-    "milk-detail":"milk-detail-screen",
-    "salary-detail":"salary-detail-screen",
-    "udhar-detail":"udhar-detail-screen",
-    "expense-detail":"expense-detail-screen",
-    "diary-detail":"diary-detail-screen",
-    "project-detail":"project-detail-screen"
-  };
-
-  function byId(id) { return document.getElementById(id); }
-  function n(v) { v = Number(v); return Number.isFinite(v) ? v : 0; }
-  function arr(v) {
-    if (Array.isArray(v)) return v.filter(Boolean);
-    if (v && typeof v === "object") return Object.keys(v).map(function(k){ var r = v[k]; if (r && typeof r === "object" && !r.id) r.id = k; return r; }).filter(Boolean);
-    return [];
-  }
-  function esc(v) {
-    return String(v == null ? "" : v).replace(/[&<>"']/g, function(ch) {
-      return ({ "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;", "'":"&#39;" })[ch];
-    });
-  }
-  function jsArg(v) { return esc(JSON.stringify(String(v == null ? "" : v))); }
-  function safeText(v, max) {
-    var str = "";
-    try { str = String(v == null ? "" : v); } catch(e) { str = ""; }
-    try { if (str && typeof str.normalize === "function") str = str.normalize("NFKC"); } catch(e) {}
-    return str.replace(/[\u0000-\u001F\u007F]/g, " ").replace(/\s+/g, " ").trim().slice(0, max || 120);
-  }
-  function safeEntity(v) {
-    return safeText(v, 90)
-      .replace(/[.#$\[\]\/\\<>`"'{};=]/g, "")
-      .replace(/\s+/g, " ")
-      .trim();
-  }
-  function todayISO() {
-    try {
-      if (typeof getTodayISO === "function") return getTodayISO();
-    } catch(e) {}
-    var d = new Date();
-    d.setMinutes(d.getMinutes() - d.getTimezoneOffset());
-    return d.toISOString().slice(0, 10);
-  }
-  function validISO(v) {
-    v = String(v || "");
-    return /^\d{4}-\d{2}-\d{2}$/.test(v) ? v : "";
-  }
-  function dateParts(date) {
-    var m = String(date || "").match(/^(\d{4})-(\d{2})-(\d{2})$/);
-    if (!m) return null;
-    var y = Number(m[1]), mo = Number(m[2]), d = Number(m[3]);
-    if (!Number.isFinite(y) || !Number.isFinite(mo) || !Number.isFinite(d) || mo < 1 || mo > 12 || d < 1 || d > 31) return null;
-    return { year:y, month:mo - 1, day:d };
-  }
-  window.aarishV98DateParts = dateParts;
-  window.aarishV98EscHtml = esc;
-  window.aarishV98JsArg = jsArg;
-
-  window.aarishV98Id = function(prefix) {
-    prefix = String(prefix || "id").replace(/[^a-zA-Z0-9_-]/g, "") || "id";
-    var rnd = "";
-    try {
-      var a = new Uint32Array(2);
-      crypto.getRandomValues(a);
-      rnd = a[0].toString(36) + a[1].toString(36);
-    } catch(e) {
-      rnd = Math.random().toString(36).slice(2) + Math.random().toString(36).slice(2);
-    }
-    var perf = "";
-    try { perf = String(Math.floor(performance.now() * 1000)).toString(36); } catch(e) {}
-    return prefix + "_" + Date.now().toString(36) + "_" + perf + "_" + rnd.slice(0, 14);
-  };
-
-  function syncScreen() {
-    var el = document.querySelector(".screen.active");
-    var id = el ? el.id : "home-screen";
-    window.activeScreen = id;
-    try { activeScreen = id; } catch(e) {}
-    return id;
-  }
-  window.aarishV98SyncActiveScreen = syncScreen;
-  try { if (typeof activeScreen === "undefined") activeScreen = "home-screen"; } catch(e) {}
-
-  function setParentNav(screenId) {
-    var parent = parentByScreen[screenId];
-    if (!parent) return;
-    document.querySelectorAll(".nav-item").forEach(function(x){ x.classList.remove("active"); });
-    var tab = byId("tab-" + parent);
-    if (tab) tab.classList.add("active");
-  }
-
-  function safeFormatDate(v) {
-    try { if (typeof formatDisplayDate === "function") return formatDisplayDate(validISO(v) || v); } catch(e) {}
-    return esc(v || "");
-  }
-
-  function getMonthRecords(records) {
-    try { if (typeof filterByMonth === "function") return filterByMonth(arr(records)); } catch(e) {}
-    return arr(records);
-  }
-
-  function getSelectedMonthYearFrom(screenId, tab) {
-    var m = null, y = null;
-    if (screenId === "milk-detail-screen" || tab === "milk") {
-      m = byId("filter-month-milk"); y = byId("filter-year-milk");
-    } else if (screenId === "expense-detail-screen" || tab === "expenses") {
-      m = byId("filter-month-exp"); y = byId("filter-year-exp");
-    } else if (screenId === "salary-detail-screen" || tab === "salary") {
-      m = byId("filter-month-salary"); y = byId("filter-year-salary");
-    }
-    return { m:m, y:y };
-  }
-
-  function syncAllFilterBoxes(month, year) {
-    [
-      ["filter-month-milk", month], ["filter-year-milk", year],
-      ["filter-month-exp", month], ["filter-year-exp", year],
-      ["filter-month-salary", month], ["filter-year-salary", year]
-    ].forEach(function(pair) {
-      var el = byId(pair[0]);
-      if (el && pair[1] !== null && typeof pair[1] !== "undefined") el.value = pair[1];
-    });
-  }
-
-  function normalizeRecord(r, prefix) {
-    if (!r || typeof r !== "object") return null;
-    var out = {};
-    Object.keys(r).forEach(function(k) {
-      if (!k || /[.#$\[\]\u0000-\u001F\u007F]/.test(k) || k === "__proto__" || k === "constructor" || k === "prototype") return;
-      out[k] = r[k];
-    });
-    out.id = safeText(out.id || window.aarishV98Id(prefix || "rec"), 120);
-    if (out.date) out.date = validISO(out.date) || todayISO();
-    ["amount", "morning", "evening", "rate"].forEach(function(k) {
-      if (k in out) out[k] = Math.max(0, n(out[k]));
-    });
-    if (out.title) out.title = safeText(out.title, 240);
-    if (out.content) out.content = String(out.content).slice(0, 20000);
-    if (out.category) out.category = safeText(out.category, 120);
-    if (out.name) out.name = safeText(out.name, 120);
-    if (out.flow) out.flow = String(out.flow).toLowerCase() === "taken" ? "taken" : "given";
-    return out;
-  }
-
-  function normalizeAllData() {
-    try {
-      if (typeof milkDB !== "undefined" && milkDB && typeof milkDB === "object") {
-        Object.keys(milkDB).forEach(function(k) {
-          var c = milkDB[k];
-          if (!c || typeof c !== "object") { delete milkDB[k]; return; }
-          c.rate = Math.max(0, n(c.rate || (typeof DEFAULT_RATE !== "undefined" ? DEFAULT_RATE : 55)));
-          c.records = arr(c.records).map(function(r){ return normalizeRecord(r, "mlk"); }).filter(Boolean);
-        });
-      }
-    } catch(e) {}
-    try {
-      if (typeof salaryDB !== "undefined" && salaryDB && typeof salaryDB === "object") {
-        Object.keys(salaryDB).forEach(function(k) {
-          var c = salaryDB[k];
-          if (!c || typeof c !== "object") { delete salaryDB[k]; return; }
-          c.company = safeText(c.company || "—", 120);
-          c.type = String(c.type || "dene_wala") === "lene_wala" ? "lene_wala" : "dene_wala";
-          c.records = arr(c.records).map(function(r){ return normalizeRecord(r, "sal"); }).filter(Boolean);
-        });
-      }
-    } catch(e) {}
-    try { if (typeof udharDB !== "undefined") udharDB = arr(udharDB).map(function(r){ return normalizeRecord(r, "udh"); }).filter(Boolean); } catch(e) {}
-    try { if (typeof expenseDB !== "undefined") expenseDB = arr(expenseDB).map(function(r){ return normalizeRecord(r, "exp"); }).filter(Boolean); } catch(e) {}
-    try { if (typeof diaryDB !== "undefined") diaryDB = arr(diaryDB).map(function(r){ return normalizeRecord(r, "dia"); }).filter(Boolean); } catch(e) {}
-    try {
-      if (typeof projectDB !== "undefined" && projectDB && typeof projectDB === "object") {
-        Object.keys(projectDB).forEach(function(k) {
-          var p = projectDB[k];
-          if (!p || typeof p !== "object") { delete projectDB[k]; return; }
-          p.records = arr(p.records).map(function(r){ return normalizeRecord(r, "prj"); }).filter(Boolean);
-        });
-      }
-    } catch(e) {}
-  }
-  window.aarishV98NormalizeAllData = normalizeAllData;
-
-  function flowOfMilk(r, c) {
-    var raw = String((r && (r.flow || r.milkFlow || r.direction || r.entryType || r.type)) || "").toLowerCase();
-    if (["taken", "take", "minus", "debit", "pay", "dene_wala"].indexOf(raw) !== -1) return "taken";
-    if (["given", "give", "plus", "credit", "receive", "lene_wala"].indexOf(raw) !== -1) return "given";
-    return c && c.type === "dene_wala" ? "taken" : "given";
-  }
-  function milkGroups() {
-    var map = {};
-    try {
-      Object.keys(milkDB || {}).forEach(function(key) {
-        var norm = safeText(key, 120).toLocaleLowerCase("en-IN");
-        if (!norm) return;
-        if (!map[norm]) map[norm] = { norm:norm, name:safeText(key, 120) || "Unknown", keys:[] };
-        map[norm].keys.push(key);
-      });
-    } catch(e) {}
-    return map;
-  }
-  function milkTotals(g) {
-    var givenKg = 0, takenKg = 0, givenAmt = 0, takenAmt = 0;
-    (g.keys || []).forEach(function(key) {
-      var c = (typeof milkDB !== "undefined" && milkDB[key]) || {};
-      var rate = n(c.rate || (typeof DEFAULT_RATE !== "undefined" ? DEFAULT_RATE : 55));
-      arr(c.records).forEach(function(r) {
-        var q = n(r.morning) + n(r.evening);
-        if (!q) return;
-        var amt = q * rate;
-        if (flowOfMilk(r, c) === "taken") { takenKg += q; takenAmt += amt; }
-        else { givenKg += q; givenAmt += amt; }
-      });
-    });
-    return { netKg:givenKg - takenKg, netAmt:givenAmt - takenAmt };
-  }
-  function signedMoney(v) { return (n(v) >= 0 ? "+₹" : "-₹") + Math.round(Math.abs(n(v))).toLocaleString("en-IN"); }
-  function signedKg(v) { return (n(v) >= 0 ? "+" : "-") + Math.abs(n(v)).toFixed(2) + " KG"; }
-
-  window.aarishV98OpenMilkGroup = function(norm) {
-    var g = milkGroups()[String(norm || "")];
-    if (!g) return;
-    try { window.__activeMilkGroupV15 = g.norm; } catch(e) {}
-    try {
-      if (typeof window.__milkOpenGroupV21 === "function") return window.__milkOpenGroupV21(g.norm);
-      if (typeof window.openMilkDetailV15 === "function") return window.openMilkDetailV15(g.norm);
-      if (typeof window.openMilkDetail === "function") return window.openMilkDetail(g.keys[0]);
-    } catch(e) {}
-  };
-
-  function renderMilkListV98() {
-    normalizeAllData();
-    var box = byId("milk-list");
-    if (!box) return;
-    var q = String((byId("milk-search") || {}).value || "").toLocaleLowerCase("en-IN");
-    var list = Object.values(milkGroups()).filter(function(g){ return g.name.toLocaleLowerCase("en-IN").indexOf(q) !== -1; });
-    var html = list.map(function(g, i) {
-      var t = milkTotals(g);
-      var plus = t.netAmt >= 0;
-      var color = plus ? "text-[#34C759]" : "text-[#FF3B30]";
-      var bg = plus ? "bg-[#34C759]/10" : "bg-[#FF3B30]/10";
-      var border = plus ? "border-l-[#34C759]" : "border-l-[#FF3B30]";
-      var first = esc((g.name && g.name[0] ? g.name[0].toUpperCase() : "?"));
-      return `<div onclick="haptic(); window.aarishV98OpenMilkGroup(${jsArg(g.norm)})"
-        class="glass-card mb-3.5 flex items-center justify-between cursor-pointer border-l-[3px] ${border} w-full ring-1 ring-white/40 dark:ring-white/5 list-enter"
-        style="animation-delay:${i * 0.05}s;">
-        <div class="flex items-center gap-4 w-full min-w-0">
-          <div class="w-12 h-12 shrink-0 squircle ${bg} ${color} font-extrabold flex items-center justify-center text-lg">${first}</div>
-          <div class="flex-1 min-w-0">
-            <h4 class="font-bold text-[17px] leading-tight truncate w-full flex items-center text-gray-900 dark:text-white">${esc(g.name)}</h4>
-            <p class="text-[14px] text-gray-500 font-bold truncate w-full mt-1 tracking-tight">
-              <span>${signedKg(t.netKg)}</span>
-              <span class="mx-1 text-gray-400">•</span>
-              <span class="${color} font-extrabold text-[18px]">${signedMoney(t.netAmt)}</span>
-            </p>
-          </div>
-        </div>
-        <i class="fa-solid fa-chevron-right text-gray-300 shrink-0 ml-3 text-[13px]"></i>
-      </div>`;
-    }).join("");
-    box.innerHTML = html || `<div class="flex flex-col items-center justify-center py-24 text-center select-none">
-  <div class="w-28 h-28 rounded-full bg-[#007AFF]/10 text-[#007AFF] flex items-center justify-center shadow-[0_0_24px_rgba(0,122,255,0.14)]">
-    <i class="fa-solid fa-jug-detergent text-5xl"></i>
-  </div>
-  <p class="mt-8 text-[#007AFF] font-extrabold text-[17px] tracking-tight drop-shadow-[0_0_10px_rgba(0,122,255,0.28)]">No customers found</p>
-</div>`;
-  }
-
-  function renderSalaryListV98() {
-    normalizeAllData();
-    var box = byId("salary-list");
-    if (!box) return;
-    var q = String((byId("salary-search") || {}).value || "").toLowerCase();
-    var html = Object.keys((typeof salaryDB !== "undefined" && salaryDB) || {}).filter(function(name){ return name.toLowerCase().indexOf(q) !== -1; }).map(function(name, index) {
-      var s = salaryDB[name] || {};
-      var totalAmt = 0;
-      getMonthRecords(s.records).forEach(function(r){ totalAmt += n(r.amount); });
-      var isLeneWala = s.type === "lene_wala";
-      var netAmt = isLeneWala ? totalAmt : -totalAmt;
-      var state = netAmt > 0 ? "positive" : (netAmt < 0 ? "negative" : "zero");
-      var colorClass = state === "positive" ? "text-[#34C759]" : (state === "negative" ? "text-[#FF3B30]" : "text-[#007AFF]");
-      var bgClass = state === "positive" ? "bg-[#34C759]/10" : (state === "negative" ? "bg-[#FF3B30]/10" : "bg-[#007AFF]/10");
-      var borderClass = state === "positive" ? "border-l-[#34C759]" : (state === "negative" ? "border-l-[#FF3B30]" : "border-l-[#007AFF]");
-      var sign = isLeneWala ? "+" : "-";
-      return `<div onclick="haptic(); openSalaryDetail(${jsArg(name)})"
-        ontouchstart="startSalaryLongPress(${jsArg(name)})" ontouchend="cancelSalaryLongPress()" ontouchmove="cancelSalaryLongPress()"
-        onmousedown="startSalaryLongPress(${jsArg(name)})" onmouseup="cancelSalaryLongPress()" onmouseleave="cancelSalaryLongPress()"
-        data-aarish-salary-card-v68="${state}" class="glass-card mb-3.5 flex items-center justify-between cursor-pointer border-l-[3px] ${borderClass} w-full ring-1 ring-white/40 dark:ring-white/5 list-enter" style="animation-delay: ${index * 0.05}s;">
-        <div class="flex items-center gap-4 w-full min-w-0">
-          <div class="w-12 h-12 shrink-0 squircle ${bgClass} ${colorClass} font-bold flex items-center justify-center text-lg"><i class="fa-solid fa-indian-rupee-sign"></i></div>
-          <div class="flex-1 min-w-0">
-            <h4 class="font-bold text-[17px] leading-tight truncate w-full flex items-center text-[#007AFF]" data-aarish-salary-party-blue-v1="name">${esc(name)}</h4>
-            <p class="text-[13px] text-[#007AFF] font-medium truncate w-full mt-0.5 tracking-tight" data-aarish-salary-party-blue-v1="company">${esc(s.company || "—")} • <span class="${colorClass} font-extrabold text-[15px] ml-1">${sign}₹${Math.round(totalAmt).toLocaleString("en-IN")}</span></p>
-          </div>
-        </div>
-        <i class="fa-solid fa-chevron-right ${colorClass} shrink-0 ml-3 text-[13px]"></i>
-      </div>`;
-    }).join("");
-    box.innerHTML = html || (typeof getEmptyState === "function" ? getEmptyState("fa-users", "No employees found") : "");
-  }
-
-  function renderUdharListV98() {
-    normalizeAllData();
-    var box = byId("udhar-list");
-    if (!box) return;
-    var q = String((byId("udhar-search") || {}).value || "").toLowerCase();
-    var grouped = {};
-    arr(typeof udharDB !== "undefined" ? udharDB : []).forEach(function(u) {
-      var name = safeText(u.name || "Unknown", 120);
-      if (!grouped[name]) grouped[name] = { name:name, net:0, lastDate:u.date || "" };
-      grouped[name].net += String(u.type) === "credit" ? n(u.amount) : -n(u.amount);
-      if (String(u.date || "") > String(grouped[name].lastDate || "")) grouped[name].lastDate = u.date;
-    });
-    var html = Object.values(grouped).filter(function(g){ return g.name.toLowerCase().indexOf(q) !== -1; }).sort(function(a,b){ return String(b.lastDate || "").localeCompare(String(a.lastDate || "")); }).map(function(g, index) {
-      var plus = g.net >= 0;
-      var colorClass = plus ? "text-[#34C759]" : "text-[#FF3B30]";
-      var borderClass = plus ? "border-l-[#34C759]" : "border-l-[#FF3B30]";
-      var sign = plus ? "+" : "-";
-      var label = plus ? "To Receive" : "To Pay";
-      return `<div onclick="haptic(); openUdharDetail(${jsArg(g.name)})"
-        ontouchstart="startUdharLongPress(${jsArg(g.name)})" ontouchend="cancelUdharLongPress()" ontouchmove="cancelUdharLongPress()"
-        onmousedown="startUdharLongPress(${jsArg(g.name)})" onmouseup="cancelUdharLongPress()" onmouseleave="cancelUdharLongPress()"
-        class="glass-card mb-3.5 flex items-center justify-between cursor-pointer border-l-[3px] ${borderClass} w-full min-w-0 ring-1 ring-white/40 dark:ring-white/5 list-enter" style="animation-delay: ${index * 0.05}s;">
-        <div class="flex-1 min-w-0 mr-3">
-          <h4 class="font-bold text-[17px] truncate w-full min-w-0 text-[#007AFF] flex items-center gap-2" data-aarish-credit-party-blue-v1="name">${esc(g.name)}</h4>
-          <p class="text-[13px] text-[#007AFF] font-medium truncate w-full min-w-0 mt-0.5 tracking-tight" data-aarish-credit-party-blue-v1="last">Last entry: ${safeFormatDate(g.lastDate)}</p>
-        </div>
-        <div class="flex flex-col items-end gap-1 shrink-0">
-          <span class="text-[9px] font-extrabold uppercase tracking-wider ${colorClass} bg-current/10 px-2 py-0.5 rounded-full">${label}</span>
-          <div class="flex items-center gap-1">
-            <span class="font-extrabold ${colorClass} shrink-0 text-lg">${sign}₹${Math.abs(g.net).toLocaleString("en-IN")}</span>
-            <i class="fa-solid fa-chevron-right text-gray-300 text-[13px] ml-1"></i>
-          </div>
-        </div>
-      </div>`;
-    }).join("");
-    box.innerHTML = html || (typeof getEmptyState === "function" ? getEmptyState("fa-handshake", "No credit records found") : "");
-  }
-
-  function renderExpenseListV98() {
-    normalizeAllData();
-    var box = byId("expense-list-container");
-    if (!box) return;
-    var total = 0, grouped = {};
-    getMonthRecords(typeof expenseDB !== "undefined" ? expenseDB : []).forEach(function(e) {
-      var cat = safeText(e.category || "Other", 120);
-      total += n(e.amount);
-      if (!grouped[cat]) grouped[cat] = { category:cat, total:0, lastDate:e.date || "" };
-      grouped[cat].total += n(e.amount);
-      if (String(e.date || "") > String(grouped[cat].lastDate || "")) grouped[cat].lastDate = e.date;
-    });
-    var html = Object.values(grouped).sort(function(a,b){ return String(b.lastDate || "").localeCompare(String(a.lastDate || "")); }).map(function(g, index) {
-      return `<div onclick="haptic(); openExpenseDetail(${jsArg(g.category)})"
-        ontouchstart="startExpenseLongPress(${jsArg(g.category)})" ontouchend="cancelExpenseLongPress()" ontouchmove="cancelExpenseLongPress()"
-        onmousedown="startExpenseLongPress(${jsArg(g.category)})" onmouseup="cancelExpenseLongPress()" onmouseleave="cancelExpenseLongPress()"
-        class="glass-card mb-3.5 flex items-center justify-between border-l-[3px] border-l-[#FF3B30] w-full min-w-0 cursor-pointer ring-1 ring-white/40 dark:ring-white/5 list-enter" style="animation-delay: ${index * 0.05}s;">
-        <div class="flex-1 min-w-0 mr-3">
-          <h4 class="font-bold text-[17px] truncate w-full min-w-0 text-gray-900 dark:text-white">${esc(g.category)}</h4>
-          <p class="text-[13px] text-gray-500 font-medium truncate w-full min-w-0 mt-0.5 tracking-tight">Last entry: ${safeFormatDate(g.lastDate)}</p>
-        </div>
-        <div class="flex items-center gap-3 shrink-0">
-          <span class="font-extrabold text-[#FF3B30] shrink-0 text-lg">₹${n(g.total).toLocaleString("en-IN")}</span>
-          <i class="fa-solid fa-chevron-right text-gray-300 text-[13px] ml-1"></i>
-        </div>
-      </div>`;
-    }).join("");
-    box.innerHTML = html || (typeof getEmptyState === "function" ? getEmptyState("fa-receipt", "No expenses for this month") : "");
-    var totalEl = byId("total-expense-display");
-    if (totalEl) totalEl.textContent = "₹" + total.toLocaleString("en-IN");
-  }
-
-  function renderProjectsListV98() {
-    normalizeAllData();
-    var box = byId("project-list");
-    if (!box) return;
-    var q = String((byId("project-search") || {}).value || "").toLowerCase();
-    var html = Object.keys((typeof projectDB !== "undefined" && projectDB) || {}).filter(function(name){ return name.toLowerCase().indexOf(q) !== -1; }).map(function(name, index) {
-      var p = projectDB[name] || {};
-      var recCount = arr(p.records).length;
-      return `<div onclick="haptic(); openProjectDetail(${jsArg(name)})" class="glass-card mb-3.5 flex items-center justify-between cursor-pointer border-l-[3px] border-l-black dark:border-l-white w-full min-w-0 ring-1 ring-white/40 dark:ring-white/5 list-enter" style="animation-delay: ${index * 0.05}s;">
-        <div class="flex items-center gap-4 w-full min-w-0">
-          <div class="w-12 h-12 shrink-0 squircle bg-black/5 dark:bg-white/10 text-gray-800 dark:text-white font-extrabold flex items-center justify-center text-xl shadow-inner"><i class="fa-solid fa-briefcase"></i></div>
-          <div class="flex-1 min-w-0">
-            <h4 class="font-bold text-[18px] leading-tight truncate w-full flex items-center text-gray-900 dark:text-white">${esc(name)}</h4>
-            <p class="text-[13px] text-gray-500 font-semibold truncate w-full mt-0.5 tracking-tight">${recCount} Records Logged</p>
-          </div>
-        </div>
-        <div class="flex items-center gap-3 shrink-0 ml-2">
-          <button onclick="event.stopPropagation(); haptic(); deleteProject(${jsArg(name)})" class="action-btn !bg-red-500/10"><i class="fa-solid fa-trash text-[12px] text-red-500"></i></button>
-          <i class="fa-solid fa-chevron-right text-gray-300 text-[14px]"></i>
-        </div>
-      </div>`;
-    }).join("");
-    box.innerHTML = html || (typeof getEmptyState === "function" ? getEmptyState("fa-folder-open", "No business khatas added yet") : "");
-  }
-
-  function renderDiaryListV98() {
-    normalizeAllData();
-    var box = byId("diary-list");
-    if (!box) return;
-    var qText = String((byId("diary-search") || {}).value || "").toLowerCase().trim();
-    var words = qText.split(" ").filter(Boolean);
-    var records = arr(typeof diaryDB !== "undefined" ? diaryDB : []).filter(function(d) {
-      var full = String((d.title || "") + " " + (d.content || "") + " " + safeFormatDate(d.date)).toLowerCase();
-      return words.every(function(w){ return full.indexOf(w) !== -1; });
-    }).sort(function(a,b){ return String(b.date || "").localeCompare(String(a.date || "")); });
-    var html = records.map(function(d, index) {
-      var content = String(d.content || "");
-      var preview = content.length > 60 ? content.slice(0, 60) + "..." : content;
-      return `<div onclick="haptic(); openDiaryDetail(${jsArg(d.id)})" class="glass-card diary-card mb-4 cursor-pointer w-full ring-1 ring-white/40 dark:ring-white/5 list-enter" style="animation-delay: ${index * 0.05}s;">
-        <div class="flex justify-between items-center mb-2 w-full min-w-0 gap-2">
-          <h4 class="font-bold text-xl text-[#F5A623] truncate flex-1 min-w-0 tracking-tight">${esc(d.title || "Untitled")}</h4>
-          <i class="fa-solid fa-chevron-right text-gray-300 shrink-0 text-[13px]"></i>
-        </div>
-        ${content ? `<p class="text-[15px] font-serif text-gray-600 dark:text-gray-300 italic mb-3 truncate w-full min-w-0 opacity-80">"${esc(preview)}"</p>` : ""}
-        <p class="text-[10px] text-gray-400 font-bold uppercase tracking-widest mt-2 truncate w-full min-w-0">${safeFormatDate(d.date)}</p>
-      </div>`;
-    }).join("");
-    box.innerHTML = html || (typeof getEmptyState === "function" ? getEmptyState("fa-book-open", "No diary pages found") : "");
-  }
-
-  function installSafeRenderers() {
-    [
-      ["renderMilkList", renderMilkListV98],
-      ["filterMilkList", renderMilkListV98],
-      ["renderSalaryList", renderSalaryListV98],
-      ["renderUdharList", renderUdharListV98],
-      ["renderExpenseList", renderExpenseListV98],
-      ["renderProjectsList", renderProjectsListV98],
-      ["renderDiaryList", renderDiaryListV98]
-    ].forEach(function(pair) {
-      try {
-        var fn = pair[1];
-        fn.__aarishV98SafeRenderer = true;
-        window[pair[0]] = fn;
-        Function("fn", pair[0] + " = fn;")(fn);
-      } catch(e) {}
-    });
-  }
-
-  function cleanInputsForAction(name) {
-    var map = {
-      addMilkCustomer:["new-milk-name"],
-      addSalaryPerson:["new-salary-name", "new-salary-company"],
-      saveNewProject:["new-project-name"],
-      saveUdharEntry:["udhar-name"],
-      saveExpenseEntry:["expense-category"]
-    };
-    (map[name] || []).forEach(function(id) {
-      var el = byId(id);
-      if (el) el.value = safeEntity(el.value);
-    });
-  }
-
-  function validateBeforeAction(name) {
-    function val(id) { var el = byId(id); return el ? n(el.value) : 0; }
-    if (name === "saveMilkEntry") {
-      var m = val("milk-morning-kg"), e = val("milk-evening-kg");
-      if (m < 0 || e < 0 || (!m && !e)) { try { showToast("Quantity must be positive"); } catch(x) {} return false; }
-    }
-    if (name === "saveSalaryEntry" && val("salary-entry-amount") <= 0) { try { showToast("Amount must be greater than 0"); } catch(x) {} return false; }
-    if (name === "saveUdharEntry" && val("udhar-amount") <= 0) { try { showToast("Amount must be greater than 0"); } catch(x) {} return false; }
-    if (name === "saveExpenseEntry" && val("expense-amount") <= 0) { try { showToast("Amount must be greater than 0"); } catch(x) {} return false; }
-    if (name === "saveProjectEntry" && val("proj-entry-amount") <= 0) { try { showToast("Amount must be greater than 0"); } catch(x) {} return false; }
-    return true;
-  }
-
-  function refreshCurrent() {
-    normalizeAllData();
-    var id = syncScreen();
-    try {
-      if (id === "home-screen" && typeof updateDashboard === "function") updateDashboard();
-      if (id === "milk-screen" && typeof renderMilkList === "function") renderMilkList();
-      if (id === "salary-screen" && typeof renderSalaryList === "function") renderSalaryList();
-      if (id === "udhar-screen" && typeof renderUdharList === "function") renderUdharList();
-      if (id === "expenses-screen" && typeof renderExpenseList === "function") renderExpenseList();
-      if (id === "diary-screen" && typeof renderDiaryList === "function") renderDiaryList();
-      if (id === "projects-screen" && typeof renderProjectsList === "function") renderProjectsList();
-      if (id === "milk-detail-screen" && typeof renderMilkRecords === "function") renderMilkRecords();
-      if (id === "salary-detail-screen" && typeof renderSalaryRecords === "function") renderSalaryRecords();
-      if (id === "udhar-detail-screen" && typeof renderUdharRecords === "function") renderUdharRecords();
-      if (id === "expense-detail-screen" && typeof renderExpenseRecords === "function") renderExpenseRecords();
-      if (id === "project-detail-screen" && typeof renderProjectRecords === "function") renderProjectRecords();
-      if (typeof updateDashboard === "function") updateDashboard();
-    } catch(e) {}
-  }
-
-  function wrapAction(name) {
-    try {
-      var old = window[name];
-      if (typeof old !== "function" || old.__aarishV102ActionWrapped) return;
-
-      var wrapped = function() {
-        var now = Date.now();
-        var ev = null;
-
-        try {
-          for (var i = 0; i < arguments.length; i++) {
-            if (arguments[i] && typeof arguments[i].preventDefault === "function") {
-              ev = arguments[i];
-              break;
-            }
-          }
-        } catch(e) {}
-
-        if (actionLocks[name] && now - actionLocks[name] < LOCK_MS) {
-          try { showToast("Processing..."); } catch(e) {}
-          try { if (ev) ev.preventDefault(); } catch(e) {}
-          return false;
-        }
-
-        actionLocks[name] = now;
-
-        function cleanup(delay) {
-          setTimeout(function() {
-            try { delete actionLocks[name]; } catch(e) {}
-            try { normalizeAllData(); } catch(e) {}
-            try { setTimeout(refreshCurrent, 0); } catch(e) {}
-          }, typeof delay === "number" ? delay : 80);
-        }
-
-        try { if (ev) ev.preventDefault(); } catch(e) {}
-
-        try {
-          cleanInputsForAction(name);
-        } catch(e) {
-          try { console.warn("V102 cleanInputs skipped:", name, e); } catch(x) {}
-        }
-
-        var isValid = true;
-        try {
-          isValid = validateBeforeAction(name);
-        } catch(e) {
-          try { console.warn("V102 validate skipped:", name, e); } catch(x) {}
-          isValid = true;
-        }
-
-        if (!isValid) {
-          cleanup(250);
-          return false;
-        }
-
-        var res;
-        try {
-          res = old.apply(this, arguments);
-        } catch(e) {
-          cleanup(0);
-          throw e;
-        }
-
-        try {
-          if (res && typeof res.then === "function") {
-            res.then(function(){ cleanup(80); }, function(){ cleanup(80); });
-          } else {
-            cleanup(80);
-          }
-        } catch(e) {
-          cleanup(80);
-        }
-
-        return res;
-      };
-
-      wrapped.__aarishV102ActionWrapped = true;
-      wrapped.__aarishV98ActionWrapped = true;
-      window[name] = wrapped;
-      try { Function("wrapped", name + " = wrapped;")(wrapped); } catch(e) {}
-    } catch(e) {}
-  }
-
-  function installNavGuards() {
-    try {
-      var oldSwitch = window.switchTab;
-      if (typeof oldSwitch === "function" && !oldSwitch.__aarishV98Wrapped) {
-        var wrappedSwitch = function(tab) {
-          var screenId = screenByTab[String(tab || "")] || (String(tab || "") + "-screen");
-          var r = oldSwitch.apply(this, arguments);
-          try {
-            if (parentByScreen[screenId]) setParentNav(screenId);
-            var screen = byId(screenId);
-            if (screen && !screen.classList.contains("active")) {
-              document.querySelectorAll(".screen").forEach(function(x){ x.classList.remove("active"); });
-              screen.classList.add("active");
-            }
-            syncScreen();
-          } catch(e) {}
-          return r;
-        };
-        wrappedSwitch.__aarishV98Wrapped = true;
-        window.switchTab = wrappedSwitch;
-        try { switchTab = wrappedSwitch; } catch(e) {}
-      }
-    } catch(e) {}
-
-    try {
-      var oldUpdate = window.updateActiveScreen;
-      if (typeof oldUpdate === "function" && !oldUpdate.__aarishV98Wrapped) {
-        var wrappedUpdate = function() {
-          syncScreen();
-          setParentNav(window.activeScreen);
-          try { return oldUpdate.apply(this, arguments); }
-          catch(e) {
-            try { console.warn("V98 contained updateActiveScreen fault", e); } catch(x) {}
-            return null;
-          } finally {
-            syncScreen();
-            setParentNav(window.activeScreen);
-          }
-        };
-        wrappedUpdate.__aarishV98Wrapped = true;
-        window.updateActiveScreen = wrappedUpdate;
-        try { updateActiveScreen = wrappedUpdate; } catch(e) {}
-      }
-    } catch(e) {}
-
-    window.updateMonthFilter = function() {
-      var screenId = syncScreen();
-      var activeNav = document.querySelector(".nav-item.active");
-      var tab = activeNav && activeNav.id ? activeNav.id.replace("tab-", "") : (parentByScreen[screenId] || "home");
-      var pair = getSelectedMonthYearFrom(screenId, tab);
-      var month = pair.m ? parseInt(pair.m.value, 10) : (typeof selectedMonth !== "undefined" ? selectedMonth : new Date().getMonth());
-      var year = pair.y ? parseInt(pair.y.value, 10) : (typeof selectedYear !== "undefined" ? selectedYear : new Date().getFullYear());
-      if (!Number.isFinite(month) || month < 0 || month > 11) month = new Date().getMonth();
-      if (!Number.isFinite(year) || year < 2000 || year > 2099) year = new Date().getFullYear();
-      try { selectedMonth = month; selectedYear = year; } catch(e) {}
-      syncAllFilterBoxes(month, year);
-      refreshCurrent();
-    };
-    try { updateMonthFilter = window.updateMonthFilter; } catch(e) {}
-  }
-
-  function installApplyStateHook() {
-    try {
-      var old = window.applyStateCostV81;
-      if (typeof old === "function" && !old.__aarishV98Wrapped) {
-        var wrapped = function() {
-          var r = old.apply(this, arguments);
-          normalizeAllData();
-          setTimeout(refreshCurrent, 0);
-          return r;
-        };
-        wrapped.__aarishV98Wrapped = true;
-        window.applyStateCostV81 = wrapped;
-        try { applyStateCostV81 = wrapped; } catch(e) {}
-      }
-    } catch(e) {}
-  }
-
-  function install() {
-    installSafeRenderers();
-    installNavGuards();
-    installApplyStateHook();
-    [
-      "addMilkCustomer", "saveMilkEntry", "deleteMilkEntry", "deleteMilkCustomerProfile", "deleteActiveMilkCustomerV19",
-      "addSalaryPerson", "saveSalaryEntry", "deleteSalarySingleEntry", "deleteSalaryPersonProfile",
-      "saveUdharEntry", "deleteUdhar", "deleteUdharPersonProfile", "deleteActiveCreditProfileV29",
-      "saveExpenseEntry", "deleteExpense", "deleteExpenseCategoryProfile", "deleteActiveExpenseCategoryV30",
-      "saveDiaryEntry", "deleteDiary",
-      "saveNewProject", "saveProjectEntry", "deleteProjectEntry", "deleteProject"
-    ].forEach(wrapAction);
-    normalizeAllData();
-    syncScreen();
-  }
-
-  document.addEventListener("visibilitychange", function() {
-    if (!document.hidden) { install(); setTimeout(refreshCurrent, 60); }
-  }, { passive:true });
-  window.addEventListener("pageshow", function() { install(); setTimeout(refreshCurrent, 60); }, { passive:true });
-  window.addEventListener("online", function() { install(); setTimeout(refreshCurrent, 120); }, { passive:true });
-
-  install();
-  setTimeout(install, 300);
-  setTimeout(install, 1200);
-  setTimeout(refreshCurrent, 1600);
-
-  console.log("✅ AARISH_V98_TOTAL_CONNECTIVITY_PATCH active");
-})();
-</script>
 <script id="aarish-v99-ui-consistency-premium-dark-mode">
 /* AARISH_V99_UI_CONSISTENCY_PREMIUM_DARK_MODE
    UI-only renderer and class normalizer. V98 sync/backend remains untouched.
@@ -18086,136 +16633,193 @@ window.onload = function(){ setTimeout(function(){ window.focus(); window.print(
   window.addEventListener("pageshow", function(){ setTimeout(applyV107, 80); }, { passive: true });
 })();
 </script>
-<script id="aarish-milk-salary-exact-ui-v108-js">
-/* AARISH_MILK_SALARY_EXACT_UI_V108_JS
+<script id="aarish-milk-final-salary-style-v109-js">
+/* AARISH_MILK_FINAL_SALARY_STYLE_V109
    Final UI-only Milk list renderer.
    No milkDB/Firebase/save/delete mutation.
 */
 (function(){
-  if (window.__AARISH_MILK_SALARY_EXACT_UI_V108_READY) return;
-  window.__AARISH_MILK_SALARY_EXACT_UI_V108_READY = true;
+  if (window.__AARISH_MILK_FINAL_V109_READY) return;
+  window.__AARISH_MILK_FINAL_V109_READY = true;
 
   function byId(id){ return document.getElementById(id); }
-  function n(v){ return Number(v) || 0; }
+  function num(v){ var x = Number(v); return isFinite(x) ? x : 0; }
   function arr(v){ return Array.isArray(v) ? v : []; }
   function clean(v){ return String(v == null ? "" : v).replace(/[\u0000-\u001F\u007F]/g," ").replace(/\s+/g," ").trim(); }
   function esc(v){ return clean(v).replace(/[&<>"']/g, function(c){ return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]; }); }
   function js(v){ return JSON.stringify(String(v == null ? "" : v)); }
-  function norm(v){ return clean(v).toLocaleLowerCase("en-IN"); }
-  function first(v){ var s = clean(v); return esc((s && s[0] ? s[0].toUpperCase() : "?")); }
-  function money(v){ return Math.round(Math.abs(n(v))).toLocaleString("en-IN"); }
-  function signedMoney(v){ return (n(v) >= 0 ? "+₹" : "-₹") + money(v); }
-  function signedKg(v){ return (n(v) >= 0 ? "+" : "-") + Math.abs(n(v)).toFixed(2) + " KG"; }
+  function norm(v){ try { return clean(v).toLocaleLowerCase("en-IN"); } catch(e) { return clean(v).toLowerCase(); } }
+  function first(v){ var s = clean(v); return esc((s && s.charAt(0) ? s.charAt(0).toUpperCase() : "?")); }
+  function money(v){ return Math.round(Math.abs(num(v))).toLocaleString("en-IN"); }
+  function signedMoney(v){ return (num(v) >= 0 ? "+₹" : "-₹") + money(v); }
+  function signedKg(v){ return (num(v) >= 0 ? "+" : "-") + Math.abs(num(v)).toFixed(2) + " KG"; }
 
-  function flowOfMilk(record, customer){
-    var raw = String((record && (record.flow || record.milkFlow || record.direction || record.entryType || record.type)) || "").toLowerCase();
-    if (["taken","take","minus","debit","pay","dene_wala"].indexOf(raw) !== -1) return "taken";
-    if (["given","give","plus","credit","receive","lene_wala"].indexOf(raw) !== -1) return "given";
-    return customer && customer.type === "dene_wala" ? "taken" : "given";
+  function getDb(){
+    try { if (typeof milkDB !== "undefined" && milkDB) return milkDB; } catch(e) {}
+    try { if (window.milkDB) return window.milkDB; } catch(e) {}
+    return {};
   }
 
-  function milkGroupsV108(){
-    var map = {};
+  function flowOf(r, c, rawQty){
+    if (rawQty < 0) return "taken";
+
+    var raw = "";
+    try { raw = String((r && (r.flow || r.milkFlow || r.direction || r.entryType || r.type || r.mode)) || "").toLowerCase(); } catch(e) {}
+
+    if (["taken","take","minus","debit","pay","paid","dene_wala","buyer","negative"].indexOf(raw) !== -1) return "taken";
+    if (["given","give","plus","credit","receive","received","lene_wala","seller","positive"].indexOf(raw) !== -1) return "given";
+
+    var ct = "";
+    try { ct = String((c && c.type) || "").toLowerCase(); } catch(e) {}
+
+    return ct === "dene_wala" || ct === "buyer" || ct === "pay" ? "taken" : "given";
+  }
+
+  function groups(){
+    var out = {};
+    var db = getDb();
+
     try {
-      var db = (typeof milkDB !== "undefined" && milkDB) || {};
       Object.keys(db).forEach(function(key){
-        var k = norm(key);
-        if (!k) return;
-        if (!map[k]) map[k] = { norm:k, name:clean(key) || "Unknown", keys:[] };
-        map[k].keys.push(key);
+        var nk = norm(key);
+        if (!nk) return;
+        if (!out[nk]) out[nk] = { norm:nk, name:clean(key) || "Unknown", keys:[] };
+        out[nk].keys.push(key);
       });
     } catch(e) {}
-    return map;
+
+    return out;
   }
 
-  function milkTotalsV108(g){
-    var givenKg = 0, takenKg = 0, givenAmt = 0, takenAmt = 0;
+  function totals(g){
+    var netKg = 0;
+    var netAmt = 0;
+    var db = getDb();
+
     try {
-      var db = (typeof milkDB !== "undefined" && milkDB) || {};
       (g.keys || []).forEach(function(key){
         var c = db[key] || {};
-        var rate = n(c.rate || (typeof DEFAULT_RATE !== "undefined" ? DEFAULT_RATE : 55));
+        var rate = num(c.rate || c.milkRate || (typeof DEFAULT_RATE !== "undefined" ? DEFAULT_RATE : 55));
+
         arr(c.records).forEach(function(r){
-          var qty = n(r && r.morning) + n(r && r.evening);
-          if (!qty) return;
-          var amt = qty * rate;
-          if (flowOfMilk(r, c) === "taken") { takenKg += qty; takenAmt += amt; }
-          else { givenKg += qty; givenAmt += amt; }
+          var rawQty = num(r && r.morning) + num(r && r.evening);
+          if (!rawQty) return;
+
+          var qty = Math.abs(rawQty);
+          var rr = num((r && (r.rate || r.milkRate)) || rate || 55);
+          var amt = qty * rr;
+
+          if (flowOf(r, c, rawQty) === "taken") {
+            netKg -= qty;
+            netAmt -= amt;
+          } else {
+            netKg += qty;
+            netAmt += amt;
+          }
         });
       });
     } catch(e) {}
-    return { netKg: givenKg - takenKg, netAmt: givenAmt - takenAmt };
+
+    return { netKg:netKg, netAmt:netAmt };
   }
 
-  function tone(net){
-    return n(net) > 0 ? "positive" : (n(net) < 0 ? "negative" : "neutral");
+  function tone(v){
+    return num(v) > 0 ? "positive" : (num(v) < 0 ? "negative" : "neutral");
   }
 
   function toneVars(t){
-    if (t === "positive") return "--milkTone:#34C759;--milkTint:rgba(52,199,89,0.13);--milkBorder:rgba(52,199,89,0.22);--milkGlow:rgba(52,199,89,0.34);--milkInset:rgba(52,199,89,0.52);--milkSoftShadow:rgba(52,199,89,0.10);";
-    if (t === "negative") return "--milkTone:#FF3B30;--milkTint:rgba(255,59,48,0.13);--milkBorder:rgba(255,59,48,0.22);--milkGlow:rgba(255,59,48,0.34);--milkInset:rgba(255,59,48,0.52);--milkSoftShadow:rgba(255,59,48,0.10);";
-    return "--milkTone:#007AFF;--milkTint:rgba(0,122,255,0.13);--milkBorder:rgba(0,122,255,0.22);--milkGlow:rgba(0,122,255,0.30);--milkInset:rgba(0,122,255,0.48);--milkSoftShadow:rgba(0,122,255,0.10);";
+    if (t === "positive") return "--milkTone:#34C759;--milkTint:rgba(52,199,89,0.13);--milkBorder:rgba(52,199,89,0.22);--milkGlow:rgba(52,199,89,0.34);--milkInset:rgba(52,199,89,0.52);--milkSoft:rgba(52,199,89,0.10);";
+    if (t === "negative") return "--milkTone:#FF3B30;--milkTint:rgba(255,59,48,0.13);--milkBorder:rgba(255,59,48,0.22);--milkGlow:rgba(255,59,48,0.34);--milkInset:rgba(255,59,48,0.52);--milkSoft:rgba(255,59,48,0.10);";
+    return "--milkTone:#007AFF;--milkTint:rgba(0,122,255,0.13);--milkBorder:rgba(0,122,255,0.22);--milkGlow:rgba(0,122,255,0.30);--milkInset:rgba(0,122,255,0.48);--milkSoft:rgba(0,122,255,0.10);";
   }
 
-  function emptyMilkV108(){
+  function openAction(g){
+    var firstKey = (g.keys && g.keys[0]) || g.name;
+    return "try{haptic()}catch(e){}; if(window.aarishV98OpenMilkGroup){window.aarishV98OpenMilkGroup(" + js(g.norm) + ")}else{openMilkDetail(" + js(firstKey) + ")}";
+  }
+
+  function emptyHtml(){
     if (typeof getEmptyState === "function") return getEmptyState("fa-jug-detergent", "No customers found");
     return '<div class="py-20 text-center text-[#007AFF] font-bold">No customers found</div>';
   }
 
-  function openMilkCall(g){
-    if (window.aarishV98OpenMilkGroup) return "window.aarishV98OpenMilkGroup(" + js(g.norm) + ")";
-    return "openMilkDetail(" + js((g.keys && g.keys[0]) || g.name) + ")";
-  }
-
-  function renderMilkListV108(){
+  function renderMilkListV109(){
     var box = byId("milk-list");
     if (!box) return;
-    var q = norm((byId("milk-search") || {}).value || "");
-    var groups = Object.values(milkGroupsV108()).filter(function(g){ return norm(g.name).indexOf(q) !== -1; });
 
-    box.innerHTML = groups.map(function(g, index){
-      var total = milkTotalsV108(g);
-      var t = tone(total.netAmt);
-      return `<div data-v99-tone="${t}" data-v100-tone="${t}" data-aarish-milk-card-v108="${t}"
-        onclick="try{haptic()}catch(e){}; ${openMilkCall(g)}"
-        class="milk-salary-v108 glass-card mb-3.5 flex items-center justify-between cursor-pointer border-l-[3px] w-full ring-1 ring-white/40 dark:ring-white/5 list-enter"
-        style="${toneVars(t)} animation-delay:${index * 0.05}s;">
-        <div class="flex items-center gap-4 w-full min-w-0">
-          <div class="w-12 h-12 shrink-0 squircle milk-v108-color font-extrabold flex items-center justify-center text-lg">${first(g.name)}</div>
-          <div class="flex-1 min-w-0">
-            <h4 class="milk-v108-color font-bold text-[17px] leading-tight truncate w-full flex items-center">${esc(g.name)}</h4>
-            <p class="milk-v108-color text-[13px] font-bold truncate w-full mt-1 tracking-tight opacity-90">${signedKg(total.netKg)} <span class="mx-1 opacity-60">•</span> <span class="font-extrabold text-[18px]">${signedMoney(total.netAmt)}</span></p>
-          </div>
-        </div>
-        <i class="milk-v108-color fa-solid fa-chevron-right shrink-0 ml-3 text-[13px]"></i>
-      </div>`;
-    }).join("") || emptyMilkV108();
+    var search = byId("milk-search");
+    var q = norm(search && search.value ? search.value : "");
+    var map = groups();
+    var list = [];
+
+    Object.keys(map).forEach(function(k){
+      if (norm(map[k].name).indexOf(q) !== -1) list.push(map[k]);
+    });
+
+    box.innerHTML = list.map(function(g, index){
+      var tals = totals(g);
+      var t = tone(tals.netAmt);
+      var name = esc(g.name);
+      var firstKey = (g.keys && g.keys[0]) || g.name;
+
+      return '<div ' +
+        'data-v99-tone="' + t + '" data-v100-tone="' + t + '" data-milk-tone="' + t + '" data-milk-final-v109="' + t + '" ' +
+        'onclick="' + openAction(g).replace(/"/g, "&quot;") + '" ' +
+        'ontouchstart="try{startLongPress(' + js(firstKey).replace(/"/g, "&quot;") + ')}catch(e){}" ' +
+        'ontouchend="try{cancelLongPress()}catch(e){}" ontouchmove="try{cancelLongPress()}catch(e){}" ' +
+        'onmousedown="try{startLongPress(' + js(firstKey).replace(/"/g, "&quot;") + ')}catch(e){}" ' +
+        'onmouseup="try{cancelLongPress()}catch(e){}" onmouseleave="try{cancelLongPress()}catch(e){}" ' +
+        'class="milk-final-v109 glass-card mb-3.5 flex items-center justify-between cursor-pointer border-l-[3px] w-full ring-1 ring-white/40 dark:ring-white/5 list-enter" ' +
+        'style="' + toneVars(t) + ' animation-delay:' + (index * 0.05) + 's;">' +
+          '<div class="flex items-center gap-4 w-full min-w-0">' +
+            '<div class="w-12 h-12 shrink-0 squircle milk-final-v109-color font-extrabold flex items-center justify-center text-lg">' + first(g.name) + '</div>' +
+            '<div class="flex-1 min-w-0">' +
+              '<h4 class="milk-final-v109-color font-bold text-[17px] leading-tight truncate w-full flex items-center">' + name + '</h4>' +
+              '<p class="milk-final-v109-color text-[13px] font-bold truncate w-full mt-1 tracking-tight opacity-95">' +
+                signedKg(tals.netKg) + ' <span class="mx-1 opacity-60">•</span> <span class="font-extrabold text-[18px]">' + signedMoney(tals.netAmt) + '</span>' +
+              '</p>' +
+            '</div>' +
+          '</div>' +
+          '<i class="milk-final-v109-color fa-solid fa-chevron-right shrink-0 ml-3 text-[13px]"></i>' +
+      '</div>';
+    }).join("") || emptyHtml();
   }
 
-  function installV108(){
+  function install(){
     try {
-      window.renderMilkList = renderMilkListV108;
-      window.filterMilkList = renderMilkListV108;
-      try { Function("fn", "renderMilkList = fn; filterMilkList = fn;")(renderMilkListV108); } catch(e) {}
+      window.renderMilkList = renderMilkListV109;
+      window.filterMilkList = function(){ renderMilkListV109(); };
+      try { Function("fn", "renderMilkList = fn; filterMilkList = fn;")(renderMilkListV109); } catch(e) {}
+
       var active = document.querySelector(".screen.active");
-      if (active && active.id === "milk-screen") renderMilkListV108();
+      if (active && active.id === "milk-screen") renderMilkListV109();
     } catch(e) {}
   }
 
-  installV108();
-  setTimeout(installV108, 80);
-  setTimeout(installV108, 500);
-  setTimeout(installV108, 1500);
+  install();
+  setTimeout(install, 80);
+  setTimeout(install, 400);
+  setTimeout(install, 1200);
+  setTimeout(install, 2200);
 
   document.addEventListener("input", function(e){
-    if (e && e.target && e.target.id === "milk-search") setTimeout(renderMilkListV108, 0);
+    if (e && e.target && e.target.id === "milk-search") setTimeout(renderMilkListV109, 0);
   }, { passive:true });
 
-  window.addEventListener("pageshow", function(){ setTimeout(installV108, 180); }, { passive:true });
-  document.addEventListener("visibilitychange", function(){ if (!document.hidden) setTimeout(installV108, 180); }, { passive:true });
+  document.addEventListener("click", function(){
+    setTimeout(function(){
+      try {
+        var active = document.querySelector(".screen.active");
+        if (active && active.id === "milk-screen") renderMilkListV109();
+      } catch(e) {}
+    }, 80);
+  }, { passive:true });
 
-  window.aarishRenderMilkListV108 = renderMilkListV108;
-  console.log("✅ AARISH_MILK_SALARY_EXACT_UI_V108 active");
+  window.addEventListener("pageshow", function(){ setTimeout(install, 120); }, { passive:true });
+  document.addEventListener("visibilitychange", function(){ if (!document.hidden) setTimeout(install, 120); }, { passive:true });
+
+  window.aarishRenderMilkListV109 = renderMilkListV109;
+  console.log("✅ AARISH_MILK_FINAL_SALARY_STYLE_V109 active");
 })();
 </script>
 </body>
