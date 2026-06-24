@@ -3670,143 +3670,199 @@
   filter: none !important;
 }
 </style>
-<style id="aarish-milk-list-true-green-red-v104">
-/* AARISH_MILK_LIST_TRUE_GREEN_RED_V104
-   Scope: ONLY Milk customer list.
-   Fix:
-   - Positive/+ milk customer = full green text + green curved stripe
-   - Negative/- milk customer = full red text + red curved stripe
-   - Search icon/placeholder blue stays untouched
-   - No backend JS, no Firebase, no save/delete/data logic touched
+<style id="aarish-milk-salary-style-css-only-v107">
+/* AARISH_MILK_SALARY_STYLE_CSS_ONLY_V107
+   CSS-only safe patch.
+   Milk list ko Salary list jaisa semantic style:
+   positive = full green, negative = full red.
+   Search icon/input/placeholder permanent blue.
+   No JS, no Firebase, no save/delete/data/render logic touched.
 */
 
-/* Base: make curved left stripe visible even after old glass-card paint containment */
+/* Search area permanent blue */
+#milk-screen .fa-search,
+.dark #milk-screen .fa-search {
+  color: #007AFF !important;
+  text-shadow: 0 0 10px rgba(0,122,255,0.28) !important;
+  opacity: 1 !important;
+}
+
+#milk-screen #milk-search,
+.dark #milk-screen #milk-search {
+  color: #007AFF !important;
+  caret-color: #007AFF !important;
+  text-shadow: 0 0 10px rgba(0,122,255,0.22) !important;
+}
+
+#milk-screen #milk-search::placeholder,
+#milk-screen #milk-search::-webkit-input-placeholder,
+.dark #milk-screen #milk-search::placeholder,
+.dark #milk-screen #milk-search::-webkit-input-placeholder {
+  color: rgba(0,122,255,0.78) !important;
+  opacity: 1 !important;
+}
+
+/* Old fake thick stripe off */
+#milk-screen #milk-list .glass-card::before {
+  display: none !important;
+  content: none !important;
+}
+
+/* Salary-like curved left stripe base */
 #milk-screen #milk-list .glass-card[data-v99-tone],
-#milk-screen #milk-list .glass-card[data-v100-tone] {
+#milk-screen #milk-list .glass-card[data-v100-tone],
+#milk-screen #milk-list .glass-card:has([class*="text-[#34C759]"]),
+#milk-screen #milk-list .glass-card:has([class*="text-[#10B981]"]),
+#milk-screen #milk-list .glass-card:has([class*="text-[#FF3B30]"]),
+#milk-screen #milk-list .glass-card:has([class*="text-[#FF4B4B]"]) {
   position: relative !important;
   overflow: visible !important;
   contain: layout style !important;
   border-left-width: 4px !important;
   border-left-style: solid !important;
+  border-radius: 24px !important;
 }
 
-/* Curved premium stripe */
-#milk-screen #milk-list .glass-card[data-v99-tone]::before,
-#milk-screen #milk-list .glass-card[data-v100-tone]::before {
-  content: "" !important;
-  position: absolute !important;
-  left: 0 !important;
-  top: 14px !important;
-  bottom: 14px !important;
-  width: 5px !important;
-  border-radius: 0 999px 999px 0 !important;
-  pointer-events: none !important;
-  z-index: 2 !important;
-}
-
-/* POSITIVE / PLUS = GREEN */
+/* POSITIVE / PLUS = full green like Salary */
 #milk-screen #milk-list .glass-card[data-v99-tone="positive"],
-#milk-screen #milk-list .glass-card[data-v100-tone="positive"] {
+#milk-screen #milk-list .glass-card[data-v100-tone="positive"],
+#milk-screen #milk-list .glass-card:has([class*="text-[#34C759]"]),
+#milk-screen #milk-list .glass-card:has([class*="text-[#10B981]"]) {
   border-left-color: #34C759 !important;
   box-shadow:
-    -5px 0 18px rgba(52,199,89,0.26),
-    0 14px 38px rgba(0,0,0,0.34),
-    inset 1px 0 0 rgba(52,199,89,0.46) !important;
+    -4px 0 18px rgba(52,199,89,0.34),
+    0 16px 42px rgba(0,0,0,0.48),
+    inset 1px 0 0 rgba(52,199,89,0.52),
+    inset 0 1px 0 rgba(255,255,255,0.06) !important;
 }
 
-#milk-screen #milk-list .glass-card[data-v99-tone="positive"]::before,
-#milk-screen #milk-list .glass-card[data-v100-tone="positive"]::before {
-  background: #34C759 !important;
-  box-shadow: 0 0 18px rgba(52,199,89,0.55) !important;
-}
-
+#milk-screen #milk-list .glass-card[data-v99-tone="positive"] h1,
+#milk-screen #milk-list .glass-card[data-v99-tone="positive"] h2,
+#milk-screen #milk-list .glass-card[data-v99-tone="positive"] h3,
 #milk-screen #milk-list .glass-card[data-v99-tone="positive"] h4,
 #milk-screen #milk-list .glass-card[data-v99-tone="positive"] p,
 #milk-screen #milk-list .glass-card[data-v99-tone="positive"] p *,
+#milk-screen #milk-list .glass-card[data-v99-tone="positive"] span,
 #milk-screen #milk-list .glass-card[data-v99-tone="positive"] .squircle,
+#milk-screen #milk-list .glass-card[data-v99-tone="positive"] i.fa-chevron-right,
 #milk-screen #milk-list .glass-card[data-v99-tone="positive"] .v100-title,
 #milk-screen #milk-list .glass-card[data-v99-tone="positive"] .v100-subtitle,
 #milk-screen #milk-list .glass-card[data-v99-tone="positive"] .v100-amount,
-#milk-screen #milk-list .glass-card[data-v99-tone="positive"] i.fa-chevron-right,
+#milk-screen #milk-list .glass-card[data-v100-tone="positive"] h1,
+#milk-screen #milk-list .glass-card[data-v100-tone="positive"] h2,
+#milk-screen #milk-list .glass-card[data-v100-tone="positive"] h3,
 #milk-screen #milk-list .glass-card[data-v100-tone="positive"] h4,
 #milk-screen #milk-list .glass-card[data-v100-tone="positive"] p,
 #milk-screen #milk-list .glass-card[data-v100-tone="positive"] p *,
+#milk-screen #milk-list .glass-card[data-v100-tone="positive"] span,
 #milk-screen #milk-list .glass-card[data-v100-tone="positive"] .squircle,
+#milk-screen #milk-list .glass-card[data-v100-tone="positive"] i.fa-chevron-right,
 #milk-screen #milk-list .glass-card[data-v100-tone="positive"] .v100-title,
 #milk-screen #milk-list .glass-card[data-v100-tone="positive"] .v100-subtitle,
 #milk-screen #milk-list .glass-card[data-v100-tone="positive"] .v100-amount,
-#milk-screen #milk-list .glass-card[data-v100-tone="positive"] i.fa-chevron-right {
+#milk-screen #milk-list .glass-card:has([class*="text-[#34C759]"]) h1,
+#milk-screen #milk-list .glass-card:has([class*="text-[#34C759]"]) h2,
+#milk-screen #milk-list .glass-card:has([class*="text-[#34C759]"]) h3,
+#milk-screen #milk-list .glass-card:has([class*="text-[#34C759]"]) h4,
+#milk-screen #milk-list .glass-card:has([class*="text-[#34C759]"]) p,
+#milk-screen #milk-list .glass-card:has([class*="text-[#34C759]"]) p *,
+#milk-screen #milk-list .glass-card:has([class*="text-[#34C759]"]) span,
+#milk-screen #milk-list .glass-card:has([class*="text-[#34C759]"]) .squircle,
+#milk-screen #milk-list .glass-card:has([class*="text-[#34C759]"]) i.fa-chevron-right,
+#milk-screen #milk-list .glass-card:has([class*="text-[#10B981]"]) h1,
+#milk-screen #milk-list .glass-card:has([class*="text-[#10B981]"]) h2,
+#milk-screen #milk-list .glass-card:has([class*="text-[#10B981]"]) h3,
+#milk-screen #milk-list .glass-card:has([class*="text-[#10B981]"]) h4,
+#milk-screen #milk-list .glass-card:has([class*="text-[#10B981]"]) p,
+#milk-screen #milk-list .glass-card:has([class*="text-[#10B981]"]) p *,
+#milk-screen #milk-list .glass-card:has([class*="text-[#10B981]"]) span,
+#milk-screen #milk-list .glass-card:has([class*="text-[#10B981]"]) .squircle,
+#milk-screen #milk-list .glass-card:has([class*="text-[#10B981]"]) i.fa-chevron-right {
   color: #34C759 !important;
-  text-shadow: 0 0 10px rgba(52,199,89,0.35) !important;
+  text-shadow: 0 0 10px rgba(52,199,89,0.34) !important;
   opacity: 1 !important;
 }
 
-/* NEGATIVE / MINUS = RED */
+#milk-screen #milk-list .glass-card[data-v99-tone="positive"] .squircle,
+#milk-screen #milk-list .glass-card[data-v100-tone="positive"] .squircle,
+#milk-screen #milk-list .glass-card:has([class*="text-[#34C759]"]) .squircle,
+#milk-screen #milk-list .glass-card:has([class*="text-[#10B981]"]) .squircle {
+  background: rgba(52,199,89,0.13) !important;
+  border: 1px solid rgba(52,199,89,0.22) !important;
+}
+
+/* NEGATIVE / MINUS = full red like Salary */
 #milk-screen #milk-list .glass-card[data-v99-tone="negative"],
-#milk-screen #milk-list .glass-card[data-v100-tone="negative"] {
+#milk-screen #milk-list .glass-card[data-v100-tone="negative"],
+#milk-screen #milk-list .glass-card:has([class*="text-[#FF3B30]"]),
+#milk-screen #milk-list .glass-card:has([class*="text-[#FF4B4B]"]) {
   border-left-color: #FF3B30 !important;
   box-shadow:
-    -5px 0 18px rgba(255,59,48,0.26),
-    0 14px 38px rgba(0,0,0,0.34),
-    inset 1px 0 0 rgba(255,59,48,0.46) !important;
+    -4px 0 18px rgba(255,59,48,0.34),
+    0 16px 42px rgba(0,0,0,0.48),
+    inset 1px 0 0 rgba(255,59,48,0.52),
+    inset 0 1px 0 rgba(255,255,255,0.06) !important;
 }
 
-#milk-screen #milk-list .glass-card[data-v99-tone="negative"]::before,
-#milk-screen #milk-list .glass-card[data-v100-tone="negative"]::before {
-  background: #FF3B30 !important;
-  box-shadow: 0 0 18px rgba(255,59,48,0.55) !important;
-}
-
+#milk-screen #milk-list .glass-card[data-v99-tone="negative"] h1,
+#milk-screen #milk-list .glass-card[data-v99-tone="negative"] h2,
+#milk-screen #milk-list .glass-card[data-v99-tone="negative"] h3,
 #milk-screen #milk-list .glass-card[data-v99-tone="negative"] h4,
 #milk-screen #milk-list .glass-card[data-v99-tone="negative"] p,
 #milk-screen #milk-list .glass-card[data-v99-tone="negative"] p *,
+#milk-screen #milk-list .glass-card[data-v99-tone="negative"] span,
 #milk-screen #milk-list .glass-card[data-v99-tone="negative"] .squircle,
+#milk-screen #milk-list .glass-card[data-v99-tone="negative"] i.fa-chevron-right,
 #milk-screen #milk-list .glass-card[data-v99-tone="negative"] .v100-title,
 #milk-screen #milk-list .glass-card[data-v99-tone="negative"] .v100-subtitle,
 #milk-screen #milk-list .glass-card[data-v99-tone="negative"] .v100-amount,
-#milk-screen #milk-list .glass-card[data-v99-tone="negative"] i.fa-chevron-right,
+#milk-screen #milk-list .glass-card[data-v100-tone="negative"] h1,
+#milk-screen #milk-list .glass-card[data-v100-tone="negative"] h2,
+#milk-screen #milk-list .glass-card[data-v100-tone="negative"] h3,
 #milk-screen #milk-list .glass-card[data-v100-tone="negative"] h4,
 #milk-screen #milk-list .glass-card[data-v100-tone="negative"] p,
 #milk-screen #milk-list .glass-card[data-v100-tone="negative"] p *,
+#milk-screen #milk-list .glass-card[data-v100-tone="negative"] span,
 #milk-screen #milk-list .glass-card[data-v100-tone="negative"] .squircle,
+#milk-screen #milk-list .glass-card[data-v100-tone="negative"] i.fa-chevron-right,
 #milk-screen #milk-list .glass-card[data-v100-tone="negative"] .v100-title,
 #milk-screen #milk-list .glass-card[data-v100-tone="negative"] .v100-subtitle,
 #milk-screen #milk-list .glass-card[data-v100-tone="negative"] .v100-amount,
-#milk-screen #milk-list .glass-card[data-v100-tone="negative"] i.fa-chevron-right {
+#milk-screen #milk-list .glass-card:has([class*="text-[#FF3B30]"]) h1,
+#milk-screen #milk-list .glass-card:has([class*="text-[#FF3B30]"]) h2,
+#milk-screen #milk-list .glass-card:has([class*="text-[#FF3B30]"]) h3,
+#milk-screen #milk-list .glass-card:has([class*="text-[#FF3B30]"]) h4,
+#milk-screen #milk-list .glass-card:has([class*="text-[#FF3B30]"]) p,
+#milk-screen #milk-list .glass-card:has([class*="text-[#FF3B30]"]) p *,
+#milk-screen #milk-list .glass-card:has([class*="text-[#FF3B30]"]) span,
+#milk-screen #milk-list .glass-card:has([class*="text-[#FF3B30]"]) .squircle,
+#milk-screen #milk-list .glass-card:has([class*="text-[#FF3B30]"]) i.fa-chevron-right,
+#milk-screen #milk-list .glass-card:has([class*="text-[#FF4B4B]"]) h1,
+#milk-screen #milk-list .glass-card:has([class*="text-[#FF4B4B]"]) h2,
+#milk-screen #milk-list .glass-card:has([class*="text-[#FF4B4B]"]) h3,
+#milk-screen #milk-list .glass-card:has([class*="text-[#FF4B4B]"]) h4,
+#milk-screen #milk-list .glass-card:has([class*="text-[#FF4B4B]"]) p,
+#milk-screen #milk-list .glass-card:has([class*="text-[#FF4B4B]"]) p *,
+#milk-screen #milk-list .glass-card:has([class*="text-[#FF4B4B]"]) span,
+#milk-screen #milk-list .glass-card:has([class*="text-[#FF4B4B]"]) .squircle,
+#milk-screen #milk-list .glass-card:has([class*="text-[#FF4B4B]"]) i.fa-chevron-right {
   color: #FF3B30 !important;
-  text-shadow: 0 0 10px rgba(255,59,48,0.35) !important;
+  text-shadow: 0 0 10px rgba(255,59,48,0.34) !important;
   opacity: 1 !important;
 }
 
-/* ZERO / NEUTRAL stays blue */
+#milk-screen #milk-list .glass-card[data-v99-tone="negative"] .squircle,
+#milk-screen #milk-list .glass-card[data-v100-tone="negative"] .squircle,
+#milk-screen #milk-list .glass-card:has([class*="text-[#FF3B30]"]) .squircle,
+#milk-screen #milk-list .glass-card:has([class*="text-[#FF4B4B]"]) .squircle {
+  background: rgba(255,59,48,0.13) !important;
+  border: 1px solid rgba(255,59,48,0.22) !important;
+}
+
+/* Neutral/zero remains blue */
 #milk-screen #milk-list .glass-card[data-v99-tone="neutral"],
 #milk-screen #milk-list .glass-card[data-v100-tone="neutral"] {
   border-left-color: #007AFF !important;
-}
-
-#milk-screen #milk-list .glass-card[data-v99-tone="neutral"]::before,
-#milk-screen #milk-list .glass-card[data-v100-tone="neutral"]::before {
-  background: #007AFF !important;
-  box-shadow: 0 0 18px rgba(0,122,255,0.45) !important;
-}
-
-/* Dark mode premium glow */
-.dark #milk-screen #milk-list .glass-card[data-v99-tone="positive"],
-.dark #milk-screen #milk-list .glass-card[data-v100-tone="positive"] {
-  box-shadow:
-    -5px 0 20px rgba(52,199,89,0.34),
-    0 16px 42px rgba(0,0,0,0.50),
-    inset 1px 0 0 rgba(52,199,89,0.55),
-    inset 0 1px 0 rgba(255,255,255,0.06) !important;
-}
-
-.dark #milk-screen #milk-list .glass-card[data-v99-tone="negative"],
-.dark #milk-screen #milk-list .glass-card[data-v100-tone="negative"] {
-  box-shadow:
-    -5px 0 20px rgba(255,59,48,0.34),
-    0 16px 42px rgba(0,0,0,0.50),
-    inset 1px 0 0 rgba(255,59,48,0.55),
-    inset 0 1px 0 rgba(255,255,255,0.06) !important;
 }
 </style>
 </head>
