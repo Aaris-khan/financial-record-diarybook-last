@@ -3785,6 +3785,187 @@
   }
 }
 </style>
+<style id="aarish-v114-milk-compact-net-button-css">
+/* AARISH V114
+   Fix:
+   1) Milk list card size back near Credit/Salary card size.
+   2) Milk +New button background follows total milk net:
+      positive green / negative red / zero blue.
+   3) Milk heading also follows same net tone.
+   UI-only. Firebase/save/delete/data logic untouched.
+*/
+
+#milk-screen {
+  --milk-v114-blue: #007AFF;
+  --milk-v114-green: #34C759;
+  --milk-v114-red: #FF3B30;
+}
+
+/* Compact milk cards: V113 was too tall */
+#milk-screen #milk-list .aarish-milk-v113-card,
+.dark #milk-screen #milk-list .aarish-milk-v113-card {
+  min-height: 92px !important;
+  padding: 16px 16px !important;
+  margin-bottom: 14px !important;
+  border-radius: 24px !important;
+  border-left-width: 4px !important;
+  border-left-style: solid !important;
+}
+
+#milk-screen #milk-list .aarish-milk-v113-avatar,
+.dark #milk-screen #milk-list .aarish-milk-v113-avatar {
+  width: 48px !important;
+  height: 48px !important;
+  border-radius: 16px !important;
+  font-size: 20px !important;
+}
+
+#milk-screen #milk-list .aarish-milk-v113-name,
+.dark #milk-screen #milk-list .aarish-milk-v113-name {
+  font-size: 17px !important;
+  line-height: 1.16 !important;
+  font-weight: 850 !important;
+  letter-spacing: -0.025em !important;
+}
+
+#milk-screen #milk-list .aarish-milk-v113-meta,
+.dark #milk-screen #milk-list .aarish-milk-v113-meta {
+  font-size: 13px !important;
+  line-height: 1.18 !important;
+  margin-top: 5px !important;
+  font-weight: 850 !important;
+}
+
+#milk-screen #milk-list .aarish-milk-v113-amount,
+.dark #milk-screen #milk-list .aarish-milk-v113-amount {
+  font-size: 18px !important;
+  font-weight: 900 !important;
+}
+
+#milk-screen #milk-list .aarish-milk-v113-card .fa-chevron-right,
+.dark #milk-screen #milk-list .aarish-milk-v113-card .fa-chevron-right {
+  font-size: 17px !important;
+}
+
+/* Keep premium glow, but not oversized */
+#milk-screen #milk-list .aarish-milk-v113-card {
+  box-shadow:
+    -4px 0 14px var(--milkGlow),
+    0 10px 26px rgba(15,23,42,0.07),
+    inset 1px 0 0 var(--milkInset),
+    inset 0 1px 0 rgba(255,255,255,0.62) !important;
+}
+
+.dark #milk-screen #milk-list .aarish-milk-v113-card {
+  box-shadow:
+    -4px 0 16px var(--milkGlow),
+    0 12px 34px rgba(0,0,0,0.44),
+    inset 1px 0 0 var(--milkInset),
+    inset 0 1px 0 rgba(255,255,255,0.07) !important;
+}
+
+/* Milk heading follows total net tone */
+#milk-screen[data-aarish-milk-net-v114="positive"] .header-sticky h1,
+.dark #milk-screen[data-aarish-milk-net-v114="positive"] .header-sticky h1 {
+  color: var(--milk-v114-green) !important;
+  text-shadow: 0 0 12px rgba(52,199,89,0.32) !important;
+}
+
+#milk-screen[data-aarish-milk-net-v114="negative"] .header-sticky h1,
+.dark #milk-screen[data-aarish-milk-net-v114="negative"] .header-sticky h1 {
+  color: var(--milk-v114-red) !important;
+  text-shadow: 0 0 12px rgba(255,59,48,0.32) !important;
+}
+
+#milk-screen[data-aarish-milk-net-v114="neutral"] .header-sticky h1,
+.dark #milk-screen[data-aarish-milk-net-v114="neutral"] .header-sticky h1 {
+  color: var(--milk-v114-blue) !important;
+  text-shadow: 0 0 12px rgba(0,122,255,0.30) !important;
+}
+
+/* +New button compact like Credit/Salary buttons */
+#milk-screen #milk-new-btn-v50,
+.dark #milk-screen #milk-new-btn-v50 {
+  min-height: 46px !important;
+  padding: 10px 18px !important;
+  border-radius: 18px !important;
+  color: #FFFFFF !important;
+  border: 1px solid transparent !important;
+  font-weight: 850 !important;
+  box-shadow: 0 8px 22px rgba(0,122,255,0.30) !important;
+  background: linear-gradient(135deg, #007AFF, #0A84FF) !important;
+}
+
+#milk-screen #milk-new-btn-v50 *,
+.dark #milk-screen #milk-new-btn-v50 * {
+  color: #FFFFFF !important;
+}
+
+/* Positive milk total => New button GREEN */
+#milk-screen[data-aarish-milk-net-v114="positive"] #milk-new-btn-v50,
+#milk-screen #milk-new-btn-v50[data-aarish-milk-new-v114="green"],
+#milk-screen #milk-new-btn-v50[data-aarish-milk-new-v50="green"],
+.dark #milk-screen[data-aarish-milk-net-v114="positive"] #milk-new-btn-v50,
+.dark #milk-screen #milk-new-btn-v50[data-aarish-milk-new-v114="green"],
+.dark #milk-screen #milk-new-btn-v50[data-aarish-milk-new-v50="green"] {
+  background: linear-gradient(135deg, #34C759, #22C55E) !important;
+  box-shadow: 0 8px 22px rgba(52,199,89,0.34) !important;
+}
+
+/* Negative milk total => New button RED */
+#milk-screen[data-aarish-milk-net-v114="negative"] #milk-new-btn-v50,
+#milk-screen #milk-new-btn-v50[data-aarish-milk-new-v114="red"],
+#milk-screen #milk-new-btn-v50[data-aarish-milk-new-v50="red"],
+.dark #milk-screen[data-aarish-milk-net-v114="negative"] #milk-new-btn-v50,
+.dark #milk-screen #milk-new-btn-v50[data-aarish-milk-new-v114="red"],
+.dark #milk-screen #milk-new-btn-v50[data-aarish-milk-new-v50="red"] {
+  background: linear-gradient(135deg, #FF453A, #FF2D55) !important;
+  box-shadow: 0 8px 22px rgba(255,59,48,0.34) !important;
+}
+
+/* Zero milk total => New button BLUE */
+#milk-screen[data-aarish-milk-net-v114="neutral"] #milk-new-btn-v50,
+#milk-screen #milk-new-btn-v50[data-aarish-milk-new-v114="blue"],
+#milk-screen #milk-new-btn-v50[data-aarish-milk-new-v50="blue"],
+.dark #milk-screen[data-aarish-milk-net-v114="neutral"] #milk-new-btn-v50,
+.dark #milk-screen #milk-new-btn-v50[data-aarish-milk-new-v114="blue"],
+.dark #milk-screen #milk-new-btn-v50[data-aarish-milk-new-v50="blue"] {
+  background: linear-gradient(135deg, #007AFF, #0A84FF) !important;
+  box-shadow: 0 8px 22px rgba(0,122,255,0.30) !important;
+}
+
+@media (max-width: 380px) {
+  #milk-screen #milk-list .aarish-milk-v113-card,
+  .dark #milk-screen #milk-list .aarish-milk-v113-card {
+    min-height: 86px !important;
+    padding: 14px 14px !important;
+    border-radius: 22px !important;
+  }
+
+  #milk-screen #milk-list .aarish-milk-v113-avatar,
+  .dark #milk-screen #milk-list .aarish-milk-v113-avatar {
+    width: 44px !important;
+    height: 44px !important;
+    border-radius: 15px !important;
+    font-size: 18px !important;
+  }
+
+  #milk-screen #milk-list .aarish-milk-v113-name,
+  .dark #milk-screen #milk-list .aarish-milk-v113-name {
+    font-size: 16px !important;
+  }
+
+  #milk-screen #milk-list .aarish-milk-v113-meta,
+  .dark #milk-screen #milk-list .aarish-milk-v113-meta {
+    font-size: 12.5px !important;
+  }
+
+  #milk-screen #milk-list .aarish-milk-v113-amount,
+  .dark #milk-screen #milk-list .aarish-milk-v113-amount {
+    font-size: 17px !important;
+  }
+}
+</style>
 </head>
 
 <body>
@@ -16830,6 +17011,173 @@ window.onload = function(){ setTimeout(function(){ window.focus(); window.print(
   }, { passive:true });
 
   console.log("✅ AARISH V113 Milk UI + Business leak fix active");
+})();
+</script>
+<script id="aarish-v114-milk-compact-net-button-js">
+/* AARISH V114
+   Restores Milk +New button net-color logic after V113 fixed-red override.
+   No Firebase write. No save/delete/data mutation.
+*/
+(function () {
+  if (window.__AARISH_V114_MILK_NET_BUTTON_READY) return;
+  window.__AARISH_V114_MILK_NET_BUTTON_READY = true;
+
+  function byId(id) { return document.getElementById(id); }
+  function n(v) { var x = Number(v); return isFinite(x) ? x : 0; }
+
+  function records(v) {
+    if (Array.isArray(v)) return v.filter(Boolean);
+    if (v && typeof v === "object") {
+      return Object.keys(v).map(function (k) {
+        var r = v[k];
+        if (r && typeof r === "object" && !r.id) r.id = k;
+        return r;
+      }).filter(Boolean);
+    }
+    return [];
+  }
+
+  function milkDb() {
+    try { if (typeof milkDB !== "undefined" && milkDB) return milkDB; } catch(e) {}
+    try { if (window.milkDB) return window.milkDB; } catch(e) {}
+    return {};
+  }
+
+  function flow(record, customer, rawQty) {
+    try {
+      if (typeof milkFlow === "function") {
+        var mf = String(milkFlow(record, customer) || "").toLowerCase();
+        if (mf === "taken" || mf === "negative") return "taken";
+        if (mf === "given" || mf === "positive") return "given";
+      }
+    } catch(e) {}
+
+    if (rawQty < 0) return "taken";
+
+    var raw = String(
+      (record && (record.flow || record.milkFlow || record.direction || record.entryType || record.type || record.mode)) || ""
+    ).toLowerCase();
+
+    if (["taken","take","minus","debit","pay","paid","dene_wala","buyer","negative"].indexOf(raw) !== -1) return "taken";
+    if (["given","give","plus","credit","receive","received","lene_wala","seller","positive"].indexOf(raw) !== -1) return "given";
+
+    return customer && (customer.type === "dene_wala" || customer.type === "buyer" || customer.type === "pay") ? "taken" : "given";
+  }
+
+  function allMilkNet() {
+    var db = milkDb();
+    var net = 0;
+
+    try {
+      Object.keys(db || {}).forEach(function (name) {
+        var c = db[name] || {};
+        records(c.records).forEach(function (r) {
+          var rawQty = n(r && r.morning) + n(r && r.evening);
+          if (!rawQty) return;
+
+          var qty = Math.abs(rawQty);
+          var rate = n(r && (r.rate || r.milkRate)) || n(c && (c.rate || c.milkRate)) || (typeof DEFAULT_RATE !== "undefined" ? n(DEFAULT_RATE) : 55) || 55;
+          var amount = qty * rate;
+
+          net += flow(r, c, rawQty) === "taken" ? -amount : amount;
+        });
+      });
+    } catch(e) {}
+
+    return net;
+  }
+
+  function applyMilkNetButtonV114() {
+    try {
+      var screen = byId("milk-screen");
+      var btn = byId("milk-new-btn-v50") || document.querySelector("#milk-screen .header-sticky button[onclick*='add-milk-customer-modal']");
+      if (!screen || !btn) return;
+
+      var net = allMilkNet();
+      var tone = net > 0.0001 ? "positive" : (net < -0.0001 ? "negative" : "neutral");
+      var btnTone = tone === "positive" ? "green" : (tone === "negative" ? "red" : "blue");
+
+      screen.setAttribute("data-aarish-milk-net-v114", tone);
+      btn.setAttribute("data-aarish-milk-new-v114", btnTone);
+
+      btn.style.setProperty("color", "#FFFFFF", "important");
+      btn.style.setProperty("border-color", "transparent", "important");
+      btn.style.setProperty("min-height", "46px", "important");
+      btn.style.setProperty("padding", "10px 18px", "important");
+      btn.style.setProperty("border-radius", "18px", "important");
+
+      if (btnTone === "green") {
+        btn.style.setProperty("background", "linear-gradient(135deg, #34C759, #22C55E)", "important");
+        btn.style.setProperty("box-shadow", "0 8px 22px rgba(52,199,89,0.34)", "important");
+      } else if (btnTone === "red") {
+        btn.style.setProperty("background", "linear-gradient(135deg, #FF453A, #FF2D55)", "important");
+        btn.style.setProperty("box-shadow", "0 8px 22px rgba(255,59,48,0.34)", "important");
+      } else {
+        btn.style.setProperty("background", "linear-gradient(135deg, #007AFF, #0A84FF)", "important");
+        btn.style.setProperty("box-shadow", "0 8px 22px rgba(0,122,255,0.30)", "important");
+      }
+
+      var title = document.querySelector("#milk-screen .header-sticky h1");
+      if (title) title.setAttribute("data-aarish-milk-title-v114", tone);
+    } catch(e) {}
+  }
+
+  function schedule() {
+    setTimeout(applyMilkNetButtonV114, 0);
+    setTimeout(applyMilkNetButtonV114, 120);
+    setTimeout(applyMilkNetButtonV114, 360);
+  }
+
+  function wrap(name) {
+    try {
+      var old = window[name];
+      if (typeof old !== "function" || old.__aarishV114Wrapped) return;
+
+      var wrapped = function () {
+        var out = old.apply(this, arguments);
+        schedule();
+        return out;
+      };
+
+      wrapped.__aarishV114Wrapped = true;
+      window[name] = wrapped;
+      try { Function("fn", name + " = fn;")(wrapped); } catch(e) {}
+    } catch(e) {}
+  }
+
+  [
+    "renderMilkList",
+    "filterMilkList",
+    "updateMilkNewButtonColorV50",
+    "updateDashboard",
+    "switchTab",
+    "updateActiveScreen",
+    "saveMilkEntry",
+    "saveMilkCustomer",
+    "deleteMilkEntry",
+    "deleteMilk",
+    "deleteMilkCustomerProfile",
+    "openModal",
+    "closeModal"
+  ].forEach(wrap);
+
+  schedule();
+  [700, 1400, 2600, 4000].forEach(function (ms) { setTimeout(schedule, ms); });
+
+  document.addEventListener("click", schedule, { passive: true });
+  document.addEventListener("input", schedule, { passive: true });
+  window.addEventListener("pageshow", schedule, { passive: true });
+
+  try {
+    var target = byId("milk-screen") || document.body;
+    if (target && !target.__aarishV114Observer) {
+      var obs = new MutationObserver(schedule);
+      obs.observe(target, { childList: true, subtree: true, attributes: true });
+      target.__aarishV114Observer = obs;
+    }
+  } catch(e) {}
+
+  console.log("✅ AARISH V114 Milk compact card + net New button active");
 })();
 </script>
 </body>
