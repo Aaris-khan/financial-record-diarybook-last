@@ -3966,6 +3966,138 @@
   }
 }
 </style>
+<style id="aarish-v116-semantic-paint-rail-css">
+/* AARISH V116 SEMANTIC PAINT RAIL
+   Goal:
+   - Milk jaisa zero-flicker paint finance screens par.
+   - Existing red/green/blue logic, stripe logic, save/delete/Firebase untouched.
+   - No heavy interval, no global animation kill.
+   - Only dynamic semantic paint targets get instant color/background/border paint.
+*/
+
+#main-app {
+  --v116-green: #34C759;
+  --v116-red: #FF3B30;
+  --v116-blue: #007AFF;
+  --v116-amber: #F5A623;
+}
+
+/* Dynamic semantic targets: color/background/border must not animate */
+#main-app :is(
+  #milk-new-btn-v50,
+  #credit-entry-btn-v52,
+  #expense-add-btn-v52,
+  #salary-new-btn-v52,
+  #diary-new-btn-v54,
+  #tab-milk,
+  #tab-udhar,
+  #tab-expenses,
+  #tab-salary,
+  #tab-diary,
+  #tab-projects,
+  #tab-home,
+  #milk-screen .header-sticky h1,
+  #udhar-screen .header-sticky h1,
+  #expenses-screen .header-sticky h1,
+  #salary-screen .header-sticky h1,
+  #diary-screen .header-sticky h1,
+  #projects-screen .header-sticky h1,
+  #balances-screen .header-sticky h1,
+  #milk-detail-title,
+  #udhar-detail-title,
+  #expense-detail-title,
+  #salary-detail-title,
+  #project-detail-title,
+  #milk-list .glass-card,
+  #udhar-list .glass-card,
+  #expense-list-container .glass-card,
+  #salary-list .glass-card,
+  #diary-list .glass-card,
+  #project-list .glass-card,
+  #dash-balances-list .glass-card,
+  #milk-list .squircle,
+  #udhar-list .squircle,
+  #expense-list-container .squircle,
+  #salary-list .squircle,
+  #diary-list .squircle,
+  #project-list .squircle,
+  #dash-balances-list .squircle,
+  #milk-list .fa-chevron-right,
+  #udhar-list .fa-chevron-right,
+  #expense-list-container .fa-chevron-right,
+  #salary-list .fa-chevron-right,
+  #diary-list .fa-chevron-right,
+  #project-list .fa-chevron-right,
+  #dash-balances-list .fa-chevron-right
+) {
+  transition-property: transform, opacity !important;
+  transition-duration: 0.075s !important;
+  transition-timing-function: cubic-bezier(0.32,0.72,0,1) !important;
+}
+
+/* Inline V52 sometimes writes transition shorthand; this CSS is backup, JS also locks inline */
+#main-app [data-v116-paint-rail="1"] {
+  transition: transform 0.075s cubic-bezier(0.32,0.72,0,1), opacity 0.06s ease !important;
+}
+
+/* Keep tap bounce alive */
+#main-app .glass-card:active,
+#main-app .nav-item:active,
+#main-app button:active {
+  transform: scale(0.96) !important;
+}
+
+/* Smart stripe fallback: if old renderer forgets stripe color but amount class exists */
+#main-app :is(#udhar-list,#salary-list,#dash-balances-list) .glass-card:has(:is(.text-green-400,.text-green-500,.text-green-600,[class*="text-[#34C759]"],[class*="text-[#10B981]"])) {
+  border-left-color: var(--v116-green) !important;
+  border-left-style: solid !important;
+}
+
+#main-app :is(#udhar-list,#salary-list,#expense-list-container,#dash-balances-list) .glass-card:has(:is(.text-red-400,.text-red-500,.text-red-600,[class*="text-[#FF3B30]"],[class*="text-[#FF4B4B]"])) {
+  border-left-color: var(--v116-red) !important;
+  border-left-style: solid !important;
+}
+
+/* Expense list is naturally red/debit side */
+#main-app #expense-list-container .glass-card {
+  border-left-color: var(--v116-red) !important;
+  border-left-style: solid !important;
+}
+
+/* Diary stays yellow, Business stays amber/blue-neutral if no semantic state */
+#main-app #diary-list .glass-card,
+#main-app #diary-list .diary-card {
+  border-left-color: var(--v116-amber) !important;
+  border-left-style: solid !important;
+}
+
+/* Stripe width consistency without making cards fat */
+#main-app :is(#milk-list,#udhar-list,#expense-list-container,#salary-list,#diary-list,#project-list,#dash-balances-list) .glass-card {
+  border-left-width: 4px !important;
+}
+
+/* If V113/V114 Milk cards exist, keep their premium semantic glow but no color transition */
+#main-app #milk-list .aarish-milk-v113-card,
+#main-app #milk-list .aarish-milk-v113-card * {
+  transition-property: transform, opacity !important;
+  transition-duration: 0.075s !important;
+}
+
+/* Dark mode initial no-white-flash fallback */
+.dark #main-app :is(
+  #tab-milk,
+  #tab-udhar,
+  #tab-expenses,
+  #tab-salary,
+  #milk-screen .header-sticky h1,
+  #udhar-screen .header-sticky h1,
+  #expenses-screen .header-sticky h1,
+  #salary-screen .header-sticky h1
+):not([data-v116-paint-rail="1"]) {
+  color: var(--v116-blue) !important;
+  text-shadow: 0 0 12px rgba(0,122,255,0.28) !important;
+}
+</style>
 </head>
 
 <body>
@@ -13067,7 +13199,7 @@ window.onload = function(){ setTimeout(function(){ window.focus(); window.print(
     btn.style.setProperty("color", "#FFFFFF", "important");
     btn.style.setProperty("border-color", "transparent", "important");
     btn.style.setProperty("box-shadow", pack.box, "important");
-    btn.style.setProperty("transition", "background-color 0.18s ease, box-shadow 0.18s ease, transform 0.12s ease, color 0.18s ease", "important");
+    btn.style.setProperty("transition", "transform 0.075s cubic-bezier(0.32,0.72,0,1), opacity 0.06s ease", "important");
     btn.dataset.aarishFinanceV52 = pack.state;
 
     var icon = btn.querySelector("i");
@@ -13080,14 +13212,14 @@ window.onload = function(){ setTimeout(function(){ window.focus(); window.print(
 
     tab.style.setProperty("color", pack.color, "important");
     tab.style.setProperty("text-shadow", pack.shadow, "important");
-    tab.style.setProperty("transition", "color 0.18s ease, text-shadow 0.18s ease, transform 0.12s ease", "important");
+    tab.style.setProperty("transition", "transform 0.075s cubic-bezier(0.32,0.72,0,1), opacity 0.06s ease", "important");
     tab.dataset.aarishFinanceV52 = pack.state;
 
     var icon = tab.querySelector("i");
     if (icon) {
       icon.style.setProperty("color", pack.color, "important");
       icon.style.setProperty("text-shadow", pack.shadow, "important");
-      icon.style.setProperty("transition", "color 0.18s ease, text-shadow 0.18s ease, transform 0.12s ease", "important");
+      icon.style.setProperty("transition", "transform 0.075s cubic-bezier(0.32,0.72,0,1), opacity 0.06s ease", "important");
     }
   }
 
@@ -13104,6 +13236,7 @@ window.onload = function(){ setTimeout(function(){ window.focus(); window.print(
   };
 
   function scheduleV52() {
+    try { window.updateFinanceActionNavColorsV52(); } catch (e) {}
     requestAnimationFrame(function () {
       try { window.updateFinanceActionNavColorsV52(); } catch (e) {}
     });
@@ -17178,6 +17311,286 @@ window.onload = function(){ setTimeout(function(){ window.focus(); window.print(
   } catch(e) {}
 
   console.log("✅ AARISH V114 Milk compact card + net New button active");
+})();
+</script>
+<script id="aarish-v116-semantic-paint-rail-js">
+/* AARISH V116 SEMANTIC PAINT RAIL
+   Big-Tech style paint pipeline:
+   - run existing color engines before/after render
+   - immediately lock inline transitions so color/background never animates
+   - no DB mutation, no Firebase write, no save/delete logic change
+*/
+(function () {
+  if (window.__AARISH_V116_SEMANTIC_PAINT_RAIL_READY) return;
+  window.__AARISH_V116_SEMANTIC_PAINT_RAIL_READY = true;
+
+  var pending = false;
+  var painting = false;
+
+  var PAINTERS = [
+    "updateMilkRecordHeaderColorV24",
+    "updateMilkNewButtonColorV50",
+    "updateMilkBottomNavColorV51",
+    "updateFinanceActionNavColorsV52",
+    "updateDiaryPermanentYellowV54",
+    "updatePartyLedgerTrueStripeV65",
+    "updateCreditBookDynamicColorV67",
+    "updateExpenseSalaryDynamicColorV68",
+    "updateCreditTopBgV69",
+    "updateUniformStripeWidthV66",
+    "updateMilkDetailBlueTotalCardV64"
+  ];
+
+  var WRAP_TARGETS = [
+    "switchTab",
+    "updateActiveScreen",
+    "updateDashboard",
+
+    "renderMilkList",
+    "renderMilkListV113",
+    "renderMilkListV99",
+    "renderMilkRecords",
+    "renderMilkRecordsV99",
+
+    "renderUdharList",
+    "renderUdharListV99",
+    "renderUdharRecords",
+    "renderUdharRecordsV99",
+
+    "renderExpenseList",
+    "renderExpenseListV99",
+    "renderExpenseRecords",
+    "renderExpenseRecordsV99",
+
+    "renderSalaryList",
+    "renderSalaryListV99",
+    "renderSalaryRecords",
+    "renderSalaryRecordsV99",
+
+    "renderDiaryList",
+    "renderDiaryListV99",
+    "renderProjectsList",
+    "renderProjectsListV99",
+    "renderProjectRecords",
+    "renderDashboardBalances",
+
+    "saveMilkEntry",
+    "saveUdharEntry",
+    "saveExpenseEntry",
+    "saveSalaryEntry",
+    "saveDiaryEntry",
+    "saveNewProject",
+    "saveProjectEntry",
+
+    "deleteMilkEntry",
+    "deleteMilkCustomerProfile",
+    "deleteUdhar",
+    "deleteUdharPersonProfile",
+    "deleteExpense",
+    "deleteExpenseCategoryProfile",
+    "deleteSalarySingleEntry",
+    "deleteSalaryPersonProfile",
+    "deleteDiary",
+    "deleteProject",
+    "deleteProjectEntry"
+  ];
+
+  var LOCK_SELECTOR = [
+    "#milk-new-btn-v50",
+    "#credit-entry-btn-v52",
+    "#expense-add-btn-v52",
+    "#salary-new-btn-v52",
+    "#diary-new-btn-v54",
+
+    "#tab-home",
+    "#tab-milk",
+    "#tab-udhar",
+    "#tab-expenses",
+    "#tab-salary",
+    "#tab-diary",
+    "#tab-projects",
+
+    "#milk-screen .header-sticky h1",
+    "#udhar-screen .header-sticky h1",
+    "#expenses-screen .header-sticky h1",
+    "#salary-screen .header-sticky h1",
+    "#diary-screen .header-sticky h1",
+    "#projects-screen .header-sticky h1",
+    "#balances-screen .header-sticky h1",
+
+    "#milk-detail-title",
+    "#udhar-detail-title",
+    "#expense-detail-title",
+    "#salary-detail-title",
+    "#project-detail-title",
+
+    "#milk-list .glass-card",
+    "#udhar-list .glass-card",
+    "#expense-list-container .glass-card",
+    "#salary-list .glass-card",
+    "#diary-list .glass-card",
+    "#project-list .glass-card",
+    "#dash-balances-list .glass-card",
+
+    "#milk-list .squircle",
+    "#udhar-list .squircle",
+    "#expense-list-container .squircle",
+    "#salary-list .squircle",
+    "#diary-list .squircle",
+    "#project-list .squircle",
+    "#dash-balances-list .squircle",
+
+    "#milk-list .fa-chevron-right",
+    "#udhar-list .fa-chevron-right",
+    "#expense-list-container .fa-chevron-right",
+    "#salary-list .fa-chevron-right",
+    "#diary-list .fa-chevron-right",
+    "#project-list .fa-chevron-right",
+    "#dash-balances-list .fa-chevron-right"
+  ].join(",");
+
+  function lockOne(el) {
+    if (!el || !el.style) return;
+
+    el.setAttribute("data-v116-paint-rail", "1");
+
+    el.style.setProperty(
+      "transition",
+      "transform 0.075s cubic-bezier(0.32,0.72,0,1), opacity 0.06s ease",
+      "important"
+    );
+    el.style.setProperty("transition-property", "transform, opacity", "important");
+    el.style.setProperty("transition-duration", "0.075s", "important");
+    el.style.setProperty("transition-timing-function", "cubic-bezier(0.32,0.72,0,1)", "important");
+  }
+
+  function lockPaintRailV116() {
+    try {
+      document.querySelectorAll(LOCK_SELECTOR).forEach(function (el) {
+        lockOne(el);
+
+        if (el.id === "credit-entry-btn-v52" ||
+            el.id === "expense-add-btn-v52" ||
+            el.id === "salary-new-btn-v52" ||
+            el.id === "milk-new-btn-v50" ||
+            el.id === "diary-new-btn-v54") {
+          try {
+            el.querySelectorAll("i,span,svg").forEach(lockOne);
+          } catch (e) {}
+        }
+      });
+    } catch (e) {}
+  }
+
+  function runExistingPaintersV116() {
+    if (painting) return;
+    painting = true;
+
+    try {
+      PAINTERS.forEach(function (name) {
+        try {
+          if (typeof window[name] === "function") window[name]();
+        } catch (e) {}
+      });
+    } finally {
+      painting = false;
+    }
+  }
+
+  function immediatePaintV116() {
+    runExistingPaintersV116();
+    lockPaintRailV116();
+  }
+
+  function schedulePaintV116() {
+    if (pending) return;
+    pending = true;
+
+    try {
+      if (typeof queueMicrotask === "function") {
+        queueMicrotask(function () {
+          immediatePaintV116();
+        });
+      }
+    } catch (e) {}
+
+    requestAnimationFrame(function () {
+      pending = false;
+      immediatePaintV116();
+
+      requestAnimationFrame(function () {
+        lockPaintRailV116();
+      });
+    });
+  }
+
+  function wrapFunctionV116(name) {
+    try {
+      var old = window[name];
+      if (typeof old !== "function" || old.__aarishV116PaintRailWrapped) return;
+
+      var wrapped = function () {
+        immediatePaintV116();
+        var out = old.apply(this, arguments);
+        immediatePaintV116();
+        schedulePaintV116();
+        return out;
+      };
+
+      wrapped.__aarishV116PaintRailWrapped = true;
+      window[name] = wrapped;
+      try { Function("fn", name + " = fn;")(wrapped); } catch (e) {}
+    } catch (e) {}
+  }
+
+  function wrapPaintersV116() {
+    PAINTERS.forEach(function (name) {
+      try {
+        var old = window[name];
+        if (typeof old !== "function" || old.__aarishV116PainterLockWrapped) return;
+
+        var wrapped = function () {
+          var out = old.apply(this, arguments);
+          lockPaintRailV116();
+          return out;
+        };
+
+        wrapped.__aarishV116PainterLockWrapped = true;
+        window[name] = wrapped;
+        try { Function("fn", name + " = fn;")(wrapped); } catch (e) {}
+      } catch (e) {}
+    });
+  }
+
+  function bootV116() {
+    wrapPaintersV116();
+    WRAP_TARGETS.forEach(wrapFunctionV116);
+    immediatePaintV116();
+    schedulePaintV116();
+  }
+
+  /* Capture phase: paint-lock before browser shows old color */
+  ["pointerdown", "touchstart", "mousedown", "click", "change", "input"].forEach(function (evt) {
+    document.addEventListener(evt, function () {
+      immediatePaintV116();
+      schedulePaintV116();
+    }, { passive: true, capture: true });
+  });
+
+  document.addEventListener("DOMContentLoaded", bootV116, { passive: true, once: true });
+  window.addEventListener("load", bootV116, { passive: true, once: true });
+  window.addEventListener("pageshow", bootV116, { passive: true });
+
+  document.addEventListener("visibilitychange", function () {
+    if (!document.hidden) bootV116();
+  }, { passive: true });
+
+  bootV116();
+  setTimeout(bootV116, 60);
+  setTimeout(bootV116, 240);
+  setTimeout(bootV116, 900);
+
+  console.log("✅ AARISH V116 semantic paint rail active");
 })();
 </script>
 </body>
