@@ -727,226 +727,6 @@
 
 
 
-<style id="aarish-milk-blue-text-only-v62">
-/* AARISH_MILK_BLUE_TEXT_ONLY_V62
-   Milk screen only:
-   - Search customer placeholder + search icon blue
-   - Customer name blue
-   - KG / dot / subtext blue
-   - Right chevron blue
-   - Amount green/red logic untouched
-   - Milk heading/New button V50 green/red logic untouched
-   - Uses existing app/Tailwind color #007AFF only
-   - CSS-only: no Firebase, no data/render logic, no JS loop
-*/
-.dark #milk-screen {
-  --aarish-milk-blue-v62: var(--ios-blue, #007AFF);
-  --aarish-milk-blue-glow-v62: rgba(0, 122, 255, 0.34);
-  --aarish-milk-green-v62: #34C759;
-  --aarish-milk-red-v62: #FF3B30;
-}
-
-/* Search icon + input typed text + placeholder */
-.dark #milk-screen .fa-search {
-  color: var(--aarish-milk-blue-v62) !important;
-  opacity: 0.95 !important;
-  text-shadow: 0 0 10px var(--aarish-milk-blue-glow-v62) !important;
-}
-
-.dark #milk-screen #milk-search,
-.dark #milk-screen .input-box {
-  color: #D8EAFF !important;
-  border-color: rgba(0, 122, 255, 0.18) !important;
-}
-
-.dark #milk-screen #milk-search::placeholder,
-.dark #milk-screen .input-box::placeholder,
-.dark #milk-screen #milk-search::-webkit-input-placeholder,
-.dark #milk-screen .input-box::-webkit-input-placeholder {
-  color: rgba(0, 122, 255, 0.78) !important;
-  opacity: 1 !important;
-}
-
-/* Customer list: customer name blue */
-.dark #milk-screen #milk-list .glass-card h3,
-.dark #milk-screen #milk-list .glass-card h4,
-.dark #milk-screen #milk-list .glass-card .font-bold:not([class*="text-green"]):not([class*="text-red"]):not([class*="text-[#34C759]"]):not([class*="text-[#FF3B30]"]),
-.dark #milk-screen #milk-list .glass-card .font-extrabold:not([class*="text-green"]):not([class*="text-red"]):not([class*="text-[#34C759]"]):not([class*="text-[#FF3B30]"]) {
-  color: var(--aarish-milk-blue-v62) !important;
-  text-shadow: 0 0 10px var(--aarish-milk-blue-glow-v62) !important;
-}
-
-/* KG / dot / normal subtext blue */
-.dark #milk-screen #milk-list .glass-card p,
-.dark #milk-screen #milk-list .glass-card .text-gray-500,
-.dark #milk-screen #milk-list .glass-card .text-gray-400,
-.dark #milk-screen #milk-list .glass-card .text-gray-300,
-.dark #milk-screen #milk-list .glass-card .text-xs,
-.dark #milk-screen #milk-list .glass-card .text-\[10px\],
-.dark #milk-screen #milk-list .glass-card .text-\[11px\],
-.dark #milk-screen #milk-list .glass-card .text-\[12px\],
-.dark #milk-screen #milk-list .glass-card .text-\[13px\] {
-  color: var(--aarish-milk-blue-v62) !important;
-  text-shadow: 0 0 8px var(--aarish-milk-blue-glow-v62) !important;
-  opacity: 1 !important;
-}
-
-/* Right chevron/triangle blue */
-.dark #milk-screen #milk-list .glass-card .fa-chevron-right,
-.dark #milk-screen #milk-list .glass-card i.fa-chevron-right,
-.dark #milk-screen #milk-list .glass-card svg {
-  color: var(--aarish-milk-blue-v62) !important;
-  stroke: var(--aarish-milk-blue-v62) !important;
-  fill: var(--aarish-milk-blue-v62) !important;
-  text-shadow: 0 0 10px var(--aarish-milk-blue-glow-v62) !important;
-  opacity: 1 !important;
-}
-
-/* Amount green/red logic preserved */
-.dark #milk-screen #milk-list .text-green-400,
-.dark #milk-screen #milk-list .text-green-500,
-.dark #milk-screen #milk-list .text-green-600,
-.dark #milk-screen #milk-list [class*="text-[#34C759]"],
-.dark #milk-screen #milk-list [class*="text-[#10B981]"] {
-  color: var(--aarish-milk-green-v62) !important;
-  text-shadow: 0 0 10px rgba(52, 199, 89, 0.34) !important;
-}
-
-.dark #milk-screen #milk-list .text-red-400,
-.dark #milk-screen #milk-list .text-red-500,
-.dark #milk-screen #milk-list .text-red-600,
-.dark #milk-screen #milk-list [class*="text-[#FF3B30]"],
-.dark #milk-screen #milk-list [class*="text-[#FF4B4B]"] {
-  color: var(--aarish-milk-red-v62) !important;
-  text-shadow: 0 0 10px rgba(255, 59, 48, 0.34) !important;
-}
-
-/* Avatar letter stays green/red when already semantic */
-.dark #milk-screen #milk-list .squircle.text-green-500,
-.dark #milk-screen #milk-list .squircle .text-green-500,
-.dark #milk-screen #milk-list .squircle [class*="text-[#34C759]"] {
-  color: var(--aarish-milk-green-v62) !important;
-}
-
-.dark #milk-screen #milk-list .squircle.text-red-500,
-.dark #milk-screen #milk-list .squircle .text-red-500,
-.dark #milk-screen #milk-list .squircle [class*="text-[#FF3B30]"] {
-  color: var(--aarish-milk-red-v62) !important;
-}
-
-/* Milk title/New button/bottom nav net color logic from V50/V51 stays untouched */
-</style>
-
-
-
-<style id="aarish-milk-left-stripe-net-color-v63">
-/* AARISH_MILK_LEFT_STRIPE_NET_COLOR_V63
-   Milk list left curved stripe:
-   - positive/+ amount => green stripe
-   - negative/- amount => red stripe
-   - works in dark mode and light mode
-   - keeps V62 blue text and V50/V51 net button/nav logic untouched
-   - CSS-only: no Firebase, no data/render logic, no JS loop
-*/
-
-/* Base stripe shape/thickness for milk customer cards */
-#milk-screen #milk-list .glass-card,
-#milk-screen #milk-list .list-enter {
-  border-left-width: 3px !important;
-  border-left-style: solid !important;
-  border-left-color: transparent !important;
-  border-radius: 24px !important;
-}
-
-/* Positive milk/customer net => GREEN curved stripe */
-#milk-screen #milk-list .glass-card:has(.text-green-400),
-#milk-screen #milk-list .glass-card:has(.text-green-500),
-#milk-screen #milk-list .glass-card:has(.text-green-600),
-#milk-screen #milk-list .glass-card:has([class*="text-[#34C759]"]),
-#milk-screen #milk-list .glass-card:has([class*="text-[#10B981]"]),
-#milk-screen #milk-list .list-enter:has(.text-green-400),
-#milk-screen #milk-list .list-enter:has(.text-green-500),
-#milk-screen #milk-list .list-enter:has(.text-green-600),
-#milk-screen #milk-list .list-enter:has([class*="text-[#34C759]"]),
-#milk-screen #milk-list .list-enter:has([class*="text-[#10B981]"]) {
-  border-left-color: #34C759 !important;
-  box-shadow: -7px 0 18px rgba(52,199,89,0.20), inset 1px 0 0 rgba(52,199,89,0.48) !important;
-}
-
-/* Negative milk/customer net => RED curved stripe */
-#milk-screen #milk-list .glass-card:has(.text-red-400),
-#milk-screen #milk-list .glass-card:has(.text-red-500),
-#milk-screen #milk-list .glass-card:has(.text-red-600),
-#milk-screen #milk-list .glass-card:has([class*="text-[#FF3B30]"]),
-#milk-screen #milk-list .glass-card:has([class*="text-[#FF4B4B]"]),
-#milk-screen #milk-list .list-enter:has(.text-red-400),
-#milk-screen #milk-list .list-enter:has(.text-red-500),
-#milk-screen #milk-list .list-enter:has(.text-red-600),
-#milk-screen #milk-list .list-enter:has([class*="text-[#FF3B30]"]),
-#milk-screen #milk-list .list-enter:has([class*="text-[#FF4B4B]"]) {
-  border-left-color: #FF3B30 !important;
-  box-shadow: -7px 0 18px rgba(255,59,48,0.20), inset 1px 0 0 rgba(255,59,48,0.48) !important;
-}
-
-/* If render already gives border-left color classes, make them strong/visible */
-#milk-screen #milk-list .border-l-\[\#34C759\],
-#milk-screen #milk-list [class*="border-l-[#34C759]"],
-#milk-screen #milk-list [style*="#34C759"],
-#milk-screen #milk-list [style*="52, 199, 89"] {
-  border-left-width: 3px !important;
-  border-left-style: solid !important;
-  border-left-color: #34C759 !important;
-}
-
-#milk-screen #milk-list .border-l-\[\#FF3B30\],
-#milk-screen #milk-list [class*="border-l-[#FF3B30]"],
-#milk-screen #milk-list [style*="#FF3B30"],
-#milk-screen #milk-list [style*="255, 59, 48"] {
-  border-left-width: 3px !important;
-  border-left-style: solid !important;
-  border-left-color: #FF3B30 !important;
-}
-
-/* Dark mode: make stripe more visible on black background */
-.dark #milk-screen #milk-list .glass-card:has(.text-green-400),
-.dark #milk-screen #milk-list .glass-card:has(.text-green-500),
-.dark #milk-screen #milk-list .glass-card:has(.text-green-600),
-.dark #milk-screen #milk-list .glass-card:has([class*="text-[#34C759]"]),
-.dark #milk-screen #milk-list .glass-card:has([class*="text-[#10B981]"]),
-.dark #milk-screen #milk-list .list-enter:has(.text-green-400),
-.dark #milk-screen #milk-list .list-enter:has(.text-green-500),
-.dark #milk-screen #milk-list .list-enter:has(.text-green-600),
-.dark #milk-screen #milk-list .list-enter:has([class*="text-[#34C759]"]),
-.dark #milk-screen #milk-list .list-enter:has([class*="text-[#10B981]"]) {
-  border-left-color: #34C759 !important;
-  box-shadow: -3px 0 14px rgba(52,199,89,0.24), inset 1px 0 0 rgba(52,199,89,0.52) !important;
-}
-
-.dark #milk-screen #milk-list .glass-card:has(.text-red-400),
-.dark #milk-screen #milk-list .glass-card:has(.text-red-500),
-.dark #milk-screen #milk-list .glass-card:has(.text-red-600),
-.dark #milk-screen #milk-list .glass-card:has([class*="text-[#FF3B30]"]),
-.dark #milk-screen #milk-list .glass-card:has([class*="text-[#FF4B4B]"]),
-.dark #milk-screen #milk-list .list-enter:has(.text-red-400),
-.dark #milk-screen #milk-list .list-enter:has(.text-red-500),
-.dark #milk-screen #milk-list .list-enter:has(.text-red-600),
-.dark #milk-screen #milk-list .list-enter:has([class*="text-[#FF3B30]"]),
-.dark #milk-screen #milk-list .list-enter:has([class*="text-[#FF4B4B]"]) {
-  border-left-color: #FF3B30 !important;
-  box-shadow: -3px 0 14px rgba(255,59,48,0.24), inset 1px 0 0 rgba(255,59,48,0.52) !important;
-}
-
-/* Small phones: keep stripe visible but not too fat */
-@media (max-width: 380px) {
-  #milk-screen #milk-list .glass-card,
-  #milk-screen #milk-list .list-enter {
-    border-left-width: 3px !important;
-  }
-}
-</style>
-
-
-
 <style id="aarish-milk-detail-blue-total-v64">
 /* AARISH_MILK_DETAIL_BLUE_TOTAL_CARD_V64
    Milk detail screen only:
@@ -3783,21 +3563,74 @@
   color: #FF3B30 !important;
 }
 </style>
-<style id="aarish-milk-final-salary-style-v109-css">
-/* AARISH_MILK_V109_OBJECT_RECORDS_SAFE_FIX */
-/* AARISH_MILK_FINAL_SALARY_STYLE_V109
-   Final milk list visual authority.
-   Search stays blue. Positive full green. Negative full red.
-   UI-only: no DB/save/delete logic changed.
+<style id="aarish-v113-milk-business-leak-ui-css">
+/* AARISH V113
+   Fix 1: Business Kit raw JS leak is fixed by Python escaping inside fullHtml().
+   Fix 2: Milk UI like premium dark screenshot.
+   Scope: Milk list UI only. No Firebase/save/delete/data mutation.
 */
 
-/* Search area permanent blue */
+#milk-screen {
+  --milk-v113-blue: #007AFF;
+  --milk-v113-green: #34C759;
+  --milk-v113-red: #FF3B30;
+  --milk-v113-dark-card: rgba(2, 8, 23, 0.94);
+  --milk-v113-dark-card-2: rgba(8, 17, 36, 0.92);
+}
+
+.dark #milk-screen {
+  background:
+    radial-gradient(circle at 12% 20%, rgba(255,59,48,0.10), transparent 34%),
+    radial-gradient(circle at 92% 8%, rgba(0,122,255,0.10), transparent 30%),
+    linear-gradient(180deg, #030712 0%, #020617 100%) !important;
+}
+
+/* Header = red premium, like screenshot */
+#milk-screen .header-sticky h1,
+.dark #milk-screen .header-sticky h1 {
+  color: var(--milk-v113-red) !important;
+  text-shadow: 0 0 14px rgba(255,59,48,0.34) !important;
+  font-weight: 900 !important;
+  letter-spacing: -0.05em !important;
+}
+
+#milk-screen #milk-new-btn-v50,
+.dark #milk-screen #milk-new-btn-v50 {
+  background: linear-gradient(135deg, #FF453A 0%, #FF2D55 100%) !important;
+  color: #FFFFFF !important;
+  border: 1px solid rgba(255,255,255,0.18) !important;
+  border-radius: 22px !important;
+  box-shadow: 0 14px 34px rgba(255,59,48,0.34), inset 0 1px 0 rgba(255,255,255,0.22) !important;
+  font-weight: 900 !important;
+}
+
+#milk-screen #milk-new-btn-v50 *,
+.dark #milk-screen #milk-new-btn-v50 * {
+  color: #FFFFFF !important;
+}
+
+/* Search = permanent blue */
+#milk-screen .relative:has(#milk-search) > i.fa-search,
+#milk-screen #milk-search,
+.dark #milk-screen .relative:has(#milk-search) > i.fa-search,
+.dark #milk-screen #milk-search {
+  color: var(--milk-v113-blue) !important;
+  caret-color: var(--milk-v113-blue) !important;
+  text-shadow: 0 0 12px rgba(0,122,255,0.30) !important;
+  opacity: 1 !important;
+}
+
 #milk-screen #milk-search,
 .dark #milk-screen #milk-search {
-  color: #007AFF !important;
-  caret-color: #007AFF !important;
-  text-shadow: 0 0 10px rgba(0,122,255,0.28) !important;
-  opacity: 1 !important;
+  min-height: 64px !important;
+  border-radius: 26px !important;
+  font-weight: 800 !important;
+  border: 1px solid rgba(0,122,255,0.26) !important;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.08), 0 0 0 1px rgba(0,122,255,0.06) !important;
+}
+
+.dark #milk-screen #milk-search {
+  background: rgba(2, 10, 24, 0.88) !important;
 }
 
 #milk-screen #milk-search::placeholder,
@@ -3808,208 +3641,148 @@
   opacity: 1 !important;
 }
 
-#milk-screen .fa-search,
-.dark #milk-screen .fa-search {
-  color: #007AFF !important;
-  text-shadow: 0 0 10px rgba(0,122,255,0.28) !important;
-  opacity: 1 !important;
-}
-
-/* Remove old thick pseudo stripes */
+/* Kill old pseudo stripe */
 #milk-screen #milk-list .glass-card::before,
 .dark #milk-screen #milk-list .glass-card::before {
   content: none !important;
   display: none !important;
 }
 
-/* Salary-like card base */
-#milk-screen #milk-list .milk-final-v109,
-.dark #milk-screen #milk-list .milk-final-v109 {
+/* Premium milk cards */
+#milk-screen #milk-list .aarish-milk-v113-card,
+.dark #milk-screen #milk-list .aarish-milk-v113-card {
   position: relative !important;
-  overflow: visible !important;
-  contain: layout style !important;
-  border-left-width: 4px !important;
+  min-height: 118px !important;
+  padding: 22px 18px !important;
+  border-radius: 28px !important;
+  border-left-width: 6px !important;
   border-left-style: solid !important;
   border-left-color: var(--milkTone) !important;
-  border-radius: 24px !important;
+  overflow: hidden !important;
+  transform: translate3d(0,0,0) !important;
+  contain: layout style !important;
+}
+
+#milk-screen #milk-list .aarish-milk-v113-card {
+  background: rgba(255,255,255,0.86) !important;
+  border-top-color: rgba(255,255,255,0.68) !important;
+  border-right-color: rgba(255,255,255,0.68) !important;
+  border-bottom-color: rgba(255,255,255,0.68) !important;
   box-shadow:
-    -4px 0 18px var(--milkGlow),
-    0 16px 42px rgba(0,0,0,0.48),
+    -5px 0 18px var(--milkGlow),
+    0 14px 34px rgba(15,23,42,0.08),
     inset 1px 0 0 var(--milkInset),
-    inset 0 1px 0 rgba(255,255,255,0.06) !important;
+    inset 0 1px 0 rgba(255,255,255,0.70) !important;
 }
 
-/* Full card text/icon follows tone */
-#milk-screen #milk-list .milk-final-v109 .milk-final-v109-color,
-#milk-screen #milk-list .milk-final-v109 .milk-final-v109-color *,
-.dark #milk-screen #milk-list .milk-final-v109 .milk-final-v109-color,
-.dark #milk-screen #milk-list .milk-final-v109 .milk-final-v109-color * {
+.dark #milk-screen #milk-list .aarish-milk-v113-card {
+  background: linear-gradient(135deg, var(--milk-v113-dark-card), var(--milk-v113-dark-card-2)) !important;
+  border-top-color: rgba(148,163,184,0.10) !important;
+  border-right-color: rgba(148,163,184,0.10) !important;
+  border-bottom-color: rgba(148,163,184,0.10) !important;
+  box-shadow:
+    -5px 0 22px var(--milkGlow),
+    0 18px 46px rgba(0,0,0,0.54),
+    inset 1px 0 0 var(--milkInset),
+    inset 0 1px 0 rgba(255,255,255,0.07) !important;
+}
+
+/* Full text/icon/avatar/chevron follows tone */
+#milk-screen #milk-list .aarish-milk-v113-card,
+#milk-screen #milk-list .aarish-milk-v113-card *:not(input):not(textarea):not(select):not(button),
+.dark #milk-screen #milk-list .aarish-milk-v113-card,
+.dark #milk-screen #milk-list .aarish-milk-v113-card *:not(input):not(textarea):not(select):not(button) {
   color: var(--milkTone) !important;
-  text-shadow: 0 0 10px var(--milkGlow) !important;
+  text-shadow: 0 0 12px var(--milkGlow) !important;
   opacity: 1 !important;
 }
 
-#milk-screen #milk-list .milk-final-v109 h4,
-#milk-screen #milk-list .milk-final-v109 p,
-#milk-screen #milk-list .milk-final-v109 p *,
-#milk-screen #milk-list .milk-final-v109 span,
-#milk-screen #milk-list .milk-final-v109 i.fa-chevron-right,
-.dark #milk-screen #milk-list .milk-final-v109 h4,
-.dark #milk-screen #milk-list .milk-final-v109 p,
-.dark #milk-screen #milk-list .milk-final-v109 p *,
-.dark #milk-screen #milk-list .milk-final-v109 span,
-.dark #milk-screen #milk-list .milk-final-v109 i.fa-chevron-right {
-  color: var(--milkTone) !important;
-  text-shadow: 0 0 10px var(--milkGlow) !important;
-  opacity: 1 !important;
-}
-
-#milk-screen #milk-list .milk-final-v109 .squircle,
-.dark #milk-screen #milk-list .milk-final-v109 .squircle {
+#milk-screen #milk-list .aarish-milk-v113-avatar,
+.dark #milk-screen #milk-list .aarish-milk-v113-avatar {
+  width: 58px !important;
+  height: 58px !important;
+  border-radius: 22px !important;
   background: var(--milkTint) !important;
   border: 1px solid var(--milkBorder) !important;
   color: var(--milkTone) !important;
-  box-shadow: inset 0 1px 0 rgba(255,255,255,0.06), 0 8px 22px var(--milkSoft) !important;
-}
-</style>
-<style id="aarish-v106-milk-dark-salary-style-css">
-/* AARISH_V106_MILK_DARK_SALARY_STYLE_BULLETPROOF_FIXED
-   ONLY dark Milk list.
-   Positive = green, Negative = red, Zero = blue.
-   Search icon/input always blue.
-   Light mode untouched. Backend untouched.
-*/
-
-.dark #milk-screen {
-  --milk-v106-green: #34C759;
-  --milk-v106-red: #FF3B30;
-  --milk-v106-blue: #007AFF;
-  --milk-v106-green-glow: rgba(52,199,89,0.34);
-  --milk-v106-red-glow: rgba(255,59,48,0.34);
-  --milk-v106-blue-glow: rgba(0,122,255,0.30);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.08), 0 10px 28px var(--milkSoft) !important;
 }
 
-.dark #milk-screen #milk-search {
-  color: var(--milk-v106-blue) !important;
-  caret-color: var(--milk-v106-blue) !important;
-  text-shadow: 0 0 10px var(--milk-v106-blue-glow) !important;
+#milk-screen #milk-list .aarish-milk-v113-name,
+.dark #milk-screen #milk-list .aarish-milk-v113-name {
+  font-size: 20px !important;
+  line-height: 1.12 !important;
+  font-weight: 900 !important;
+  letter-spacing: -0.035em !important;
 }
 
-.dark #milk-screen #milk-search::placeholder,
-.dark #milk-screen #milk-search::-webkit-input-placeholder {
-  color: rgba(0,122,255,0.78) !important;
-  opacity: 1 !important;
+#milk-screen #milk-list .aarish-milk-v113-meta,
+.dark #milk-screen #milk-list .aarish-milk-v113-meta {
+  font-size: 16px !important;
+  line-height: 1.2 !important;
+  font-weight: 900 !important;
+  margin-top: 8px !important;
 }
 
-.dark #milk-screen .fa-search {
-  color: var(--milk-v106-blue) !important;
-  text-shadow: 0 0 10px var(--milk-v106-blue-glow) !important;
-  opacity: 1 !important;
-  filter: none !important;
+#milk-screen #milk-list .aarish-milk-v113-amount,
+.dark #milk-screen #milk-list .aarish-milk-v113-amount {
+  font-size: 22px !important;
+  font-weight: 950 !important;
 }
 
-.dark #milk-screen #milk-list .glass-card::before {
-  display: none !important;
-  content: none !important;
+/* Tone fallback */
+#milk-screen #milk-list .aarish-milk-v113-card[data-aarish-milk-v113-tone="positive"] {
+  --milkTone: #34C759;
+  --milkTint: rgba(52,199,89,0.13);
+  --milkBorder: rgba(52,199,89,0.25);
+  --milkGlow: rgba(52,199,89,0.34);
+  --milkInset: rgba(52,199,89,0.52);
+  --milkSoft: rgba(52,199,89,0.13);
 }
 
-.dark #milk-screen #milk-list .glass-card[data-milk-v106-tone] {
-  position: relative !important;
-  overflow: visible !important;
-  contain: layout style !important;
-  border-left-width: 4px !important;
-  border-left-style: solid !important;
-  border-radius: 24px !important;
+#milk-screen #milk-list .aarish-milk-v113-card[data-aarish-milk-v113-tone="negative"] {
+  --milkTone: #FF3B30;
+  --milkTint: rgba(255,59,48,0.13);
+  --milkBorder: rgba(255,59,48,0.25);
+  --milkGlow: rgba(255,59,48,0.34);
+  --milkInset: rgba(255,59,48,0.52);
+  --milkSoft: rgba(255,59,48,0.13);
 }
 
-/* POSITIVE = FULL GREEN */
-.dark #milk-screen #milk-list .glass-card[data-milk-v106-tone="positive"] {
-  border-left-color: var(--milk-v106-green) !important;
-  box-shadow:
-    -4px 0 18px var(--milk-v106-green-glow),
-    0 16px 42px rgba(0,0,0,0.50),
-    inset 1px 0 0 rgba(52,199,89,0.52),
-    inset 0 1px 0 rgba(255,255,255,0.06) !important;
+#milk-screen #milk-list .aarish-milk-v113-card[data-aarish-milk-v113-tone="neutral"] {
+  --milkTone: #007AFF;
+  --milkTint: rgba(0,122,255,0.13);
+  --milkBorder: rgba(0,122,255,0.25);
+  --milkGlow: rgba(0,122,255,0.30);
+  --milkInset: rgba(0,122,255,0.48);
+  --milkSoft: rgba(0,122,255,0.13);
 }
 
-.dark #milk-screen #milk-list .glass-card[data-milk-v106-tone="positive"] h1,
-.dark #milk-screen #milk-list .glass-card[data-milk-v106-tone="positive"] h2,
-.dark #milk-screen #milk-list .glass-card[data-milk-v106-tone="positive"] h3,
-.dark #milk-screen #milk-list .glass-card[data-milk-v106-tone="positive"] h4,
-.dark #milk-screen #milk-list .glass-card[data-milk-v106-tone="positive"] p,
-.dark #milk-screen #milk-list .glass-card[data-milk-v106-tone="positive"] p *,
-.dark #milk-screen #milk-list .glass-card[data-milk-v106-tone="positive"] span,
-.dark #milk-screen #milk-list .glass-card[data-milk-v106-tone="positive"] .squircle,
-.dark #milk-screen #milk-list .glass-card[data-milk-v106-tone="positive"] i.fa-chevron-right,
-.dark #milk-screen #milk-list .glass-card[data-milk-v106-tone="positive"] .v100-title,
-.dark #milk-screen #milk-list .glass-card[data-milk-v106-tone="positive"] .v100-subtitle,
-.dark #milk-screen #milk-list .glass-card[data-milk-v106-tone="positive"] .v100-amount {
-  color: var(--milk-v106-green) !important;
-  text-shadow: 0 0 10px var(--milk-v106-green-glow) !important;
-  opacity: 1 !important;
-}
-
-.dark #milk-screen #milk-list .glass-card[data-milk-v106-tone="positive"] .squircle {
-  background: rgba(52,199,89,0.13) !important;
-  border: 1px solid rgba(52,199,89,0.24) !important;
-  box-shadow: inset 0 1px 0 rgba(255,255,255,0.06), 0 8px 22px rgba(52,199,89,0.12) !important;
-}
-
-/* NEGATIVE = FULL RED */
-.dark #milk-screen #milk-list .glass-card[data-milk-v106-tone="negative"] {
-  border-left-color: var(--milk-v106-red) !important;
-  box-shadow:
-    -4px 0 18px var(--milk-v106-red-glow),
-    0 16px 42px rgba(0,0,0,0.50),
-    inset 1px 0 0 rgba(255,59,48,0.52),
-    inset 0 1px 0 rgba(255,255,255,0.06) !important;
-}
-
-.dark #milk-screen #milk-list .glass-card[data-milk-v106-tone="negative"] h1,
-.dark #milk-screen #milk-list .glass-card[data-milk-v106-tone="negative"] h2,
-.dark #milk-screen #milk-list .glass-card[data-milk-v106-tone="negative"] h3,
-.dark #milk-screen #milk-list .glass-card[data-milk-v106-tone="negative"] h4,
-.dark #milk-screen #milk-list .glass-card[data-milk-v106-tone="negative"] p,
-.dark #milk-screen #milk-list .glass-card[data-milk-v106-tone="negative"] p *,
-.dark #milk-screen #milk-list .glass-card[data-milk-v106-tone="negative"] span,
-.dark #milk-screen #milk-list .glass-card[data-milk-v106-tone="negative"] .squircle,
-.dark #milk-screen #milk-list .glass-card[data-milk-v106-tone="negative"] i.fa-chevron-right,
-.dark #milk-screen #milk-list .glass-card[data-milk-v106-tone="negative"] .v100-title,
-.dark #milk-screen #milk-list .glass-card[data-milk-v106-tone="negative"] .v100-subtitle,
-.dark #milk-screen #milk-list .glass-card[data-milk-v106-tone="negative"] .v100-amount {
-  color: var(--milk-v106-red) !important;
-  text-shadow: 0 0 10px var(--milk-v106-red-glow) !important;
-  opacity: 1 !important;
-}
-
-.dark #milk-screen #milk-list .glass-card[data-milk-v106-tone="negative"] .squircle {
-  background: rgba(255,59,48,0.13) !important;
-  border: 1px solid rgba(255,59,48,0.24) !important;
-  box-shadow: inset 0 1px 0 rgba(255,255,255,0.06), 0 8px 22px rgba(255,59,48,0.12) !important;
-}
-
-/* ZERO = BLUE */
-.dark #milk-screen #milk-list .glass-card[data-milk-v106-tone="neutral"] {
-  border-left-color: var(--milk-v106-blue) !important;
-  box-shadow:
-    -4px 0 18px var(--milk-v106-blue-glow),
-    0 16px 42px rgba(0,0,0,0.50),
-    inset 1px 0 0 rgba(0,122,255,0.42),
-    inset 0 1px 0 rgba(255,255,255,0.06) !important;
-}
-
-.dark #milk-screen #milk-list .glass-card[data-milk-v106-tone="neutral"] h4,
-.dark #milk-screen #milk-list .glass-card[data-milk-v106-tone="neutral"] p,
-.dark #milk-screen #milk-list .glass-card[data-milk-v106-tone="neutral"] p *,
-.dark #milk-screen #milk-list .glass-card[data-milk-v106-tone="neutral"] span,
-.dark #milk-screen #milk-list .glass-card[data-milk-v106-tone="neutral"] .squircle,
-.dark #milk-screen #milk-list .glass-card[data-milk-v106-tone="neutral"] i.fa-chevron-right,
-.dark #milk-screen #milk-list .glass-card[data-milk-v106-tone="neutral"] .v100-title,
-.dark #milk-screen #milk-list .glass-card[data-milk-v106-tone="neutral"] .v100-subtitle,
-.dark #milk-screen #milk-list .glass-card[data-milk-v106-tone="neutral"] .v100-amount {
-  color: var(--milk-v106-blue) !important;
-  text-shadow: 0 0 10px var(--milk-v106-blue-glow) !important;
-  opacity: 1 !important;
+@media (max-width: 380px) {
+  #milk-screen #milk-list .aarish-milk-v113-card,
+  .dark #milk-screen #milk-list .aarish-milk-v113-card {
+    min-height: 108px !important;
+    padding: 19px 15px !important;
+    border-radius: 25px !important;
+  }
+  #milk-screen #milk-list .aarish-milk-v113-avatar,
+  .dark #milk-screen #milk-list .aarish-milk-v113-avatar {
+    width: 52px !important;
+    height: 52px !important;
+    border-radius: 19px !important;
+  }
+  #milk-screen #milk-list .aarish-milk-v113-name,
+  .dark #milk-screen #milk-list .aarish-milk-v113-name {
+    font-size: 18px !important;
+  }
+  #milk-screen #milk-list .aarish-milk-v113-meta,
+  .dark #milk-screen #milk-list .aarish-milk-v113-meta {
+    font-size: 14px !important;
+  }
+  #milk-screen #milk-list .aarish-milk-v113-amount,
+  .dark #milk-screen #milk-list .aarish-milk-v113-amount {
+    font-size: 19px !important;
+  }
 }
 </style>
 </head>
@@ -8575,7 +8348,7 @@ window.onload = function(){ setTimeout(function(){ window.focus(); window.print(
   document.addEventListener("input", function(){ setTimeout(applyMilkV106, 0); }, { passive: true });
   window.addEventListener("pageshow", function(){ setTimeout(applyMilkV106, 80); }, { passive: true });
 })();
-</script>
+<\/script>
 </body>
 </html>`;
   }
@@ -16848,21 +16621,29 @@ window.onload = function(){ setTimeout(function(){ window.focus(); window.print(
   window.addEventListener("pageshow", function(){ setTimeout(applyV107, 80); }, { passive: true });
 })();
 </script>
-<script id="aarish-milk-final-salary-style-v109-js">
-/* AARISH_MILK_FINAL_SALARY_STYLE_V109
-   Final UI-only Milk list renderer.
-   No milkDB/Firebase/save/delete mutation.
+\n<script id="aarish-v113-milk-business-leak-ui-js">
+/* AARISH V113 Milk renderer
+   UI-only renderer authority. No DB/Firebase/save/delete mutation.
 */
-(function(){
-  if (window.__AARISH_MILK_FINAL_V109_READY) return;
-  window.__AARISH_MILK_FINAL_V109_READY = true;
+(function () {
+  if (window.__AARISH_V113_MILK_UI_READY) return;
+  window.__AARISH_V113_MILK_UI_READY = true;
 
-  function byId(id){ return document.getElementById(id); }
-  function num(v){ var x = Number(v); return isFinite(x) ? x : 0; }
-  function arr(v){
+  function byId(id) { return document.getElementById(id); }
+  function num(v) { var x = Number(v); return isFinite(x) ? x : 0; }
+  function clean(v) { return String(v == null ? "" : v).replace(/[\u0000-\u001F\u007F]/g, " ").replace(/\s+/g, " ").trim(); }
+  function esc(v) { return clean(v).replace(/[&<>"']/g, function (c) { return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]; }); }
+  function js(v) { return JSON.stringify(String(v == null ? "" : v)); }
+  function norm(v) { try { return clean(v).toLocaleLowerCase("en-IN"); } catch(e) { return clean(v).toLowerCase(); } }
+  function first(v) { var s = clean(v); return esc((s && s.charAt(0) ? s.charAt(0).toUpperCase() : "?")); }
+  function money(v) { return Math.round(Math.abs(num(v))).toLocaleString("en-IN"); }
+  function signedMoney(v) { return (num(v) >= 0 ? "+₹" : "-₹") + money(v); }
+  function signedKg(v) { return (num(v) >= 0 ? "+" : "-") + Math.abs(num(v)).toFixed(2) + " KG"; }
+
+  function arr(v) {
     if (Array.isArray(v)) return v.filter(Boolean);
     if (v && typeof v === "object") {
-      return Object.keys(v).map(function(k){
+      return Object.keys(v).map(function (k) {
         var r = v[k];
         if (r && typeof r === "object" && !r.id) r.id = k;
         return r;
@@ -16870,22 +16651,22 @@ window.onload = function(){ setTimeout(function(){ window.focus(); window.print(
     }
     return [];
   }
-  function clean(v){ return String(v == null ? "" : v).replace(/[\u0000-\u001F\u007F]/g," ").replace(/\s+/g," ").trim(); }
-  function esc(v){ return clean(v).replace(/[&<>"']/g, function(c){ return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]; }); }
-  function js(v){ return JSON.stringify(String(v == null ? "" : v)); }
-  function norm(v){ try { return clean(v).toLocaleLowerCase("en-IN"); } catch(e) { return clean(v).toLowerCase(); } }
-  function first(v){ var s = clean(v); return esc((s && s.charAt(0) ? s.charAt(0).toUpperCase() : "?")); }
-  function money(v){ return Math.round(Math.abs(num(v))).toLocaleString("en-IN"); }
-  function signedMoney(v){ return (num(v) >= 0 ? "+₹" : "-₹") + money(v); }
-  function signedKg(v){ return (num(v) >= 0 ? "+" : "-") + Math.abs(num(v)).toFixed(2) + " KG"; }
 
-  function getDb(){
+  function db() {
     try { if (typeof milkDB !== "undefined" && milkDB) return milkDB; } catch(e) {}
     try { if (window.milkDB) return window.milkDB; } catch(e) {}
     return {};
   }
 
-  function flowOf(r, c, rawQty){
+  function flowOf(r, c, rawQty) {
+    try {
+      if (typeof milkFlow === "function") {
+        var mf = String(milkFlow(r, c) || "").toLowerCase();
+        if (mf === "taken" || mf === "negative") return "taken";
+        if (mf === "given" || mf === "positive") return "given";
+      }
+    } catch(e) {}
+
     if (rawQty < 0) return "taken";
 
     var raw = "";
@@ -16897,15 +16678,15 @@ window.onload = function(){ setTimeout(function(){ window.focus(); window.print(
     var ct = "";
     try { ct = String((c && c.type) || "").toLowerCase(); } catch(e) {}
 
-    return ct === "dene_wala" || ct === "buyer" || ct === "pay" ? "taken" : "given";
+    return (ct === "dene_wala" || ct === "buyer" || ct === "pay") ? "taken" : "given";
   }
 
-  function groups(){
+  function groups() {
     var out = {};
-    var db = getDb();
+    var source = db();
 
     try {
-      Object.keys(db).forEach(function(key){
+      Object.keys(source).forEach(function (key) {
         var nk = norm(key);
         if (!nk) return;
         if (!out[nk]) out[nk] = { norm:nk, name:clean(key) || "Unknown", keys:[] };
@@ -16916,22 +16697,22 @@ window.onload = function(){ setTimeout(function(){ window.focus(); window.print(
     return out;
   }
 
-  function totals(g){
+  function totals(g) {
     var netKg = 0;
     var netAmt = 0;
-    var db = getDb();
+    var source = db();
 
     try {
-      (g.keys || []).forEach(function(key){
-        var c = db[key] || {};
-        var rate = num(c.rate || c.milkRate || (typeof DEFAULT_RATE !== "undefined" ? DEFAULT_RATE : 55));
+      (g.keys || []).forEach(function (key) {
+        var c = source[key] || {};
+        var rate = num(c.rate || c.milkRate || (typeof DEFAULT_RATE !== "undefined" ? DEFAULT_RATE : 55)) || 55;
 
-        arr(c.records).forEach(function(r){
+        arr(c.records).forEach(function (r) {
           var rawQty = num(r && r.morning) + num(r && r.evening);
           if (!rawQty) return;
 
           var qty = Math.abs(rawQty);
-          var rr = num((r && (r.rate || r.milkRate)) || rate || 55);
+          var rr = num((r && (r.rate || r.milkRate)) || rate || 55) || 55;
           var amt = qty * rr;
 
           if (flowOf(r, c, rawQty) === "taken") {
@@ -16948,104 +16729,108 @@ window.onload = function(){ setTimeout(function(){ window.focus(); window.print(
     return { netKg:netKg, netAmt:netAmt };
   }
 
-  function tone(v){
+  function tone(v) {
     return num(v) > 0 ? "positive" : (num(v) < 0 ? "negative" : "neutral");
   }
 
-  function toneVars(t){
-    if (t === "positive") return "--milkTone:#34C759;--milkTint:rgba(52,199,89,0.13);--milkBorder:rgba(52,199,89,0.22);--milkGlow:rgba(52,199,89,0.34);--milkInset:rgba(52,199,89,0.52);--milkSoft:rgba(52,199,89,0.10);";
-    if (t === "negative") return "--milkTone:#FF3B30;--milkTint:rgba(255,59,48,0.13);--milkBorder:rgba(255,59,48,0.22);--milkGlow:rgba(255,59,48,0.34);--milkInset:rgba(255,59,48,0.52);--milkSoft:rgba(255,59,48,0.10);";
-    return "--milkTone:#007AFF;--milkTint:rgba(0,122,255,0.13);--milkBorder:rgba(0,122,255,0.22);--milkGlow:rgba(0,122,255,0.30);--milkInset:rgba(0,122,255,0.48);--milkSoft:rgba(0,122,255,0.10);";
+  function toneVars(t) {
+    if (t === "positive") return "--milkTone:#34C759;--milkTint:rgba(52,199,89,0.13);--milkBorder:rgba(52,199,89,0.25);--milkGlow:rgba(52,199,89,0.34);--milkInset:rgba(52,199,89,0.52);--milkSoft:rgba(52,199,89,0.13);";
+    if (t === "negative") return "--milkTone:#FF3B30;--milkTint:rgba(255,59,48,0.13);--milkBorder:rgba(255,59,48,0.25);--milkGlow:rgba(255,59,48,0.34);--milkInset:rgba(255,59,48,0.52);--milkSoft:rgba(255,59,48,0.13);";
+    return "--milkTone:#007AFF;--milkTint:rgba(0,122,255,0.13);--milkBorder:rgba(0,122,255,0.25);--milkGlow:rgba(0,122,255,0.30);--milkInset:rgba(0,122,255,0.48);--milkSoft:rgba(0,122,255,0.13);";
   }
 
-  function openAction(g){
+  function emptyHtml() {
+    try { if (typeof empty === "function") return empty("fa-jug-detergent", "No customers found"); } catch(e) {}
+    try { if (typeof getEmptyState === "function") return getEmptyState("fa-jug-detergent", "No customers found"); } catch(e) {}
+    return '<div class="py-20 text-center text-[#007AFF] font-extrabold">No customers found</div>';
+  }
+
+  function openAction(g) {
     var firstKey = (g.keys && g.keys[0]) || g.name;
     return "try{haptic()}catch(e){}; if(window.aarishV98OpenMilkGroup){window.aarishV98OpenMilkGroup(" + js(g.norm) + ")}else{openMilkDetail(" + js(firstKey) + ")}";
   }
 
-  function emptyHtml(){
-    if (typeof getEmptyState === "function") return getEmptyState("fa-jug-detergent", "No customers found");
-    return '<div class="py-20 text-center text-[#007AFF] font-bold">No customers found</div>';
-  }
-
-  function renderMilkListV109(){
+  function renderMilkListV113() {
     var box = byId("milk-list");
     if (!box) return;
 
-    var search = byId("milk-search");
-    var q = norm(search && search.value ? search.value : "");
+    var q = norm((byId("milk-search") || {}).value || "");
     var map = groups();
     var list = [];
 
-    Object.keys(map).forEach(function(k){
+    Object.keys(map).forEach(function (k) {
       if (norm(map[k].name).indexOf(q) !== -1) list.push(map[k]);
     });
 
-    box.innerHTML = list.map(function(g, index){
+    box.innerHTML = list.map(function (g, index) {
       var tals = totals(g);
       var t = tone(tals.netAmt);
-      var name = esc(g.name);
       var firstKey = (g.keys && g.keys[0]) || g.name;
 
       return '<div ' +
-        'data-v99-tone="' + t + '" data-v100-tone="' + t + '" data-milk-tone="' + t + '" data-milk-final-v109="' + t + '" ' +
+        'data-v99-tone="' + t + '" data-v100-tone="' + t + '" data-milk-tone="' + t + '" data-aarish-milk-v113-tone="' + t + '" ' +
         'onclick="' + openAction(g).replace(/"/g, "&quot;") + '" ' +
         'ontouchstart="try{startLongPress(' + js(firstKey).replace(/"/g, "&quot;") + ')}catch(e){}" ' +
         'ontouchend="try{cancelLongPress()}catch(e){}" ontouchmove="try{cancelLongPress()}catch(e){}" ' +
         'onmousedown="try{startLongPress(' + js(firstKey).replace(/"/g, "&quot;") + ')}catch(e){}" ' +
         'onmouseup="try{cancelLongPress()}catch(e){}" onmouseleave="try{cancelLongPress()}catch(e){}" ' +
-        'class="milk-final-v109 glass-card mb-3.5 flex items-center justify-between cursor-pointer border-l-[3px] w-full ring-1 ring-white/40 dark:ring-white/5 list-enter" ' +
-        'style="' + toneVars(t) + ' animation-delay:' + (index * 0.05) + 's;">' +
+        'class="aarish-milk-v113-card glass-card mb-4 flex items-center justify-between cursor-pointer w-full ring-1 ring-white/40 dark:ring-white/5 list-enter" ' +
+        'style="' + toneVars(t) + ' animation-delay:' + (index * 0.04) + 's;">' +
           '<div class="flex items-center gap-4 w-full min-w-0">' +
-            '<div class="w-12 h-12 shrink-0 squircle milk-final-v109-color font-extrabold flex items-center justify-center text-lg">' + first(g.name) + '</div>' +
+            '<div class="aarish-milk-v113-avatar shrink-0 font-extrabold flex items-center justify-center text-[24px]">' + first(g.name) + '</div>' +
             '<div class="flex-1 min-w-0">' +
-              '<h4 class="milk-final-v109-color font-bold text-[17px] leading-tight truncate w-full flex items-center">' + name + '</h4>' +
-              '<p class="milk-final-v109-color text-[13px] font-bold truncate w-full mt-1 tracking-tight opacity-95">' +
-                signedKg(tals.netKg) + ' <span class="mx-1 opacity-60">•</span> <span class="font-extrabold text-[18px]">' + signedMoney(tals.netAmt) + '</span>' +
+              '<h4 class="aarish-milk-v113-name truncate w-full flex items-center">' + esc(g.name) + '</h4>' +
+              '<p class="aarish-milk-v113-meta truncate w-full tracking-tight">' +
+                signedKg(tals.netKg) + ' <span class="mx-1 opacity-60">•</span> <span class="aarish-milk-v113-amount">' + signedMoney(tals.netAmt) + '</span>' +
               '</p>' +
             '</div>' +
           '</div>' +
-          '<i class="milk-final-v109-color fa-solid fa-chevron-right shrink-0 ml-3 text-[13px]"></i>' +
+          '<i class="fa-solid fa-chevron-right shrink-0 ml-3 text-[22px]"></i>' +
       '</div>';
     }).join("") || emptyHtml();
   }
 
-  function install(){
+  function install() {
     try {
-      window.renderMilkList = renderMilkListV109;
-      window.filterMilkList = function(){ renderMilkListV109(); };
-      try { Function("fn", "renderMilkList = fn; filterMilkList = fn;")(renderMilkListV109); } catch(e) {}
+      window.renderMilkList = renderMilkListV113;
+      window.filterMilkList = function () { renderMilkListV113(); };
+      window.aarishRenderMilkListV113 = renderMilkListV113;
+      try { Function("fn", "renderMilkList = fn; filterMilkList = fn;")(renderMilkListV113); } catch(e) {}
 
       var active = document.querySelector(".screen.active");
-      if (active && active.id === "milk-screen") renderMilkListV109();
+      if (active && active.id === "milk-screen") renderMilkListV113();
     } catch(e) {}
   }
 
   install();
-  setTimeout(install, 80);
-  setTimeout(install, 400);
-  setTimeout(install, 1200);
-  setTimeout(install, 2200);
 
-  document.addEventListener("input", function(e){
-    if (e && e.target && e.target.id === "milk-search") setTimeout(renderMilkListV109, 0);
+  [60, 180, 450, 900, 1500, 2600].forEach(function (ms) {
+    setTimeout(install, ms);
+  });
+
+  document.addEventListener("input", function (e) {
+    if (e && e.target && e.target.id === "milk-search") {
+      setTimeout(renderMilkListV113, 0);
+      setTimeout(renderMilkListV113, 90);
+    }
   }, { passive:true });
 
-  document.addEventListener("click", function(){
-    setTimeout(function(){
+  document.addEventListener("click", function () {
+    setTimeout(function () {
       try {
         var active = document.querySelector(".screen.active");
-        if (active && active.id === "milk-screen") renderMilkListV109();
+        if (active && active.id === "milk-screen") renderMilkListV113();
       } catch(e) {}
-    }, 80);
+    }, 120);
   }, { passive:true });
 
-  window.addEventListener("pageshow", function(){ setTimeout(install, 120); }, { passive:true });
-  document.addEventListener("visibilitychange", function(){ if (!document.hidden) setTimeout(install, 120); }, { passive:true });
+  window.addEventListener("pageshow", function () { setTimeout(install, 120); }, { passive:true });
+  document.addEventListener("visibilitychange", function () {
+    if (!document.hidden) setTimeout(install, 120);
+  }, { passive:true });
 
-  window.aarishRenderMilkListV109 = renderMilkListV109;
-  console.log("✅ AARISH_MILK_FINAL_SALARY_STYLE_V109 active");
+  console.log("✅ AARISH V113 Milk UI + Business leak fix active");
 })();
 </script>
-\n</body>
+</body>
 </html>
