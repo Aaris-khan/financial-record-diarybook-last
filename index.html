@@ -3865,6 +3865,294 @@
   border-left-color: #007AFF !important;
 }
 </style>
+<style id="aarish-v106-pure-milk-ui-sync">
+/* AARISH_V106_PURE_MILK_UI_SYNC
+   Only Milk list UI colors/stripe fixed.
+   No text change. No To Receive/To Pay added.
+   No calculation/Firebase/save/delete logic touched.
+   Search icon + Search customer placeholder stay blue.
+*/
+
+/* Search area always blue */
+#milk-screen .fa-search,
+.dark #milk-screen .fa-search {
+  color: #007AFF !important;
+  text-shadow: 0 0 10px rgba(0,122,255,0.28) !important;
+  opacity: 1 !important;
+}
+
+#milk-screen #milk-search,
+.dark #milk-screen #milk-search {
+  color: #007AFF !important;
+  caret-color: #007AFF !important;
+  text-shadow: 0 0 10px rgba(0,122,255,0.22) !important;
+}
+
+#milk-screen #milk-search::placeholder,
+#milk-screen #milk-search::-webkit-input-placeholder,
+.dark #milk-screen #milk-search::placeholder,
+.dark #milk-screen #milk-search::-webkit-input-placeholder {
+  color: rgba(0,122,255,0.78) !important;
+  opacity: 1 !important;
+}
+
+/* Remove older fat pseudo stripe if any old V104/V105 was pasted */
+#milk-screen #milk-list .glass-card::before,
+.dark #milk-screen #milk-list .glass-card::before {
+  display: none !important;
+  content: none !important;
+}
+
+/* Salary-like card base */
+#milk-screen #milk-list .glass-card[data-v99-tone],
+#milk-screen #milk-list .glass-card[data-v100-tone],
+.dark #milk-screen #milk-list .glass-card[data-v99-tone],
+.dark #milk-screen #milk-list .glass-card[data-v100-tone] {
+  border-left-width: 4px !important;
+  border-left-style: solid !important;
+  border-radius: 24px !important;
+  overflow: visible !important;
+  contain: layout style !important;
+}
+
+/* POSITIVE milk customer = full GREEN like Salary receive card */
+#milk-screen #milk-list .glass-card[data-v99-tone="positive"],
+#milk-screen #milk-list .glass-card[data-v100-tone="positive"],
+.dark #milk-screen #milk-list .glass-card[data-v99-tone="positive"],
+.dark #milk-screen #milk-list .glass-card[data-v100-tone="positive"] {
+  border-left-color: #34C759 !important;
+  box-shadow:
+    -4px 0 18px rgba(52,199,89,0.34),
+    0 16px 42px rgba(0,0,0,0.48),
+    inset 1px 0 0 rgba(52,199,89,0.52),
+    inset 0 1px 0 rgba(255,255,255,0.06) !important;
+}
+
+#milk-screen #milk-list .glass-card[data-v99-tone="positive"] h1,
+#milk-screen #milk-list .glass-card[data-v99-tone="positive"] h2,
+#milk-screen #milk-list .glass-card[data-v99-tone="positive"] h3,
+#milk-screen #milk-list .glass-card[data-v99-tone="positive"] h4,
+#milk-screen #milk-list .glass-card[data-v99-tone="positive"] p,
+#milk-screen #milk-list .glass-card[data-v99-tone="positive"] p *,
+#milk-screen #milk-list .glass-card[data-v99-tone="positive"] span,
+#milk-screen #milk-list .glass-card[data-v99-tone="positive"] .squircle,
+#milk-screen #milk-list .glass-card[data-v99-tone="positive"] i.fa-chevron-right,
+#milk-screen #milk-list .glass-card[data-v100-tone="positive"] h1,
+#milk-screen #milk-list .glass-card[data-v100-tone="positive"] h2,
+#milk-screen #milk-list .glass-card[data-v100-tone="positive"] h3,
+#milk-screen #milk-list .glass-card[data-v100-tone="positive"] h4,
+#milk-screen #milk-list .glass-card[data-v100-tone="positive"] p,
+#milk-screen #milk-list .glass-card[data-v100-tone="positive"] p *,
+#milk-screen #milk-list .glass-card[data-v100-tone="positive"] span,
+#milk-screen #milk-list .glass-card[data-v100-tone="positive"] .squircle,
+#milk-screen #milk-list .glass-card[data-v100-tone="positive"] i.fa-chevron-right,
+.dark #milk-screen #milk-list .glass-card[data-v99-tone="positive"] h1,
+.dark #milk-screen #milk-list .glass-card[data-v99-tone="positive"] h2,
+.dark #milk-screen #milk-list .glass-card[data-v99-tone="positive"] h3,
+.dark #milk-screen #milk-list .glass-card[data-v99-tone="positive"] h4,
+.dark #milk-screen #milk-list .glass-card[data-v99-tone="positive"] p,
+.dark #milk-screen #milk-list .glass-card[data-v99-tone="positive"] p *,
+.dark #milk-screen #milk-list .glass-card[data-v99-tone="positive"] span,
+.dark #milk-screen #milk-list .glass-card[data-v99-tone="positive"] .squircle,
+.dark #milk-screen #milk-list .glass-card[data-v99-tone="positive"] i.fa-chevron-right,
+.dark #milk-screen #milk-list .glass-card[data-v100-tone="positive"] h1,
+.dark #milk-screen #milk-list .glass-card[data-v100-tone="positive"] h2,
+.dark #milk-screen #milk-list .glass-card[data-v100-tone="positive"] h3,
+.dark #milk-screen #milk-list .glass-card[data-v100-tone="positive"] h4,
+.dark #milk-screen #milk-list .glass-card[data-v100-tone="positive"] p,
+.dark #milk-screen #milk-list .glass-card[data-v100-tone="positive"] p *,
+.dark #milk-screen #milk-list .glass-card[data-v100-tone="positive"] span,
+.dark #milk-screen #milk-list .glass-card[data-v100-tone="positive"] .squircle,
+.dark #milk-screen #milk-list .glass-card[data-v100-tone="positive"] i.fa-chevron-right {
+  color: #34C759 !important;
+  text-shadow: 0 0 10px rgba(52,199,89,0.35) !important;
+  opacity: 1 !important;
+}
+
+/* NEGATIVE milk customer = full RED like Salary pay card */
+#milk-screen #milk-list .glass-card[data-v99-tone="negative"],
+#milk-screen #milk-list .glass-card[data-v100-tone="negative"],
+.dark #milk-screen #milk-list .glass-card[data-v99-tone="negative"],
+.dark #milk-screen #milk-list .glass-card[data-v100-tone="negative"] {
+  border-left-color: #FF3B30 !important;
+  box-shadow:
+    -4px 0 18px rgba(255,59,48,0.34),
+    0 16px 42px rgba(0,0,0,0.48),
+    inset 1px 0 0 rgba(255,59,48,0.52),
+    inset 0 1px 0 rgba(255,255,255,0.06) !important;
+}
+
+#milk-screen #milk-list .glass-card[data-v99-tone="negative"] h1,
+#milk-screen #milk-list .glass-card[data-v99-tone="negative"] h2,
+#milk-screen #milk-list .glass-card[data-v99-tone="negative"] h3,
+#milk-screen #milk-list .glass-card[data-v99-tone="negative"] h4,
+#milk-screen #milk-list .glass-card[data-v99-tone="negative"] p,
+#milk-screen #milk-list .glass-card[data-v99-tone="negative"] p *,
+#milk-screen #milk-list .glass-card[data-v99-tone="negative"] span,
+#milk-screen #milk-list .glass-card[data-v99-tone="negative"] .squircle,
+#milk-screen #milk-list .glass-card[data-v99-tone="negative"] i.fa-chevron-right,
+#milk-screen #milk-list .glass-card[data-v100-tone="negative"] h1,
+#milk-screen #milk-list .glass-card[data-v100-tone="negative"] h2,
+#milk-screen #milk-list .glass-card[data-v100-tone="negative"] h3,
+#milk-screen #milk-list .glass-card[data-v100-tone="negative"] h4,
+#milk-screen #milk-list .glass-card[data-v100-tone="negative"] p,
+#milk-screen #milk-list .glass-card[data-v100-tone="negative"] p *,
+#milk-screen #milk-list .glass-card[data-v100-tone="negative"] span,
+#milk-screen #milk-list .glass-card[data-v100-tone="negative"] .squircle,
+#milk-screen #milk-list .glass-card[data-v100-tone="negative"] i.fa-chevron-right,
+.dark #milk-screen #milk-list .glass-card[data-v99-tone="negative"] h1,
+.dark #milk-screen #milk-list .glass-card[data-v99-tone="negative"] h2,
+.dark #milk-screen #milk-list .glass-card[data-v99-tone="negative"] h3,
+.dark #milk-screen #milk-list .glass-card[data-v99-tone="negative"] h4,
+.dark #milk-screen #milk-list .glass-card[data-v99-tone="negative"] p,
+.dark #milk-screen #milk-list .glass-card[data-v99-tone="negative"] p *,
+.dark #milk-screen #milk-list .glass-card[data-v99-tone="negative"] span,
+.dark #milk-screen #milk-list .glass-card[data-v99-tone="negative"] .squircle,
+.dark #milk-screen #milk-list .glass-card[data-v99-tone="negative"] i.fa-chevron-right,
+.dark #milk-screen #milk-list .glass-card[data-v100-tone="negative"] h1,
+.dark #milk-screen #milk-list .glass-card[data-v100-tone="negative"] h2,
+.dark #milk-screen #milk-list .glass-card[data-v100-tone="negative"] h3,
+.dark #milk-screen #milk-list .glass-card[data-v100-tone="negative"] h4,
+.dark #milk-screen #milk-list .glass-card[data-v100-tone="negative"] p,
+.dark #milk-screen #milk-list .glass-card[data-v100-tone="negative"] p *,
+.dark #milk-screen #milk-list .glass-card[data-v100-tone="negative"] span,
+.dark #milk-screen #milk-list .glass-card[data-v100-tone="negative"] .squircle,
+.dark #milk-screen #milk-list .glass-card[data-v100-tone="negative"] i.fa-chevron-right {
+  color: #FF3B30 !important;
+  text-shadow: 0 0 10px rgba(255,59,48,0.35) !important;
+  opacity: 1 !important;
+}
+
+/* Avatar/chip background follows card tone */
+#milk-screen #milk-list .glass-card[data-v99-tone="positive"] .squircle,
+#milk-screen #milk-list .glass-card[data-v100-tone="positive"] .squircle,
+.dark #milk-screen #milk-list .glass-card[data-v99-tone="positive"] .squircle,
+.dark #milk-screen #milk-list .glass-card[data-v100-tone="positive"] .squircle {
+  background: rgba(52,199,89,0.13) !important;
+  border: 1px solid rgba(52,199,89,0.22) !important;
+}
+
+#milk-screen #milk-list .glass-card[data-v99-tone="negative"] .squircle,
+#milk-screen #milk-list .glass-card[data-v100-tone="negative"] .squircle,
+.dark #milk-screen #milk-list .glass-card[data-v99-tone="negative"] .squircle,
+.dark #milk-screen #milk-list .glass-card[data-v100-tone="negative"] .squircle {
+  background: rgba(255,59,48,0.13) !important;
+  border: 1px solid rgba(255,59,48,0.22) !important;
+}
+</style>
+<style id="aarish-v107-milk-detail-ui-sync">
+/* AARISH_V107_MILK_DETAIL_UI_SYNC
+   Scope: Milk customer detail screen only.
+   Logic preserved:
+   - Net positive customer title = green
+   - Net negative customer title = red
+   - Table headings Date/Morning/Evening/Total = permanent blue
+   - Per-entry positive row = green
+   - Per-entry negative row = red
+   No backend/Firebase/save/delete/calculation logic touched.
+*/
+
+/* Top customer name follows overall net total */
+#milk-detail-screen[data-v107-tone="positive"] #milk-detail-title,
+#milk-detail-screen[data-v107-tone="positive"] .header-sticky h1,
+.dark #milk-detail-screen[data-v107-tone="positive"] #milk-detail-title,
+.dark #milk-detail-screen[data-v107-tone="positive"] .header-sticky h1 {
+  color: #34C759 !important;
+  text-shadow: 0 0 12px rgba(52,199,89,0.36) !important;
+}
+
+#milk-detail-screen[data-v107-tone="negative"] #milk-detail-title,
+#milk-detail-screen[data-v107-tone="negative"] .header-sticky h1,
+.dark #milk-detail-screen[data-v107-tone="negative"] #milk-detail-title,
+.dark #milk-detail-screen[data-v107-tone="negative"] .header-sticky h1 {
+  color: #FF3B30 !important;
+  text-shadow: 0 0 12px rgba(255,59,48,0.36) !important;
+}
+
+#milk-detail-screen[data-v107-tone="neutral"] #milk-detail-title,
+#milk-detail-screen[data-v107-tone="neutral"] .header-sticky h1,
+.dark #milk-detail-screen[data-v107-tone="neutral"] #milk-detail-title,
+.dark #milk-detail-screen[data-v107-tone="neutral"] .header-sticky h1 {
+  color: #007AFF !important;
+  text-shadow: 0 0 12px rgba(0,122,255,0.30) !important;
+}
+
+/* Table headings must stay permanent premium blue */
+#milk-detail-screen .table-custom th,
+#milk-detail-screen table th,
+.dark #milk-detail-screen .table-custom th,
+.dark #milk-detail-screen table th {
+  color: #007AFF !important;
+  text-shadow: 0 0 10px rgba(0,122,255,0.26) !important;
+  opacity: 1 !important;
+  font-weight: 800 !important;
+}
+
+/* Positive daily row = green date + morning + evening + total */
+#milk-detail-screen #milk-detail-records tr[data-v99-tone="positive"] td:nth-child(1),
+#milk-detail-screen #milk-detail-records tr[data-v99-tone="positive"] td:nth-child(2),
+#milk-detail-screen #milk-detail-records tr[data-v99-tone="positive"] td:nth-child(3),
+#milk-detail-screen #milk-detail-records tr[data-v99-tone="positive"] td:nth-child(4),
+#milk-detail-screen #milk-detail-records tr[data-v107-tone="positive"] td:nth-child(1),
+#milk-detail-screen #milk-detail-records tr[data-v107-tone="positive"] td:nth-child(2),
+#milk-detail-screen #milk-detail-records tr[data-v107-tone="positive"] td:nth-child(3),
+#milk-detail-screen #milk-detail-records tr[data-v107-tone="positive"] td:nth-child(4),
+.dark #milk-detail-screen #milk-detail-records tr[data-v99-tone="positive"] td:nth-child(1),
+.dark #milk-detail-screen #milk-detail-records tr[data-v99-tone="positive"] td:nth-child(2),
+.dark #milk-detail-screen #milk-detail-records tr[data-v99-tone="positive"] td:nth-child(3),
+.dark #milk-detail-screen #milk-detail-records tr[data-v99-tone="positive"] td:nth-child(4),
+.dark #milk-detail-screen #milk-detail-records tr[data-v107-tone="positive"] td:nth-child(1),
+.dark #milk-detail-screen #milk-detail-records tr[data-v107-tone="positive"] td:nth-child(2),
+.dark #milk-detail-screen #milk-detail-records tr[data-v107-tone="positive"] td:nth-child(3),
+.dark #milk-detail-screen #milk-detail-records tr[data-v107-tone="positive"] td:nth-child(4) {
+  color: #34C759 !important;
+  text-shadow: 0 0 8px rgba(52,199,89,0.28) !important;
+  opacity: 1 !important;
+  font-weight: 800 !important;
+}
+
+/* Negative daily row = red date + morning + evening + total */
+#milk-detail-screen #milk-detail-records tr[data-v99-tone="negative"] td:nth-child(1),
+#milk-detail-screen #milk-detail-records tr[data-v99-tone="negative"] td:nth-child(2),
+#milk-detail-screen #milk-detail-records tr[data-v99-tone="negative"] td:nth-child(3),
+#milk-detail-screen #milk-detail-records tr[data-v99-tone="negative"] td:nth-child(4),
+#milk-detail-screen #milk-detail-records tr[data-v107-tone="negative"] td:nth-child(1),
+#milk-detail-screen #milk-detail-records tr[data-v107-tone="negative"] td:nth-child(2),
+#milk-detail-screen #milk-detail-records tr[data-v107-tone="negative"] td:nth-child(3),
+#milk-detail-screen #milk-detail-records tr[data-v107-tone="negative"] td:nth-child(4),
+.dark #milk-detail-screen #milk-detail-records tr[data-v99-tone="negative"] td:nth-child(1),
+.dark #milk-detail-screen #milk-detail-records tr[data-v99-tone="negative"] td:nth-child(2),
+.dark #milk-detail-screen #milk-detail-records tr[data-v99-tone="negative"] td:nth-child(3),
+.dark #milk-detail-screen #milk-detail-records tr[data-v99-tone="negative"] td:nth-child(4),
+.dark #milk-detail-screen #milk-detail-records tr[data-v107-tone="negative"] td:nth-child(1),
+.dark #milk-detail-screen #milk-detail-records tr[data-v107-tone="negative"] td:nth-child(2),
+.dark #milk-detail-screen #milk-detail-records tr[data-v107-tone="negative"] td:nth-child(3),
+.dark #milk-detail-screen #milk-detail-records tr[data-v107-tone="negative"] td:nth-child(4) {
+  color: #FF3B30 !important;
+  text-shadow: 0 0 8px rgba(255,59,48,0.28) !important;
+  opacity: 1 !important;
+  font-weight: 800 !important;
+}
+
+/* Premium row glow, not too loud */
+.dark #milk-detail-screen #milk-detail-records tr[data-v99-tone="positive"],
+.dark #milk-detail-screen #milk-detail-records tr[data-v107-tone="positive"] {
+  background: linear-gradient(90deg, rgba(52,199,89,0.08), transparent 72%) !important;
+  box-shadow: inset 3px 0 0 rgba(52,199,89,0.55) !important;
+}
+
+.dark #milk-detail-screen #milk-detail-records tr[data-v99-tone="negative"],
+.dark #milk-detail-screen #milk-detail-records tr[data-v107-tone="negative"] {
+  background: linear-gradient(90deg, rgba(255,59,48,0.08), transparent 72%) !important;
+  box-shadow: inset 3px 0 0 rgba(255,59,48,0.55) !important;
+}
+
+/* Delete/action column stays red only */
+#milk-detail-screen #milk-detail-records tr td:last-child,
+.dark #milk-detail-screen #milk-detail-records tr td:last-child {
+  color: #FF3B30 !important;
+}
+</style>
 </head>
 
 <body>
@@ -17330,24 +17618,26 @@ window.onload = function(){ setTimeout(function(){ window.focus(); window.print(
   }
 
   function renderMilkListV99() {
-    var box = byId("milk-list"); if (!box) return;
+    var box = byId("milk-list");
+    if (!box) return;
     var q = String((byId("milk-search") || {}).value || "").toLocaleLowerCase("en-IN");
     var groups = Object.values(milkGroups()).filter(function(g){ return g.name.toLocaleLowerCase("en-IN").indexOf(q) !== -1; });
     box.innerHTML = groups.map(function(g, index) {
-      var t = milkTotals(g), tone = toneFrom(t.netAmt), cls = toneClass(tone);
-      return `<div data-v99-tone="${tone}" onclick="haptic(); window.aarishV98OpenMilkGroup ? window.aarishV98OpenMilkGroup(${js(g.norm)}) : openMilkDetail(${js(g.keys[0])})"
-        class="glass-card mb-3.5 flex items-center justify-between cursor-pointer border-l-[3px] ${borderClass(tone)} w-full ring-1 ring-white/40 dark:ring-white/5 list-enter" style="animation-delay:${index * 0.05}s;">
-        <div class="flex items-center gap-4 w-full min-w-0">
-          <div class="w-12 h-12 shrink-0 squircle ${bgClass(tone)} ${cls} font-extrabold flex items-center justify-center text-lg">${firstChar(g.name)}</div>
-          <div class="flex-1 min-w-0">
-            <h4 class="font-bold text-[17px] leading-tight truncate w-full flex items-center ${cls}">${esc(g.name)}</h4>
-            <p class="text-[13px] ${cls} font-bold truncate w-full mt-1 tracking-tight opacity-90">${signedKg(t.netKg)} <span class="mx-1 opacity-60">•</span> <span class="font-extrabold text-[18px]">${signedMoney(t.netAmt)}</span></p>
-          </div>
-        </div>
-        <i class="fa-solid fa-chevron-right ${cls} shrink-0 ml-3 text-[13px]"></i>
-      </div>`;
+        var t = milkTotals(g);
+        var tone = toneFrom(t.netAmt); // DYNAMIC TONE: Changes color based on math
+        var cls = toneClass(tone);
+        return `<div data-v99-tone="${tone}" onclick="haptic(); window.aarishV98OpenMilkGroup ? window.aarishV98OpenMilkGroup(${js(g.norm)}) : openMilkDetail(${js(g.keys[0])})" class="glass-card mb-3.5 flex items-center justify-between cursor-pointer border-l-[3px] ${borderClass(tone)} w-full ring-1 ring-white/40 dark:ring-white/5 list-enter" style="animation-delay:${index * 0.05}s;">
+            <div class="flex items-center gap-4 w-full min-w-0">
+                <div class="w-12 h-12 shrink-0 squircle ${bgClass(tone)} ${cls} font-extrabold flex items-center justify-center text-lg">${firstChar(g.name)}</div>
+                <div class="flex-1 min-w-0">
+                    <h4 class="font-bold text-[17px] leading-tight truncate w-full flex items-center ${cls}">${esc(g.name)}</h4>
+                    <p class="text-[13px] ${cls} font-bold truncate w-full mt-1 tracking-tight opacity-90">${signedKg(t.netKg)} <span class="mx-1 opacity-60">•</span> <span class="font-extrabold text-[18px]">${signedMoney(t.netAmt)}</span></p>
+                </div>
+            </div>
+            <i class="fa-solid fa-chevron-right ${cls} shrink-0 ml-3 text-[13px]"></i>
+        </div>`;
     }).join("") || empty("fa-jug-detergent", "No customers found");
-  }
+}
 
   function renderSalaryListV99() {
     var box = byId("salary-list"); if (!box) return;
@@ -17482,33 +17772,64 @@ window.onload = function(){ setTimeout(function(){ window.focus(); window.print(
 
   function renderMilkRecordsV99() {
     if (!activeMilkCustomer || !milkDB || !milkDB[activeMilkCustomer]) return;
-    var c = milkDB[activeMilkCustomer], totalKg = 0;
-    var tone = c.type === "lene_wala" ? "positive" : "negative";
-    var cls = toneClass(tone);
+    var c = milkDB[activeMilkCustomer];
     var records = monthRecords(c.records).sort(function(a,b){ return String(b.date || "").localeCompare(String(a.date || "")); });
+    
+    var netKg = 0, netAmt = 0;
+    var rate = num(c.rate || (typeof DEFAULT_RATE !== "undefined" ? DEFAULT_RATE : 55));
+    
     var html = records.map(function(r, index) {
-      var t = num(r.morning) + num(r.evening); totalKg += t;
-      return `<tr class="list-enter" data-v99-tone="${tone}" style="animation-delay:${index * 0.05}s;">
-        <td>${fmtDate(r.date)}</td>
-        <td class="${cls}">${r.morning || "-"}</td>
-        <td class="${cls}">${r.evening || "-"}</td>
-        <td class="font-bold ${cls}">${t.toFixed(2)}</td>
-        <td class="text-right"><button onclick="haptic(); deleteMilkEntry(${js(r.id)})" class="action-btn shrink-0"><i class="fa-solid fa-trash"></i></button></td>
-      </tr>`;
+        var m = num(r.morning), e = num(r.evening), q = m + e;
+        var isTaken = milkFlow(r, c) === "taken";
+        var rTone = isTaken ? "negative" : "positive";
+        var rCls = toneClass(rTone);
+        
+        if (isTaken) {
+            netKg -= q;
+            netAmt -= (q * rate);
+        } else {
+            netKg += q;
+            netAmt += (q * rate);
+        }
+        
+        return `<tr class="list-enter" data-v99-tone="${rTone}" style="animation-delay:${index * 0.05}s;">
+            <td>${fmtDate(r.date)}</td>
+            <td class="${rCls}">${r.morning || "-"}</td>
+            <td class="${rCls}">${r.evening || "-"}</td>
+            <td class="font-bold ${rCls}">${q.toFixed(2)}</td>
+            <td class="text-right"><button onclick="haptic(); deleteMilkEntry(${js(r.id)})" class="action-btn shrink-0"><i class="fa-solid fa-trash"></i></button></td>
+        </tr>`;
     }).join("");
+    
     var target = byId("milk-detail-records");
     if (target) target.innerHTML = html || `<tr><td colspan="5" class="text-center py-8 text-gray-400 font-semibold">No entries found</td></tr>`;
+    
+    // STRICTLY PURE COLOR LOGIC (Changes card background)
+    var finalTone = toneFrom(netAmt);
     var card = document.querySelector("#milk-detail-screen .glass-card");
     if (card) {
-      card.setAttribute("data-v99-tone", tone);
-      card.className = tone === "positive"
-        ? "glass-card mb-6 flex justify-between items-center bg-gradient-to-br from-[#34C759] to-[#28a745] text-white border-none shadow-[0_8px_24px_rgba(52,199,89,0.3)] ring-1 ring-white/30 w-full min-w-0 gap-3"
-        : "glass-card mb-6 flex justify-between items-center bg-gradient-to-br from-[#FF3B30] to-[#c92a2a] text-white border-none shadow-[0_8px_24px_rgba(255,59,48,0.3)] ring-1 ring-white/30 w-full min-w-0 gap-3";
+        card.setAttribute("data-v99-tone", finalTone);
+        card.className = finalTone !== "negative" ? "glass-card mb-6 flex justify-between items-center bg-gradient-to-br from-[#34C759] to-[#28a745] text-white border-none shadow-[0_8px_24px_rgba(52,199,89,0.3)] ring-1 ring-white/30 w-full min-w-0 gap-3" : "glass-card mb-6 flex justify-between items-center bg-gradient-to-br from-[#FF3B30] to-[#c92a2a] text-white border-none shadow-[0_8px_24px_rgba(255,59,48,0.3)] ring-1 ring-white/30 w-full min-w-0 gap-3";
     }
-    var kg = byId("milk-detail-kg"), bill = byId("milk-detail-bill");
-    if (kg) kg.textContent = totalKg.toFixed(2) + " KG";
-    if (bill) bill.textContent = (tone === "positive" ? "+" : "-") + "₹" + Math.round(totalKg * num(c.rate || (typeof DEFAULT_RATE !== "undefined" ? DEFAULT_RATE : 55))).toLocaleString("en-IN");
-  }
+    
+    var kgEl = byId("milk-detail-kg"), billEl = byId("milk-detail-bill");
+    if (kgEl) {
+        kgEl.textContent = Math.abs(netKg).toFixed(2) + " KG";
+        var klbl = kgEl.previousElementSibling;
+        if (klbl && klbl.tagName && klbl.tagName.toLowerCase() === "p") {
+            klbl.textContent = "Net Milk"; // EXACT SAME TEXT AS BEFORE
+        }
+    }
+    if (billEl) {
+        billEl.textContent = (finalTone === "positive" ? "+" : "-") + "₹" + Math.abs(Math.round(netAmt)).toLocaleString("en-IN");
+        var lbl = billEl.previousElementSibling;
+        if (lbl && lbl.tagName && lbl.tagName.toLowerCase() === "p") {
+            lbl.textContent = "Net Bill"; // EXACT SAME TEXT AS BEFORE
+            lbl.classList.remove("text-[10.5px]");
+            lbl.classList.add("text-[13px]"); // RESTORING ORIGINAL FONT SIZE
+        }
+    }
+}
 
   function renderSalaryRecordsV99() {
     if (!activeSalaryPerson || !salaryDB || !salaryDB[activeSalaryPerson]) return;
@@ -17982,6 +18303,85 @@ window.onload = function(){ setTimeout(function(){ window.focus(); window.print(
   }, { passive: true });
 
   console.log("✅ AARISH_V100_ELITE_UX_POLISH_FINAL_PATCH active");
+})();
+</script>
+<script id="aarish-v107-milk-detail-ui-sync-js">
+/* AARISH_V107_MILK_DETAIL_UI_SYNC_JS
+   UI marker only. Reads existing rendered values/tone attributes.
+   Does not mutate database, does not alter calculations.
+*/
+(function () {
+  if (window.__AARISH_V107_MILK_DETAIL_UI_SYNC_READY) return;
+  window.__AARISH_V107_MILK_DETAIL_UI_SYNC_READY = true;
+
+  function byId(id) { return document.getElementById(id); }
+
+  function readNetTone() {
+    try {
+      var bill = byId("milk-detail-bill");
+      var text = bill ? String(bill.textContent || "") : "";
+      if (text.indexOf("-") !== -1) return "negative";
+      if (text.indexOf("+") !== -1) return "positive";
+
+      var card = document.querySelector("#milk-detail-screen .glass-card[data-v99-tone], #milk-detail-screen .glass-card[data-v100-tone], #milk-detail-screen .milk-detail-total-card-v64");
+      var t = card ? String(card.getAttribute("data-v99-tone") || card.getAttribute("data-v100-tone") || card.getAttribute("data-milk-net-v64") || "") : "";
+      t = t.toLowerCase();
+      if (t === "positive" || t === "negative") return t;
+    } catch(e) {}
+    return "neutral";
+  }
+
+  function markRows() {
+    try {
+      var rows = document.querySelectorAll("#milk-detail-screen #milk-detail-records tr");
+      rows.forEach(function (tr) {
+        var t = String(tr.getAttribute("data-v99-tone") || tr.getAttribute("data-v100-tone") || "").toLowerCase();
+        if (t !== "positive" && t !== "negative") {
+          var txt = String(tr.textContent || "");
+          if (txt.indexOf("-") !== -1) t = "negative";
+          else if (txt.indexOf("+") !== -1) t = "positive";
+        }
+        if (t === "positive" || t === "negative") {
+          tr.setAttribute("data-v107-tone", t);
+        }
+      });
+    } catch(e) {}
+  }
+
+  function applyV107() {
+    try {
+      var screen = byId("milk-detail-screen");
+      if (!screen) return;
+      screen.setAttribute("data-v107-tone", readNetTone());
+      markRows();
+    } catch(e) {}
+  }
+
+  function wrap(name) {
+    try {
+      var old = window[name];
+      if (typeof old !== "function" || old.__aarishV107MilkDetailWrapped) return;
+      var wrapped = function () {
+        var out = old.apply(this, arguments);
+        setTimeout(applyV107, 0);
+        setTimeout(applyV107, 80);
+        return out;
+      };
+      wrapped.__aarishV107MilkDetailWrapped = true;
+      window[name] = wrapped;
+      try { Function("fn", name + " = fn;")(wrapped); } catch(e) {}
+    } catch(e) {}
+  }
+
+  ["renderMilkRecords", "renderMilkRecordsV99", "updateActiveScreen", "switchTab", "refreshCurrent", "deleteMilkEntry", "saveMilkEntry"].forEach(wrap);
+
+  applyV107();
+  setTimeout(applyV107, 300);
+  setTimeout(applyV107, 1200);
+
+  document.addEventListener("click", function(){ setTimeout(applyV107, 0); }, { passive: true });
+  document.addEventListener("change", function(){ setTimeout(applyV107, 0); }, { passive: true });
+  window.addEventListener("pageshow", function(){ setTimeout(applyV107, 80); }, { passive: true });
 })();
 </script>
 </body>
