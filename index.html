@@ -3670,376 +3670,6 @@
   filter: none !important;
 }
 </style>
-<style id="aarish-milk-salary-style-css-only-v107">
-/* AARISH_MILK_SALARY_STYLE_CSS_ONLY_V107
-   CSS-only safe patch.
-   Milk list ko Salary list jaisa semantic style:
-   positive = full green, negative = full red.
-   Search icon/input/placeholder permanent blue.
-   No JS, no Firebase, no save/delete/data/render logic touched.
-*/
-
-/* Search area permanent blue */
-#milk-screen .fa-search,
-.dark #milk-screen .fa-search {
-  color: #007AFF !important;
-  text-shadow: 0 0 10px rgba(0,122,255,0.28) !important;
-  opacity: 1 !important;
-}
-
-#milk-screen #milk-search,
-.dark #milk-screen #milk-search {
-  color: #007AFF !important;
-  caret-color: #007AFF !important;
-  text-shadow: 0 0 10px rgba(0,122,255,0.22) !important;
-}
-
-#milk-screen #milk-search::placeholder,
-#milk-screen #milk-search::-webkit-input-placeholder,
-.dark #milk-screen #milk-search::placeholder,
-.dark #milk-screen #milk-search::-webkit-input-placeholder {
-  color: rgba(0,122,255,0.78) !important;
-  opacity: 1 !important;
-}
-
-/* Old fake thick stripe off */
-#milk-screen #milk-list .glass-card::before {
-  display: none !important;
-  content: none !important;
-}
-
-/* Salary-like curved left stripe base */
-#milk-screen #milk-list .glass-card[data-v99-tone],
-#milk-screen #milk-list .glass-card[data-v100-tone],
-#milk-screen #milk-list .glass-card:has([class*="text-[#34C759]"]),
-#milk-screen #milk-list .glass-card:has([class*="text-[#10B981]"]),
-#milk-screen #milk-list .glass-card:has([class*="text-[#FF3B30]"]),
-#milk-screen #milk-list .glass-card:has([class*="text-[#FF4B4B]"]) {
-  position: relative !important;
-  overflow: visible !important;
-  contain: layout style !important;
-  border-left-width: 4px !important;
-  border-left-style: solid !important;
-  border-radius: 24px !important;
-}
-
-/* POSITIVE / PLUS = full green like Salary */
-#milk-screen #milk-list .glass-card[data-v99-tone="positive"],
-#milk-screen #milk-list .glass-card[data-v100-tone="positive"],
-#milk-screen #milk-list .glass-card:has([class*="text-[#34C759]"]),
-#milk-screen #milk-list .glass-card:has([class*="text-[#10B981]"]) {
-  border-left-color: #34C759 !important;
-  box-shadow:
-    -4px 0 18px rgba(52,199,89,0.34),
-    0 16px 42px rgba(0,0,0,0.48),
-    inset 1px 0 0 rgba(52,199,89,0.52),
-    inset 0 1px 0 rgba(255,255,255,0.06) !important;
-}
-
-#milk-screen #milk-list .glass-card[data-v99-tone="positive"] h1,
-#milk-screen #milk-list .glass-card[data-v99-tone="positive"] h2,
-#milk-screen #milk-list .glass-card[data-v99-tone="positive"] h3,
-#milk-screen #milk-list .glass-card[data-v99-tone="positive"] h4,
-#milk-screen #milk-list .glass-card[data-v99-tone="positive"] p,
-#milk-screen #milk-list .glass-card[data-v99-tone="positive"] p *,
-#milk-screen #milk-list .glass-card[data-v99-tone="positive"] span,
-#milk-screen #milk-list .glass-card[data-v99-tone="positive"] .squircle,
-#milk-screen #milk-list .glass-card[data-v99-tone="positive"] i.fa-chevron-right,
-#milk-screen #milk-list .glass-card[data-v99-tone="positive"] .v100-title,
-#milk-screen #milk-list .glass-card[data-v99-tone="positive"] .v100-subtitle,
-#milk-screen #milk-list .glass-card[data-v99-tone="positive"] .v100-amount,
-#milk-screen #milk-list .glass-card[data-v100-tone="positive"] h1,
-#milk-screen #milk-list .glass-card[data-v100-tone="positive"] h2,
-#milk-screen #milk-list .glass-card[data-v100-tone="positive"] h3,
-#milk-screen #milk-list .glass-card[data-v100-tone="positive"] h4,
-#milk-screen #milk-list .glass-card[data-v100-tone="positive"] p,
-#milk-screen #milk-list .glass-card[data-v100-tone="positive"] p *,
-#milk-screen #milk-list .glass-card[data-v100-tone="positive"] span,
-#milk-screen #milk-list .glass-card[data-v100-tone="positive"] .squircle,
-#milk-screen #milk-list .glass-card[data-v100-tone="positive"] i.fa-chevron-right,
-#milk-screen #milk-list .glass-card[data-v100-tone="positive"] .v100-title,
-#milk-screen #milk-list .glass-card[data-v100-tone="positive"] .v100-subtitle,
-#milk-screen #milk-list .glass-card[data-v100-tone="positive"] .v100-amount,
-#milk-screen #milk-list .glass-card:has([class*="text-[#34C759]"]) h1,
-#milk-screen #milk-list .glass-card:has([class*="text-[#34C759]"]) h2,
-#milk-screen #milk-list .glass-card:has([class*="text-[#34C759]"]) h3,
-#milk-screen #milk-list .glass-card:has([class*="text-[#34C759]"]) h4,
-#milk-screen #milk-list .glass-card:has([class*="text-[#34C759]"]) p,
-#milk-screen #milk-list .glass-card:has([class*="text-[#34C759]"]) p *,
-#milk-screen #milk-list .glass-card:has([class*="text-[#34C759]"]) span,
-#milk-screen #milk-list .glass-card:has([class*="text-[#34C759]"]) .squircle,
-#milk-screen #milk-list .glass-card:has([class*="text-[#34C759]"]) i.fa-chevron-right,
-#milk-screen #milk-list .glass-card:has([class*="text-[#10B981]"]) h1,
-#milk-screen #milk-list .glass-card:has([class*="text-[#10B981]"]) h2,
-#milk-screen #milk-list .glass-card:has([class*="text-[#10B981]"]) h3,
-#milk-screen #milk-list .glass-card:has([class*="text-[#10B981]"]) h4,
-#milk-screen #milk-list .glass-card:has([class*="text-[#10B981]"]) p,
-#milk-screen #milk-list .glass-card:has([class*="text-[#10B981]"]) p *,
-#milk-screen #milk-list .glass-card:has([class*="text-[#10B981]"]) span,
-#milk-screen #milk-list .glass-card:has([class*="text-[#10B981]"]) .squircle,
-#milk-screen #milk-list .glass-card:has([class*="text-[#10B981]"]) i.fa-chevron-right {
-  color: #34C759 !important;
-  text-shadow: 0 0 10px rgba(52,199,89,0.34) !important;
-  opacity: 1 !important;
-}
-
-#milk-screen #milk-list .glass-card[data-v99-tone="positive"] .squircle,
-#milk-screen #milk-list .glass-card[data-v100-tone="positive"] .squircle,
-#milk-screen #milk-list .glass-card:has([class*="text-[#34C759]"]) .squircle,
-#milk-screen #milk-list .glass-card:has([class*="text-[#10B981]"]) .squircle {
-  background: rgba(52,199,89,0.13) !important;
-  border: 1px solid rgba(52,199,89,0.22) !important;
-}
-
-/* NEGATIVE / MINUS = full red like Salary */
-#milk-screen #milk-list .glass-card[data-v99-tone="negative"],
-#milk-screen #milk-list .glass-card[data-v100-tone="negative"],
-#milk-screen #milk-list .glass-card:has([class*="text-[#FF3B30]"]),
-#milk-screen #milk-list .glass-card:has([class*="text-[#FF4B4B]"]) {
-  border-left-color: #FF3B30 !important;
-  box-shadow:
-    -4px 0 18px rgba(255,59,48,0.34),
-    0 16px 42px rgba(0,0,0,0.48),
-    inset 1px 0 0 rgba(255,59,48,0.52),
-    inset 0 1px 0 rgba(255,255,255,0.06) !important;
-}
-
-#milk-screen #milk-list .glass-card[data-v99-tone="negative"] h1,
-#milk-screen #milk-list .glass-card[data-v99-tone="negative"] h2,
-#milk-screen #milk-list .glass-card[data-v99-tone="negative"] h3,
-#milk-screen #milk-list .glass-card[data-v99-tone="negative"] h4,
-#milk-screen #milk-list .glass-card[data-v99-tone="negative"] p,
-#milk-screen #milk-list .glass-card[data-v99-tone="negative"] p *,
-#milk-screen #milk-list .glass-card[data-v99-tone="negative"] span,
-#milk-screen #milk-list .glass-card[data-v99-tone="negative"] .squircle,
-#milk-screen #milk-list .glass-card[data-v99-tone="negative"] i.fa-chevron-right,
-#milk-screen #milk-list .glass-card[data-v99-tone="negative"] .v100-title,
-#milk-screen #milk-list .glass-card[data-v99-tone="negative"] .v100-subtitle,
-#milk-screen #milk-list .glass-card[data-v99-tone="negative"] .v100-amount,
-#milk-screen #milk-list .glass-card[data-v100-tone="negative"] h1,
-#milk-screen #milk-list .glass-card[data-v100-tone="negative"] h2,
-#milk-screen #milk-list .glass-card[data-v100-tone="negative"] h3,
-#milk-screen #milk-list .glass-card[data-v100-tone="negative"] h4,
-#milk-screen #milk-list .glass-card[data-v100-tone="negative"] p,
-#milk-screen #milk-list .glass-card[data-v100-tone="negative"] p *,
-#milk-screen #milk-list .glass-card[data-v100-tone="negative"] span,
-#milk-screen #milk-list .glass-card[data-v100-tone="negative"] .squircle,
-#milk-screen #milk-list .glass-card[data-v100-tone="negative"] i.fa-chevron-right,
-#milk-screen #milk-list .glass-card[data-v100-tone="negative"] .v100-title,
-#milk-screen #milk-list .glass-card[data-v100-tone="negative"] .v100-subtitle,
-#milk-screen #milk-list .glass-card[data-v100-tone="negative"] .v100-amount,
-#milk-screen #milk-list .glass-card:has([class*="text-[#FF3B30]"]) h1,
-#milk-screen #milk-list .glass-card:has([class*="text-[#FF3B30]"]) h2,
-#milk-screen #milk-list .glass-card:has([class*="text-[#FF3B30]"]) h3,
-#milk-screen #milk-list .glass-card:has([class*="text-[#FF3B30]"]) h4,
-#milk-screen #milk-list .glass-card:has([class*="text-[#FF3B30]"]) p,
-#milk-screen #milk-list .glass-card:has([class*="text-[#FF3B30]"]) p *,
-#milk-screen #milk-list .glass-card:has([class*="text-[#FF3B30]"]) span,
-#milk-screen #milk-list .glass-card:has([class*="text-[#FF3B30]"]) .squircle,
-#milk-screen #milk-list .glass-card:has([class*="text-[#FF3B30]"]) i.fa-chevron-right,
-#milk-screen #milk-list .glass-card:has([class*="text-[#FF4B4B]"]) h1,
-#milk-screen #milk-list .glass-card:has([class*="text-[#FF4B4B]"]) h2,
-#milk-screen #milk-list .glass-card:has([class*="text-[#FF4B4B]"]) h3,
-#milk-screen #milk-list .glass-card:has([class*="text-[#FF4B4B]"]) h4,
-#milk-screen #milk-list .glass-card:has([class*="text-[#FF4B4B]"]) p,
-#milk-screen #milk-list .glass-card:has([class*="text-[#FF4B4B]"]) p *,
-#milk-screen #milk-list .glass-card:has([class*="text-[#FF4B4B]"]) span,
-#milk-screen #milk-list .glass-card:has([class*="text-[#FF4B4B]"]) .squircle,
-#milk-screen #milk-list .glass-card:has([class*="text-[#FF4B4B]"]) i.fa-chevron-right {
-  color: #FF3B30 !important;
-  text-shadow: 0 0 10px rgba(255,59,48,0.34) !important;
-  opacity: 1 !important;
-}
-
-#milk-screen #milk-list .glass-card[data-v99-tone="negative"] .squircle,
-#milk-screen #milk-list .glass-card[data-v100-tone="negative"] .squircle,
-#milk-screen #milk-list .glass-card:has([class*="text-[#FF3B30]"]) .squircle,
-#milk-screen #milk-list .glass-card:has([class*="text-[#FF4B4B]"]) .squircle {
-  background: rgba(255,59,48,0.13) !important;
-  border: 1px solid rgba(255,59,48,0.22) !important;
-}
-
-/* Neutral/zero remains blue */
-#milk-screen #milk-list .glass-card[data-v99-tone="neutral"],
-#milk-screen #milk-list .glass-card[data-v100-tone="neutral"] {
-  border-left-color: #007AFF !important;
-}
-</style>
-<style id="aarish-v106-pure-milk-ui-sync">
-/* AARISH_V106_PURE_MILK_UI_SYNC
-   Only Milk list UI colors/stripe fixed.
-   No text change. No To Receive/To Pay added.
-   No calculation/Firebase/save/delete logic touched.
-   Search icon + Search customer placeholder stay blue.
-*/
-
-/* Search area always blue */
-#milk-screen .fa-search,
-.dark #milk-screen .fa-search {
-  color: #007AFF !important;
-  text-shadow: 0 0 10px rgba(0,122,255,0.28) !important;
-  opacity: 1 !important;
-}
-
-#milk-screen #milk-search,
-.dark #milk-screen #milk-search {
-  color: #007AFF !important;
-  caret-color: #007AFF !important;
-  text-shadow: 0 0 10px rgba(0,122,255,0.22) !important;
-}
-
-#milk-screen #milk-search::placeholder,
-#milk-screen #milk-search::-webkit-input-placeholder,
-.dark #milk-screen #milk-search::placeholder,
-.dark #milk-screen #milk-search::-webkit-input-placeholder {
-  color: rgba(0,122,255,0.78) !important;
-  opacity: 1 !important;
-}
-
-/* Remove older fat pseudo stripe if any old V104/V105 was pasted */
-#milk-screen #milk-list .glass-card::before,
-.dark #milk-screen #milk-list .glass-card::before {
-  display: none !important;
-  content: none !important;
-}
-
-/* Salary-like card base */
-#milk-screen #milk-list .glass-card[data-v99-tone],
-#milk-screen #milk-list .glass-card[data-v100-tone],
-.dark #milk-screen #milk-list .glass-card[data-v99-tone],
-.dark #milk-screen #milk-list .glass-card[data-v100-tone] {
-  border-left-width: 4px !important;
-  border-left-style: solid !important;
-  border-radius: 24px !important;
-  overflow: visible !important;
-  contain: layout style !important;
-}
-
-/* POSITIVE milk customer = full GREEN like Salary receive card */
-#milk-screen #milk-list .glass-card[data-v99-tone="positive"],
-#milk-screen #milk-list .glass-card[data-v100-tone="positive"],
-.dark #milk-screen #milk-list .glass-card[data-v99-tone="positive"],
-.dark #milk-screen #milk-list .glass-card[data-v100-tone="positive"] {
-  border-left-color: #34C759 !important;
-  box-shadow:
-    -4px 0 18px rgba(52,199,89,0.34),
-    0 16px 42px rgba(0,0,0,0.48),
-    inset 1px 0 0 rgba(52,199,89,0.52),
-    inset 0 1px 0 rgba(255,255,255,0.06) !important;
-}
-
-#milk-screen #milk-list .glass-card[data-v99-tone="positive"] h1,
-#milk-screen #milk-list .glass-card[data-v99-tone="positive"] h2,
-#milk-screen #milk-list .glass-card[data-v99-tone="positive"] h3,
-#milk-screen #milk-list .glass-card[data-v99-tone="positive"] h4,
-#milk-screen #milk-list .glass-card[data-v99-tone="positive"] p,
-#milk-screen #milk-list .glass-card[data-v99-tone="positive"] p *,
-#milk-screen #milk-list .glass-card[data-v99-tone="positive"] span,
-#milk-screen #milk-list .glass-card[data-v99-tone="positive"] .squircle,
-#milk-screen #milk-list .glass-card[data-v99-tone="positive"] i.fa-chevron-right,
-#milk-screen #milk-list .glass-card[data-v100-tone="positive"] h1,
-#milk-screen #milk-list .glass-card[data-v100-tone="positive"] h2,
-#milk-screen #milk-list .glass-card[data-v100-tone="positive"] h3,
-#milk-screen #milk-list .glass-card[data-v100-tone="positive"] h4,
-#milk-screen #milk-list .glass-card[data-v100-tone="positive"] p,
-#milk-screen #milk-list .glass-card[data-v100-tone="positive"] p *,
-#milk-screen #milk-list .glass-card[data-v100-tone="positive"] span,
-#milk-screen #milk-list .glass-card[data-v100-tone="positive"] .squircle,
-#milk-screen #milk-list .glass-card[data-v100-tone="positive"] i.fa-chevron-right,
-.dark #milk-screen #milk-list .glass-card[data-v99-tone="positive"] h1,
-.dark #milk-screen #milk-list .glass-card[data-v99-tone="positive"] h2,
-.dark #milk-screen #milk-list .glass-card[data-v99-tone="positive"] h3,
-.dark #milk-screen #milk-list .glass-card[data-v99-tone="positive"] h4,
-.dark #milk-screen #milk-list .glass-card[data-v99-tone="positive"] p,
-.dark #milk-screen #milk-list .glass-card[data-v99-tone="positive"] p *,
-.dark #milk-screen #milk-list .glass-card[data-v99-tone="positive"] span,
-.dark #milk-screen #milk-list .glass-card[data-v99-tone="positive"] .squircle,
-.dark #milk-screen #milk-list .glass-card[data-v99-tone="positive"] i.fa-chevron-right,
-.dark #milk-screen #milk-list .glass-card[data-v100-tone="positive"] h1,
-.dark #milk-screen #milk-list .glass-card[data-v100-tone="positive"] h2,
-.dark #milk-screen #milk-list .glass-card[data-v100-tone="positive"] h3,
-.dark #milk-screen #milk-list .glass-card[data-v100-tone="positive"] h4,
-.dark #milk-screen #milk-list .glass-card[data-v100-tone="positive"] p,
-.dark #milk-screen #milk-list .glass-card[data-v100-tone="positive"] p *,
-.dark #milk-screen #milk-list .glass-card[data-v100-tone="positive"] span,
-.dark #milk-screen #milk-list .glass-card[data-v100-tone="positive"] .squircle,
-.dark #milk-screen #milk-list .glass-card[data-v100-tone="positive"] i.fa-chevron-right {
-  color: #34C759 !important;
-  text-shadow: 0 0 10px rgba(52,199,89,0.35) !important;
-  opacity: 1 !important;
-}
-
-/* NEGATIVE milk customer = full RED like Salary pay card */
-#milk-screen #milk-list .glass-card[data-v99-tone="negative"],
-#milk-screen #milk-list .glass-card[data-v100-tone="negative"],
-.dark #milk-screen #milk-list .glass-card[data-v99-tone="negative"],
-.dark #milk-screen #milk-list .glass-card[data-v100-tone="negative"] {
-  border-left-color: #FF3B30 !important;
-  box-shadow:
-    -4px 0 18px rgba(255,59,48,0.34),
-    0 16px 42px rgba(0,0,0,0.48),
-    inset 1px 0 0 rgba(255,59,48,0.52),
-    inset 0 1px 0 rgba(255,255,255,0.06) !important;
-}
-
-#milk-screen #milk-list .glass-card[data-v99-tone="negative"] h1,
-#milk-screen #milk-list .glass-card[data-v99-tone="negative"] h2,
-#milk-screen #milk-list .glass-card[data-v99-tone="negative"] h3,
-#milk-screen #milk-list .glass-card[data-v99-tone="negative"] h4,
-#milk-screen #milk-list .glass-card[data-v99-tone="negative"] p,
-#milk-screen #milk-list .glass-card[data-v99-tone="negative"] p *,
-#milk-screen #milk-list .glass-card[data-v99-tone="negative"] span,
-#milk-screen #milk-list .glass-card[data-v99-tone="negative"] .squircle,
-#milk-screen #milk-list .glass-card[data-v99-tone="negative"] i.fa-chevron-right,
-#milk-screen #milk-list .glass-card[data-v100-tone="negative"] h1,
-#milk-screen #milk-list .glass-card[data-v100-tone="negative"] h2,
-#milk-screen #milk-list .glass-card[data-v100-tone="negative"] h3,
-#milk-screen #milk-list .glass-card[data-v100-tone="negative"] h4,
-#milk-screen #milk-list .glass-card[data-v100-tone="negative"] p,
-#milk-screen #milk-list .glass-card[data-v100-tone="negative"] p *,
-#milk-screen #milk-list .glass-card[data-v100-tone="negative"] span,
-#milk-screen #milk-list .glass-card[data-v100-tone="negative"] .squircle,
-#milk-screen #milk-list .glass-card[data-v100-tone="negative"] i.fa-chevron-right,
-.dark #milk-screen #milk-list .glass-card[data-v99-tone="negative"] h1,
-.dark #milk-screen #milk-list .glass-card[data-v99-tone="negative"] h2,
-.dark #milk-screen #milk-list .glass-card[data-v99-tone="negative"] h3,
-.dark #milk-screen #milk-list .glass-card[data-v99-tone="negative"] h4,
-.dark #milk-screen #milk-list .glass-card[data-v99-tone="negative"] p,
-.dark #milk-screen #milk-list .glass-card[data-v99-tone="negative"] p *,
-.dark #milk-screen #milk-list .glass-card[data-v99-tone="negative"] span,
-.dark #milk-screen #milk-list .glass-card[data-v99-tone="negative"] .squircle,
-.dark #milk-screen #milk-list .glass-card[data-v99-tone="negative"] i.fa-chevron-right,
-.dark #milk-screen #milk-list .glass-card[data-v100-tone="negative"] h1,
-.dark #milk-screen #milk-list .glass-card[data-v100-tone="negative"] h2,
-.dark #milk-screen #milk-list .glass-card[data-v100-tone="negative"] h3,
-.dark #milk-screen #milk-list .glass-card[data-v100-tone="negative"] h4,
-.dark #milk-screen #milk-list .glass-card[data-v100-tone="negative"] p,
-.dark #milk-screen #milk-list .glass-card[data-v100-tone="negative"] p *,
-.dark #milk-screen #milk-list .glass-card[data-v100-tone="negative"] span,
-.dark #milk-screen #milk-list .glass-card[data-v100-tone="negative"] .squircle,
-.dark #milk-screen #milk-list .glass-card[data-v100-tone="negative"] i.fa-chevron-right {
-  color: #FF3B30 !important;
-  text-shadow: 0 0 10px rgba(255,59,48,0.35) !important;
-  opacity: 1 !important;
-}
-
-/* Avatar/chip background follows card tone */
-#milk-screen #milk-list .glass-card[data-v99-tone="positive"] .squircle,
-#milk-screen #milk-list .glass-card[data-v100-tone="positive"] .squircle,
-.dark #milk-screen #milk-list .glass-card[data-v99-tone="positive"] .squircle,
-.dark #milk-screen #milk-list .glass-card[data-v100-tone="positive"] .squircle {
-  background: rgba(52,199,89,0.13) !important;
-  border: 1px solid rgba(52,199,89,0.22) !important;
-}
-
-#milk-screen #milk-list .glass-card[data-v99-tone="negative"] .squircle,
-#milk-screen #milk-list .glass-card[data-v100-tone="negative"] .squircle,
-.dark #milk-screen #milk-list .glass-card[data-v99-tone="negative"] .squircle,
-.dark #milk-screen #milk-list .glass-card[data-v100-tone="negative"] .squircle {
-  background: rgba(255,59,48,0.13) !important;
-  border: 1px solid rgba(255,59,48,0.22) !important;
-}
-</style>
 <style id="aarish-v107-milk-detail-ui-sync">
 /* AARISH_V107_MILK_DETAIL_UI_SYNC
    Scope: Milk customer detail screen only.
@@ -8510,6 +8140,78 @@ html, body {
    layoutHeavyRewrite: false
    polishOnly: true
 */
+</style>
+<style id="aarish-milk-salary-exact-ui-v108">
+/* AARISH_MILK_SALARY_EXACT_UI_V108
+   Milk list = Salary list visual logic.
+   Positive full green, negative full red, neutral blue.
+   Search icon/input stays blue. Backend/data logic untouched.
+*/
+
+/* Search area permanently blue */
+#milk-screen .fa-search,
+.dark #milk-screen .fa-search,
+#milk-screen #milk-search,
+.dark #milk-screen #milk-search {
+  color: #007AFF !important;
+  caret-color: #007AFF !important;
+  text-shadow: 0 0 10px rgba(0,122,255,0.28) !important;
+  opacity: 1 !important;
+}
+
+#milk-screen #milk-search::placeholder,
+#milk-screen #milk-search::-webkit-input-placeholder,
+.dark #milk-screen #milk-search::placeholder,
+.dark #milk-screen #milk-search::-webkit-input-placeholder {
+  color: rgba(0,122,255,0.78) !important;
+  opacity: 1 !important;
+}
+
+/* Previous fat pseudo stripe off */
+#milk-screen #milk-list .glass-card::before,
+.dark #milk-screen #milk-list .glass-card::before {
+  content: none !important;
+  display: none !important;
+}
+
+/* Exact Salary-like milk card */
+#milk-screen #milk-list .milk-salary-v108,
+.dark #milk-screen #milk-list .milk-salary-v108 {
+  border-left-width: 3px !important;
+  border-left-style: solid !important;
+  border-left-color: var(--milkTone) !important;
+  border-radius: 24px !important;
+  overflow: visible !important;
+  contain: layout style !important;
+  box-shadow:
+    -4px 0 18px var(--milkGlow),
+    0 16px 42px rgba(0,0,0,0.48),
+    inset 1px 0 0 var(--milkInset),
+    inset 0 1px 0 rgba(255,255,255,0.06) !important;
+}
+
+#milk-screen #milk-list .milk-salary-v108 .milk-v108-color,
+#milk-screen #milk-list .milk-salary-v108 .milk-v108-color *,
+.dark #milk-screen #milk-list .milk-salary-v108 .milk-v108-color,
+.dark #milk-screen #milk-list .milk-salary-v108 .milk-v108-color * {
+  color: var(--milkTone) !important;
+  text-shadow: 0 0 10px var(--milkGlow) !important;
+  opacity: 1 !important;
+}
+
+#milk-screen #milk-list .milk-salary-v108 .squircle,
+.dark #milk-screen #milk-list .milk-salary-v108 .squircle {
+  background: var(--milkTint) !important;
+  border: 1px solid var(--milkBorder) !important;
+  color: var(--milkTone) !important;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.06), 0 8px 22px var(--milkSoftShadow) !important;
+}
+
+#milk-screen #milk-list .milk-salary-v108 i.fa-chevron-right,
+.dark #milk-screen #milk-list .milk-salary-v108 i.fa-chevron-right {
+  color: var(--milkTone) !important;
+  text-shadow: 0 0 10px var(--milkGlow) !important;
+}
 </style>
 </head>
 <body>
@@ -18382,6 +18084,138 @@ window.onload = function(){ setTimeout(function(){ window.focus(); window.print(
   document.addEventListener("click", function(){ setTimeout(applyV107, 0); }, { passive: true });
   document.addEventListener("change", function(){ setTimeout(applyV107, 0); }, { passive: true });
   window.addEventListener("pageshow", function(){ setTimeout(applyV107, 80); }, { passive: true });
+})();
+</script>
+<script id="aarish-milk-salary-exact-ui-v108-js">
+/* AARISH_MILK_SALARY_EXACT_UI_V108_JS
+   Final UI-only Milk list renderer.
+   No milkDB/Firebase/save/delete mutation.
+*/
+(function(){
+  if (window.__AARISH_MILK_SALARY_EXACT_UI_V108_READY) return;
+  window.__AARISH_MILK_SALARY_EXACT_UI_V108_READY = true;
+
+  function byId(id){ return document.getElementById(id); }
+  function n(v){ return Number(v) || 0; }
+  function arr(v){ return Array.isArray(v) ? v : []; }
+  function clean(v){ return String(v == null ? "" : v).replace(/[\u0000-\u001F\u007F]/g," ").replace(/\s+/g," ").trim(); }
+  function esc(v){ return clean(v).replace(/[&<>"']/g, function(c){ return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]; }); }
+  function js(v){ return JSON.stringify(String(v == null ? "" : v)); }
+  function norm(v){ return clean(v).toLocaleLowerCase("en-IN"); }
+  function first(v){ var s = clean(v); return esc((s && s[0] ? s[0].toUpperCase() : "?")); }
+  function money(v){ return Math.round(Math.abs(n(v))).toLocaleString("en-IN"); }
+  function signedMoney(v){ return (n(v) >= 0 ? "+₹" : "-₹") + money(v); }
+  function signedKg(v){ return (n(v) >= 0 ? "+" : "-") + Math.abs(n(v)).toFixed(2) + " KG"; }
+
+  function flowOfMilk(record, customer){
+    var raw = String((record && (record.flow || record.milkFlow || record.direction || record.entryType || record.type)) || "").toLowerCase();
+    if (["taken","take","minus","debit","pay","dene_wala"].indexOf(raw) !== -1) return "taken";
+    if (["given","give","plus","credit","receive","lene_wala"].indexOf(raw) !== -1) return "given";
+    return customer && customer.type === "dene_wala" ? "taken" : "given";
+  }
+
+  function milkGroupsV108(){
+    var map = {};
+    try {
+      var db = (typeof milkDB !== "undefined" && milkDB) || {};
+      Object.keys(db).forEach(function(key){
+        var k = norm(key);
+        if (!k) return;
+        if (!map[k]) map[k] = { norm:k, name:clean(key) || "Unknown", keys:[] };
+        map[k].keys.push(key);
+      });
+    } catch(e) {}
+    return map;
+  }
+
+  function milkTotalsV108(g){
+    var givenKg = 0, takenKg = 0, givenAmt = 0, takenAmt = 0;
+    try {
+      var db = (typeof milkDB !== "undefined" && milkDB) || {};
+      (g.keys || []).forEach(function(key){
+        var c = db[key] || {};
+        var rate = n(c.rate || (typeof DEFAULT_RATE !== "undefined" ? DEFAULT_RATE : 55));
+        arr(c.records).forEach(function(r){
+          var qty = n(r && r.morning) + n(r && r.evening);
+          if (!qty) return;
+          var amt = qty * rate;
+          if (flowOfMilk(r, c) === "taken") { takenKg += qty; takenAmt += amt; }
+          else { givenKg += qty; givenAmt += amt; }
+        });
+      });
+    } catch(e) {}
+    return { netKg: givenKg - takenKg, netAmt: givenAmt - takenAmt };
+  }
+
+  function tone(net){
+    return n(net) > 0 ? "positive" : (n(net) < 0 ? "negative" : "neutral");
+  }
+
+  function toneVars(t){
+    if (t === "positive") return "--milkTone:#34C759;--milkTint:rgba(52,199,89,0.13);--milkBorder:rgba(52,199,89,0.22);--milkGlow:rgba(52,199,89,0.34);--milkInset:rgba(52,199,89,0.52);--milkSoftShadow:rgba(52,199,89,0.10);";
+    if (t === "negative") return "--milkTone:#FF3B30;--milkTint:rgba(255,59,48,0.13);--milkBorder:rgba(255,59,48,0.22);--milkGlow:rgba(255,59,48,0.34);--milkInset:rgba(255,59,48,0.52);--milkSoftShadow:rgba(255,59,48,0.10);";
+    return "--milkTone:#007AFF;--milkTint:rgba(0,122,255,0.13);--milkBorder:rgba(0,122,255,0.22);--milkGlow:rgba(0,122,255,0.30);--milkInset:rgba(0,122,255,0.48);--milkSoftShadow:rgba(0,122,255,0.10);";
+  }
+
+  function emptyMilkV108(){
+    if (typeof getEmptyState === "function") return getEmptyState("fa-jug-detergent", "No customers found");
+    return '<div class="py-20 text-center text-[#007AFF] font-bold">No customers found</div>';
+  }
+
+  function openMilkCall(g){
+    if (window.aarishV98OpenMilkGroup) return "window.aarishV98OpenMilkGroup(" + js(g.norm) + ")";
+    return "openMilkDetail(" + js((g.keys && g.keys[0]) || g.name) + ")";
+  }
+
+  function renderMilkListV108(){
+    var box = byId("milk-list");
+    if (!box) return;
+    var q = norm((byId("milk-search") || {}).value || "");
+    var groups = Object.values(milkGroupsV108()).filter(function(g){ return norm(g.name).indexOf(q) !== -1; });
+
+    box.innerHTML = groups.map(function(g, index){
+      var total = milkTotalsV108(g);
+      var t = tone(total.netAmt);
+      return `<div data-v99-tone="${t}" data-v100-tone="${t}" data-aarish-milk-card-v108="${t}"
+        onclick="try{haptic()}catch(e){}; ${openMilkCall(g)}"
+        class="milk-salary-v108 glass-card mb-3.5 flex items-center justify-between cursor-pointer border-l-[3px] w-full ring-1 ring-white/40 dark:ring-white/5 list-enter"
+        style="${toneVars(t)} animation-delay:${index * 0.05}s;">
+        <div class="flex items-center gap-4 w-full min-w-0">
+          <div class="w-12 h-12 shrink-0 squircle milk-v108-color font-extrabold flex items-center justify-center text-lg">${first(g.name)}</div>
+          <div class="flex-1 min-w-0">
+            <h4 class="milk-v108-color font-bold text-[17px] leading-tight truncate w-full flex items-center">${esc(g.name)}</h4>
+            <p class="milk-v108-color text-[13px] font-bold truncate w-full mt-1 tracking-tight opacity-90">${signedKg(total.netKg)} <span class="mx-1 opacity-60">•</span> <span class="font-extrabold text-[18px]">${signedMoney(total.netAmt)}</span></p>
+          </div>
+        </div>
+        <i class="milk-v108-color fa-solid fa-chevron-right shrink-0 ml-3 text-[13px]"></i>
+      </div>`;
+    }).join("") || emptyMilkV108();
+  }
+
+  function installV108(){
+    try {
+      window.renderMilkList = renderMilkListV108;
+      window.filterMilkList = renderMilkListV108;
+      try { Function("fn", "renderMilkList = fn; filterMilkList = fn;")(renderMilkListV108); } catch(e) {}
+      var active = document.querySelector(".screen.active");
+      if (active && active.id === "milk-screen") renderMilkListV108();
+    } catch(e) {}
+  }
+
+  installV108();
+  setTimeout(installV108, 80);
+  setTimeout(installV108, 500);
+  setTimeout(installV108, 1500);
+
+  document.addEventListener("input", function(e){
+    if (e && e.target && e.target.id === "milk-search") setTimeout(renderMilkListV108, 0);
+  }, { passive:true });
+
+  window.addEventListener("pageshow", function(){ setTimeout(installV108, 180); }, { passive:true });
+  document.addEventListener("visibilitychange", function(){ if (!document.hidden) setTimeout(installV108, 180); }, { passive:true });
+
+  window.aarishRenderMilkListV108 = renderMilkListV108;
+  console.log("✅ AARISH_MILK_SALARY_EXACT_UI_V108 active");
 })();
 </script>
 </body>
