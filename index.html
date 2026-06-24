@@ -3191,6 +3191,432 @@
   box-shadow: 0 8px 22px rgba(105,240,160,0.12), inset 0 1px 0 rgba(255,255,255,0.07) !important;
 }
 </style>
+<style id="aarish-v100-elite-ux-polish-final-css">
+/* AARISH_V100_ELITE_UX_POLISH_FINAL_PATCH
+   UI-only semantic harmony layer. Backend/V99 data logic untouched.
+   Green=positive/income/receive, Red=negative/expense/pay/delete,
+   Blue=neutral/info/bank, Amber=diary/personal, Orange=pending/udhar.
+*/
+:root {
+  --v100-green: #34C759;
+  --v100-red: #FF3B30;
+  --v100-blue: #007AFF;
+  --v100-amber: #F5A623;
+  --v100-orange: #FF9500;
+  --v100-action: 40px;
+}
+
+.dark {
+  --v100-surface: rgba(8, 13, 28, 0.92);
+  --v100-surface-2: rgba(13, 20, 40, 0.88);
+  --v100-hairline: rgba(148, 163, 184, 0.14);
+
+  --v100-green: #69F0A0;
+  --v100-green-title: #A7F3C5;
+  --v100-green-muted: rgba(167, 243, 197, 0.72);
+  --v100-green-soft: rgba(105, 240, 160, 0.105);
+  --v100-green-glow: rgba(105, 240, 160, 0.18);
+
+  --v100-red: #FF6B6B;
+  --v100-red-title: #FFA0A0;
+  --v100-red-muted: rgba(255, 160, 160, 0.70);
+  --v100-red-soft: rgba(255, 107, 107, 0.10);
+  --v100-red-glow: rgba(255, 107, 107, 0.16);
+
+  --v100-blue: #5EA8FF;
+  --v100-blue-title: #A8D1FF;
+  --v100-blue-muted: rgba(168, 209, 255, 0.72);
+  --v100-blue-soft: rgba(94, 168, 255, 0.10);
+  --v100-blue-glow: rgba(94, 168, 255, 0.16);
+
+  --v100-amber: #F9C35D;
+  --v100-amber-title: #FFE2A3;
+  --v100-amber-muted: rgba(255, 226, 163, 0.72);
+  --v100-amber-soft: rgba(249, 195, 93, 0.11);
+  --v100-amber-glow: rgba(249, 195, 93, 0.16);
+
+  --v100-orange: #FFB457;
+  --v100-orange-title: #FFD4A1;
+  --v100-orange-muted: rgba(255, 212, 161, 0.72);
+  --v100-orange-soft: rgba(255, 180, 87, 0.10);
+  --v100-orange-glow: rgba(255, 180, 87, 0.16);
+}
+
+/* static premium background: works even when old ambient-glow is disabled */
+.dark body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  background:
+    radial-gradient(circle at 16% 2%, rgba(94,168,255,0.13), transparent 32%),
+    radial-gradient(circle at 92% 18%, rgba(105,240,160,0.08), transparent 30%),
+    radial-gradient(circle at 50% 100%, rgba(249,195,93,0.06), transparent 34%);
+}
+
+/* Button rhythm: no random 36/38/44px icon buttons */
+.action-btn,
+.dark .action-btn {
+  width: var(--v100-action) !important;
+  height: var(--v100-action) !important;
+  min-width: var(--v100-action) !important;
+  min-height: var(--v100-action) !important;
+  padding: 0 !important;
+  border-radius: 14px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  flex-shrink: 0 !important;
+}
+
+.action-btn i { font-size: 13px !important; line-height: 1 !important; }
+
+.btn-ios-share,
+.btn-ios-add {
+  min-height: 40px !important;
+  padding: 8px 14px !important;
+  border-radius: 14px !important;
+  gap: 7px !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+/* Dashboard semantic correction */
+.dark #home-screen #dash-expenses {
+  color: var(--v100-red) !important;
+  text-shadow: 0 0 9px var(--v100-red-glow), 0 0 22px rgba(255,107,107,0.08) !important;
+}
+
+.dark #home-screen #dash-profit[data-v100-tone="positive"],
+.dark #home-screen #dash-lena {
+  color: var(--v100-green) !important;
+  text-shadow: 0 0 9px var(--v100-green-glow), 0 0 22px rgba(105,240,160,0.08) !important;
+}
+
+.dark #home-screen #dash-profit[data-v100-tone="negative"],
+.dark #home-screen #dash-dena {
+  color: var(--v100-red) !important;
+  text-shadow: 0 0 9px var(--v100-red-glow), 0 0 22px rgba(255,107,107,0.08) !important;
+}
+
+/* Final semantic card lock */
+.dark .v100-harmony-card.glass-card {
+  background:
+    linear-gradient(135deg, rgba(12,18,36,0.90), rgba(6,10,24,0.94)) !important;
+  border-top-color: var(--v100-hairline) !important;
+  border-right-color: var(--v100-hairline) !important;
+  border-bottom-color: var(--v100-hairline) !important;
+  border-left-width: 3px !important;
+  border-left-style: solid !important;
+}
+
+/* Positive */
+.dark .v100-harmony-card[data-v100-tone="positive"],
+.dark tr[data-v100-tone="positive"] {
+  border-left-color: var(--v100-green) !important;
+  box-shadow:
+    -3px 0 14px var(--v100-green-glow),
+    0 14px 38px rgba(0,0,0,0.46),
+    inset 1px 0 0 rgba(105,240,160,0.28),
+    inset 0 1px 0 rgba(255,255,255,0.07) !important;
+}
+.dark [data-v100-tone="positive"] .v100-title { color: var(--v100-green-title) !important; }
+.dark [data-v100-tone="positive"] .v100-subtitle { color: var(--v100-green-muted) !important; }
+.dark [data-v100-tone="positive"] .v100-amount,
+.dark [data-v100-tone="positive"] i.fa-chevron-right { color: var(--v100-green) !important; text-shadow: 0 0 9px var(--v100-green-glow) !important; }
+.dark [data-v100-tone="positive"] .v100-chip { background: var(--v100-green-soft) !important; color: var(--v100-green) !important; }
+
+/* Negative + Expense */
+.dark .v100-harmony-card[data-v100-tone="negative"],
+.dark .v100-harmony-card[data-v100-tone="expense"],
+.dark tr[data-v100-tone="negative"],
+.dark tr[data-v100-tone="expense"] {
+  border-left-color: var(--v100-red) !important;
+  box-shadow:
+    -3px 0 14px var(--v100-red-glow),
+    0 14px 38px rgba(0,0,0,0.46),
+    inset 1px 0 0 rgba(255,107,107,0.24),
+    inset 0 1px 0 rgba(255,255,255,0.07) !important;
+}
+.dark [data-v100-tone="negative"] .v100-title,
+.dark [data-v100-tone="expense"] .v100-title { color: var(--v100-red-title) !important; }
+.dark [data-v100-tone="negative"] .v100-subtitle,
+.dark [data-v100-tone="expense"] .v100-subtitle { color: var(--v100-red-muted) !important; }
+.dark [data-v100-tone="negative"] .v100-amount,
+.dark [data-v100-tone="expense"] .v100-amount,
+.dark [data-v100-tone="negative"] i.fa-chevron-right,
+.dark [data-v100-tone="expense"] i.fa-chevron-right { color: var(--v100-red) !important; text-shadow: 0 0 9px var(--v100-red-glow) !important; }
+.dark [data-v100-tone="negative"] .v100-chip,
+.dark [data-v100-tone="expense"] .v100-chip { background: var(--v100-red-soft) !important; color: var(--v100-red) !important; }
+
+/* Neutral / Bank / Info */
+.dark .v100-harmony-card[data-v100-tone="neutral"],
+.dark .v100-harmony-card[data-v100-tone="blue"],
+.dark tr[data-v100-tone="neutral"],
+.dark tr[data-v100-tone="blue"] {
+  border-left-color: var(--v100-blue) !important;
+  box-shadow:
+    -3px 0 14px var(--v100-blue-glow),
+    0 14px 38px rgba(0,0,0,0.46),
+    inset 1px 0 0 rgba(94,168,255,0.24),
+    inset 0 1px 0 rgba(255,255,255,0.07) !important;
+}
+.dark [data-v100-tone="neutral"] .v100-title,
+.dark [data-v100-tone="blue"] .v100-title { color: var(--v100-blue-title) !important; }
+.dark [data-v100-tone="neutral"] .v100-subtitle,
+.dark [data-v100-tone="blue"] .v100-subtitle { color: var(--v100-blue-muted) !important; }
+.dark [data-v100-tone="neutral"] .v100-amount,
+.dark [data-v100-tone="blue"] .v100-amount,
+.dark [data-v100-tone="neutral"] i.fa-chevron-right,
+.dark [data-v100-tone="blue"] i.fa-chevron-right { color: var(--v100-blue) !important; text-shadow: 0 0 9px var(--v100-blue-glow) !important; }
+.dark [data-v100-tone="neutral"] .v100-chip,
+.dark [data-v100-tone="blue"] .v100-chip { background: var(--v100-blue-soft) !important; color: var(--v100-blue) !important; }
+
+/* Diary / Personal */
+.dark .v100-harmony-card[data-v100-tone="diary"],
+.dark tr[data-v100-tone="diary"] {
+  border-left-color: var(--v100-amber) !important;
+  box-shadow:
+    -3px 0 14px var(--v100-amber-glow),
+    0 14px 38px rgba(0,0,0,0.46),
+    inset 1px 0 0 rgba(249,195,93,0.24),
+    inset 0 1px 0 rgba(255,255,255,0.07) !important;
+}
+.dark [data-v100-tone="diary"] .v100-title { color: var(--v100-amber-title) !important; }
+.dark [data-v100-tone="diary"] .v100-subtitle { color: var(--v100-amber-muted) !important; }
+.dark [data-v100-tone="diary"] .v100-amount,
+.dark [data-v100-tone="diary"] i.fa-chevron-right { color: var(--v100-amber) !important; text-shadow: 0 0 9px var(--v100-amber-glow) !important; }
+.dark [data-v100-tone="diary"] .v100-chip { background: var(--v100-amber-soft) !important; color: var(--v100-amber) !important; }
+
+/* Pending / Udhar project orange */
+.dark .v100-harmony-card[data-v100-tone="orange"],
+.dark tr[data-v100-tone="orange"] {
+  border-left-color: var(--v100-orange) !important;
+  box-shadow:
+    -3px 0 14px var(--v100-orange-glow),
+    0 14px 38px rgba(0,0,0,0.46),
+    inset 1px 0 0 rgba(255,180,87,0.24),
+    inset 0 1px 0 rgba(255,255,255,0.07) !important;
+}
+.dark [data-v100-tone="orange"] .v100-title { color: var(--v100-orange-title) !important; }
+.dark [data-v100-tone="orange"] .v100-subtitle { color: var(--v100-orange-muted) !important; }
+.dark [data-v100-tone="orange"] .v100-amount,
+.dark [data-v100-tone="orange"] i.fa-chevron-right { color: var(--v100-orange) !important; text-shadow: 0 0 9px var(--v100-orange-glow) !important; }
+.dark [data-v100-tone="orange"] .v100-chip { background: var(--v100-orange-soft) !important; color: var(--v100-orange) !important; }
+
+/* Total cards: premium glass gradients, not raw neon blocks */
+.dark #milk-detail-screen .glass-card[data-v100-tone="positive"],
+.dark #salary-detail-screen .glass-card[data-v100-tone="positive"],
+.dark #udhar-detail-card[data-v100-tone="positive"] {
+  background:
+    radial-gradient(circle at 16% 0%, rgba(105,240,160,0.22), transparent 44%),
+    linear-gradient(135deg, rgba(9,34,24,0.96), rgba(8,17,31,0.94)) !important;
+  border: 1px solid rgba(105,240,160,0.28) !important;
+}
+
+.dark #milk-detail-screen .glass-card[data-v100-tone="negative"],
+.dark #salary-detail-screen .glass-card[data-v100-tone="negative"],
+.dark #udhar-detail-card[data-v100-tone="negative"] {
+  background:
+    radial-gradient(circle at 16% 0%, rgba(255,107,107,0.20), transparent 44%),
+    linear-gradient(135deg, rgba(44,14,18,0.96), rgba(12,16,30,0.94)) !important;
+  border: 1px solid rgba(255,107,107,0.26) !important;
+}
+
+/* Table hierarchy fix: dates muted, amounts strong */
+.dark tr[data-v100-tone] td:not(.v100-amount) {
+  opacity: 0.82 !important;
+}
+.dark tr[data-v100-tone] td.v100-amount,
+.dark tr[data-v100-tone] .v100-amount {
+  opacity: 1 !important;
+  font-weight: 800 !important;
+}
+
+/* Delete remains red but premium */
+.dark .action-btn {
+  background: rgba(255,107,107,0.12) !important;
+  color: var(--v100-red) !important;
+  border: 1px solid rgba(255,107,107,0.24) !important;
+  box-shadow: 0 8px 22px rgba(255,107,107,0.12), inset 0 1px 0 rgba(255,255,255,0.07) !important;
+}
+.dark .action-btn * { color: var(--v100-red) !important; }
+
+.dark .btn-ios-share {
+  background: rgba(94,168,255,0.12) !important;
+  color: var(--v100-blue) !important;
+  border-color: rgba(94,168,255,0.24) !important;
+  box-shadow: 0 8px 22px rgba(94,168,255,0.12), inset 0 1px 0 rgba(255,255,255,0.07) !important;
+}
+.dark .btn-ios-add {
+  background: rgba(105,240,160,0.12) !important;
+  color: var(--v100-green) !important;
+  border-color: rgba(105,240,160,0.24) !important;
+  box-shadow: 0 8px 22px rgba(105,240,160,0.12), inset 0 1px 0 rgba(255,255,255,0.07) !important;
+}
+</style>
+
+<style id="aarish-v100-elite-ux-polish">
+/* AARISH V100: Apple HIG Button Standardization */
+.action-btn {
+    min-width: 44px !important;
+    min-height: 44px !important;
+    width: 44px !important;
+    height: 44px !important;
+    border-radius: 14px !important;
+}
+.action-btn i { font-size: 16px !important; }
+
+/* AARISH V100: Premium Fintech Dark Mode (Soft Glows instead of Harsh Solids) */
+/* -> Respects the developer's original semantic color logic while upgrading aesthetics */
+
+/* GREEN: Positive / To Receive / Profit */
+.dark .bg-gradient-to-br.from-\[\#34C759\],
+.dark .bg-gradient-to-br.from-\[\#10B981\] {
+    background: linear-gradient(145deg, rgba(52, 199, 89, 0.12), rgba(52, 199, 89, 0.04)) !important;
+    border: 1px solid rgba(52, 199, 89, 0.3) !important;
+    box-shadow: 0 8px 32px rgba(52, 199, 89, 0.15), inset 0 1px 1px rgba(255, 255, 255, 0.05) !important;
+}
+.dark .bg-gradient-to-br.from-\[\#34C759\] *,
+.dark .bg-gradient-to-br.from-\[\#10B981\] * {
+    color: #4ade80 !important; /* Soft crisp green */
+    text-shadow: 0 0 12px rgba(74, 222, 128, 0.4) !important;
+}
+
+/* RED: Negative / To Pay / Expense */
+.dark .bg-gradient-to-br.from-\[\#FF3B30\],
+.dark .bg-gradient-to-br.from-\[\#FF4B4B\] {
+    background: linear-gradient(145deg, rgba(255, 59, 48, 0.12), rgba(255, 59, 48, 0.04)) !important;
+    border: 1px solid rgba(255, 59, 48, 0.3) !important;
+    box-shadow: 0 8px 32px rgba(255, 59, 48, 0.15), inset 0 1px 1px rgba(255, 255, 255, 0.05) !important;
+}
+.dark .bg-gradient-to-br.from-\[\#FF3B30\] *,
+.dark .bg-gradient-to-br.from-\[\#FF4B4B\] * {
+    color: #ff8a8a !important; /* Soft crisp red */
+    text-shadow: 0 0 12px rgba(255, 138, 138, 0.4) !important;
+}
+
+/* BLUE: Neutral / Info / Month */
+.dark .bg-gradient-to-br.from-\[\#007AFF\] {
+    background: linear-gradient(145deg, rgba(0, 122, 255, 0.12), rgba(0, 122, 255, 0.04)) !important;
+    border: 1px solid rgba(0, 122, 255, 0.3) !important;
+    box-shadow: 0 8px 32px rgba(0, 122, 255, 0.15), inset 0 1px 1px rgba(255, 255, 255, 0.05) !important;
+}
+.dark .bg-gradient-to-br.from-\[\#007AFF\] * {
+    color: #93c5fd !important; /* Soft crisp blue */
+    text-shadow: 0 0 12px rgba(147, 197, 253, 0.4) !important;
+}
+
+/* ORANGE/AMBER: Pending / Diary */
+.dark .bg-gradient-to-br.from-\[\#FF9500\],
+.dark .bg-gradient-to-br.from-\[\#F5A623\] {
+    background: linear-gradient(145deg, rgba(255, 149, 0, 0.12), rgba(255, 149, 0, 0.04)) !important;
+    border: 1px solid rgba(255, 149, 0, 0.3) !important;
+    box-shadow: 0 8px 32px rgba(255, 149, 0, 0.15), inset 0 1px 1px rgba(255, 255, 255, 0.05) !important;
+}
+.dark .bg-gradient-to-br.from-\[\#FF9500\] *,
+.dark .bg-gradient-to-br.from-\[\#F5A623\] * {
+    color: #fcd34d !important; /* Soft crisp amber */
+    text-shadow: 0 0 12px rgba(252, 211, 77, 0.4) !important;
+}
+</style>
+
+
+<style id="aarish-v101-cognitive-polish">
+/* AARISH V101: COGNITIVE EASE & PREMIUM FINTECH UX 
+   Fixing "Red Fatigue": Expenses and Payables shouldn't make the entire screen look like an error.
+   We keep the semantic Red for AMOUNTS ONLY, but restore the UI shell to a calming, premium Blue.
+*/
+
+/* 1. EXPENSES: Remove Full-Screen Alarm */
+.dark #expenses-screen .header-sticky h1,
+.dark #expenses-screen .fa-search,
+.dark #tab-expenses[data-aarish-expense-v68="negative"],
+.dark #tab-expenses[data-aarish-expense-v68="negative"] i,
+.dark #expense-detail-screen .header-sticky h1,
+.dark #expense-detail-screen .header-sticky button i {
+    color: var(--v100-blue) !important;
+    text-shadow: 0 0 12px var(--v100-blue-glow) !important;
+}
+
+.dark #expenses-screen #expense-add-btn-v52 {
+    background: var(--v100-blue) !important;
+    color: #FFF !important;
+    box-shadow: 0 8px 24px var(--v100-blue-glow) !important;
+}
+
+/* Individual Expense Cards: Calm border, semantic red amount */
+.dark #expense-list-container .glass-card,
+.dark #expense-list-container .list-enter {
+    border-left-color: var(--v100-hairline) !important;
+    box-shadow: 0 12px 36px rgba(0,0,0,0.40), inset 0 1px 0 rgba(255,255,255,0.06) !important;
+}
+.dark #expense-list-container .glass-card .font-extrabold {
+    color: var(--v100-red) !important;
+    text-shadow: 0 0 10px var(--v100-red-glow) !important;
+}
+.dark #expense-list-container .glass-card h4,
+.dark #expense-list-container .glass-card p {
+    color: var(--v100-blue-title) !important;
+}
+
+/* 2. SALARY (PAYABLES): Remove Full-Screen Alarm */
+.dark #salary-screen[data-aarish-salary-net-v68="negative"] .header-sticky h1,
+.dark #salary-screen[data-aarish-salary-net-v68="negative"] .fa-search,
+.dark #tab-salary[data-aarish-salary-v68="negative"],
+.dark #tab-salary[data-aarish-salary-v68="negative"] i,
+.dark #salary-detail-screen[data-aarish-salary-net-v68="negative"] .header-sticky h1,
+.dark #salary-detail-screen[data-aarish-salary-net-v68="negative"] .header-sticky button i {
+    color: var(--v100-blue) !important;
+    text-shadow: 0 0 12px var(--v100-blue-glow) !important;
+}
+
+.dark #salary-screen[data-aarish-salary-net-v68="negative"] #salary-new-btn-v52 {
+    background: var(--v100-blue) !important;
+    color: #FFF !important;
+    box-shadow: 0 8px 24px var(--v100-blue-glow) !important;
+}
+
+.dark #salary-list .glass-card[data-aarish-salary-card-v68="negative"],
+.dark #salary-list .list-enter[data-aarish-salary-card-v68="negative"] {
+    border-left-color: var(--v100-hairline) !important;
+    box-shadow: 0 12px 36px rgba(0,0,0,0.40), inset 0 1px 0 rgba(255,255,255,0.06) !important;
+}
+.dark #salary-list .glass-card[data-aarish-salary-card-v68="negative"] .font-extrabold {
+    color: var(--v100-red) !important;
+    text-shadow: 0 0 10px var(--v100-red-glow) !important;
+}
+
+/* 3. PREMIUM INPUTS (Apple HIG Deep Frosted Glass) */
+.dark .input-box {
+    background: rgba(255, 255, 255, 0.04) !important;
+    border: 1px solid rgba(255, 255, 255, 0.06) !important;
+    box-shadow: inset 0 2px 6px rgba(0,0,0,0.25) !important;
+    color: #FFF !important;
+    border-radius: 16px !important;
+}
+.dark .input-box:focus {
+    background: rgba(255, 255, 255, 0.08) !important;
+    border-color: rgba(94, 168, 255, 0.5) !important;
+    box-shadow: 0 0 0 4px rgba(94, 168, 255, 0.15), inset 0 2px 6px rgba(0,0,0,0.2) !important;
+}
+
+/* 4. ULTRA-GLASS BOTTOM NAV */
+.dark .bottom-nav {
+    background: rgba(8, 12, 25, 0.75) !important;
+    backdrop-filter: blur(40px) saturate(200%) !important;
+    -webkit-backdrop-filter: blur(40px) saturate(200%) !important;
+    border-top: 1px solid rgba(255,255,255,0.06) !important;
+    box-shadow: 0 -10px 40px rgba(0,0,0,0.5) !important;
+}
+
+/* 5. GHOST REDUCTION ON TABS (Smooth Springs) */
+.nav-item {
+    transition: transform 0.4s cubic-bezier(0.32, 1.5, 0.5, 1), background 0.3s ease, color 0.3s ease !important;
+}
+</style>
+
 </head>
 
 <body>
@@ -6049,7 +6475,7 @@ async function saveNewProject() {
                     </div>
                 </div>
                 <div class="flex items-center gap-3 shrink-0 ml-2">
-                    <button onclick="event.stopPropagation(); haptic(); deleteProject('${name}')" class="action-btn !w-10 !h-10 !bg-red-500/10"><i class="fa-solid fa-trash text-[12px] text-red-500"></i></button>
+                    <button onclick="event.stopPropagation(); haptic(); deleteProject('${name}')" class="action-btn !bg-red-500/10"><i class="fa-solid fa-trash text-[12px] text-red-500"></i></button>
                     <i class="fa-solid fa-chevron-right text-gray-300 text-[14px]"></i>
                 </div>
             </div>`;
@@ -16238,7 +16664,7 @@ window.onload = function(){ setTimeout(function(){ window.focus(); window.print(
           </div>
         </div>
         <div class="flex items-center gap-3 shrink-0 ml-2">
-          <button onclick="event.stopPropagation(); haptic(); deleteProject(${jsArg(name)})" class="action-btn !w-10 !h-10 !bg-red-500/10"><i class="fa-solid fa-trash text-[12px] text-red-500"></i></button>
+          <button onclick="event.stopPropagation(); haptic(); deleteProject(${jsArg(name)})" class="action-btn !bg-red-500/10"><i class="fa-solid fa-trash text-[12px] text-red-500"></i></button>
           <i class="fa-solid fa-chevron-right text-gray-300 text-[14px]"></i>
         </div>
       </div>`;
@@ -16710,7 +17136,7 @@ window.onload = function(){ setTimeout(function(){ window.focus(); window.print(
           </div>
         </div>
         <div class="flex items-center gap-3 shrink-0 ml-2">
-          <button onclick="event.stopPropagation(); haptic(); deleteProject(${js(name)})" class="action-btn !w-10 !h-10 !bg-red-500/10"><i class="fa-solid fa-trash text-red-500"></i></button>
+          <button onclick="event.stopPropagation(); haptic(); deleteProject(${js(name)})" class="action-btn !bg-red-500/10"><i class="fa-solid fa-trash text-red-500"></i></button>
           <i class="fa-solid fa-chevron-right ${cls} text-[14px]"></i>
         </div>
       </div>`;
@@ -17061,6 +17487,188 @@ window.onload = function(){ setTimeout(function(){ window.focus(); window.print(
   }, { passive: true });
 
   console.log("✅ AARISH_V100_ELITE_UX_POLISH_PATCH active");
+})();
+</script>
+<script id="aarish-v100-elite-ux-polish-final-js">
+/* AARISH_V100_ELITE_UX_POLISH_FINAL_PATCH
+   UI-only semantic hierarchy normalizer. No Firebase/auth/outbox/data mutation.
+*/
+(function () {
+  if (window.__AARISH_V100_ELITE_UX_POLISH_FINAL_READY) return;
+  window.__AARISH_V100_ELITE_UX_POLISH_FINAL_READY = true;
+
+  function q(root, sel) { return Array.prototype.slice.call((root || document).querySelectorAll(sel)); }
+
+  function cleanSemanticClasses(el) {
+    if (!el || !el.classList) return;
+    el.classList.remove("v100-title", "v100-subtitle", "v100-amount", "v100-chip");
+  }
+
+  function normalizeTone(tone) {
+    tone = String(tone || "neutral").toLowerCase();
+    if (tone === "green" || tone === "positive" || tone === "income" || tone === "receive") return "positive";
+    if (tone === "red" || tone === "negative" || tone === "expense" || tone === "pay") return tone === "expense" ? "expense" : "negative";
+    if (tone === "amber" || tone === "yellow" || tone === "diary") return "diary";
+    if (tone === "orange" || tone === "pending" || tone === "udhar") return "orange";
+    if (tone === "bank" || tone === "blue" || tone === "neutral" || tone === "zero") return "neutral";
+    return "neutral";
+  }
+
+  function toneFromText(text) {
+    text = String(text || "").toLowerCase();
+    if (text.indexOf("income") !== -1 || text.indexOf("received") !== -1 || text.indexOf("to receive") !== -1 || text.indexOf("+₹") !== -1) return "positive";
+    if (text.indexOf("expense") !== -1 || text.indexOf("sent") !== -1 || text.indexOf("to pay") !== -1 || text.indexOf("-₹") !== -1) return "negative";
+    if (text.indexOf("pending") !== -1 || text.indexOf("udhar") !== -1) return "orange";
+    if (text.indexOf("diary") !== -1 || text.indexOf("personal") !== -1) return "diary";
+    if (text.indexOf("bank") !== -1 || text.indexOf("other") !== -1) return "neutral";
+    return "neutral";
+  }
+
+  function markDashboard() {
+    var expenses = document.getElementById("dash-expenses");
+    var profit = document.getElementById("dash-profit");
+    var lena = document.getElementById("dash-lena");
+    var dena = document.getElementById("dash-dena");
+
+    if (expenses) {
+      expenses.setAttribute("data-v100-tone", "expense");
+      expenses.classList.add("v100-amount");
+    }
+    if (lena) {
+      lena.setAttribute("data-v100-tone", "positive");
+      lena.classList.add("v100-amount");
+    }
+    if (dena) {
+      dena.setAttribute("data-v100-tone", "negative");
+      dena.classList.add("v100-amount");
+    }
+    if (profit) {
+      var txt = String(profit.textContent || "");
+      var tone = txt.indexOf("-") !== -1 ? "negative" : "positive";
+      profit.setAttribute("data-v100-tone", tone);
+      profit.classList.add("v100-amount");
+    }
+  }
+
+  function markCard(card) {
+    if (!card || !card.setAttribute) return;
+    var tone = normalizeTone(card.getAttribute("data-v100-tone") || card.getAttribute("data-v99-tone") || toneFromText(card.textContent));
+    card.setAttribute("data-v100-tone", tone);
+    if (card.classList && card.classList.contains("glass-card")) card.classList.add("v100-harmony-card");
+
+    q(card, "h1,h2,h3,h4").forEach(function (el) {
+      cleanSemanticClasses(el);
+      el.classList.add("v100-title");
+    });
+
+    q(card, "p,small,.text-xs,.text-\\[10px\\],.text-\\[11px\\],.text-\\[12px\\],.text-\\[13px\\]").forEach(function (el) {
+      cleanSemanticClasses(el);
+      el.classList.add("v100-subtitle");
+    });
+
+    q(card, ".squircle,[class*='rounded-full'],[class*='rounded-md']").forEach(function (el) {
+      if ((el.textContent || "").trim().length <= 20 || el.querySelector("i")) {
+        el.classList.add("v100-chip");
+      }
+    });
+
+    q(card, "span,td,h3,h4,div").forEach(function (el) {
+      var text = String(el.textContent || "").trim();
+      if (!text) return;
+      if (/[₹]/.test(text) || /\bKG\b/i.test(text) || /^[+-]\s*₹/.test(text)) {
+        el.classList.remove("v100-subtitle");
+        el.classList.add("v100-amount");
+      }
+    });
+
+    q(card, "button.action-btn").forEach(function (btn) {
+      btn.classList.remove("!w-8", "!h-8", "!w-9", "!h-9");
+      btn.classList.add("!w-10", "!h-10");
+    });
+  }
+
+  function markProjectRows() {
+    var table = document.getElementById("project-detail-records");
+    if (!table) return;
+    q(table, "tr").forEach(function (tr) {
+      var tone = normalizeTone(tr.getAttribute("data-v100-tone") || toneFromText(tr.textContent));
+      tr.setAttribute("data-v100-tone", tone);
+      q(tr, "td").forEach(function (td, index) {
+        cleanSemanticClasses(td);
+        if (index === 2 || /₹/.test(td.textContent || "")) td.classList.add("v100-amount");
+        else td.classList.add("v100-subtitle");
+      });
+      q(tr, "span").forEach(function (sp) {
+        var t = toneFromText(sp.textContent);
+        if (t !== "neutral") tr.setAttribute("data-v100-tone", t);
+        sp.classList.add("v100-chip", "v100-amount");
+      });
+    });
+  }
+
+  function markAll() {
+    markDashboard();
+    q(document, "[data-v99-tone], [data-v100-tone], .diary-card").forEach(function (el) {
+      if (el.classList && el.classList.contains("diary-card") && !el.getAttribute("data-v100-tone")) {
+        el.setAttribute("data-v100-tone", "diary");
+      }
+      markCard(el);
+    });
+    markProjectRows();
+    q(document, ".action-btn").forEach(function (btn) {
+      btn.classList.remove("!w-8", "!h-8", "!w-9", "!h-9");
+      btn.classList.add("!w-10", "!h-10");
+    });
+  }
+
+  function wrap(name) {
+    try {
+      var old = window[name];
+      if (typeof old !== "function" || old.__aarishV100FinalWrapped) return;
+      var wrapped = function () {
+        var out = old.apply(this, arguments);
+        setTimeout(markAll, 0);
+        return out;
+      };
+      wrapped.__aarishV100FinalWrapped = true;
+      wrapped.__aarishOriginal = old;
+      window[name] = wrapped;
+      try { Function("fn", name + " = fn;")(wrapped); } catch(e) {}
+    } catch(e) {}
+  }
+
+  [
+    "updateDashboard",
+    "renderDashboardBalances",
+    "renderMilkList",
+    "renderSalaryList",
+    "renderUdharList",
+    "renderExpenseList",
+    "renderProjectsList",
+    "renderDiaryList",
+    "renderMilkRecords",
+    "renderSalaryRecords",
+    "renderUdharRecords",
+    "renderExpenseRecords",
+    "renderProjectRecords",
+    "switchTab",
+    "updateActiveScreen"
+  ].forEach(wrap);
+
+  markAll();
+  setTimeout(markAll, 300);
+  setTimeout(markAll, 1200);
+
+  ["click", "input", "change"].forEach(function (ev) {
+    document.addEventListener(ev, function () { setTimeout(markAll, 0); }, { passive: true });
+  });
+
+  window.addEventListener("pageshow", function () { setTimeout(markAll, 60); }, { passive: true });
+  document.addEventListener("visibilitychange", function () {
+    if (!document.hidden) setTimeout(markAll, 60);
+  }, { passive: true });
+
+  console.log("✅ AARISH_V100_ELITE_UX_POLISH_FINAL_PATCH active");
 })();
 </script>
 </body>
