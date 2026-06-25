@@ -2480,6 +2480,106 @@
 }
 /* AARISH_V149_SALARY_DETAIL_BLUE_ROW_TONE_END */
 
+
+/* AARISH_V150_SALARY_RECORDS_SEARCH_DELETE_RESCUE_START
+   Salary detail/list UI rescue:
+   - Search icon permanent blue
+   - Month/year + Daily Entries + DATE/AMOUNT permanent blue
+   - Salary detail rows show correctly and date follows amount tone
+   - Delete top/detail permanent red and instant
+   - No size/layout changes
+*/
+
+/* Salary search icon + placeholder permanent blue */
+#salary-screen :is(.fa-search,.fa-magnifying-glass),
+#salary-screen .search-box i,
+#salary-screen .search-wrap i,
+#salary-screen [class*="search"] i {
+  color: #007AFF !important;
+  text-shadow: 0 0 10px rgba(0,122,255,0.22) !important;
+}
+
+#salary-screen input::placeholder,
+#salary-search::placeholder {
+  color: #007AFF !important;
+  opacity: 0.82 !important;
+}
+
+/* Permanent blue structural salary detail labels */
+#salary-detail-screen :is(
+  #filter-month-salary,
+  #filter-year-salary,
+  .input-box,
+  select,
+  th,
+  [data-salary-fixed-blue-v150="true"],
+  .salary-daily-title-v150
+) {
+  color: #007AFF !important;
+  text-shadow: 0 0 10px rgba(0,122,255,0.22) !important;
+  transition-property: transform, opacity !important;
+}
+
+/* Detail title follows net */
+#salary-detail-title[data-salary-tone-v150="positive"] {
+  color: #34C759 !important;
+  text-shadow: 0 0 10px rgba(52,199,89,0.24) !important;
+}
+#salary-detail-title[data-salary-tone-v150="negative"] {
+  color: #FF3B30 !important;
+  text-shadow: 0 0 10px rgba(255,59,48,0.24) !important;
+}
+#salary-detail-title[data-salary-tone-v150="neutral"] {
+  color: #007AFF !important;
+  text-shadow: 0 0 10px rgba(0,122,255,0.24) !important;
+}
+
+/* Row date + amount same tone */
+#salary-detail-records tr[data-salary-row-tone-v150="positive"] td:not(:last-child),
+#salary-detail-records tr[data-salary-row-tone-v150="positive"] td:not(:last-child) * {
+  color: #34C759 !important;
+  text-shadow: 0 0 9px rgba(52,199,89,0.20) !important;
+}
+#salary-detail-records tr[data-salary-row-tone-v150="negative"] td:not(:last-child),
+#salary-detail-records tr[data-salary-row-tone-v150="negative"] td:not(:last-child) * {
+  color: #FF3B30 !important;
+  text-shadow: 0 0 9px rgba(255,59,48,0.22) !important;
+}
+#salary-detail-records tr[data-salary-row-tone-v150="neutral"] td:not(:last-child),
+#salary-detail-records tr[data-salary-row-tone-v150="neutral"] td:not(:last-child) * {
+  color: #007AFF !important;
+  text-shadow: 0 0 9px rgba(0,122,255,0.20) !important;
+}
+
+/* Delete always red */
+#salary-detail-profile-delete-btn-v150,
+#salary-detail-profile-delete-btn-v150 *,
+#salary-detail-records .salary-delete-cell-v150,
+#salary-detail-records .salary-delete-cell-v150 *,
+#salary-detail-records .salary-delete-btn-v150,
+#salary-detail-records .salary-delete-btn-v150 *,
+#salary-detail-records .salary-delete-icon-v150,
+#salary-detail-screen :is(.action-btn,.action-btn *,i.fa-trash) {
+  color: #FF3B30 !important;
+  text-shadow: 0 0 9px rgba(255,59,48,0.24) !important;
+}
+
+#salary-detail-profile-delete-btn-v150,
+#salary-detail-records .salary-delete-btn-v150,
+#salary-detail-screen .action-btn {
+  background: rgba(255,59,48,0.10) !important;
+  border-color: rgba(255,59,48,0.18) !important;
+  box-shadow: 0 8px 18px rgba(255,59,48,0.13) !important;
+  transition-property: transform, opacity !important;
+}
+
+/* Empty state blue */
+#salary-detail-records tr[data-salary-empty-v150="true"] td {
+  color: #007AFF !important;
+  text-shadow: 0 0 10px rgba(0,122,255,0.24) !important;
+}
+/* AARISH_V150_SALARY_RECORDS_SEARCH_DELETE_RESCUE_END */
+
 </style>
 
 
@@ -6879,14 +6979,21 @@ function filterSalaryList() {
 }
 
     function openSalaryDetail(name) {
-        if(isLongPress) { isLongPress = false; return; } // Touch conflict fix
         activeSalaryPerson = name;
-        document.getElementById('salary-detail-title').textContent = name;
-        document.getElementById('filter-month-salary').value = selectedMonth;
-        document.getElementById('filter-year-salary').value = selectedYear;
+        var title = document.getElementById('salary-detail-title');
+        if (title) title.textContent = name;
+        var month = document.getElementById('filter-month-salary');
+        if (month) month.value = selectedMonth;
+        var year = document.getElementById('filter-year-salary');
+        if (year) year.value = selectedYear;
+
         document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-        document.getElementById('salary-detail-screen').classList.add('active');
+        var screen = document.getElementById('salary-detail-screen');
+        if (screen) screen.classList.add('active');
+
+        try { ensureSalaryDetailDeleteButtonV150(); } catch(e) {}
         renderSalaryRecords();
+        try { ensureSalaryDetailDeleteButtonV150(); } catch(e) {}
     }
 
     function openSalaryEntryModal(name) {
@@ -6927,30 +7034,344 @@ function filterSalaryList() {
 
     
 
-    function renderSalaryRecords() {
-        if (!activeSalaryPerson || !salaryDB[activeSalaryPerson]) return;
+    
+/* AARISH_V150_SALARY_HELPER_START */
+function ensureSalaryDetailDeleteButtonV150() {
+    try {
+        var screen = document.getElementById("salary-detail-screen");
+        if (!screen) return;
 
-        const s = salaryDB[activeSalaryPerson];
-        let totalAmt = 0;
+        var header = screen.querySelector(".header-sticky");
+        if (!header) return;
+
+        var btn = document.getElementById("salary-detail-profile-delete-btn-v150");
+        if (!btn) {
+            btn = header.querySelector("button[data-salary-top-delete-v150='true']") || null;
+        }
+
+        if (!btn) {
+            btn = document.createElement("button");
+            btn.id = "salary-detail-profile-delete-btn-v150";
+            btn.type = "button";
+            btn.setAttribute("aria-label", "Delete salary customer");
+            btn.setAttribute("title", "Delete customer");
+            btn.setAttribute("data-salary-top-delete-v150", "true");
+            btn.innerHTML = '<i class="fa-solid fa-trash" style="font-size:18px;color:#FF3B30!important;"></i>';
+            header.appendChild(btn);
+        }
+
+        btn.className = "action-btn";
+        btn.style.cssText = [
+            "width:46px",
+            "height:46px",
+            "min-width:46px",
+            "min-height:46px",
+            "border-radius:18px",
+            "display:inline-flex",
+            "align-items:center",
+            "justify-content:center",
+            "flex-shrink:0",
+            "margin-left:auto",
+            "background:rgba(255,59,48,0.10)",
+            "color:#FF3B30",
+            "border:1px solid rgba(255,59,48,0.18)",
+            "box-shadow:0 8px 22px rgba(255,59,48,0.14)",
+            "transition:transform 80ms cubic-bezier(0.2,0.8,0.2,1), opacity 60ms ease"
+        ].join(";") + ";";
+
+        btn.onclick = function(event) {
+            try {
+                if (event) {
+                    event.preventDefault();
+                    event.stopPropagation();
+                }
+                if (typeof haptic === "function") haptic();
+            } catch(e) {}
+
+            var name = "";
+            try { if (typeof activeSalaryPerson !== "undefined") name = activeSalaryPerson || ""; } catch(e) {}
+            if (!name) {
+                var title = document.getElementById("salary-detail-title");
+                name = title ? String(title.textContent || "").trim() : "";
+            }
+
+            if (!name) {
+                try { showToast("Customer not found"); } catch(e) {}
+                return false;
+            }
+
+            if (typeof deleteSalaryCustomerProfile === "function") return deleteSalaryCustomerProfile(name);
+            if (typeof deleteSalaryProfile === "function") return deleteSalaryProfile(name);
+            if (typeof deleteSalaryPersonProfile === "function") return deleteSalaryPersonProfile(name);
+
+            if (confirm("Delete " + name + "?")) {
+                try {
+                    delete salaryDB[name];
+                    if (typeof saveData === "function") saveData();
+                    if (typeof switchTab === "function") switchTab("salary-screen");
+                    if (typeof updateActiveScreen === "function") updateActiveScreen();
+                    if (typeof showToast === "function") showToast("Deleted");
+                } catch(e) {
+                    try { showToast("Delete failed"); } catch(x) {}
+                }
+            }
+            return false;
+        };
+
+        var leftGroup = header.querySelector(".flex.items-center");
+        if (leftGroup) {
+            leftGroup.style.flex = "1 1 auto";
+            leftGroup.style.minWidth = "0";
+        }
+    } catch(e) {}
+}
+
+function salaryV150GetPersonObject(name) {
+    try {
+        if (!name) return null;
+        var db = (typeof salaryDB !== "undefined") ? salaryDB : window.salaryDB;
+
+        if (!db) return null;
+
+        if (Array.isArray(db)) {
+            for (var i = 0; i < db.length; i++) {
+                var x = db[i] || {};
+                if (String(x.name || x.person || x.title || "") === String(name)) return x;
+            }
+            return { records: db.filter(function(r){ return String((r && (r.name || r.person || r.customer)) || "") === String(name); }) };
+        }
+
+        if (db[name]) return db[name];
+
+        var keys = Object.keys(db);
+        for (var k = 0; k < keys.length; k++) {
+            var obj = db[keys[k]];
+            if (obj && typeof obj === "object" && String(obj.name || obj.person || obj.title || "") === String(name)) return obj;
+        }
+    } catch(e) {}
+    return null;
+}
+
+function salaryV150GetRecords(name) {
+    var person = salaryV150GetPersonObject(name);
+    if (!person) return [];
+
+    var raw = [];
+    if (Array.isArray(person)) raw = person;
+    else if (Array.isArray(person.records)) raw = person.records;
+    else if (Array.isArray(person.entries)) raw = person.entries;
+    else if (Array.isArray(person.logs)) raw = person.logs;
+    else if (person.records && typeof person.records === "object") raw = Object.keys(person.records).map(function(k){ return person.records[k]; });
+    else if (person.entries && typeof person.entries === "object") raw = Object.keys(person.entries).map(function(k){ return person.entries[k]; });
+
+    raw = (raw || []).filter(Boolean).map(function(r, i) {
+        var x = Object.assign({}, r);
+        if (x.originalIndex == null) x.originalIndex = i;
+        if (!x.id && r && r.id !== 0) x.id = r.id || r.key || r.uid || String(i);
+        return x;
+    });
+
+    function manualMatch(r) {
+        try {
+            var d = new Date(r.date);
+            if (!isNaN(d.getTime())) {
+                return d.getMonth() === Number(selectedMonth) && d.getFullYear() === Number(selectedYear);
+            }
+        } catch(e) {}
+
+        try {
+            var txt = String(r.date || "");
+            var y = String(selectedYear || "");
+            if (y && txt.indexOf(y) === -1 && /^\d{4}/.test(txt)) return false;
+            return true;
+        } catch(e) {}
+
+        return true;
+    }
+
+    var filtered = [];
+    try {
+        if (typeof filterByMonth === "function") filtered = filterByMonth(raw.slice()) || [];
+    } catch(e) {}
+
+    if (!filtered.length && raw.length) {
+        filtered = raw.filter(manualMatch);
+    }
+
+    if (!filtered.length && raw.length) {
+        filtered = raw.slice();
+    }
+
+    return filtered.sort(function(a,b){ return String((b && b.date) || "").localeCompare(String((a && a.date) || "")); });
+}
+
+function salaryV150RecordTone(record, personObj) {
+    var t = String((record && (record.type || record.mode || record.direction || record.entryType || record.status)) || "").toLowerCase();
+
+    if (["advance","taken","take","debit","paid","pay","liye","negative","minus","dene_wala","to_pay"].indexOf(t) !== -1) return "negative";
+    if (["salary","given","give","credit","receive","received","liye_wala","lene_wala","positive","plus","to_receive"].indexOf(t) !== -1) return "positive";
+
+    var ptype = String((personObj && (personObj.type || personObj.mode || personObj.direction || personObj.status)) || "").toLowerCase();
+    if (["dene_wala","to_pay","negative","pay"].indexOf(ptype) !== -1) return "negative";
+    if (["lene_wala","to_receive","positive","receive"].indexOf(ptype) !== -1) return "positive";
+
+    var amount = Number(record && record.amount);
+    if (Number.isFinite(amount) && amount < 0) return "negative";
+    return "positive";
+}
+/* AARISH_V150_SALARY_HELPER_END */
+function renderSalaryRecords() {
+        if (!activeSalaryPerson) return;
+
+        var personObj = salaryV150GetPersonObject(activeSalaryPerson) || {};
+        var records = salaryV150GetRecords(activeSalaryPerson);
+
+        var GREEN = "#34C759";
+        var RED = "#FF3B30";
+        var BLUE = "#007AFF";
 
         function n(v) {
-            const x = Number(v);
+            var x = Number(v);
             return Number.isFinite(x) ? x : 0;
         }
 
         function cleanZero(v) {
-            const x = n(v);
+            var x = n(v);
             return Math.abs(x) < 0.0001 ? 0 : x;
         }
 
         function money(v) {
-            return Math.abs(Math.round(n(v))).toLocaleString('en-IN');
+            return Math.abs(Math.round(n(v))).toLocaleString("en-IN");
         }
 
         function esc(v) {
             return String(v == null ? "" : v).replace(/[&<>"']/g, function(ch) {
                 return {"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[ch];
             });
+        }
+
+        function jsSingle(v) {
+            return String(v == null ? "" : v)
+                .replace(/\\/g, "\\\\")
+                .replace(/'/g, "\\'")
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/"/g, "&quot;");
+        }
+
+        function fmtDate(v) {
+            try { if (typeof formatDisplayDate === "function") return formatDisplayDate(v); } catch(e) {}
+            return String(v || "-");
+        }
+
+        function color(tone) {
+            return tone === "positive" ? GREEN : (tone === "negative" ? RED : BLUE);
+        }
+
+        function shadow(tone) {
+            return tone === "positive" ? "rgba(52,199,89,0.20)" : (tone === "negative" ? "rgba(255,59,48,0.22)" : "rgba(0,122,255,0.20)");
+        }
+
+        var net = 0;
+
+        var html = records.map(function(r, index) {
+            var amount = Math.abs(n(r && r.amount));
+            var tone = salaryV150RecordTone(r, personObj);
+            var signed = tone === "negative" ? -amount : amount;
+            net = cleanZero(net + signed);
+
+            var c = color(tone);
+            var sh = shadow(tone);
+            var sign = tone === "negative" ? "-" : "+";
+            var id = jsSingle((r && (r.id || r.key || r.uid || r.originalIndex)) || index);
+
+            return `<tr class="list-enter" data-salary-row-tone-v150="${tone}" data-v99-tone="${tone}" data-v100-tone="${tone}" style="animation-delay:${index * 0.05}s;">
+                <td class="salary-date-v150" style="color:${c}!important;text-shadow:0 0 9px ${sh}!important;">${esc(fmtDate(r && r.date))}</td>
+                <td class="font-bold salary-amount-v150" style="color:${c}!important;text-shadow:0 0 9px ${sh}!important;">${sign}₹${money(amount)}</td>
+                <td class="text-right salary-delete-cell-v150" style="color:#FF3B30!important;text-shadow:0 0 9px rgba(255,59,48,0.24)!important;">
+                    <button onclick="haptic(); deleteSalarySingleEntry('${id}')" class="action-btn shrink-0 salary-delete-btn-v150" style="color:#FF3B30!important;background:rgba(255,59,48,0.10)!important;border-color:rgba(255,59,48,0.18)!important;box-shadow:0 8px 18px rgba(255,59,48,0.13)!important;">
+                        <i class="fa-solid fa-trash text-xs salary-delete-icon-v150" style="color:#FF3B30!important;text-shadow:0 0 9px rgba(255,59,48,0.24)!important;"></i>
+                    </button>
+                </td>
+            </tr>`;
+        }).join("");
+
+        var target = document.getElementById("salary-detail-records");
+        if (target) {
+            target.innerHTML = html || `<tr data-salary-empty-v150="true"><td colspan="3" class="text-center py-8 font-extrabold" style="color:#007AFF!important;text-shadow:0 0 10px rgba(0,122,255,0.24)!important;">No entries for ${esc((typeof MONTHS !== "undefined" && MONTHS[selectedMonth]) || "")}</td></tr>`;
+        }
+
+        var finalTone = Math.round(Math.abs(net)) === 0 ? "neutral" : (net > 0 ? "positive" : "negative");
+        var finalColor = color(finalTone);
+        var finalTo = finalTone === "positive" ? "#28A745" : (finalTone === "negative" ? "#C92A2A" : "#0A84FF");
+        var finalGlow = finalTone === "positive" ? "rgba(52,199,89,0.30)" : (finalTone === "negative" ? "rgba(255,59,48,0.30)" : "rgba(0,122,255,0.30)");
+        var finalSign = finalTone === "negative" ? "-" : "+";
+
+        var detailCard = document.querySelector("#salary-detail-screen .glass-card");
+        if (detailCard) {
+            detailCard.setAttribute("data-v99-tone", finalTone);
+            detailCard.setAttribute("data-v100-tone", finalTone);
+            detailCard.setAttribute("data-salary-tone-v150", finalTone);
+            detailCard.style.setProperty("background", "linear-gradient(135deg, " + finalColor + ", " + finalTo + ")", "important");
+            detailCard.style.setProperty("border-color", finalColor, "important");
+            detailCard.style.setProperty("box-shadow", "0 8px 24px " + finalGlow, "important");
+            detailCard.style.setProperty("transition", "transform 80ms cubic-bezier(0.2,0.8,0.2,1), opacity 60ms ease", "important");
+        }
+
+        var totalEl = document.getElementById("salary-detail-total");
+        if (totalEl) {
+            totalEl.textContent = finalSign + "₹" + money(net);
+            totalEl.style.setProperty("color", "#FFFFFF", "important");
+            totalEl.style.setProperty("text-shadow", "0 2px 10px rgba(0,0,0,0.18)", "important");
+        }
+
+        var title = document.getElementById("salary-detail-title");
+        if (title) {
+            title.setAttribute("data-salary-tone-v150", finalTone);
+            title.style.setProperty("color", finalColor, "important");
+            title.style.setProperty("text-shadow", "0 0 10px " + shadow(finalTone), "important");
+        }
+
+        try {
+            var screen = document.getElementById("salary-detail-screen");
+            if (screen) {
+                var month = document.getElementById("filter-month-salary");
+                var year = document.getElementById("filter-year-salary");
+                [month, year].forEach(function(el) {
+                    if (!el) return;
+                    el.setAttribute("data-salary-fixed-blue-v150", "true");
+                    el.style.setProperty("color", BLUE, "important");
+                    el.style.setProperty("text-shadow", "0 0 10px rgba(0,122,255,0.22)", "important");
+                });
+
+                screen.querySelectorAll("h1,h2,h3,h4,div,p,span").forEach(function(el) {
+                    var txt = String(el.textContent || "").replace(/\s+/g, " ").trim().toLowerCase();
+                    if (txt === "daily entries" || txt === "daily entry") {
+                        el.classList.add("salary-daily-title-v150");
+                        el.setAttribute("data-salary-fixed-blue-v150", "true");
+                        el.style.setProperty("color", BLUE, "important");
+                        el.style.setProperty("text-shadow", "0 0 10px rgba(0,122,255,0.24)", "important");
+                    }
+                });
+
+                screen.querySelectorAll("th").forEach(function(th) {
+                    th.setAttribute("data-salary-fixed-blue-v150", "true");
+                    th.style.setProperty("color", BLUE, "important");
+                    th.style.setProperty("text-shadow", "0 0 10px rgba(0,122,255,0.22)", "important");
+                });
+            }
+
+            var salaryScreen = document.getElementById("salary-screen");
+            if (salaryScreen) {
+                salaryScreen.querySelectorAll(".fa-search,.fa-magnifying-glass,[class*='search'] i").forEach(function(i) {
+                    i.style.setProperty("color", BLUE, "important");
+                    i.style.setProperty("text-shadow", "0 0 10px rgba(0,122,255,0.22)", "important");
+                });
+            }
+
+            ensureSalaryDetailDeleteButtonV150();
+        } catch(e) {}
         }
 
         function jsSingle(v) {
@@ -7055,7 +7476,6 @@ function filterSalaryList() {
                 });
             }
         } catch(e) {}
-    }
 
 
 
