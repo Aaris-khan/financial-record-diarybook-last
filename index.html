@@ -2393,6 +2393,93 @@
 }
 /* AARISH_V145_EXPENSE_DETAIL_FINAL_CSS_END */
 
+
+/* AARISH_V149_SALARY_DETAIL_BLUE_ROW_TONE_START
+   Salary detail UI color fix only.
+   No size/layout changes.
+   Month/year + Daily Entries + DATE/AMOUNT = permanent blue.
+   Row date + amount follow salary tone.
+   Delete permanent red.
+*/
+
+/* Permanent blue structural labels */
+#salary-detail-screen :is(
+  #filter-month-salary,
+  #filter-year-salary,
+  .input-box,
+  select,
+  th,
+  [data-salary-fixed-blue-v149="true"],
+  .salary-daily-title-v149
+) {
+  color: #007AFF !important;
+  text-shadow: 0 0 10px rgba(0,122,255,0.22) !important;
+  transition-property: transform, opacity !important;
+}
+
+/* Header/title follows net tone */
+#salary-detail-title[data-salary-tone-v149="positive"] {
+  color: #34C759 !important;
+  text-shadow: 0 0 10px rgba(52,199,89,0.24) !important;
+}
+#salary-detail-title[data-salary-tone-v149="negative"] {
+  color: #FF3B30 !important;
+  text-shadow: 0 0 10px rgba(255,59,48,0.24) !important;
+}
+#salary-detail-title[data-salary-tone-v149="neutral"] {
+  color: #007AFF !important;
+  text-shadow: 0 0 10px rgba(0,122,255,0.24) !important;
+}
+
+/* Row-level date + amount color */
+#salary-detail-records tr[data-salary-row-tone-v149="positive"] td:not(:last-child),
+#salary-detail-records tr[data-salary-row-tone-v149="positive"] td:not(:last-child) *,
+#salary-detail-records .salary-date-v149[data-salary-row-tone-v149="positive"],
+#salary-detail-records .salary-amount-v149[data-salary-row-tone-v149="positive"] {
+  color: #34C759 !important;
+  text-shadow: 0 0 9px rgba(52,199,89,0.20) !important;
+}
+
+#salary-detail-records tr[data-salary-row-tone-v149="negative"] td:not(:last-child),
+#salary-detail-records tr[data-salary-row-tone-v149="negative"] td:not(:last-child) *,
+#salary-detail-records .salary-date-v149[data-salary-row-tone-v149="negative"],
+#salary-detail-records .salary-amount-v149[data-salary-row-tone-v149="negative"] {
+  color: #FF3B30 !important;
+  text-shadow: 0 0 9px rgba(255,59,48,0.22) !important;
+}
+
+#salary-detail-records tr[data-salary-row-tone-v149="neutral"] td:not(:last-child),
+#salary-detail-records tr[data-salary-row-tone-v149="neutral"] td:not(:last-child) * {
+  color: #007AFF !important;
+  text-shadow: 0 0 9px rgba(0,122,255,0.20) !important;
+}
+
+/* Delete always red, never green */
+#salary-detail-records .salary-delete-cell-v149,
+#salary-detail-records .salary-delete-cell-v149 *,
+#salary-detail-records .salary-delete-btn-v149,
+#salary-detail-records .salary-delete-btn-v149 *,
+#salary-detail-records .salary-delete-icon-v149,
+#salary-detail-screen :is(.action-btn,.action-btn *,i.fa-trash) {
+  color: #FF3B30 !important;
+  text-shadow: 0 0 9px rgba(255,59,48,0.24) !important;
+}
+
+#salary-detail-records .salary-delete-btn-v149,
+#salary-detail-screen .action-btn {
+  background: rgba(255,59,48,0.10) !important;
+  border-color: rgba(255,59,48,0.18) !important;
+  box-shadow: 0 8px 18px rgba(255,59,48,0.13) !important;
+  transition-property: transform, opacity !important;
+}
+
+/* Empty state blue */
+#salary-detail-records tr[data-salary-empty-v149="true"] td {
+  color: #007AFF !important;
+  text-shadow: 0 0 10px rgba(0,122,255,0.24) !important;
+}
+/* AARISH_V149_SALARY_DETAIL_BLUE_ROW_TONE_END */
+
 </style>
 
 
@@ -6842,32 +6929,132 @@ function filterSalaryList() {
 
     function renderSalaryRecords() {
         if (!activeSalaryPerson || !salaryDB[activeSalaryPerson]) return;
+
         const s = salaryDB[activeSalaryPerson];
         let totalAmt = 0;
-        
+
+        function n(v) {
+            const x = Number(v);
+            return Number.isFinite(x) ? x : 0;
+        }
+
+        function cleanZero(v) {
+            const x = n(v);
+            return Math.abs(x) < 0.0001 ? 0 : x;
+        }
+
+        function money(v) {
+            return Math.abs(Math.round(n(v))).toLocaleString('en-IN');
+        }
+
+        function esc(v) {
+            return String(v == null ? "" : v).replace(/[&<>"']/g, function(ch) {
+                return {"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[ch];
+            });
+        }
+
+        function jsSingle(v) {
+            return String(v == null ? "" : v)
+                .replace(/\\/g, "\\\\")
+                .replace(/'/g, "\\'")
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/"/g, "&quot;");
+        }
+
+        function colorForTone(tone) {
+            return tone === "positive" ? "#34C759" : (tone === "negative" ? "#FF3B30" : "#007AFF");
+        }
+
+        function shadowForTone(tone) {
+            return tone === "positive" ? "rgba(52,199,89,0.20)" : (tone === "negative" ? "rgba(255,59,48,0.22)" : "rgba(0,122,255,0.20)");
+        }
+
+        const isLeneWala = s.type === 'lene_wala';
+        const tone = isLeneWala ? "positive" : "negative";
+        const sign = isLeneWala ? "+" : "-";
+        const rowColor = colorForTone(tone);
+        const rowShadow = shadowForTone(tone);
+
         const records = filterByMonth((s.records || []).map((r, i) => ({...r, originalIndex: i})))
                         .sort((a,b) => String(b.date || '').localeCompare(String(a.date || '')));
 
         const html = records.map((r, index) => {
-            totalAmt += Number(r.amount||0);
-            return `<tr class="list-enter" style="animation-delay: ${index * 0.05}s;">
-                <td>${formatDisplayDate(r.date)}</td>
-                <td class="font-bold text-[#10B981]">₹${Number(r.amount).toLocaleString('en-IN')}</td>
-                <td class="text-right"><button onclick="haptic(); deleteSalarySingleEntry('${r.id}')"     class="action-btn shrink-0"><i class="fa-solid fa-trash text-xs"></i></button></td>
+            const amount = n(r.amount);
+            totalAmt = cleanZero(totalAmt + amount);
+            const id = jsSingle(r.id || "");
+
+            return `<tr class="list-enter" data-salary-row-tone-v149="${tone}" data-v99-tone="${tone}" data-v100-tone="${tone}" style="animation-delay:${index * 0.05}s;">
+                <td class="salary-date-v149" data-salary-row-tone-v149="${tone}" style="color:${rowColor}!important;text-shadow:0 0 9px ${rowShadow}!important;">${esc(formatDisplayDate(r.date))}</td>
+                <td class="font-bold salary-amount-v149" data-salary-row-tone-v149="${tone}" style="color:${rowColor}!important;text-shadow:0 0 9px ${rowShadow}!important;">${sign}₹${money(amount)}</td>
+                <td class="text-right salary-delete-cell-v149" style="color:#FF3B30!important;text-shadow:0 0 9px rgba(255,59,48,0.24)!important;">
+                    <button onclick="haptic(); deleteSalarySingleEntry('${id}')" class="action-btn shrink-0 salary-delete-btn-v149" style="color:#FF3B30!important;background:rgba(255,59,48,0.10)!important;border-color:rgba(255,59,48,0.18)!important;box-shadow:0 8px 18px rgba(255,59,48,0.13)!important;">
+                        <i class="fa-solid fa-trash text-xs salary-delete-icon-v149" style="color:#FF3B30!important;text-shadow:0 0 9px rgba(255,59,48,0.24)!important;"></i>
+                    </button>
+                </td>
             </tr>`;
         }).join('');
-        
-        document.getElementById('salary-detail-records').innerHTML = html || `<tr><td colspan="3" class="text-center py-8 text-gray-400 font-semibold">No entries for ${MONTHS[selectedMonth]}</td></tr>`;
-        
-        const isLeneWala = s.type === 'lene_wala';
-        const sign = isLeneWala ? '+' : '-';
-        
-        const detailCard = document.querySelector('#salary-detail-screen .glass-card');
-        detailCard.className = isLeneWala 
-            ? "glass-card mb-6 flex justify-between items-center bg-gradient-to-br from-[#10B981] to-[#059669] text-white border-none shadow-[0_8px_24px_rgba(16,185,129,0.3)] ring-1 ring-white/30 w-full min-w-0 gap-3"
-            : "glass-card mb-6 flex justify-between items-center bg-gradient-to-br from-[#FF3B30] to-[#c92a2a] text-white border-none shadow-[0_8px_24px_rgba(255,59,48,0.3)] ring-1 ring-white/30 w-full min-w-0 gap-3";
 
-        document.getElementById('salary-detail-total').textContent = `${sign}₹${totalAmt.toLocaleString('en-IN')}`;
+        const target = document.getElementById('salary-detail-records');
+        if (target) {
+            target.innerHTML = html || `<tr data-salary-empty-v149="true"><td colspan="3" class="text-center py-8 font-extrabold" style="color:#007AFF!important;text-shadow:0 0 10px rgba(0,122,255,0.24)!important;">No entries for ${esc(MONTHS[selectedMonth] || "")}</td></tr>`;
+        }
+
+        const detailCard = document.querySelector('#salary-detail-screen .glass-card');
+        if (detailCard) {
+            detailCard.setAttribute("data-v99-tone", tone);
+            detailCard.setAttribute("data-v100-tone", tone);
+            detailCard.setAttribute("data-salary-tone-v149", tone);
+
+            detailCard.className = isLeneWala
+                ? "glass-card mb-6 flex justify-between items-center bg-gradient-to-br from-[#10B981] to-[#059669] text-white border-none shadow-[0_8px_24px_rgba(16,185,129,0.3)] ring-1 ring-white/30 w-full min-w-0 gap-3"
+                : "glass-card mb-6 flex justify-between items-center bg-gradient-to-br from-[#FF3B30] to-[#c92a2a] text-white border-none shadow-[0_8px_24px_rgba(255,59,48,0.3)] ring-1 ring-white/30 w-full min-w-0 gap-3";
+        }
+
+        const totalEl = document.getElementById('salary-detail-total');
+        if (totalEl) {
+            totalEl.textContent = `${sign}₹${money(totalAmt)}`;
+            totalEl.style.setProperty("color", "#FFFFFF", "important");
+            totalEl.style.setProperty("text-shadow", "0 2px 10px rgba(0,0,0,0.18)", "important");
+        }
+
+        const title = document.getElementById('salary-detail-title');
+        if (title) {
+            title.setAttribute("data-salary-tone-v149", tone);
+            title.style.setProperty("color", rowColor, "important");
+            title.style.setProperty("text-shadow", "0 0 10px " + rowShadow, "important");
+        }
+
+        try {
+            const screen = document.getElementById("salary-detail-screen");
+            if (screen) {
+                const month = document.getElementById("filter-month-salary");
+                const year = document.getElementById("filter-year-salary");
+                [month, year].forEach(function(el) {
+                    if (!el) return;
+                    el.setAttribute("data-salary-fixed-blue-v149", "true");
+                    el.style.setProperty("color", "#007AFF", "important");
+                    el.style.setProperty("text-shadow", "0 0 10px rgba(0,122,255,0.22)", "important");
+                });
+
+                screen.querySelectorAll("h1,h2,h3,h4,div,p,span").forEach(function(el) {
+                    const txt = String(el.textContent || "").replace(/\s+/g, " ").trim().toLowerCase();
+                    if (txt === "daily entries" || txt === "daily entry") {
+                        el.classList.add("salary-daily-title-v149");
+                        el.setAttribute("data-salary-fixed-blue-v149", "true");
+                        el.style.setProperty("color", "#007AFF", "important");
+                        el.style.setProperty("text-shadow", "0 0 10px rgba(0,122,255,0.24)", "important");
+                    }
+                });
+
+                screen.querySelectorAll("th").forEach(function(th) {
+                    th.setAttribute("data-salary-fixed-blue-v149", "true");
+                    th.style.setProperty("color", "#007AFF", "important");
+                    th.style.setProperty("text-shadow", "0 0 10px rgba(0,122,255,0.22)", "important");
+                });
+            }
+        } catch(e) {}
     }
 
 
@@ -17607,30 +17794,7 @@ scheduleV69();
   }
 
   function renderSalaryRecordsV99() {
-    if (!activeSalaryPerson || !salaryDB || !salaryDB[activeSalaryPerson]) return;
-    var s = salaryDB[activeSalaryPerson], total = 0;
-    var tone = s.type === "lene_wala" ? "positive" : "negative";
-    var cls = toneClass(tone);
-    var records = monthRecords(s.records).sort(function(a,b){ return String(b.date || "").localeCompare(String(a.date || "")); });
-    var html = records.map(function(r, index) {
-      total += num(r.amount);
-      return `<tr class="list-enter" data-v99-tone="${tone}" style="animation-delay:${index * 0.05}s;">
-        <td>${fmtDate(r.date)}</td>
-        <td class="font-bold ${cls}">₹${money(r.amount)}</td>
-        <td class="text-right"><button onclick="haptic(); deleteSalarySingleEntry(${js(r.id)})" class="action-btn shrink-0"><i class="fa-solid fa-trash"></i></button></td>
-      </tr>`;
-    }).join("");
-    var target = byId("salary-detail-records");
-    if (target) target.innerHTML = html || `<tr><td colspan="3" class="text-center py-8 text-gray-400 font-semibold">No entries found</td></tr>`;
-    var card = document.querySelector("#salary-detail-screen .glass-card");
-    if (card) {
-      card.setAttribute("data-v99-tone", tone);
-      card.className = tone === "positive"
-        ? "glass-card mb-6 flex justify-between items-center bg-gradient-to-br from-[#10B981] to-[#059669] text-white border-none shadow-[0_8px_24px_rgba(16,185,129,0.3)] ring-1 ring-white/30 w-full min-w-0 gap-3"
-        : "glass-card mb-6 flex justify-between items-center bg-gradient-to-br from-[#FF3B30] to-[#c92a2a] text-white border-none shadow-[0_8px_24px_rgba(255,59,48,0.3)] ring-1 ring-white/30 w-full min-w-0 gap-3";
-    }
-    var totalEl = byId("salary-detail-total");
-    if (totalEl) totalEl.textContent = (tone === "positive" ? "+" : "-") + "₹" + Math.round(total).toLocaleString("en-IN");
+    try { return renderSalaryRecords(); } catch(e) {}
   }
 
   function renderUdharRecordsV99() {
