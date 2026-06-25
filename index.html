@@ -6840,38 +6840,20 @@ function filterSalaryList() {
 
     
 
-    function applySalaryDetailColorSyncV160() {
-        try {
-            const screen = document.getElementById('salary-detail-screen');
-            if (!screen) return;
+    
 
-            const month = document.getElementById('filter-month-salary');
-            const year = document.getElementById('filter-year-salary');
-            if (month) month.setAttribute('data-salary-header-blue-v160', 'true');
-            if (year) year.setAttribute('data-salary-header-blue-v160', 'true');
-
-            screen.querySelectorAll('h1,h2,h3,h4,div,span,p').forEach((el) => {
-                const txt = (el.textContent || '').trim().replace(/\s+/g, ' ');
-                if (txt === 'Daily Entries') {
-                    el.setAttribute('data-salary-daily-title-v160', 'true');
-                    el.classList.add('salary-daily-title-v160');
-                }
-            });
-
-            screen.querySelectorAll('th').forEach((th) => {
-                const txt = (th.textContent || '').trim().toUpperCase();
-                if (txt === 'DATE' || txt === 'AMOUNT') {
-                    th.setAttribute('data-salary-header-blue-v160', 'true');
-                    th.classList.add('salary-header-blue-v160');
-                }
-            });
-        } catch(e) {}
-    }
 
     function renderSalaryRecords() {
         if (!activeSalaryPerson || !salaryDB[activeSalaryPerson]) return;
 
         const s = salaryDB[activeSalaryPerson];
+
+        /* AARISH_SALARY_DETAIL_TONE_V164 */
+        const salaryDetailToneV164 = s.type === 'lene_wala' ? 'positive' : 'negative';
+        const salaryDetailColorV164 = salaryDetailToneV164 === 'positive' ? '#34C759' : '#FF3B30';
+        const salaryDetailShadowV164 = salaryDetailToneV164 === 'positive'
+            ? '0 0 9px rgba(52,199,89,0.26)'
+            : '0 0 9px rgba(255,59,48,0.26)';
         let totalAmt = 0;
 
         const isLeneWala = s.type === 'lene_wala';
@@ -6893,8 +6875,8 @@ function filterSalaryList() {
                 .replace(/\n/g, '');
 
             return `<tr class="list-enter" data-salary-row-tone-v160="${rowTone}" style="animation-delay: ${index * 0.05}s;">
-                <td class="salary-date-v160 font-bold" data-salary-row-tone-v160="${rowTone}">${formatDisplayDate(r.date)}</td>
-                <td class="salary-amount-v160 font-bold ${rowTextClass}" data-salary-row-tone-v160="${rowTone}">₹${amount.toLocaleString('en-IN')}</td>
+                <td class="salary-detail-date-tone-v164 font-bold" style="color:${salaryDetailColorV164}!important;-webkit-text-fill-color:${salaryDetailColorV164}!important;text-shadow:${salaryDetailShadowV164}!important;">${formatDisplayDate(r.date)}</td>
+                <td class="salary-detail-amount-tone-v164 font-bold" style="color:${salaryDetailColorV164}!important;-webkit-text-fill-color:${salaryDetailColorV164}!important;text-shadow:${salaryDetailShadowV164}!important;">₹${amount.toLocaleString('en-IN')}</td>
                 <td class="text-right"><button onclick="haptic(); deleteSalarySingleEntry('${safeId}')" class="action-btn shrink-0"><i class="fa-solid fa-trash text-xs"></i></button></td>
             </tr>`;
         }).join('');
@@ -6917,9 +6899,75 @@ function filterSalaryList() {
         if (total) total.textContent = `${sign}₹${totalAmt.toLocaleString('en-IN')}`;
 
         const title = document.getElementById('salary-detail-title');
-        if (title) title.setAttribute('data-salary-tone-v160', rowTone);
+        if (title) {
+            title.setAttribute('data-salary-tone-v164', salaryDetailToneV164);
+            title.style.setProperty('color', salaryDetailColorV164, 'important');
+            title.style.setProperty('-webkit-text-fill-color', salaryDetailColorV164, 'important');
+            title.style.setProperty('text-shadow', salaryDetailShadowV164, 'important');
+        }
 
-        applySalaryDetailColorSyncV160();
+        /* AARISH_SALARY_DETAIL_STATIC_COLORS_V164_START */
+        try {
+            const salaryDetailBlueV164 = '#007AFF';
+            const salaryDetailBlueShadowV164 = '0 0 10px rgba(0,122,255,0.28)';
+            const paintSalaryBlueV164 = (el) => {
+                try {
+                    if (!el || !el.style) return;
+                    el.style.setProperty('color', salaryDetailBlueV164, 'important');
+                    el.style.setProperty('-webkit-text-fill-color', salaryDetailBlueV164, 'important');
+                    el.style.setProperty('text-shadow', salaryDetailBlueShadowV164, 'important');
+                } catch(e) {}
+            };
+
+            ['filter-month-salary', 'filter-year-salary'].forEach(id => {
+                paintSalaryBlueV164(document.getElementById(id));
+            });
+
+            const salaryScreenV164 = document.getElementById('salary-detail-screen');
+            if (salaryScreenV164) {
+                salaryScreenV164.querySelectorAll('h1,h2,h3,h4,p,span,div,label,th').forEach(el => {
+                    const txt = String(el.textContent || '').replace(/\s+/g, ' ').trim();
+                    const up = txt.toUpperCase();
+                    if (txt === 'Daily Entries' || up === 'DATE' || up === 'AMOUNT') {
+                        paintSalaryBlueV164(el);
+                    }
+                });
+
+                salaryScreenV164.querySelectorAll('th').forEach(th => {
+                    const up = String(th.textContent || '').replace(/\s+/g, ' ').trim().toUpperCase();
+                    if (up === 'DATE' || up === 'AMOUNT') paintSalaryBlueV164(th);
+                });
+
+                salaryScreenV164.querySelectorAll('button').forEach(btn => {
+                    const txt = String(btn.textContent || '').toLowerCase();
+                    const oc = String(btn.getAttribute('onclick') || '').toLowerCase();
+
+                    if (txt.includes('share') || oc.includes('share')) {
+                        btn.style.setProperty('color', '#007AFF', 'important');
+                        btn.style.setProperty('-webkit-text-fill-color', '#007AFF', 'important');
+                        btn.style.setProperty('background-color', 'rgba(0,122,255,0.08)', 'important');
+                        btn.style.setProperty('border-color', 'rgba(0,122,255,0.22)', 'important');
+                        try { btn.querySelectorAll('*').forEach(x => {
+                            x.style.setProperty('color', '#007AFF', 'important');
+                            x.style.setProperty('-webkit-text-fill-color', '#007AFF', 'important');
+                        }); } catch(e) {}
+                    }
+
+                    if (txt.includes('add') || oc.includes('opensalaryentrymodal') || oc.includes('salaryentry')) {
+                        btn.style.setProperty('background', 'linear-gradient(135deg, #34C759, #22C55E)', 'important');
+                        btn.style.setProperty('border-color', 'transparent', 'important');
+                        btn.style.setProperty('box-shadow', '0 8px 22px rgba(52,199,89,0.30)', 'important');
+                        btn.style.setProperty('color', '#FFFFFF', 'important');
+                        btn.style.setProperty('-webkit-text-fill-color', '#FFFFFF', 'important');
+                        try { btn.querySelectorAll('*').forEach(x => {
+                            x.style.setProperty('color', '#FFFFFF', 'important');
+                            x.style.setProperty('-webkit-text-fill-color', '#FFFFFF', 'important');
+                        }); } catch(e) {}
+                    }
+                });
+            }
+        } catch(e) {}
+        /* AARISH_SALARY_DETAIL_STATIC_COLORS_V164_END */
     }
 
 
@@ -7475,7 +7523,7 @@ async function shareDiaryBill(id) {
                     let transType = r.color ? r.color.toUpperCase() : 'UNKNOWN';
                     csv += `"${name}","${formatDisplayDate(r.date)}","${safeTitle}","${transType}","${r.amount}"\n`;
                 });
-            });
+});
         }
 
         // File generation
@@ -9818,64 +9866,6 @@ html, body {
 */
 </style>
 \n
-<style id="aarish-salary-detail-color-sync-v160">
-/* AARISH_SALARY_DETAIL_COLOR_SYNC_V160_SAFE
-   Salary detail only. No login, no Firebase, no style.css touch. */
-#salary-detail-screen {
-  --salary-blue-v160: #007AFF;
-  --salary-green-v160: #34C759;
-  --salary-red-v160: #FF3B30;
-  --salary-blue-glow-v160: rgba(0,122,255,0.24);
-  --salary-green-glow-v160: rgba(52,199,89,0.22);
-  --salary-red-glow-v160: rgba(255,59,48,0.22);
-}
-
-#salary-detail-screen #filter-month-salary,
-#salary-detail-screen #filter-year-salary,
-#salary-detail-screen select#filter-month-salary,
-#salary-detail-screen select#filter-year-salary,
-#salary-detail-screen [data-salary-daily-title-v160="true"],
-#salary-detail-screen .salary-daily-title-v160,
-#salary-detail-screen th,
-#salary-detail-screen [data-salary-header-blue-v160="true"],
-#salary-detail-screen .salary-header-blue-v160 {
-  color: var(--salary-blue-v160) !important;
-  -webkit-text-fill-color: var(--salary-blue-v160) !important;
-  text-shadow: 0 0 10px var(--salary-blue-glow-v160) !important;
-}
-
-#salary-detail-records tr[data-salary-row-tone-v160="positive"] td:not(:last-child),
-#salary-detail-records tr[data-salary-row-tone-v160="positive"] td:not(:last-child) *,
-#salary-detail-records .salary-date-v160[data-salary-row-tone-v160="positive"],
-#salary-detail-records .salary-amount-v160[data-salary-row-tone-v160="positive"] {
-  color: var(--salary-green-v160) !important;
-  -webkit-text-fill-color: var(--salary-green-v160) !important;
-  text-shadow: 0 0 9px var(--salary-green-glow-v160) !important;
-}
-
-#salary-detail-records tr[data-salary-row-tone-v160="negative"] td:not(:last-child),
-#salary-detail-records tr[data-salary-row-tone-v160="negative"] td:not(:last-child) *,
-#salary-detail-records .salary-date-v160[data-salary-row-tone-v160="negative"],
-#salary-detail-records .salary-amount-v160[data-salary-row-tone-v160="negative"] {
-  color: var(--salary-red-v160) !important;
-  -webkit-text-fill-color: var(--salary-red-v160) !important;
-  text-shadow: 0 0 9px var(--salary-red-glow-v160) !important;
-}
-
-#salary-detail-records tr[data-salary-empty-v160="true"] td {
-  color: var(--salary-blue-v160) !important;
-  -webkit-text-fill-color: var(--salary-blue-v160) !important;
-  text-shadow: 0 0 10px var(--salary-blue-glow-v160) !important;
-}
-
-#salary-detail-screen .action-btn,
-#salary-detail-screen .action-btn *,
-#salary-detail-screen i.fa-trash {
-  color: var(--salary-red-v160) !important;
-  -webkit-text-fill-color: var(--salary-red-v160) !important;
-}
-</style>
-
 </head>
 <body>
 <div class="report">
@@ -19221,20 +19211,5 @@ window.addEventListener("pageshow", function () { setTimeout(install, 120); }, {
   console.log("✅ AARISH V128 Credit Book light Milk-safe paint active");
 })();
 </script>
-
-<script id="aarish-salary-detail-color-sync-v160">
-(function(){
-  try {
-    document.addEventListener('DOMContentLoaded', function() {
-      try {
-        if (typeof applySalaryDetailColorSyncV160 === 'function') {
-          applySalaryDetailColorSyncV160();
-        }
-      } catch(e) {}
-    }, { once: true });
-  } catch(e) {}
-})();
-</script>
-
 </body>
 </html>
