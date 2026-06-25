@@ -737,6 +737,7 @@
    - red/green amount/delete logic untouched
    - uses existing app/Tailwind colors only, no external library
 */
+#milk-detail-screen,
 .dark #milk-detail-screen {
   --aarish-md-blue-v64: var(--ios-blue, #007AFF);
   --aarish-md-blue-soft-v64: #0A84FF;
@@ -750,21 +751,33 @@
 }
 
 /* Header title/back icon/month/year/Daily Entries -> blue */
+#milk-detail-screen .header-sticky h1,
+#milk-detail-screen .header-sticky button:not(.action-btn) i,
+#milk-detail-screen #milk-detail-title,
+#milk-detail-screen #filter-month-milk,
+#milk-detail-screen #filter-year-milk,
+#milk-detail-screen h3:not(#milk-detail-bill):not(#milk-detail-kg),
 .dark #milk-detail-screen .header-sticky h1,
 .dark #milk-detail-screen .header-sticky button:not(.action-btn) i,
 .dark #milk-detail-screen #milk-detail-title,
 .dark #milk-detail-screen #filter-month-milk,
 .dark #milk-detail-screen #filter-year-milk,
 .dark #milk-detail-screen h3:not(#milk-detail-bill):not(#milk-detail-kg) {
-  color: var(--aarish-md-blue-v64) !important;
-  text-shadow: 0 0 12px var(--aarish-md-blue-glow-v64) !important;
+  color: var(--aarish-md-blue-v64, #007AFF) !important;
+  text-shadow: 0 0 10px rgba(0,122,255,0.24) !important;
+  transition-property: transform, opacity !important;
 }
 
 /* Month/year boxes */
+#milk-detail-screen #filter-month-milk,
+#milk-detail-screen #filter-year-milk,
 .dark #milk-detail-screen #filter-month-milk,
 .dark #milk-detail-screen #filter-year-milk,
 .dark #milk-detail-screen .input-box {
-  border-color: rgba(0,122,255,0.18) !important;
+  color: var(--aarish-md-blue-v64, #007AFF) !important;
+  border-color: rgba(0,122,255,0.22) !important;
+  background-color: rgba(0,122,255,0.04) !important;
+  transition-property: transform, opacity !important;
 }
 
 /* TOTAL summary card default/fallback positive */
@@ -4060,6 +4073,552 @@ html.aarish-auth-confirmed #login-screen {
   }
 }
 </style>
+<style id="aarish-v127-salary-light-milk-safe-css">
+/* AARISH V127 SALARY LIGHT MILK SAFE
+   Milk-style template-time color for Salary light mode.
+   Business/data/Firebase/save/delete logic untouched.
+   Rule preserved: positive green / negative red / zero blue.
+*/
+
+html:not(.dark) #salary-screen {
+  --salary-v127-blue: #007AFF;
+  --salary-v127-green: #34C759;
+  --salary-v127-red: #FF3B30;
+}
+
+/* Salary light mode: card should appear already colored, not animate color later */
+html:not(.dark) #salary-list .list-enter,
+html:not(.dark) #salary-detail-records .list-enter {
+  animation: none !important;
+  opacity: 1 !important;
+  transform: none !important;
+}
+
+html:not(.dark) #salary-screen :is(
+  #salary-list .glass-card,
+  #salary-list .glass-card *,
+  #salary-list .squircle,
+  #salary-list .fa-chevron-right,
+  #salary-detail-records tr,
+  #salary-detail-records tr *,
+  #salary-new-btn-v52,
+  #salary-new-btn-v52 *,
+  .header-sticky h1
+) {
+  transition-property: transform, opacity !important;
+  transition-duration: 80ms !important;
+  transition-timing-function: cubic-bezier(0.2,0.8,0.2,1) !important;
+}
+
+/* Milk-style inline variable binding */
+html:not(.dark) #salary-list .glass-card[data-salary-tone-v127] {
+  border-left-width: 4px !important;
+  border-left-style: solid !important;
+  border-left-color: var(--salaryTone) !important;
+  box-shadow:
+    -4px 0 14px var(--salaryGlow),
+    0 10px 26px rgba(15,23,42,0.07),
+    inset 1px 0 0 var(--salaryInset),
+    inset 0 1px 0 rgba(255,255,255,0.62) !important;
+}
+
+html:not(.dark) #salary-list .glass-card[data-salary-tone-v127] :is(h4,p,span,i,.font-bold,.font-extrabold) {
+  color: var(--salaryTone) !important;
+  text-shadow: 0 0 8px var(--salaryGlow) !important;
+}
+
+html:not(.dark) #salary-list .glass-card[data-salary-tone-v127] .squircle {
+  color: var(--salaryTone) !important;
+  background: var(--salaryTint) !important;
+  border: 1px solid var(--salaryBorder) !important;
+}
+
+/* Existing V99/V100 data-tone also respected */
+html:not(.dark) #salary-list .glass-card[data-v99-tone="positive"],
+html:not(.dark) #salary-list .glass-card[data-v100-tone="positive"] {
+  --salaryTone: #34C759;
+  --salaryTint: rgba(52,199,89,0.13);
+  --salaryBorder: rgba(52,199,89,0.25);
+  --salaryGlow: rgba(52,199,89,0.30);
+  --salaryInset: rgba(52,199,89,0.48);
+}
+
+html:not(.dark) #salary-list .glass-card[data-v99-tone="negative"],
+html:not(.dark) #salary-list .glass-card[data-v100-tone="negative"],
+html:not(.dark) #salary-list .glass-card[data-v99-tone="expense"],
+html:not(.dark) #salary-list .glass-card[data-v100-tone="expense"] {
+  --salaryTone: #FF3B30;
+  --salaryTint: rgba(255,59,48,0.13);
+  --salaryBorder: rgba(255,59,48,0.25);
+  --salaryGlow: rgba(255,59,48,0.30);
+  --salaryInset: rgba(255,59,48,0.48);
+}
+
+html:not(.dark) #salary-list .glass-card[data-v99-tone="neutral"],
+html:not(.dark) #salary-list .glass-card[data-v100-tone="neutral"],
+html:not(.dark) #salary-list .glass-card[data-v100-tone="blue"] {
+  --salaryTone: #007AFF;
+  --salaryTint: rgba(0,122,255,0.13);
+  --salaryBorder: rgba(0,122,255,0.25);
+  --salaryGlow: rgba(0,122,255,0.28);
+  --salaryInset: rgba(0,122,255,0.45);
+}
+
+/* Header + New button follows total salary net in light mode */
+html:not(.dark) #salary-screen .header-sticky h1[data-salary-net-v127="positive"] {
+  color: var(--salary-v127-green) !important;
+  text-shadow: 0 0 10px rgba(52,199,89,0.22) !important;
+}
+
+html:not(.dark) #salary-screen .header-sticky h1[data-salary-net-v127="negative"] {
+  color: var(--salary-v127-red) !important;
+  text-shadow: 0 0 10px rgba(255,59,48,0.22) !important;
+}
+
+html:not(.dark) #salary-screen .header-sticky h1[data-salary-net-v127="neutral"] {
+  color: var(--salary-v127-blue) !important;
+  text-shadow: 0 0 10px rgba(0,122,255,0.22) !important;
+}
+
+html:not(.dark) #salary-new-btn-v52[data-salary-net-v127="positive"] {
+  background: linear-gradient(135deg, #34C759, #22C55E) !important;
+  color: #FFFFFF !important;
+  border-color: transparent !important;
+  box-shadow: 0 8px 22px rgba(52,199,89,0.30) !important;
+}
+
+html:not(.dark) #salary-new-btn-v52[data-salary-net-v127="negative"] {
+  background: linear-gradient(135deg, #FF453A, #FF2D55) !important;
+  color: #FFFFFF !important;
+  border-color: transparent !important;
+  box-shadow: 0 8px 22px rgba(255,59,48,0.30) !important;
+}
+
+html:not(.dark) #salary-new-btn-v52[data-salary-net-v127="neutral"] {
+  background: linear-gradient(135deg, #007AFF, #0A84FF) !important;
+  color: #FFFFFF !important;
+  border-color: transparent !important;
+  box-shadow: 0 8px 22px rgba(0,122,255,0.28) !important;
+}
+
+html:not(.dark) #salary-new-btn-v52[data-salary-net-v127] * {
+  color: #FFFFFF !important;
+}
+</style>
+<style id="aarish-v128-credit-light-milk-safe-css">
+/* AARISH V128 CREDIT LIGHT MILK SAFE
+   Credit Book light mode = Milk/Salary style template-time color.
+   Data/Firebase/save/delete logic untouched.
+   Rule: positive/credit net = green, negative/debit net = red, zero = blue.
+*/
+
+html:not(.dark) #udhar-screen {
+  --credit-v128-green: #34C759;
+  --credit-v128-red: #FF3B30;
+  --credit-v128-blue: #007AFF;
+}
+
+/* Light mode: no entry slide/stagger flash */
+html:not(.dark) #udhar-list .list-enter,
+html:not(.dark) #udhar-detail-records .list-enter {
+  animation: none !important;
+  opacity: 1 !important;
+  transform: none !important;
+}
+
+/* Color/background/border should snap instantly, only tap movement animates */
+html:not(.dark) #udhar-screen :is(
+  #udhar-list .glass-card,
+  #udhar-list .glass-card *,
+  #udhar-list .squircle,
+  #udhar-list .fa-chevron-right,
+  #udhar-detail-records tr,
+  #udhar-detail-records tr *,
+  #credit-entry-btn-v52,
+  #credit-entry-btn-v52 *,
+  .header-sticky h1
+) {
+  transition-property: transform, opacity !important;
+  transition-duration: 80ms !important;
+  transition-timing-function: cubic-bezier(0.2,0.8,0.2,1) !important;
+}
+
+/* Milk-style inline variable binding */
+html:not(.dark) #udhar-list .glass-card[data-credit-tone-v128] {
+  border-left-width: 4px !important;
+  border-left-style: solid !important;
+  border-left-color: var(--creditTone) !important;
+  box-shadow:
+    -4px 0 14px var(--creditGlow),
+    0 10px 26px rgba(15,23,42,0.07),
+    inset 1px 0 0 var(--creditInset),
+    inset 0 1px 0 rgba(255,255,255,0.62) !important;
+}
+
+html:not(.dark) #udhar-list .glass-card[data-credit-tone-v128] :is(h4,p,span,i,.font-bold,.font-extrabold) {
+  color: var(--creditTone) !important;
+  text-shadow: 0 0 8px var(--creditGlow) !important;
+}
+
+html:not(.dark) #udhar-list .glass-card[data-credit-tone-v128] .squircle {
+  color: var(--creditTone) !important;
+  background: var(--creditTint) !important;
+  border: 1px solid var(--creditBorder) !important;
+}
+
+/* Also respect old V99/V100 tone attributes */
+html:not(.dark) #udhar-list .glass-card[data-v99-tone="positive"],
+html:not(.dark) #udhar-list .glass-card[data-v100-tone="positive"] {
+  --creditTone: #34C759;
+  --creditTint: rgba(52,199,89,0.13);
+  --creditBorder: rgba(52,199,89,0.25);
+  --creditGlow: rgba(52,199,89,0.30);
+  --creditInset: rgba(52,199,89,0.48);
+}
+
+html:not(.dark) #udhar-list .glass-card[data-v99-tone="negative"],
+html:not(.dark) #udhar-list .glass-card[data-v100-tone="negative"],
+html:not(.dark) #udhar-list .glass-card[data-v99-tone="expense"],
+html:not(.dark) #udhar-list .glass-card[data-v100-tone="expense"] {
+  --creditTone: #FF3B30;
+  --creditTint: rgba(255,59,48,0.13);
+  --creditBorder: rgba(255,59,48,0.25);
+  --creditGlow: rgba(255,59,48,0.30);
+  --creditInset: rgba(255,59,48,0.48);
+}
+
+html:not(.dark) #udhar-list .glass-card[data-v99-tone="neutral"],
+html:not(.dark) #udhar-list .glass-card[data-v100-tone="neutral"],
+html:not(.dark) #udhar-list .glass-card[data-v100-tone="blue"] {
+  --creditTone: #007AFF;
+  --creditTint: rgba(0,122,255,0.13);
+  --creditBorder: rgba(0,122,255,0.25);
+  --creditGlow: rgba(0,122,255,0.28);
+  --creditInset: rgba(0,122,255,0.45);
+}
+
+/* Header + New button follows total credit net in light mode */
+html:not(.dark) #udhar-screen .header-sticky h1[data-credit-net-v128="positive"] {
+  color: var(--credit-v128-green) !important;
+  text-shadow: 0 0 10px rgba(52,199,89,0.22) !important;
+}
+
+html:not(.dark) #udhar-screen .header-sticky h1[data-credit-net-v128="negative"] {
+  color: var(--credit-v128-red) !important;
+  text-shadow: 0 0 10px rgba(255,59,48,0.22) !important;
+}
+
+html:not(.dark) #udhar-screen .header-sticky h1[data-credit-net-v128="neutral"] {
+  color: var(--credit-v128-blue) !important;
+  text-shadow: 0 0 10px rgba(0,122,255,0.22) !important;
+}
+
+html:not(.dark) #credit-entry-btn-v52[data-credit-net-v128="positive"] {
+  background: linear-gradient(135deg, #34C759, #22C55E) !important;
+  color: #FFFFFF !important;
+  border-color: transparent !important;
+  box-shadow: 0 8px 22px rgba(52,199,89,0.30) !important;
+}
+
+html:not(.dark) #credit-entry-btn-v52[data-credit-net-v128="negative"] {
+  background: linear-gradient(135deg, #FF453A, #FF2D55) !important;
+  color: #FFFFFF !important;
+  border-color: transparent !important;
+  box-shadow: 0 8px 22px rgba(255,59,48,0.30) !important;
+}
+
+html:not(.dark) #credit-entry-btn-v52[data-credit-net-v128="neutral"] {
+  background: linear-gradient(135deg, #007AFF, #0A84FF) !important;
+  color: #FFFFFF !important;
+  border-color: transparent !important;
+  box-shadow: 0 8px 22px rgba(0,122,255,0.28) !important;
+}
+
+html:not(.dark) #credit-entry-btn-v52[data-credit-net-v128] * {
+  color: #FFFFFF !important;
+}
+</style>
+<style id="aarish-v130-light-mode-blue-master-css">
+/* AARISH V130 LIGHT MODE BLUE MASTER
+   No JS. No scanner. No MutationObserver. No loop.
+   Dashboard (#home-screen) and Party Ledger (#balances-screen) untouched.
+   Only light-mode dark/black/gray text on working/detail screens becomes premium blue.
+   Semantic colors green/red/yellow/orange remain protected.
+*/
+
+html:not(.dark) {
+  --aarish-premium-blue-v130: var(--ios-blue, #007AFF);
+  --aarish-premium-blue-soft-v130: #0A84FF;
+  --aarish-premium-blue-glow-v130: rgba(0,122,255,0.22);
+}
+
+/* Target screens only: Dashboard and Party Ledger are intentionally excluded */
+html:not(.dark) :is(
+  #milk-screen,
+  #milk-detail-screen,
+  #udhar-screen,
+  #udhar-detail-screen,
+  #expenses-screen,
+  #expense-detail-screen,
+  #salary-screen,
+  #salary-detail-screen,
+  #diary-screen,
+  #diary-detail-screen,
+  #projects-screen,
+  #project-detail-screen
+) :is(
+  h1,h2,h3,h4,h5,h6,
+  p,span,label,small,strong,b,
+  th,td,table,
+  select,option,input,textarea,
+  .input-box,
+  .table-custom th,
+  .table-custom td,
+  .text-black,
+  .text-gray-900,
+  .text-gray-800,
+  .text-gray-700,
+  .text-gray-600,
+  .text-gray-500,
+  .text-slate-900,
+  .text-slate-800,
+  .text-slate-700,
+  .text-zinc-900,
+  .text-zinc-800,
+  [class*="text-[#1C1C1E]"],
+  [class*="text-[#111827]"],
+  [class*="text-[#0F172A]"],
+  [class*="text-[#020617]"]
+) {
+  color: var(--aarish-premium-blue-v130) !important;
+  text-shadow: 0 0 9px var(--aarish-premium-blue-glow-v130) !important;
+  transition-property: transform, opacity !important;
+}
+
+/* Milk detail screenshot fix: Daily Entries + Date/Morning/Evening/Total + month/year boxes */
+html:not(.dark) #milk-detail-screen :is(
+  .header-sticky h1,
+  .header-sticky button:not(.action-btn) i,
+  #milk-detail-title,
+  #filter-month-milk,
+  #filter-year-milk,
+  h3:not(#milk-detail-bill):not(#milk-detail-kg),
+  .table-custom th,
+  .table-custom td,
+  #milk-detail-records td
+) {
+  color: var(--aarish-premium-blue-v130) !important;
+  text-shadow: 0 0 9px var(--aarish-premium-blue-glow-v130) !important;
+}
+
+html:not(.dark) #milk-detail-screen :is(#filter-month-milk,#filter-year-milk,.input-box),
+html:not(.dark) :is(
+  #udhar-screen,
+  #expenses-screen,
+  #salary-screen,
+  #diary-screen,
+  #projects-screen,
+  #milk-detail-screen,
+  #salary-detail-screen,
+  #expense-detail-screen,
+  #udhar-detail-screen,
+  #project-detail-screen,
+  #diary-detail-screen
+) :is(input,select,textarea,.input-box) {
+  color: var(--aarish-premium-blue-v130) !important;
+  border-color: rgba(0,122,255,0.22) !important;
+  background-color: rgba(0,122,255,0.04) !important;
+  transition-property: transform, opacity !important;
+}
+
+html:not(.dark) :is(
+  #udhar-screen,
+  #expenses-screen,
+  #salary-screen,
+  #diary-screen,
+  #projects-screen,
+  #milk-detail-screen,
+  #salary-detail-screen,
+  #expense-detail-screen,
+  #udhar-detail-screen,
+  #project-detail-screen,
+  #diary-detail-screen
+) :is(input,select,textarea,.input-box)::placeholder {
+  color: rgba(0,122,255,0.68) !important;
+  opacity: 1 !important;
+}
+
+/* Protect semantic green */
+html:not(.dark) :is(
+  #milk-screen,
+  #milk-detail-screen,
+  #udhar-screen,
+  #udhar-detail-screen,
+  #expenses-screen,
+  #expense-detail-screen,
+  #salary-screen,
+  #salary-detail-screen,
+  #diary-screen,
+  #diary-detail-screen,
+  #projects-screen,
+  #project-detail-screen
+) :is(
+  .text-green-400,
+  .text-green-500,
+  .text-green-600,
+  [class*="text-[#34C759]"],
+  [class*="text-[#10B981]"],
+  [data-v99-tone="positive"],
+  [data-v100-tone="positive"],
+  [data-salary-tone-v127="positive"],
+  [data-credit-tone-v128="positive"],
+  [data-milk-net-v64="positive"],
+  [data-milk-new-v114="green"]
+),
+html:not(.dark) :is(
+  #milk-screen,
+  #milk-detail-screen,
+  #udhar-screen,
+  #udhar-detail-screen,
+  #salary-screen,
+  #salary-detail-screen
+) :is(
+  [data-v99-tone="positive"] *,
+  [data-v100-tone="positive"] *,
+  [data-salary-tone-v127="positive"] *,
+  [data-credit-tone-v128="positive"] *
+) {
+  color: #34C759 !important;
+  text-shadow: 0 0 9px rgba(52,199,89,0.24) !important;
+}
+
+/* Protect semantic red + delete */
+html:not(.dark) :is(
+  #milk-screen,
+  #milk-detail-screen,
+  #udhar-screen,
+  #udhar-detail-screen,
+  #expenses-screen,
+  #expense-detail-screen,
+  #salary-screen,
+  #salary-detail-screen,
+  #diary-screen,
+  #diary-detail-screen,
+  #projects-screen,
+  #project-detail-screen
+) :is(
+  .text-red-400,
+  .text-red-500,
+  .text-red-600,
+  [class*="text-[#FF3B30]"],
+  [class*="text-[#FF4B4B]"],
+  .action-btn,
+  .action-btn *,
+  i.fa-trash,
+  [data-v99-tone="negative"],
+  [data-v100-tone="negative"],
+  [data-v99-tone="expense"],
+  [data-v100-tone="expense"],
+  [data-salary-tone-v127="negative"],
+  [data-credit-tone-v128="negative"],
+  [data-milk-net-v64="negative"],
+  [data-milk-new-v114="red"]
+),
+html:not(.dark) :is(
+  #milk-screen,
+  #milk-detail-screen,
+  #udhar-screen,
+  #udhar-detail-screen,
+  #expenses-screen,
+  #expense-detail-screen,
+  #salary-screen,
+  #salary-detail-screen
+) :is(
+  [data-v99-tone="negative"] *,
+  [data-v100-tone="negative"] *,
+  [data-v99-tone="expense"] *,
+  [data-v100-tone="expense"] *,
+  [data-salary-tone-v127="negative"] *,
+  [data-credit-tone-v128="negative"] *
+) {
+  color: #FF3B30 !important;
+  text-shadow: 0 0 9px rgba(255,59,48,0.24) !important;
+}
+
+/* Protect diary/business yellow/orange/purple accents */
+html:not(.dark) :is(
+  #diary-screen,
+  #diary-detail-screen,
+  #projects-screen,
+  #project-detail-screen
+) :is(
+  .text-yellow-400,
+  .text-yellow-500,
+  .text-orange-400,
+  .text-orange-500,
+  .text-orange-600,
+  .text-purple-400,
+  .text-purple-500,
+  .text-purple-600,
+  [class*="text-[#F5A623]"],
+  [class*="text-[#FF9500]"],
+  [class*="text-[#BF5AF2]"],
+  #diary-title-v54,
+  #diary-title-v54 *
+) {
+  color: currentColor;
+}
+
+/* Neutral/zero tone should be blue */
+html:not(.dark) :is(
+  #milk-screen,
+  #milk-detail-screen,
+  #udhar-screen,
+  #udhar-detail-screen,
+  #salary-screen,
+  #salary-detail-screen
+) :is(
+  [data-v99-tone="neutral"],
+  [data-v100-tone="neutral"],
+  [data-v100-tone="blue"],
+  [data-salary-tone-v127="neutral"],
+  [data-credit-tone-v128="neutral"],
+  [data-milk-net-v64="zero"],
+  [data-milk-new-v114="blue"],
+  [data-v99-tone="neutral"] *,
+  [data-v100-tone="neutral"] *,
+  [data-v100-tone="blue"] *,
+  [data-salary-tone-v127="neutral"] *,
+  [data-credit-tone-v128="neutral"] *
+) {
+  color: var(--aarish-premium-blue-v130) !important;
+  text-shadow: 0 0 9px var(--aarish-premium-blue-glow-v130) !important;
+}
+
+/* Tables on detail screens: headers/normal text blue, semantic cells stay protected above */
+html:not(.dark) :is(
+  #milk-detail-screen,
+  #udhar-detail-screen,
+  #expense-detail-screen,
+  #salary-detail-screen,
+  #project-detail-screen
+) :is(.table-custom th, .table-custom td, table th, table td) {
+  color: var(--aarish-premium-blue-v130) !important;
+  text-shadow: 0 0 8px rgba(0,122,255,0.18) !important;
+}
+
+/* Re-protect delete buttons after table rule */
+html:not(.dark) :is(
+  #milk-detail-screen,
+  #udhar-detail-screen,
+  #expense-detail-screen,
+  #salary-detail-screen,
+  #project-detail-screen
+) :is(.action-btn, .action-btn *, i.fa-trash) {
+  color: #FF3B30 !important;
+  text-shadow: 0 0 9px rgba(255,59,48,0.24) !important;
+}
+</style>
 </head>
 
 <body>
@@ -5880,42 +6439,70 @@ async function deleteSalaryPersonProfile(name) {
 
 
     function renderSalaryList() {
-        const q = (document.getElementById('salary-search').value || '').toLowerCase();
-        const html = Object.keys(salaryDB).filter(n => n.toLowerCase().includes(q)).map((name, index) => {
-            const s = salaryDB[name];
+        const box = document.getElementById('salary-list');
+        if (!box) return;
+
+        const q = ((document.getElementById('salary-search') || {}).value || '').toLowerCase();
+
+        function escSalary(v) {
+            return String(v == null ? '' : v).replace(/[&<>"']/g, function(ch) {
+                return ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[ch];
+            });
+        }
+
+        function jsSalary(v) {
+            return JSON.stringify(String(v == null ? '' : v)).replace(/"/g, '&quot;');
+        }
+
+        function salaryVars(t) {
+            if (t === 'positive') return '--salaryTone:#34C759;--salaryTint:rgba(52,199,89,0.13);--salaryBorder:rgba(52,199,89,0.25);--salaryGlow:rgba(52,199,89,0.30);--salaryInset:rgba(52,199,89,0.48);';
+            if (t === 'negative') return '--salaryTone:#FF3B30;--salaryTint:rgba(255,59,48,0.13);--salaryBorder:rgba(255,59,48,0.25);--salaryGlow:rgba(255,59,48,0.30);--salaryInset:rgba(255,59,48,0.48);';
+            return '--salaryTone:#007AFF;--salaryTint:rgba(0,122,255,0.13);--salaryBorder:rgba(0,122,255,0.25);--salaryGlow:rgba(0,122,255,0.28);--salaryInset:rgba(0,122,255,0.45);';
+        }
+
+        const html = Object.keys(salaryDB || {}).filter(n => n.toLowerCase().includes(q)).map((name, index) => {
+            const s = salaryDB[name] || {};
             let totalAmt = 0;
-            filterByMonth(s.records || []).forEach(r => totalAmt += Number(r.amount||0));
-            
+            filterByMonth(s.records || []).forEach(r => totalAmt += Number(r.amount || 0));
+
             const isLeneWala = s.type === 'lene_wala';
             const netAmt = isLeneWala ? totalAmt : -totalAmt;
-            const salaryState = netAmt > 0 ? 'positive' : (netAmt < 0 ? 'negative' : 'zero');
+            const salaryState = netAmt > 0 ? 'positive' : (netAmt < 0 ? 'negative' : 'neutral');
             const colorClass = salaryState === 'positive' ? 'text-[#34C759]' : (salaryState === 'negative' ? 'text-[#FF3B30]' : 'text-[#007AFF]');
             const bgClass = salaryState === 'positive' ? 'bg-[#34C759]/10' : (salaryState === 'negative' ? 'bg-[#FF3B30]/10' : 'bg-[#007AFF]/10');
             const borderClass = salaryState === 'positive' ? 'border-l-[#34C759]' : (salaryState === 'negative' ? 'border-l-[#FF3B30]' : 'border-l-[#007AFF]');
             const sign = isLeneWala ? '+' : '-';
             const typeLabel = isLeneWala ? 'Receives' : 'Pays';
+            const arg = jsSalary(name);
 
-            return `<div 
-                onclick="haptic(); openSalaryDetail('${name}')" 
-                ontouchstart="startSalaryLongPress('${name}')" 
-                ontouchend="cancelSalaryLongPress()" 
-                ontouchmove="cancelSalaryLongPress()" 
-                onmousedown="startSalaryLongPress('${name}')" 
-                onmouseup="cancelSalaryLongPress()" 
+            return `<div
+                onclick="haptic(); openSalaryDetail(${arg})"
+                ontouchstart="startSalaryLongPress(${arg})"
+                ontouchend="cancelSalaryLongPress()"
+                ontouchmove="cancelSalaryLongPress()"
+                onmousedown="startSalaryLongPress(${arg})"
+                onmouseup="cancelSalaryLongPress()"
                 onmouseleave="cancelSalaryLongPress()"
-                data-aarish-salary-card-v68="${salaryState}" class="glass-card mb-3.5 flex items-center justify-between cursor-pointer border-l-[3px] ${borderClass} w-full ring-1 ring-white/40 dark:ring-white/5 list-enter" style="animation-delay: ${index * 0.05}s;">
+                data-aarish-salary-card-v68="${salaryState}"
+                data-v99-tone="${salaryState}"
+                data-v100-tone="${salaryState}"
+                data-salary-tone-v127="${salaryState}"
+                class="glass-card mb-3.5 flex items-center justify-between cursor-pointer border-l-[4px] ${borderClass} w-full ring-1 ring-white/40 dark:ring-white/5 list-enter"
+                style="${salaryVars(salaryState)}">
 
                 <div class="flex items-center gap-4 w-full min-w-0">
                     <div class="w-12 h-12 shrink-0 squircle ${bgClass} ${colorClass} font-bold flex items-center justify-center text-lg"><i class="fa-solid fa-indian-rupee-sign"></i></div>
                     <div class="flex-1 min-w-0">
-                        <h4 class="font-bold text-[17px] leading-tight truncate w-full flex items-center text-[#007AFF]" data-aarish-salary-party-blue-v1="name">${name}</h4>
-                        <p class="text-[13px] text-[#007AFF] font-medium truncate w-full mt-0.5 tracking-tight" data-aarish-salary-party-blue-v1="company">${s.company} • <span class="${colorClass} font-extrabold text-[15px] ml-1">${sign}₹${Math.round(totalAmt).toLocaleString('en-IN')}</span></p>
+                        <h4 class="font-bold text-[17px] leading-tight truncate w-full flex items-center ${colorClass}" data-aarish-salary-party-blue-v1="name">${escSalary(name)}</h4>
+                        <p class="text-[13px] ${colorClass} font-medium truncate w-full mt-0.5 tracking-tight" data-aarish-salary-party-blue-v1="company">${escSalary(s.company || '—')} • <span class="${colorClass} font-extrabold text-[15px] ml-1">${sign}₹${Math.round(totalAmt).toLocaleString('en-IN')}</span></p>
                     </div>
                 </div>
                 <i class="fa-solid fa-chevron-right ${colorClass} shrink-0 ml-3 text-[13px]"></i>
             </div>`;
         }).join('');
-        document.getElementById('salary-list').innerHTML = html || getEmptyState('fa-users', 'No employees found');
+
+        box.innerHTML = html || getEmptyState('fa-users', 'No employees found');
+        try { if (window.applySalaryHeaderButtonV127) window.applySalaryHeaderButtonV127(); } catch(e) {}
     }
 
     let __salaryFilterTimerV49 = null;
@@ -6552,55 +7139,91 @@ async function shareDiaryBill(id) {
     
 
     function renderUdharList() {
-        const q = (document.getElementById('udhar-search').value || '').toLowerCase();
-        
-        let grouped = {};
-        (udharDB || []).forEach((u, i) => {
-            if (!grouped[u.name]) grouped[u.name] = { name: u.name, net: 0, lastDate: u.date };
-            if (u.type === 'credit') grouped[u.name].net += Number(u.amount);
-            else grouped[u.name].net -= Number(u.amount);
-            
-            if (new Date(u.date) > new Date(grouped[u.name].lastDate)) grouped[u.name].lastDate = u.date;
+        try {
+            if (window.renderCreditListV128) {
+                window.renderCreditListV128();
+                return;
+            }
+        } catch(e) {}
+
+        const box = document.getElementById('udhar-list');
+        if (!box) return;
+
+        function esc(v) {
+            return String(v == null ? '' : v).replace(/[&<>"']/g, function(ch) {
+                return ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[ch];
+            });
+        }
+        function jsArg(v) {
+            return JSON.stringify(String(v == null ? '' : v)).replace(/"/g, '&quot;');
+        }
+        function money(v) {
+            var x = Number(v) || 0;
+            return '₹' + Math.abs(Math.round(x)).toLocaleString('en-IN');
+        }
+        function toneFromNet(net) {
+            return net > 0.0001 ? 'positive' : (net < -0.0001 ? 'negative' : 'neutral');
+        }
+        function toneClass(tone) {
+            return tone === 'positive' ? 'text-[#34C759]' : (tone === 'negative' ? 'text-[#FF3B30]' : 'text-[#007AFF]');
+        }
+        function bgClass(tone) {
+            return tone === 'positive' ? 'bg-[#34C759]/10' : (tone === 'negative' ? 'bg-[#FF3B30]/10' : 'bg-[#007AFF]/10');
+        }
+        function borderClass(tone) {
+            return tone === 'positive' ? 'border-l-[#34C759]' : (tone === 'negative' ? 'border-l-[#FF3B30]' : 'border-l-[#007AFF]');
+        }
+        function toneVars(tone) {
+            if (tone === 'positive') return '--creditTone:#34C759;--creditTint:rgba(52,199,89,0.13);--creditBorder:rgba(52,199,89,0.25);--creditGlow:rgba(52,199,89,0.30);--creditInset:rgba(52,199,89,0.48);';
+            if (tone === 'negative') return '--creditTone:#FF3B30;--creditTint:rgba(255,59,48,0.13);--creditBorder:rgba(255,59,48,0.25);--creditGlow:rgba(255,59,48,0.30);--creditInset:rgba(255,59,48,0.48);';
+            return '--creditTone:#007AFF;--creditTint:rgba(0,122,255,0.13);--creditBorder:rgba(0,122,255,0.25);--creditGlow:rgba(0,122,255,0.28);--creditInset:rgba(0,122,255,0.45);';
+        }
+
+        const q = ((document.getElementById('udhar-search') || {}).value || '').toLowerCase();
+        const grouped = {};
+
+        (Array.isArray(udharDB) ? udharDB : Object.keys(udharDB || {}).map(k => udharDB[k])).filter(Boolean).forEach(u => {
+            const name = String(u.name || 'Unknown');
+            if (!grouped[name]) grouped[name] = { name, net: 0, lastDate: '' };
+            grouped[name].net += String(u.type).toLowerCase() === 'credit' ? Number(u.amount || 0) : -Number(u.amount || 0);
+            if (String(u.date || '') > String(grouped[name].lastDate || '')) grouped[name].lastDate = String(u.date || '');
         });
 
         const html = Object.values(grouped)
             .filter(g => g.name.toLowerCase().includes(q))
-            .sort((a,b) => new Date(b.lastDate) - new Date(a.lastDate))
-            .map((g, index) => {
-                const isPlus = g.net >= 0;
-                const colorClass = isPlus ? 'text-[#34C759]' : 'text-[#FF3B30]';
-                const bgClass = isPlus ? 'bg-[#34C759]/10' : 'bg-[#FF3B30]/10';
-                const borderClass = isPlus ? 'border-l-[#34C759]' : 'border-l-[#FF3B30]';
-                const sign = isPlus ? '+' : '-';
-                const label = isPlus ? 'To Receive' : 'To Pay';
-                const displayNet = Math.abs(g.net).toLocaleString('en-IN');
+            .sort((a,b) => String(b.lastDate || '').localeCompare(String(a.lastDate || '')))
+            .map(g => {
+                const tone = toneFromNet(g.net);
+                const cls = toneClass(tone);
+                const label = g.net >= 0 ? 'To Receive' : 'To Pay';
+                const arg = jsArg(g.name);
 
-                                return `<div 
-                    onclick="haptic(); openUdharDetail('${g.name}')" 
-                    ontouchstart="startUdharLongPress('${g.name}')" 
-                    ontouchend="cancelUdharLongPress()" 
-                    ontouchmove="cancelUdharLongPress()" 
-                    onmousedown="startUdharLongPress('${g.name}')" 
-                    onmouseup="cancelUdharLongPress()" 
-                    onmouseleave="cancelUdharLongPress()"
-                    class="glass-card mb-3.5 flex items-center justify-between cursor-pointer border-l-[3px] ${borderClass} w-full min-w-0 ring-1 ring-white/40 dark:ring-white/5 list-enter" style="animation-delay: ${index * 0.05}s;">
-                    <div class="flex-1 min-w-0 mr-3">
-
-                        <h4 class="font-bold text-[17px] truncate w-full min-w-0 text-[#007AFF] flex items-center gap-2" data-aarish-credit-party-blue-v1="name">
-                            ${g.name}
-                        </h4>
-                        <p class="text-[13px] text-[#007AFF] font-medium truncate w-full min-w-0 mt-0.5 tracking-tight" data-aarish-credit-party-blue-v1="last">Last entry: ${formatDisplayDate(g.lastDate)}</p>
-                    </div>
-                    <div class="flex flex-col items-end gap-1 shrink-0">
-                        <span class="text-[9px] font-extrabold uppercase tracking-wider ${colorClass} bg-current/10 px-2 py-0.5 rounded-full">${label}</span>
-                        <div class="flex items-center gap-1">
-                            <span class="font-extrabold ${colorClass} shrink-0 text-lg">${sign}₹${displayNet}</span>
-                            <i class="fa-solid fa-chevron-right text-gray-300 text-[13px] ml-1"></i>
+                return `<div
+                    data-v99-tone="${tone}"
+                    data-v100-tone="${tone}"
+                    data-credit-tone-v128="${tone}"
+                    onclick="try{haptic()}catch(e){}; openUdharDetail(${arg})"
+                    ontouchstart="try{startUdharLongPress(${arg})}catch(e){}"
+                    ontouchend="try{cancelUdharLongPress()}catch(e){}"
+                    ontouchmove="try{cancelUdharLongPress()}catch(e){}"
+                    onmousedown="try{startUdharLongPress(${arg})}catch(e){}"
+                    onmouseup="try{cancelUdharLongPress()}catch(e){}"
+                    onmouseleave="try{cancelUdharLongPress()}catch(e){}"
+                    class="glass-card mb-3.5 flex items-center justify-between cursor-pointer border-l-[4px] ${borderClass(tone)} w-full min-w-0 ring-1 ring-white/40 dark:ring-white/5 list-enter rounded-2xl"
+                    style="${toneVars(tone)}">
+                    <div class="flex items-center gap-4 w-full min-w-0">
+                        <div class="w-12 h-12 shrink-0 squircle ${bgClass(tone)} ${cls} font-extrabold flex items-center justify-center text-lg"><i class="fa-solid fa-book-open"></i></div>
+                        <div class="flex-1 min-w-0">
+                            <h4 class="font-bold text-[17px] truncate w-full min-w-0 ${cls} flex items-center gap-2">${esc(g.name)}</h4>
+                            <p class="text-[13px] ${cls} font-semibold truncate w-full mt-0.5 tracking-tight opacity-90">${label} <span class="font-extrabold text-[15px]">${g.net >= 0 ? '+' : '-'}${money(g.net)}</span></p>
                         </div>
                     </div>
+                    <i class="fa-solid fa-chevron-right ${cls} shrink-0 ml-3 text-[13px]"></i>
                 </div>`;
             }).join('');
-        document.getElementById('udhar-list').innerHTML = html || getEmptyState('fa-handshake', 'No credit records found');
+
+        box.innerHTML = html || (typeof getEmptyState === 'function' ? getEmptyState('fa-users', 'No records found') : '<div class="py-20 text-center text-[#007AFF] font-extrabold">No records found</div>');
+        try { if (window.applyCreditHeaderButtonV128) window.applyCreditHeaderButtonV128(); } catch(e) {}
     }
 
         let __udharFilterTimerV49 = null;
@@ -6658,39 +7281,57 @@ function filterUdharList() {
     }
 
     function renderUdharRecords() {
+        try {
+            if (window.renderCreditRecordsV128) {
+                window.renderCreditRecordsV128();
+                return;
+            }
+        } catch(e) {}
+
         if (!activeUdharPerson) return;
         let net = 0;
-        
-        const records = udharDB.map((u, i) => ({...u, originalIndex: i}))
-                               .filter(u => u.name === activeUdharPerson)
-                               .sort((a,b) => String(b.date || '').localeCompare(String(a.date || '')));
 
-        const html = records.map((r, index) => {
-            const isCredit = r.type === 'credit';
-            if(isCredit) net += Number(r.amount); else net -= Number(r.amount);
+        const records = (Array.isArray(udharDB) ? udharDB : Object.keys(udharDB || {}).map(k => udharDB[k]))
+            .filter(Boolean)
+            .filter(u => u.name === activeUdharPerson)
+            .sort((a,b) => String(b.date || '').localeCompare(String(a.date || '')));
 
-            return `<tr class="list-enter" style="animation-delay: ${index * 0.05}s;">
-                <td>${formatDisplayDate(r.date)}</td>
+        const html = records.map((r) => {
+            const isCredit = String(r.type).toLowerCase() === 'credit';
+            const amount = Number(r.amount || 0);
+            if (isCredit) net += amount; else net -= amount;
+
+            return `<tr class="list-enter" data-v99-tone="${isCredit ? 'positive' : 'negative'}">
+                <td>${typeof formatDisplayDate === 'function' ? formatDisplayDate(r.date) : (r.date || '-')}</td>
                 <td><span class="text-[10px] font-extrabold uppercase px-2 py-1 rounded-md ${isCredit ? 'bg-[#34C759]/10 text-[#34C759]' : 'bg-[#FF3B30]/10 text-[#FF3B30]'}">${isCredit ? 'Given' : 'Taken'}</span></td>
-                <td class="font-bold text-[16px]">₹${Number(r.amount).toLocaleString('en-IN')}</td>
-                <td class="text-right"><button onclick="event.stopPropagation(); haptic();  deleteUdhar('${r.id}')"  class="action-btn shrink-0"><i class="fa-solid fa-trash text-xs"></i></button></td>
+                <td class="font-extrabold ${isCredit ? 'text-[#34C759]' : 'text-[#FF3B30]'}">${isCredit ? '+' : '-'}₹${Math.abs(amount).toLocaleString('en-IN')}</td>
+                <td class="text-right"><button onclick="event.stopPropagation(); haptic(); deleteUdhar(${JSON.stringify(String(r.id || '')).replace(/"/g, '&quot;')})" class="action-btn shrink-0"><i class="fa-solid fa-trash text-xs"></i></button></td>
             </tr>`;
         }).join('');
 
-        document.getElementById('udhar-detail-records').innerHTML = html || `<tr><td colspan="4" class="text-center py-8 text-gray-400 font-semibold">No entries found</td></tr>`;
+        const target = document.getElementById('udhar-detail-records');
+        if (target) target.innerHTML = html || `<tr><td colspan="4" class="text-center py-8 text-gray-400 font-semibold">No entries found</td></tr>`;
 
+        const tone = net > 0 ? 'positive' : (net < 0 ? 'negative' : 'neutral');
+        const color = tone === 'positive' ? '#34C759' : (tone === 'negative' ? '#FF3B30' : '#007AFF');
         const detailCard = document.getElementById('udhar-detail-card');
         const statusEl = document.getElementById('udhar-detail-status');
         const totalEl = document.getElementById('udhar-detail-total');
 
-        if(net >= 0) {
-            detailCard.className = "glass-card mb-6 flex justify-between items-center bg-gradient-to-br from-[#34C759] to-[#28a745] text-white border-none shadow-[0_8px_24px_rgba(52,199,89,0.3)] ring-1 ring-white/30 w-full min-w-0 gap-3";
-            statusEl.textContent = "Net Balance (To Receive)";
-            totalEl.textContent = `+ ₹${net.toLocaleString('en-IN')}`;
-        } else {
-            detailCard.className = "glass-card mb-6 flex justify-between items-center bg-gradient-to-br from-[#FF3B30] to-[#c92a2a] text-white border-none shadow-[0_8px_24px_rgba(255,59,48,0.3)] ring-1 ring-white/30 w-full min-w-0 gap-3";
-            statusEl.textContent = "Net Balance (To Pay)";
-            totalEl.textContent = `- ₹${Math.abs(net).toLocaleString('en-IN')}`;
+        if (detailCard) {
+            detailCard.setAttribute('data-v99-tone', tone);
+            detailCard.style.setProperty('border-left-width', '4px', 'important');
+            detailCard.style.setProperty('border-left-style', 'solid', 'important');
+            detailCard.style.setProperty('border-left-color', color, 'important');
+            detailCard.style.setProperty('transition', 'transform 80ms cubic-bezier(0.2,0.8,0.2,1), opacity 60ms ease', 'important');
+        }
+        if (statusEl) {
+            statusEl.textContent = net >= 0 ? 'You Will Receive' : 'You Will Pay';
+            statusEl.style.setProperty('color', color, 'important');
+        }
+        if (totalEl) {
+            totalEl.textContent = (net >= 0 ? '+' : '-') + '₹' + Math.abs(Math.round(net)).toLocaleString('en-IN');
+            totalEl.style.setProperty('color', color, 'important');
         }
     }
     
@@ -16026,15 +16667,27 @@ scheduleV69();
   function renderSalaryListV99() {
     var box = byId("salary-list"); if (!box) return;
     var q = String((byId("salary-search") || {}).value || "").toLowerCase();
+
+    function salaryVars(t) {
+      if (t === "positive") return "--salaryTone:#34C759;--salaryTint:rgba(52,199,89,0.13);--salaryBorder:rgba(52,199,89,0.25);--salaryGlow:rgba(52,199,89,0.30);--salaryInset:rgba(52,199,89,0.48);";
+      if (t === "negative") return "--salaryTone:#FF3B30;--salaryTint:rgba(255,59,48,0.13);--salaryBorder:rgba(255,59,48,0.25);--salaryGlow:rgba(255,59,48,0.30);--salaryInset:rgba(255,59,48,0.48);";
+      return "--salaryTone:#007AFF;--salaryTint:rgba(0,122,255,0.13);--salaryBorder:rgba(0,122,255,0.25);--salaryGlow:rgba(0,122,255,0.28);--salaryInset:rgba(0,122,255,0.45);";
+    }
+
     var html = Object.keys((typeof salaryDB !== "undefined" && salaryDB) || {}).filter(function(name){ return name.toLowerCase().indexOf(q) !== -1; }).map(function(name, index) {
       var s = salaryDB[name] || {};
       var total = 0; monthRecords(s.records).forEach(function(r){ total += num(r.amount); });
       var net = s.type === "lene_wala" ? total : -total;
       var tone = toneFrom(net), cls = toneClass(tone);
       var label = net >= 0 ? "To Receive" : "To Pay";
-      return `<div data-v99-tone="${tone}" onclick="haptic(); openSalaryDetail(${js(name)})"
+      return `<div
+        data-v99-tone="${tone}"
+        data-v100-tone="${tone}"
+        data-salary-tone-v127="${tone}"
+        onclick="haptic(); openSalaryDetail(${js(name)})"
         ${longPressAttrs("Salary", name)}
-        class="glass-card mb-3.5 flex items-center justify-between cursor-pointer border-l-[3px] ${borderClass(tone)} w-full ring-1 ring-white/40 dark:ring-white/5 list-enter" style="animation-delay:${index * 0.05}s;">
+        class="glass-card mb-3.5 flex items-center justify-between cursor-pointer border-l-[4px] ${borderClass(tone)} w-full ring-1 ring-white/40 dark:ring-white/5 list-enter"
+        style="${salaryVars(tone)}">
         <div class="flex items-center gap-4 w-full min-w-0">
           <div class="w-12 h-12 shrink-0 squircle ${bgClass(tone)} ${cls} font-extrabold flex items-center justify-center text-lg"><i class="fa-solid fa-indian-rupee-sign"></i></div>
           <div class="flex-1 min-w-0">
@@ -16046,37 +16699,56 @@ scheduleV69();
       </div>`;
     }).join("");
     box.innerHTML = html || empty("fa-users", "No employees found");
+    try { if (window.applySalaryHeaderButtonV127) window.applySalaryHeaderButtonV127(); } catch(e) {}
   }
 
   function renderUdharListV99() {
+    try {
+      if (window.renderCreditListV128) {
+        window.renderCreditListV128();
+        return;
+      }
+    } catch(e) {}
+
     var box = byId("udhar-list"); if (!box) return;
     var q = String((byId("udhar-search") || {}).value || "").toLowerCase();
+
+    function creditVars(t) {
+      if (t === "positive") return "--creditTone:#34C759;--creditTint:rgba(52,199,89,0.13);--creditBorder:rgba(52,199,89,0.25);--creditGlow:rgba(52,199,89,0.30);--creditInset:rgba(52,199,89,0.48);";
+      if (t === "negative") return "--creditTone:#FF3B30;--creditTint:rgba(255,59,48,0.13);--creditBorder:rgba(255,59,48,0.25);--creditGlow:rgba(255,59,48,0.30);--creditInset:rgba(255,59,48,0.48);";
+      return "--creditTone:#007AFF;--creditTint:rgba(0,122,255,0.13);--creditBorder:rgba(0,122,255,0.25);--creditGlow:rgba(0,122,255,0.28);--creditInset:rgba(0,122,255,0.45);";
+    }
+
     var grouped = {};
     list(typeof udharDB !== "undefined" ? udharDB : []).forEach(function(u) {
       var name = String(u.name || "Unknown");
       if (!grouped[name]) grouped[name] = { name:name, net:0, lastDate:u.date || "" };
-      grouped[name].net += String(u.type) === "credit" ? num(u.amount) : -num(u.amount);
+      grouped[name].net += String(u.type).toLowerCase() === "credit" ? num(u.amount) : -num(u.amount);
       if (String(u.date || "") > String(grouped[name].lastDate || "")) grouped[name].lastDate = u.date;
     });
-    var html = Object.values(grouped).filter(function(g){ return g.name.toLowerCase().indexOf(q) !== -1; }).sort(function(a,b){ return String(b.lastDate || "").localeCompare(String(a.lastDate || "")); }).map(function(g, index) {
+
+    var html = Object.values(grouped).filter(function(g){ return g.name.toLowerCase().indexOf(q) !== -1; }).sort(function(a,b){ return String(b.lastDate || "").localeCompare(String(a.lastDate || "")); }).map(function(g) {
       var tone = toneFrom(g.net), cls = toneClass(tone), label = g.net >= 0 ? "To Receive" : "To Pay";
-      return `<div data-v99-tone="${tone}" onclick="haptic(); openUdharDetail(${js(g.name)})"
+      return `<div
+        data-v99-tone="${tone}"
+        data-v100-tone="${tone}"
+        data-credit-tone-v128="${tone}"
+        onclick="haptic(); openUdharDetail(${js(g.name)})"
         ${longPressAttrs("Udhar", g.name)}
-        class="glass-card mb-3.5 flex items-center justify-between cursor-pointer border-l-[3px] ${borderClass(tone)} w-full min-w-0 ring-1 ring-white/40 dark:ring-white/5 list-enter" style="animation-delay:${index * 0.05}s;">
-        <div class="flex-1 min-w-0 mr-3">
-          <h4 class="font-bold text-[17px] truncate w-full min-w-0 ${cls} flex items-center gap-2">${esc(g.name)}</h4>
-          <p class="text-[13px] ${cls} font-medium truncate w-full min-w-0 mt-0.5 tracking-tight opacity-90">Last entry: ${fmtDate(g.lastDate)}</p>
-        </div>
-        <div class="flex flex-col items-end gap-1 shrink-0">
-          <span class="text-[9px] font-extrabold uppercase tracking-wider ${cls} bg-current/10 px-2 py-0.5 rounded-full">${label}</span>
-          <div class="flex items-center gap-1">
-            <span class="font-extrabold ${cls} shrink-0 text-lg">${signedMoney(g.net)}</span>
-            <i class="fa-solid fa-chevron-right ${cls} text-[13px] ml-1"></i>
+        class="glass-card mb-3.5 flex items-center justify-between cursor-pointer border-l-[4px] ${borderClass(tone)} w-full min-w-0 ring-1 ring-white/40 dark:ring-white/5 list-enter rounded-2xl"
+        style="${creditVars(tone)}">
+        <div class="flex items-center gap-4 w-full min-w-0">
+          <div class="w-12 h-12 shrink-0 squircle ${bgClass(tone)} ${cls} font-extrabold flex items-center justify-center text-lg"><i class="fa-solid fa-book-open"></i></div>
+          <div class="flex-1 min-w-0">
+            <h4 class="font-bold text-[17px] truncate w-full min-w-0 ${cls} flex items-center gap-2">${esc(g.name)}</h4>
+            <p class="text-[13px] ${cls} font-semibold truncate w-full mt-0.5 tracking-tight opacity-90">${label} <span class="font-extrabold text-[15px]">${signedMoney(g.net)}</span></p>
           </div>
         </div>
+        <i class="fa-solid fa-chevron-right ${cls} shrink-0 ml-3 text-[13px]"></i>
       </div>`;
     }).join("");
-    box.innerHTML = html || empty("fa-handshake", "No credit records found");
+    box.innerHTML = html || empty("fa-users", "No records found");
+    try { if (window.applyCreditHeaderButtonV128) window.applyCreditHeaderButtonV128(); } catch(e) {}
   }
 
   function renderExpenseListV99() {
@@ -16243,33 +16915,13 @@ scheduleV69();
   }
 
   function renderUdharRecordsV99() {
-    if (!activeUdharPerson) return;
-    var net = 0;
-    var records = list(typeof udharDB !== "undefined" ? udharDB : []).filter(function(u){ return u.name === activeUdharPerson; }).sort(function(a,b){ return String(b.date || "").localeCompare(String(a.date || "")); });
-    var html = records.map(function(r, index) {
-      var isCredit = String(r.type) === "credit";
-      var tone = isCredit ? "positive" : "negative";
-      var cls = toneClass(tone);
-      net += isCredit ? num(r.amount) : -num(r.amount);
-      return `<tr class="list-enter" data-v99-tone="${tone}" style="animation-delay:${index * 0.05}s;">
-        <td>${fmtDate(r.date)}</td>
-        <td><span class="text-[10px] font-extrabold uppercase px-2 py-1 rounded-md ${cls} bg-current/10">${isCredit ? "Given" : "Taken"}</span></td>
-        <td class="font-bold text-[16px] ${cls}">₹${money(r.amount)}</td>
-        <td class="text-right"><button onclick="event.stopPropagation(); haptic(); deleteUdhar(${js(r.id)})" class="action-btn shrink-0"><i class="fa-solid fa-trash"></i></button></td>
-      </tr>`;
-    }).join("");
-    var target = byId("udhar-detail-records");
-    if (target) target.innerHTML = html || `<tr><td colspan="4" class="text-center py-8 text-gray-400 font-semibold">No entries found</td></tr>`;
-    var finalTone = toneFrom(net);
-    var card = byId("udhar-detail-card"), statusEl = byId("udhar-detail-status"), totalEl = byId("udhar-detail-total");
-    if (card) {
-      card.setAttribute("data-v99-tone", finalTone);
-      card.className = finalTone !== "negative"
-        ? "glass-card mb-6 flex justify-between items-center bg-gradient-to-br from-[#34C759] to-[#28a745] text-white border-none shadow-[0_8px_24px_rgba(52,199,89,0.3)] ring-1 ring-white/30 w-full min-w-0 gap-3"
-        : "glass-card mb-6 flex justify-between items-center bg-gradient-to-br from-[#FF3B30] to-[#c92a2a] text-white border-none shadow-[0_8px_24px_rgba(255,59,48,0.3)] ring-1 ring-white/30 w-full min-w-0 gap-3";
-    }
-    if (statusEl) statusEl.textContent = net >= 0 ? "Net Balance (To Receive)" : "Net Balance (To Pay)";
-    if (totalEl) totalEl.textContent = signedMoney(net).replace("+₹", "+ ₹").replace("-₹", "- ₹");
+    try {
+      if (window.renderCreditRecordsV128) {
+        window.renderCreditRecordsV128();
+        return;
+      }
+    } catch(e) {}
+    try { renderUdharRecords(); } catch(e) {}
   }
 
   function renderExpenseRecordsV99() {
@@ -17242,6 +17894,574 @@ window.addEventListener("pageshow", function () { setTimeout(install, 120); }, {
   setTimeout(bootV125, 250);
 
   console.log("✅ AARISH V125 master refactor active");
+})();
+</script>
+<script id="aarish-v127-salary-light-milk-safe-js">
+/* AARISH V127
+   Lightweight Salary light-mode paint sync.
+   No data mutation. No Firebase write. No setInterval. No MutationObserver. No global touch scanner.
+*/
+(function () {
+  if (window.__AARISH_V127_SALARY_LIGHT_MILK_SAFE_READY) return;
+  window.__AARISH_V127_SALARY_LIGHT_MILK_SAFE_READY = true;
+
+  var raf = 0;
+
+  function n(v) {
+    var x = Number(v);
+    return isFinite(x) ? x : 0;
+  }
+
+  function arr(v) {
+    if (Array.isArray(v)) return v.filter(Boolean);
+    if (v && typeof v === "object") return Object.keys(v).map(function (k) { return v[k]; }).filter(Boolean);
+    return [];
+  }
+
+  function salaryDBSafe() {
+    try { if (typeof salaryDB !== "undefined" && salaryDB) return salaryDB; } catch(e) {}
+    return window.salaryDB || {};
+  }
+
+  function monthRecordsSafe(records) {
+    try { if (typeof filterByMonth === "function") return filterByMonth(arr(records)) || []; } catch(e) {}
+    return arr(records);
+  }
+
+  function salaryToneVarsV127(t) {
+    if (t === "positive") return "--salaryTone:#34C759;--salaryTint:rgba(52,199,89,0.13);--salaryBorder:rgba(52,199,89,0.25);--salaryGlow:rgba(52,199,89,0.30);--salaryInset:rgba(52,199,89,0.48);";
+    if (t === "negative") return "--salaryTone:#FF3B30;--salaryTint:rgba(255,59,48,0.13);--salaryBorder:rgba(255,59,48,0.25);--salaryGlow:rgba(255,59,48,0.30);--salaryInset:rgba(255,59,48,0.48);";
+    return "--salaryTone:#007AFF;--salaryTint:rgba(0,122,255,0.13);--salaryBorder:rgba(0,122,255,0.25);--salaryGlow:rgba(0,122,255,0.28);--salaryInset:rgba(0,122,255,0.45);";
+  }
+
+  function personNet(person) {
+    var total = 0;
+    monthRecordsSafe(person && person.records).forEach(function (r) {
+      total += n(r && r.amount);
+    });
+    return person && person.type === "lene_wala" ? total : -total;
+  }
+
+  function toneFromNet(net) {
+    return net > 0.0001 ? "positive" : (net < -0.0001 ? "negative" : "neutral");
+  }
+
+  function colorFromTone(tone) {
+    return tone === "positive" ? "#34C759" : (tone === "negative" ? "#FF3B30" : "#007AFF");
+  }
+
+  function allSalaryNet() {
+    var db = salaryDBSafe();
+    var net = 0;
+    try {
+      Object.keys(db || {}).forEach(function (name) {
+        net += personNet(db[name] || {});
+      });
+    } catch(e) {}
+    return net;
+  }
+
+  function safeTransition(el) {
+    if (!el || !el.style) return;
+    el.style.setProperty("transition", "transform 80ms cubic-bezier(0.2,0.8,0.2,1), opacity 60ms ease", "important");
+    el.style.setProperty("transition-property", "transform, opacity", "important");
+  }
+
+  function applySalaryHeaderButtonV127() {
+    try {
+      var tone = toneFromNet(allSalaryNet());
+      var title = document.querySelector("#salary-screen .header-sticky h1");
+      var btn = document.getElementById("salary-new-btn-v52");
+      var color = colorFromTone(tone);
+
+      if (title) {
+        title.setAttribute("data-salary-net-v127", tone);
+        title.style.setProperty("color", color, "important");
+        title.style.setProperty("text-shadow", "0 0 10px " + (tone === "positive" ? "rgba(52,199,89,0.22)" : tone === "negative" ? "rgba(255,59,48,0.22)" : "rgba(0,122,255,0.22)"), "important");
+        safeTransition(title);
+      }
+
+      if (btn) {
+        btn.setAttribute("data-salary-net-v127", tone);
+        btn.style.setProperty("color", "#FFFFFF", "important");
+        btn.style.setProperty("border-color", "transparent", "important");
+        safeTransition(btn);
+
+        if (tone === "positive") {
+          btn.style.setProperty("background", "linear-gradient(135deg, #34C759, #22C55E)", "important");
+          btn.style.setProperty("box-shadow", "0 8px 22px rgba(52,199,89,0.30)", "important");
+        } else if (tone === "negative") {
+          btn.style.setProperty("background", "linear-gradient(135deg, #FF453A, #FF2D55)", "important");
+          btn.style.setProperty("box-shadow", "0 8px 22px rgba(255,59,48,0.30)", "important");
+        } else {
+          btn.style.setProperty("background", "linear-gradient(135deg, #007AFF, #0A84FF)", "important");
+          btn.style.setProperty("box-shadow", "0 8px 22px rgba(0,122,255,0.28)", "important");
+        }
+
+        try {
+          btn.querySelectorAll("*").forEach(function (x) {
+            x.style.setProperty("color", "#FFFFFF", "important");
+            safeTransition(x);
+          });
+        } catch(e) {}
+      }
+    } catch(e) {}
+  }
+
+  function paintExistingSalaryCardsV127() {
+    try {
+      var list = document.getElementById("salary-list");
+      if (!list) return;
+
+      list.querySelectorAll(".list-enter").forEach(function (el) {
+        el.style.setProperty("animation", "none", "important");
+        el.style.setProperty("opacity", "1", "important");
+        el.style.setProperty("transform", "none", "important");
+      });
+
+      list.querySelectorAll(".glass-card").forEach(function (card) {
+        var tone = String(card.getAttribute("data-salary-tone-v127") || card.getAttribute("data-v99-tone") || card.getAttribute("data-v100-tone") || "").toLowerCase();
+        if (tone === "green") tone = "positive";
+        if (tone === "red" || tone === "expense") tone = "negative";
+        if (tone === "blue" || tone === "zero") tone = "neutral";
+        if (tone !== "positive" && tone !== "negative" && tone !== "neutral") tone = "neutral";
+
+        var color = colorFromTone(tone);
+        card.setAttribute("data-salary-tone-v127", tone);
+        card.setAttribute("data-v99-tone", tone);
+        card.setAttribute("data-v100-tone", tone);
+        card.style.cssText += ";" + salaryToneVarsV127(tone);
+        card.style.setProperty("border-left-width", "4px", "important");
+        card.style.setProperty("border-left-style", "solid", "important");
+        card.style.setProperty("border-left-color", color, "important");
+        safeTransition(card);
+
+        try {
+          card.querySelectorAll("h4,p,span,i,.font-bold,.font-extrabold").forEach(function (x) {
+            x.style.setProperty("color", color, "important");
+            safeTransition(x);
+          });
+        } catch(e) {}
+
+        var av = card.querySelector(".squircle");
+        if (av) {
+          av.style.setProperty("color", color, "important");
+          av.style.setProperty("background", tone === "positive" ? "rgba(52,199,89,0.13)" : tone === "negative" ? "rgba(255,59,48,0.13)" : "rgba(0,122,255,0.13)", "important");
+          safeTransition(av);
+        }
+      });
+    } catch(e) {}
+  }
+
+  function paintSalaryLightV127() {
+    applySalaryHeaderButtonV127();
+    paintExistingSalaryCardsV127();
+  }
+
+  function scheduleV127() {
+    if (raf) return;
+    raf = requestAnimationFrame(function () {
+      raf = 0;
+      paintSalaryLightV127();
+    });
+  }
+
+  function wrapV127(name) {
+    try {
+      var old = window[name];
+      if (typeof old !== "function" || old.__aarishV127SalaryWrapped) return;
+      var wrapped = function () {
+        var out = old.apply(this, arguments);
+        scheduleV127();
+        return out;
+      };
+      wrapped.__aarishV127SalaryWrapped = true;
+      window[name] = wrapped;
+      try { Function("fn", name + " = fn;")(wrapped); } catch(e) {}
+    } catch(e) {}
+  }
+
+  [
+    "renderSalaryList",
+    "filterSalaryList",
+    "renderSalaryRecords",
+    "renderSalaryRecordsV99",
+    "updateFinanceActionNavColorsV52",
+    "switchTab",
+    "updateActiveScreen",
+    "updateDashboard",
+    "saveSalaryEntry",
+    "addSalaryPerson",
+    "deleteSalarySingleEntry",
+    "deleteSalaryPersonProfile"
+  ].forEach(wrapV127);
+
+  window.applySalaryHeaderButtonV127 = applySalaryHeaderButtonV127;
+  window.salaryToneVarsV127 = salaryToneVarsV127;
+
+  document.addEventListener("DOMContentLoaded", scheduleV127, { passive:true, once:true });
+  window.addEventListener("load", scheduleV127, { passive:true, once:true });
+  window.addEventListener("pageshow", scheduleV127, { passive:true });
+  document.addEventListener("visibilitychange", function () {
+    if (!document.hidden) scheduleV127();
+  }, { passive:true });
+
+  scheduleV127();
+  setTimeout(scheduleV127, 120);
+  setTimeout(scheduleV127, 450);
+
+  console.log("✅ AARISH V127 Salary light Milk-safe paint active");
+})();
+</script>
+<script id="aarish-v128-credit-light-milk-safe-js">
+/* AARISH V128
+   Credit Book light-mode Milk-safe template-time paint.
+   No Firebase write. No save/delete mutation. No MutationObserver. No setInterval.
+*/
+(function () {
+  if (window.__AARISH_V128_CREDIT_LIGHT_MILK_SAFE_READY) return;
+  window.__AARISH_V128_CREDIT_LIGHT_MILK_SAFE_READY = true;
+
+  var raf = 0;
+
+  function n(v) {
+    var x = Number(v);
+    return isFinite(x) ? x : 0;
+  }
+
+  function esc(v) {
+    return String(v == null ? "" : v).replace(/[&<>"']/g, function (ch) {
+      return {"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[ch];
+    });
+  }
+
+  function jsArg(v) {
+    return JSON.stringify(String(v == null ? "" : v)).replace(/"/g, "&quot;");
+  }
+
+  function entries() {
+    try {
+      if (typeof udharDB !== "undefined") {
+        if (Array.isArray(udharDB)) return udharDB.filter(Boolean);
+        if (udharDB && typeof udharDB === "object") return Object.keys(udharDB).map(function (k) { return udharDB[k]; }).filter(Boolean);
+      }
+    } catch(e) {}
+    try {
+      if (Array.isArray(window.udharDB)) return window.udharDB.filter(Boolean);
+      if (window.udharDB && typeof window.udharDB === "object") return Object.keys(window.udharDB).map(function (k) { return window.udharDB[k]; }).filter(Boolean);
+    } catch(e) {}
+    return [];
+  }
+
+  function isCreditType(type) {
+    return String(type || "").toLowerCase() === "credit";
+  }
+
+  function toneFromNet(net) {
+    return net > 0.0001 ? "positive" : (net < -0.0001 ? "negative" : "neutral");
+  }
+
+  function toneColor(tone) {
+    return tone === "positive" ? "#34C759" : (tone === "negative" ? "#FF3B30" : "#007AFF");
+  }
+
+  function toneClass(tone) {
+    return tone === "positive" ? "text-[#34C759]" : (tone === "negative" ? "text-[#FF3B30]" : "text-[#007AFF]");
+  }
+
+  function bgClass(tone) {
+    return tone === "positive" ? "bg-[#34C759]/10" : (tone === "negative" ? "bg-[#FF3B30]/10" : "bg-[#007AFF]/10");
+  }
+
+  function borderClass(tone) {
+    return tone === "positive" ? "border-l-[#34C759]" : (tone === "negative" ? "border-l-[#FF3B30]" : "border-l-[#007AFF]");
+  }
+
+  function toneVars(tone) {
+    if (tone === "positive") return "--creditTone:#34C759;--creditTint:rgba(52,199,89,0.13);--creditBorder:rgba(52,199,89,0.25);--creditGlow:rgba(52,199,89,0.30);--creditInset:rgba(52,199,89,0.48);";
+    if (tone === "negative") return "--creditTone:#FF3B30;--creditTint:rgba(255,59,48,0.13);--creditBorder:rgba(255,59,48,0.25);--creditGlow:rgba(255,59,48,0.30);--creditInset:rgba(255,59,48,0.48);";
+    return "--creditTone:#007AFF;--creditTint:rgba(0,122,255,0.13);--creditBorder:rgba(0,122,255,0.25);--creditGlow:rgba(0,122,255,0.28);--creditInset:rgba(0,122,255,0.45);";
+  }
+
+  function money(v) {
+    return "₹" + Math.abs(Math.round(n(v))).toLocaleString("en-IN");
+  }
+
+  function safeTransition(el) {
+    if (!el || !el.style) return;
+    el.style.setProperty("transition", "transform 80ms cubic-bezier(0.2,0.8,0.2,1), opacity 60ms ease", "important");
+    el.style.setProperty("transition-property", "transform, opacity", "important");
+  }
+
+  function groupedCredit() {
+    var grouped = {};
+    entries().forEach(function (u) {
+      var name = String((u && u.name) || "Unknown");
+      if (!grouped[name]) grouped[name] = { name: name, net: 0, lastDate: "" };
+      var amount = n(u && u.amount);
+      grouped[name].net += isCreditType(u && u.type) ? amount : -amount;
+      if (String((u && u.date) || "") > String(grouped[name].lastDate || "")) grouped[name].lastDate = String((u && u.date) || "");
+    });
+    return grouped;
+  }
+
+  function allCreditNet() {
+    var total = 0;
+    entries().forEach(function (u) {
+      total += isCreditType(u && u.type) ? n(u && u.amount) : -n(u && u.amount);
+    });
+    return total;
+  }
+
+  function applyCreditHeaderButtonV128() {
+    try {
+      var tone = toneFromNet(allCreditNet());
+      var color = toneColor(tone);
+      var title = document.querySelector("#udhar-screen .header-sticky h1");
+      var btn = document.getElementById("credit-entry-btn-v52") ||
+                document.querySelector("#udhar-screen .header-sticky button.btn-ios-add") ||
+                document.querySelector("#udhar-screen .header-sticky button[onclick*='udhar']");
+
+      if (title) {
+        title.setAttribute("data-credit-net-v128", tone);
+        title.style.setProperty("color", color, "important");
+        title.style.setProperty("text-shadow", "0 0 10px " + (tone === "positive" ? "rgba(52,199,89,0.22)" : tone === "negative" ? "rgba(255,59,48,0.22)" : "rgba(0,122,255,0.22)"), "important");
+        safeTransition(title);
+      }
+
+      if (btn) {
+        btn.id = btn.id || "credit-entry-btn-v52";
+        btn.setAttribute("data-credit-net-v128", tone);
+        btn.style.setProperty("color", "#FFFFFF", "important");
+        btn.style.setProperty("border-color", "transparent", "important");
+        safeTransition(btn);
+
+        if (tone === "positive") {
+          btn.style.setProperty("background", "linear-gradient(135deg, #34C759, #22C55E)", "important");
+          btn.style.setProperty("box-shadow", "0 8px 22px rgba(52,199,89,0.30)", "important");
+        } else if (tone === "negative") {
+          btn.style.setProperty("background", "linear-gradient(135deg, #FF453A, #FF2D55)", "important");
+          btn.style.setProperty("box-shadow", "0 8px 22px rgba(255,59,48,0.30)", "important");
+        } else {
+          btn.style.setProperty("background", "linear-gradient(135deg, #007AFF, #0A84FF)", "important");
+          btn.style.setProperty("box-shadow", "0 8px 22px rgba(0,122,255,0.28)", "important");
+        }
+
+        try {
+          btn.querySelectorAll("*").forEach(function (x) {
+            x.style.setProperty("color", "#FFFFFF", "important");
+            safeTransition(x);
+          });
+        } catch(e) {}
+      }
+    } catch(e) {}
+  }
+
+  function renderCreditListV128() {
+    var box = document.getElementById("udhar-list");
+    if (!box) return;
+
+    var q = String((document.getElementById("udhar-search") || {}).value || "").toLowerCase();
+    var grouped = groupedCredit();
+
+    var html = Object.values(grouped)
+      .filter(function (g) { return g.name.toLowerCase().indexOf(q) !== -1; })
+      .sort(function (a, b) { return String(b.lastDate || "").localeCompare(String(a.lastDate || "")); })
+      .map(function (g) {
+        var tone = toneFromNet(g.net);
+        var cls = toneClass(tone);
+        var label = g.net >= 0 ? "To Receive" : "To Pay";
+        var arg = jsArg(g.name);
+
+        return `<div
+          data-v99-tone="${tone}"
+          data-v100-tone="${tone}"
+          data-credit-tone-v128="${tone}"
+          onclick="try{haptic()}catch(e){}; openUdharDetail(${arg})"
+          ontouchstart="try{startUdharLongPress(${arg})}catch(e){}"
+          ontouchend="try{cancelUdharLongPress()}catch(e){}"
+          ontouchmove="try{cancelUdharLongPress()}catch(e){}"
+          onmousedown="try{startUdharLongPress(${arg})}catch(e){}"
+          onmouseup="try{cancelUdharLongPress()}catch(e){}"
+          onmouseleave="try{cancelUdharLongPress()}catch(e){}"
+          class="glass-card mb-3.5 flex items-center justify-between cursor-pointer border-l-[4px] ${borderClass(tone)} w-full min-w-0 ring-1 ring-white/40 dark:ring-white/5 list-enter rounded-2xl"
+          style="${toneVars(tone)}">
+          <div class="flex items-center gap-4 w-full min-w-0">
+            <div class="w-12 h-12 shrink-0 squircle ${bgClass(tone)} ${cls} font-extrabold flex items-center justify-center text-lg">
+              <i class="fa-solid fa-book-open"></i>
+            </div>
+            <div class="flex-1 min-w-0">
+              <h4 class="font-bold text-[17px] truncate w-full min-w-0 ${cls} flex items-center gap-2">${esc(g.name)}</h4>
+              <p class="text-[13px] ${cls} font-semibold truncate w-full mt-0.5 tracking-tight opacity-90">
+                ${label} <span class="font-extrabold text-[15px]">${g.net >= 0 ? "+" : "-"}${money(g.net)}</span>
+              </p>
+            </div>
+          </div>
+          <i class="fa-solid fa-chevron-right ${cls} shrink-0 ml-3 text-[13px]"></i>
+        </div>`;
+      }).join("");
+
+    box.innerHTML = html || (typeof getEmptyState === "function" ? getEmptyState("fa-users", "No records found") : `<div class="py-20 text-center text-[#007AFF] font-extrabold">No records found</div>`);
+    applyCreditHeaderButtonV128();
+  }
+
+  function renderCreditRecordsV128() {
+    try {
+      if (!window.activeUdharPerson && typeof activeUdharPerson === "undefined") return;
+    } catch(e) {}
+
+    var person = "";
+    try { person = String(activeUdharPerson || ""); } catch(e) { person = String(window.activeUdharPerson || ""); }
+    if (!person) return;
+
+    var net = 0;
+    var records = entries()
+      .filter(function (u) { return String((u && u.name) || "") === person; })
+      .sort(function (a, b) { return String((b && b.date) || "").localeCompare(String((a && a.date) || "")); });
+
+    var html = records.map(function (r) {
+      var credit = isCreditType(r && r.type);
+      var amount = n(r && r.amount);
+      net += credit ? amount : -amount;
+      var tone = credit ? "positive" : "negative";
+      var cls = toneClass(tone);
+      var idArg = jsArg((r && r.id) || "");
+
+      var dateText = "";
+      try { dateText = typeof formatDisplayDate === "function" ? formatDisplayDate(r && r.date) : String((r && r.date) || "-"); }
+      catch(e) { dateText = String((r && r.date) || "-"); }
+
+      return `<tr class="list-enter" data-credit-row-tone-v128="${tone}" data-v99-tone="${tone}">
+        <td>${esc(dateText)}</td>
+        <td><span class="text-[10px] font-extrabold uppercase px-2 py-1 rounded-md ${credit ? "bg-[#34C759]/10 text-[#34C759]" : "bg-[#FF3B30]/10 text-[#FF3B30]"}">${credit ? "Given" : "Taken"}</span></td>
+        <td class="font-extrabold ${cls}">${credit ? "+" : "-"}${money(amount)}</td>
+        <td class="text-right"><button onclick="event.stopPropagation(); try{haptic()}catch(e){}; deleteUdhar(${idArg})" class="action-btn shrink-0"><i class="fa-solid fa-trash text-xs"></i></button></td>
+      </tr>`;
+    }).join("");
+
+    var target = document.getElementById("udhar-detail-records");
+    if (target) target.innerHTML = html || `<tr><td colspan="4" class="text-center py-8 text-gray-400 font-semibold">No entries found</td></tr>`;
+
+    var tone = toneFromNet(net);
+    var color = toneColor(tone);
+    var detailCard = document.getElementById("udhar-detail-card");
+    var statusEl = document.getElementById("udhar-detail-status");
+    var totalEl = document.getElementById("udhar-detail-total");
+
+    if (detailCard) {
+      detailCard.setAttribute("data-v99-tone", tone);
+      detailCard.setAttribute("data-credit-tone-v128", tone);
+      detailCard.style.cssText += ";" + toneVars(tone);
+      detailCard.style.setProperty("border-left-width", "4px", "important");
+      detailCard.style.setProperty("border-left-style", "solid", "important");
+      detailCard.style.setProperty("border-left-color", color, "important");
+      safeTransition(detailCard);
+    }
+
+    if (statusEl) {
+      statusEl.textContent = net >= 0 ? "You Will Receive" : "You Will Pay";
+      statusEl.style.setProperty("color", color, "important");
+      safeTransition(statusEl);
+    }
+
+    if (totalEl) {
+      totalEl.textContent = (net >= 0 ? "+" : "-") + money(net);
+      totalEl.style.setProperty("color", color, "important");
+      safeTransition(totalEl);
+    }
+
+    applyCreditHeaderButtonV128();
+  }
+
+  function paintExistingCreditCardsV128() {
+    try {
+      var list = document.getElementById("udhar-list");
+      if (!list) return;
+
+      list.querySelectorAll(".list-enter").forEach(function (el) {
+        el.style.setProperty("animation", "none", "important");
+        el.style.setProperty("opacity", "1", "important");
+        el.style.setProperty("transform", "none", "important");
+      });
+
+      list.querySelectorAll(".glass-card").forEach(function (card) {
+        var tone = String(card.getAttribute("data-credit-tone-v128") || card.getAttribute("data-v99-tone") || card.getAttribute("data-v100-tone") || "").toLowerCase();
+        if (tone === "green") tone = "positive";
+        if (tone === "red" || tone === "expense") tone = "negative";
+        if (tone === "blue" || tone === "zero") tone = "neutral";
+        if (tone !== "positive" && tone !== "negative" && tone !== "neutral") tone = "neutral";
+
+        var color = toneColor(tone);
+        card.setAttribute("data-credit-tone-v128", tone);
+        card.setAttribute("data-v99-tone", tone);
+        card.setAttribute("data-v100-tone", tone);
+        card.style.cssText += ";" + toneVars(tone);
+        card.style.setProperty("border-left-width", "4px", "important");
+        card.style.setProperty("border-left-style", "solid", "important");
+        card.style.setProperty("border-left-color", color, "important");
+        safeTransition(card);
+
+        card.querySelectorAll("h4,p,span,i,.font-bold,.font-extrabold").forEach(function (x) {
+          x.style.setProperty("color", color, "important");
+          safeTransition(x);
+        });
+
+        var av = card.querySelector(".squircle");
+        if (av) {
+          av.style.setProperty("color", color, "important");
+          av.style.setProperty("background", tone === "positive" ? "rgba(52,199,89,0.13)" : tone === "negative" ? "rgba(255,59,48,0.13)" : "rgba(0,122,255,0.13)", "important");
+          safeTransition(av);
+        }
+      });
+    } catch(e) {}
+  }
+
+  function scheduleV128() {
+    if (raf) return;
+    raf = requestAnimationFrame(function () {
+      raf = 0;
+      applyCreditHeaderButtonV128();
+      paintExistingCreditCardsV128();
+    });
+  }
+
+  function wrapV128(name, afterRecords) {
+    try {
+      var old = window[name];
+      if (typeof old !== "function" || old.__aarishV128CreditWrapped) return;
+      var wrapped = function () {
+        var out = old.apply(this, arguments);
+        if (afterRecords) {
+          try { renderCreditRecordsV128(); } catch(e) {}
+        } else {
+          scheduleV128();
+        }
+        return out;
+      };
+      wrapped.__aarishV128CreditWrapped = true;
+      window[name] = wrapped;
+      try { Function("fn", name + " = fn;")(wrapped); } catch(e) {}
+    } catch(e) {}
+  }
+
+  window.applyCreditHeaderButtonV128 = applyCreditHeaderButtonV128;
+  window.renderCreditListV128 = renderCreditListV128;
+  window.renderCreditRecordsV128 = renderCreditRecordsV128;
+
+  ["switchTab","updateActiveScreen","updateDashboard","saveUdharEntry","deleteUdhar","deleteUdharPersonProfile"].forEach(function (name) {
+    wrapV128(name, false);
+  });
+
+  document.addEventListener("DOMContentLoaded", scheduleV128, { passive:true, once:true });
+  window.addEventListener("load", scheduleV128, { passive:true, once:true });
+  window.addEventListener("pageshow", scheduleV128, { passive:true });
+  document.addEventListener("visibilitychange", function () { if (!document.hidden) scheduleV128(); }, { passive:true });
+
+  scheduleV128();
+  setTimeout(scheduleV128, 120);
+  setTimeout(scheduleV128, 450);
+
+  console.log("✅ AARISH V128 Credit Book light Milk-safe paint active");
 })();
 </script>
 </body>
