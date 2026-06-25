@@ -4548,6 +4548,127 @@ html:not(.dark) #credit-entry-btn-v52[data-credit-net-v128="neutral"] {
 html:not(.dark) #credit-entry-btn-v52[data-credit-net-v128] * {
   color: #FFFFFF !important;
 }
+
+
+/* AARISH_V142_CREDIT_DETAIL_MILK_PARITY_CSS_START
+   Credit Book detail = Milk-style parity.
+   No scanner. No MutationObserver. No setInterval.
+   Render-time data-tone decides colors.
+*/
+
+/* Permanent premium blue headings */
+#udhar-detail-screen :is(h2,h3,h4),
+#udhar-detail-screen .table-custom th,
+#udhar-detail-screen table th,
+#udhar-detail-screen :is(.all-entries-title-v142,[data-credit-fixed-blue-v142="true"]) {
+  color: #007AFF !important;
+  text-shadow: 0 0 10px rgba(0,122,255,0.22) !important;
+  transition-property: transform, opacity !important;
+}
+
+/* Detail customer title follows net */
+#udhar-detail-title[data-credit-net-v142="positive"] {
+  color: #34C759 !important;
+  text-shadow: 0 0 10px rgba(52,199,89,0.24) !important;
+}
+#udhar-detail-title[data-credit-net-v142="negative"] {
+  color: #FF3B30 !important;
+  text-shadow: 0 0 10px rgba(255,59,48,0.24) !important;
+}
+#udhar-detail-title[data-credit-net-v142="neutral"] {
+  color: #007AFF !important;
+  text-shadow: 0 0 10px rgba(0,122,255,0.24) !important;
+}
+
+/* Net card background */
+#udhar-detail-card[data-credit-net-v142="positive"] {
+  background: linear-gradient(135deg, #34C759, #28A745) !important;
+  border-color: #34C759 !important;
+  box-shadow: 0 8px 24px rgba(52,199,89,0.30) !important;
+}
+#udhar-detail-card[data-credit-net-v142="negative"] {
+  background: linear-gradient(135deg, #FF3B30, #C92A2A) !important;
+  border-color: #FF3B30 !important;
+  box-shadow: 0 8px 24px rgba(255,59,48,0.30) !important;
+}
+#udhar-detail-card[data-credit-net-v142="neutral"] {
+  background: linear-gradient(135deg, #007AFF, #0A84FF) !important;
+  border-color: #007AFF !important;
+  box-shadow: 0 8px 24px rgba(0,122,255,0.30) !important;
+}
+#udhar-detail-card[data-credit-net-v142] :is(p,h1,h2,h3,span,#udhar-detail-status,#udhar-detail-total) {
+  color: #FFFFFF !important;
+  text-shadow: 0 2px 10px rgba(0,0,0,0.18) !important;
+}
+
+/* + Add button permanently premium green */
+#credit-entry-btn-v52,
+#udhar-detail-screen button[data-credit-add-v142="true"] {
+  background: linear-gradient(135deg, #34C759, #22C55E) !important;
+  color: #FFFFFF !important;
+  border-color: transparent !important;
+  box-shadow: 0 8px 22px rgba(52,199,89,0.30) !important;
+  transition-property: transform, opacity !important;
+}
+#credit-entry-btn-v52 *,
+#udhar-detail-screen button[data-credit-add-v142="true"] * {
+  color: #FFFFFF !important;
+}
+
+/* Share button premium blue */
+#udhar-detail-screen button[data-credit-share-v142="true"] {
+  color: #007AFF !important;
+  border-color: rgba(0,122,255,0.22) !important;
+  background-color: rgba(0,122,255,0.08) !important;
+  box-shadow: 0 8px 18px rgba(0,122,255,0.14) !important;
+}
+#udhar-detail-screen button[data-credit-share-v142="true"] * {
+  color: #007AFF !important;
+}
+
+/* Row-level template color */
+#udhar-detail-records tr[data-credit-row-tone-v142="positive"] :is(td,span,i,.font-bold,.font-extrabold) {
+  color: #34C759 !important;
+  text-shadow: 0 0 9px rgba(52,199,89,0.20) !important;
+}
+#udhar-detail-records tr[data-credit-row-tone-v142="negative"] :is(td,span,i,.font-bold,.font-extrabold) {
+  color: #FF3B30 !important;
+  text-shadow: 0 0 9px rgba(255,59,48,0.20) !important;
+}
+#udhar-detail-records tr[data-credit-row-tone-v142="neutral"] :is(td,span,i,.font-bold,.font-extrabold) {
+  color: #007AFF !important;
+  text-shadow: 0 0 9px rgba(0,122,255,0.20) !important;
+}
+
+/* Badge surfaces */
+#udhar-detail-records tr[data-credit-row-tone-v142="positive"] .credit-badge-v142 {
+  background: rgba(52,199,89,0.10) !important;
+  color: #34C759 !important;
+}
+#udhar-detail-records tr[data-credit-row-tone-v142="negative"] .credit-badge-v142 {
+  background: rgba(255,59,48,0.10) !important;
+  color: #FF3B30 !important;
+}
+
+/* Delete stays red */
+#udhar-detail-screen :is(.action-btn,.action-btn *,i.fa-trash) {
+  color: #FF3B30 !important;
+  text-shadow: 0 0 9px rgba(255,59,48,0.22) !important;
+}
+
+#udhar-detail-records .list-enter {
+  animation: none !important;
+  opacity: 1 !important;
+  transform: none !important;
+}
+
+/* Empty state blue */
+#udhar-detail-records tr[data-credit-empty-v142="true"] td {
+  color: #007AFF !important;
+  text-shadow: 0 0 10px rgba(0,122,255,0.24) !important;
+}
+/* AARISH_V142_CREDIT_DETAIL_MILK_PARITY_CSS_END */
+
 </style>
 </head>
 
@@ -7270,68 +7391,241 @@ function filterUdharList() {
     
     
     function openUdharDetail(name) {
-        if(isLongPress) { isLongPress = false; return; } // Touch conflict fix
+        if(isLongPress) { isLongPress = false; return; }
         activeUdharPerson = name;
 
-        document.getElementById('udhar-detail-title').textContent = name;
+        const title = document.getElementById('udhar-detail-title');
+        if (title) title.textContent = name;
+
         document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-        document.getElementById('udhar-detail-screen').classList.add('active');
+        const screen = document.getElementById('udhar-detail-screen');
+        if (screen) screen.classList.add('active');
+
         renderUdharRecords();
     }
 
-    function renderUdharRecords() {
+    
+/* AARISH_V142_CREDIT_DETAIL_MILK_PARITY_JS_START */
+window.renderCreditDetailV142 = function () {
+    var BLUE = "#007AFF";
+    var GREEN = "#34C759";
+    var RED = "#FF3B30";
+
+    function n(v) {
+        var x = Number(v);
+        return Number.isFinite(x) ? x : 0;
+    }
+
+    function cleanZero(v) {
+        var x = n(v);
+        return Math.abs(x) < 0.0001 ? 0 : x;
+    }
+
+    function money(v) {
+        return "₹" + Math.abs(Math.round(n(v))).toLocaleString("en-IN");
+    }
+
+    function toneFromNet(net) {
+        net = cleanZero(net);
+        if (Math.round(Math.abs(net)) === 0) return "neutral";
+        return net > 0 ? "positive" : "negative";
+    }
+
+    function colorFromTone(tone) {
+        return tone === "positive" ? GREEN : (tone === "negative" ? RED : BLUE);
+    }
+
+    function glowFromTone(tone) {
+        return tone === "positive" ? "rgba(52,199,89,0.30)" : (tone === "negative" ? "rgba(255,59,48,0.30)" : "rgba(0,122,255,0.30)");
+    }
+
+    function toFromTone(tone) {
+        return tone === "positive" ? "#28A745" : (tone === "negative" ? "#C92A2A" : "#0A84FF");
+    }
+
+    function entries() {
         try {
-            if (window.renderCreditRecordsV128) {
-                window.renderCreditRecordsV128();
-                return;
-            }
+            if (Array.isArray(udharDB)) return udharDB.filter(Boolean);
+            if (udharDB && typeof udharDB === "object") return Object.keys(udharDB).map(function(k){ return udharDB[k]; }).filter(Boolean);
         } catch(e) {}
+        try {
+            if (Array.isArray(window.udharDB)) return window.udharDB.filter(Boolean);
+            if (window.udharDB && typeof window.udharDB === "object") return Object.keys(window.udharDB).map(function(k){ return window.udharDB[k]; }).filter(Boolean);
+        } catch(e) {}
+        return [];
+    }
 
-        if (!activeUdharPerson) return;
-        let net = 0;
+    function activeName() {
+        try { if (typeof activeUdharPerson !== "undefined" && activeUdharPerson) return String(activeUdharPerson); } catch(e) {}
+        try { if (window.activeUdharPerson) return String(window.activeUdharPerson); } catch(e) {}
+        return "";
+    }
 
-        const records = (Array.isArray(udharDB) ? udharDB : Object.keys(udharDB || {}).map(k => udharDB[k]))
-            .filter(Boolean)
-            .filter(u => u.name === activeUdharPerson)
-            .sort((a,b) => String(b.date || '').localeCompare(String(a.date || '')));
+    function isGiven(entry) {
+        var t = String(entry && entry.type || "").toLowerCase();
+        return ["credit","given","give","diye","receive","received","positive","plus"].indexOf(t) !== -1;
+    }
 
-        const html = records.map((r) => {
-            const isCredit = String(r.type).toLowerCase() === 'credit';
-            const amount = Number(r.amount || 0);
-            if (isCredit) net += amount; else net -= amount;
+    function isTaken(entry) {
+        var t = String(entry && entry.type || "").toLowerCase();
+        return ["debit","taken","take","liye","pay","paid","negative","minus"].indexOf(t) !== -1;
+    }
 
-            return `<tr class="list-enter" data-v99-tone="${isCredit ? 'positive' : 'negative'}">
-                <td>${typeof formatDisplayDate === 'function' ? formatDisplayDate(r.date) : (r.date || '-')}</td>
-                <td><span class="text-[10px] font-extrabold uppercase px-2 py-1 rounded-md ${isCredit ? 'bg-[#34C759]/10 text-[#34C759]' : 'bg-[#FF3B30]/10 text-[#FF3B30]'}">${isCredit ? 'Given' : 'Taken'}</span></td>
-                <td class="font-extrabold ${isCredit ? 'text-[#34C759]' : 'text-[#FF3B30]'}">${isCredit ? '+' : '-'}₹${Math.abs(amount).toLocaleString('en-IN')}</td>
-                <td class="text-right"><button onclick="event.stopPropagation(); haptic(); deleteUdhar(${JSON.stringify(String(r.id || '')).replace(/"/g, '&quot;')})" class="action-btn shrink-0"><i class="fa-solid fa-trash text-xs"></i></button></td>
-            </tr>`;
-        }).join('');
+    function fmtDate(v) {
+        try { if (typeof formatDisplayDate === "function") return formatDisplayDate(v); } catch(e) {}
+        return String(v || "-");
+    }
 
-        const target = document.getElementById('udhar-detail-records');
-        if (target) target.innerHTML = html || `<tr><td colspan="4" class="text-center py-8 text-gray-400 font-semibold">No entries found</td></tr>`;
+    function esc(v) {
+        return String(v == null ? "" : v).replace(/[&<>"']/g, function(ch) {
+            return {"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[ch];
+        });
+    }
 
-        const tone = net > 0 ? 'positive' : (net < 0 ? 'negative' : 'neutral');
-        const color = tone === 'positive' ? '#34C759' : (tone === 'negative' ? '#FF3B30' : '#007AFF');
-        const detailCard = document.getElementById('udhar-detail-card');
-        const statusEl = document.getElementById('udhar-detail-status');
-        const totalEl = document.getElementById('udhar-detail-total');
+    function jsArg(v) {
+        return JSON.stringify(String(v == null ? "" : v)).replace(/"/g, "&quot;");
+    }
 
-        if (detailCard) {
-            detailCard.setAttribute('data-v99-tone', tone);
-            detailCard.style.setProperty('border-left-width', '4px', 'important');
-            detailCard.style.setProperty('border-left-style', 'solid', 'important');
-            detailCard.style.setProperty('border-left-color', color, 'important');
-            detailCard.style.setProperty('transition', 'transform 80ms cubic-bezier(0.2,0.8,0.2,1), opacity 60ms ease', 'important');
-        }
-        if (statusEl) {
-            statusEl.textContent = net >= 0 ? 'You Will Receive' : 'You Will Pay';
-            statusEl.style.setProperty('color', color, 'important');
-        }
-        if (totalEl) {
-            totalEl.textContent = (net >= 0 ? '+' : '-') + '₹' + Math.abs(Math.round(net)).toLocaleString('en-IN');
-            totalEl.style.setProperty('color', color, 'important');
-        }
+    function setText(el, color, shadow) {
+        if (!el || !el.style) return;
+        el.style.setProperty("color", color, "important");
+        el.style.setProperty("text-shadow", shadow || ("0 0 10px " + (color === GREEN ? "rgba(52,199,89,0.24)" : color === RED ? "rgba(255,59,48,0.24)" : "rgba(0,122,255,0.24)")), "important");
+        el.style.setProperty("transition", "transform 80ms cubic-bezier(0.2,0.8,0.2,1), opacity 60ms ease", "important");
+    }
+
+    function markFixedLabels() {
+        try {
+            var screen = document.getElementById("udhar-detail-screen");
+            if (!screen) return;
+
+            screen.querySelectorAll("h2,h3,h4").forEach(function(el) {
+                var txt = String(el.textContent || "").trim().toLowerCase();
+                if (txt === "all entries" || txt === "all entry") {
+                    el.classList.add("all-entries-title-v142");
+                    el.setAttribute("data-credit-fixed-blue-v142", "true");
+                    setText(el, BLUE);
+                }
+            });
+
+            screen.querySelectorAll("th").forEach(function(th) {
+                th.setAttribute("data-credit-fixed-blue-v142", "true");
+                setText(th, BLUE);
+            });
+
+            screen.querySelectorAll("button").forEach(function(btn) {
+                var txt = String(btn.textContent || "").trim().toLowerCase();
+                var oc = String(btn.getAttribute("onclick") || "").toLowerCase();
+
+                if (txt.indexOf("add") !== -1 || oc.indexOf("udhar") !== -1 && oc.indexOf("modal") !== -1) {
+                    btn.setAttribute("data-credit-add-v142", "true");
+                    btn.id = btn.id || "credit-entry-btn-v52";
+                    btn.style.setProperty("background", "linear-gradient(135deg, #34C759, #22C55E)", "important");
+                    btn.style.setProperty("color", "#FFFFFF", "important");
+                    btn.style.setProperty("border-color", "transparent", "important");
+                    btn.style.setProperty("box-shadow", "0 8px 22px rgba(52,199,89,0.30)", "important");
+                    btn.style.setProperty("transition", "transform 80ms cubic-bezier(0.2,0.8,0.2,1), opacity 60ms ease", "important");
+                    try { btn.querySelectorAll("*").forEach(function(x){ x.style.setProperty("color", "#FFFFFF", "important"); }); } catch(e) {}
+                }
+
+                if (txt.indexOf("share") !== -1) {
+                    btn.setAttribute("data-credit-share-v142", "true");
+                    btn.style.setProperty("color", BLUE, "important");
+                    try { btn.querySelectorAll("*").forEach(function(x){ x.style.setProperty("color", BLUE, "important"); }); } catch(e) {}
+                }
+            });
+        } catch(e) {}
+    }
+
+    var person = activeName();
+    if (!person) return;
+
+    var records = entries()
+        .filter(function(u){ return String((u && u.name) || "") === person; })
+        .sort(function(a,b){ return String((b && b.date) || "").localeCompare(String((a && a.date) || "")); });
+
+    var net = 0;
+
+    var html = records.map(function(r) {
+        var amount = n(r && r.amount);
+        var given = isGiven(r);
+        var taken = isTaken(r);
+        if (!given && !taken) given = String((r && r.type) || "").toLowerCase() === "credit";
+
+        var rowTone = given ? "positive" : "negative";
+        var rowColor = colorFromTone(rowTone);
+        var badgeText = given ? "GIVEN" : "TAKEN";
+        var sign = given ? "+" : "-";
+
+        net = cleanZero(net + (given ? amount : -amount));
+
+        var idArg = jsArg((r && r.id) || "");
+
+        return `<tr class="list-enter" data-credit-row-tone-v142="${rowTone}" data-v99-tone="${rowTone}" data-v100-tone="${rowTone}">
+            <td style="color:${rowColor}!important;text-shadow:0 0 9px ${given ? "rgba(52,199,89,0.20)" : "rgba(255,59,48,0.20)"}!important;">${esc(fmtDate(r && r.date))}</td>
+            <td style="color:${rowColor}!important;text-shadow:0 0 9px ${given ? "rgba(52,199,89,0.20)" : "rgba(255,59,48,0.20)"}!important;">
+                <span class="credit-badge-v142 text-[10px] font-extrabold uppercase px-2 py-1 rounded-md" style="color:${rowColor}!important;background:${given ? "rgba(52,199,89,0.10)" : "rgba(255,59,48,0.10)"}!important;">${badgeText}</span>
+            </td>
+            <td class="font-extrabold text-[16px]" style="color:${rowColor}!important;text-shadow:0 0 9px ${given ? "rgba(52,199,89,0.20)" : "rgba(255,59,48,0.20)"}!important;">${sign}${money(amount)}</td>
+            <td class="text-right">
+                <button onclick="event.stopPropagation(); try{haptic()}catch(e){}; deleteUdhar(${idArg})" class="action-btn shrink-0">
+                    <i class="fa-solid fa-trash text-xs"></i>
+                </button>
+            </td>
+        </tr>`;
+    }).join("");
+
+    var target = document.getElementById("udhar-detail-records");
+    if (target) {
+        target.innerHTML = html || `<tr data-credit-empty-v142="true"><td colspan="4" class="text-center py-8 font-extrabold" style="color:#007AFF!important;text-shadow:0 0 10px rgba(0,122,255,0.24)!important;">No entries found</td></tr>`;
+    }
+
+    var finalTone = toneFromNet(net);
+    var finalColor = colorFromTone(finalTone);
+    var finalTo = toFromTone(finalTone);
+    var finalGlow = glowFromTone(finalTone);
+    var finalSign = finalTone === "negative" ? "-" : "+";
+
+    var detailCard = document.getElementById("udhar-detail-card");
+    var statusEl = document.getElementById("udhar-detail-status");
+    var totalEl = document.getElementById("udhar-detail-total");
+    var titleEl = document.getElementById("udhar-detail-title");
+
+    if (titleEl) {
+        titleEl.setAttribute("data-credit-net-v142", finalTone);
+        setText(titleEl, finalColor);
+    }
+
+    if (detailCard) {
+        detailCard.setAttribute("data-credit-net-v142", finalTone);
+        detailCard.setAttribute("data-v99-tone", finalTone);
+        detailCard.setAttribute("data-v100-tone", finalTone);
+        detailCard.style.setProperty("background", "linear-gradient(135deg, " + finalColor + ", " + finalTo + ")", "important");
+        detailCard.style.setProperty("border-color", finalColor, "important");
+        detailCard.style.setProperty("box-shadow", "0 8px 24px " + finalGlow, "important");
+        detailCard.style.setProperty("transition", "transform 80ms cubic-bezier(0.2,0.8,0.2,1), opacity 60ms ease", "important");
+    }
+
+    if (statusEl) {
+        statusEl.textContent = finalTone === "positive" ? "YOU WILL RECEIVE" : (finalTone === "negative" ? "YOU WILL PAY" : "SETTLED");
+        statusEl.style.setProperty("color", "#FFFFFF", "important");
+        statusEl.style.setProperty("text-shadow", "0 2px 10px rgba(0,0,0,0.18)", "important");
+    }
+
+    if (totalEl) {
+        totalEl.textContent = finalSign + money(net);
+        totalEl.style.setProperty("color", "#FFFFFF", "important");
+        totalEl.style.setProperty("text-shadow", "0 2px 10px rgba(0,0,0,0.18)", "important");
+    }
+
+    markFixedLabels();
+};
+
+window.applyCreditDetailUiV142 = function () {
+    try { return window.renderCreditDetailV142(); } catch(e) {}
+};
+/* AARISH_V142_CREDIT_DETAIL_MILK_PARITY_JS_END */
+function renderUdharRecords() {
+        if (window.renderCreditDetailV142) return window.renderCreditDetailV142();
     }
     
 
@@ -18344,71 +18638,7 @@ window.addEventListener("pageshow", function () { setTimeout(install, 120); }, {
   }
 
   function renderCreditRecordsV128() {
-    try {
-      if (!window.activeUdharPerson && typeof activeUdharPerson === "undefined") return;
-    } catch(e) {}
-
-    var person = "";
-    try { person = String(activeUdharPerson || ""); } catch(e) { person = String(window.activeUdharPerson || ""); }
-    if (!person) return;
-
-    var net = 0;
-    var records = entries()
-      .filter(function (u) { return String((u && u.name) || "") === person; })
-      .sort(function (a, b) { return String((b && b.date) || "").localeCompare(String((a && a.date) || "")); });
-
-    var html = records.map(function (r) {
-      var credit = isCreditType(r && r.type);
-      var amount = n(r && r.amount);
-      net += credit ? amount : -amount;
-      var tone = credit ? "positive" : "negative";
-      var cls = toneClass(tone);
-      var idArg = jsArg((r && r.id) || "");
-
-      var dateText = "";
-      try { dateText = typeof formatDisplayDate === "function" ? formatDisplayDate(r && r.date) : String((r && r.date) || "-"); }
-      catch(e) { dateText = String((r && r.date) || "-"); }
-
-      return `<tr class="list-enter" data-credit-row-tone-v128="${tone}" data-v99-tone="${tone}">
-        <td>${esc(dateText)}</td>
-        <td><span class="text-[10px] font-extrabold uppercase px-2 py-1 rounded-md ${credit ? "bg-[#34C759]/10 text-[#34C759]" : "bg-[#FF3B30]/10 text-[#FF3B30]"}">${credit ? "Given" : "Taken"}</span></td>
-        <td class="font-extrabold ${cls}">${credit ? "+" : "-"}${money(amount)}</td>
-        <td class="text-right"><button onclick="event.stopPropagation(); try{haptic()}catch(e){}; deleteUdhar(${idArg})" class="action-btn shrink-0"><i class="fa-solid fa-trash text-xs"></i></button></td>
-      </tr>`;
-    }).join("");
-
-    var target = document.getElementById("udhar-detail-records");
-    if (target) target.innerHTML = html || `<tr><td colspan="4" class="text-center py-8 text-gray-400 font-semibold">No entries found</td></tr>`;
-
-    var tone = toneFromNet(net);
-    var color = toneColor(tone);
-    var detailCard = document.getElementById("udhar-detail-card");
-    var statusEl = document.getElementById("udhar-detail-status");
-    var totalEl = document.getElementById("udhar-detail-total");
-
-    if (detailCard) {
-      detailCard.setAttribute("data-v99-tone", tone);
-      detailCard.setAttribute("data-credit-tone-v128", tone);
-      detailCard.style.cssText += ";" + toneVars(tone);
-      detailCard.style.setProperty("border-left-width", "4px", "important");
-      detailCard.style.setProperty("border-left-style", "solid", "important");
-      detailCard.style.setProperty("border-left-color", color, "important");
-      safeTransition(detailCard);
-    }
-
-    if (statusEl) {
-      statusEl.textContent = net >= 0 ? "You Will Receive" : "You Will Pay";
-      statusEl.style.setProperty("color", color, "important");
-      safeTransition(statusEl);
-    }
-
-    if (totalEl) {
-      totalEl.textContent = (net >= 0 ? "+" : "-") + money(net);
-      totalEl.style.setProperty("color", color, "important");
-      safeTransition(totalEl);
-    }
-
-    applyCreditHeaderButtonV128();
+    if (window.renderCreditDetailV142) return window.renderCreditDetailV142();
   }
 
   function paintExistingCreditCardsV128() {
