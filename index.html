@@ -2437,47 +2437,6 @@
 
 
 
-<style id="aarish-zero-color-flicker-v75-css">
-/* AARISH_ZERO_COLOR_FLICKER_V75
-   Zero visible color fluctuation.
-   Color/background transition removed only from semantic dynamic targets.
-   Base colors unchanged. Existing JS/Firebase/data logic untouched.
-*/
-
-.dark :is(
-  #milk-screen .header-sticky h1,
-  #udhar-screen .header-sticky h1,
-  #expenses-screen .header-sticky h1,
-  #salary-screen .header-sticky h1,
-  #diary-screen .header-sticky h1,
-  #milk-detail-title,
-  #udhar-detail-title,
-  #expense-detail-title,
-  #salary-detail-title,
-  #milk-new-btn-v50,
-  #credit-entry-btn-v52,
-  #expense-add-btn-v52,
-  #salary-new-btn-v52,
-  #tab-milk,
-  #tab-udhar,
-  #tab-expenses,
-  #tab-salary,
-  #tab-diary
-) {
-  transition-property: transform, opacity, box-shadow, border-color, text-shadow !important;
-  transition-duration: 0.08s !important;
-  transition-timing-function: cubic-bezier(0.32, 0.72, 0, 1) !important;
-}
-
-/* During same-click paint, keep semantic headers from showing default white/blue flash */
-.dark #milk-screen .header-sticky h1:not([data-milk-net-color-v24]),
-.dark #udhar-screen .header-sticky h1:not([data-aarish-credit-title-v67]),
-.dark #expenses-screen .header-sticky h1:not([data-aarish-es-title-v68]),
-.dark #salary-screen .header-sticky h1:not([data-aarish-es-title-v68]) {
-  text-shadow: 0 0 12px rgba(0,122,255,0.26) !important;
-}
-</style>
-
 <style id="aarish-v99-ui-consistency-premium-dark-mode-css">
 /* AARISH_V99_UI_CONSISTENCY_PREMIUM_DARK_MODE
    UI-only design-system patch. No Firebase/outbox/auth mutation. */
@@ -3966,24 +3925,27 @@
   }
 }
 </style>
-<style id="aarish-v116-semantic-paint-rail-css">
-/* AARISH V116 SEMANTIC PAINT RAIL
-   Goal:
-   - Milk jaisa zero-flicker paint finance screens par.
-   - Existing red/green/blue logic, stripe logic, save/delete/Firebase untouched.
-   - No heavy interval, no global animation kill.
-   - Only dynamic semantic paint targets get instant color/background/border paint.
+<style id="aarish-v125-master-refactor-css">
+/* AARISH V125 MASTER REFACTOR
+   Same business/UI semantic logic:
+   positive = green, negative = red, zero = blue.
+   Heavy overlay-on-overlay repaint layers removed.
+   Color/background/border do not animate; only transform/opacity animate.
 */
 
 #main-app {
-  --v116-green: #34C759;
-  --v116-red: #FF3B30;
-  --v116-blue: #007AFF;
-  --v116-amber: #F5A623;
+  --v125-green: #34C759;
+  --v125-red: #FF3B30;
+  --v125-blue: #007AFF;
+  --v125-yellow: #F5A623;
 }
 
-/* Dynamic semantic targets: color/background/border must not animate */
+/* Flicker fix: semantic colors snap instantly.
+   Bounce remains smooth. */
 #main-app :is(
+  [data-v99-tone],
+  [data-v100-tone],
+  .v100-harmony-card,
   #milk-new-btn-v50,
   #credit-entry-btn-v52,
   #expense-add-btn-v52,
@@ -4000,102 +3962,102 @@
   #udhar-screen .header-sticky h1,
   #expenses-screen .header-sticky h1,
   #salary-screen .header-sticky h1,
-  #diary-screen .header-sticky h1,
-  #projects-screen .header-sticky h1,
   #balances-screen .header-sticky h1,
-  #milk-detail-title,
-  #udhar-detail-title,
-  #expense-detail-title,
-  #salary-detail-title,
-  #project-detail-title,
   #milk-list .glass-card,
   #udhar-list .glass-card,
   #expense-list-container .glass-card,
   #salary-list .glass-card,
-  #diary-list .glass-card,
-  #project-list .glass-card,
   #dash-balances-list .glass-card,
-  #milk-list .squircle,
-  #udhar-list .squircle,
-  #expense-list-container .squircle,
-  #salary-list .squircle,
-  #diary-list .squircle,
-  #project-list .squircle,
-  #dash-balances-list .squircle,
-  #milk-list .fa-chevron-right,
-  #udhar-list .fa-chevron-right,
-  #expense-list-container .fa-chevron-right,
-  #salary-list .fa-chevron-right,
-  #diary-list .fa-chevron-right,
-  #project-list .fa-chevron-right,
-  #dash-balances-list .fa-chevron-right
+  #project-list .glass-card,
+  #diary-list .glass-card
 ) {
   transition-property: transform, opacity !important;
-  transition-duration: 0.075s !important;
-  transition-timing-function: cubic-bezier(0.32,0.72,0,1) !important;
+  transition-duration: 80ms !important;
+  transition-timing-function: cubic-bezier(0.2, 0.8, 0.2, 1) !important;
 }
 
-/* Inline V52 sometimes writes transition shorthand; this CSS is backup, JS also locks inline */
-#main-app [data-v116-paint-rail="1"] {
-  transition: transform 0.075s cubic-bezier(0.32,0.72,0,1), opacity 0.06s ease !important;
+/* Tap feel: GPU only during active movement, no permanent will-change spam */
+#main-app :is(.glass-card, button, .nav-item, .action-btn, .btn-primary, .btn-ios-share, .btn-ios-add):active {
+  transform: scale(0.965) translate3d(0,0,0) !important;
+  backface-visibility: hidden !important;
 }
 
-/* Keep tap bounce alive */
-#main-app .glass-card:active,
-#main-app .nav-item:active,
-#main-app button:active {
-  transform: scale(0.96) !important;
+/* Safe mobile tap */
+#main-app :is(button, .nav-item, .glass-card, .action-btn, .btn-primary, .btn-ios-share, .btn-ios-add) {
+  touch-action: manipulation !important;
+  -webkit-tap-highlight-color: transparent !important;
 }
 
-/* Smart stripe fallback: if old renderer forgets stripe color but amount class exists */
-#main-app :is(#udhar-list,#salary-list,#dash-balances-list) .glass-card:has(:is(.text-green-400,.text-green-500,.text-green-600,[class*="text-[#34C759]"],[class*="text-[#10B981]"])) {
-  border-left-color: var(--v116-green) !important;
-  border-left-style: solid !important;
-}
-
-#main-app :is(#udhar-list,#salary-list,#expense-list-container,#dash-balances-list) .glass-card:has(:is(.text-red-400,.text-red-500,.text-red-600,[class*="text-[#FF3B30]"],[class*="text-[#FF4B4B]"])) {
-  border-left-color: var(--v116-red) !important;
-  border-left-style: solid !important;
-}
-
-/* Expense list is naturally red/debit side */
-#main-app #expense-list-container .glass-card {
-  border-left-color: var(--v116-red) !important;
-  border-left-style: solid !important;
-}
-
-/* Diary stays yellow, Business stays amber/blue-neutral if no semantic state */
-#main-app #diary-list .glass-card,
-#main-app #diary-list .diary-card {
-  border-left-color: var(--v116-amber) !important;
-  border-left-style: solid !important;
-}
-
-/* Stripe width consistency without making cards fat */
+/* Stripe fallback only. Existing data-tone/semantic CSS stays first priority. */
 #main-app :is(#milk-list,#udhar-list,#expense-list-container,#salary-list,#diary-list,#project-list,#dash-balances-list) .glass-card {
   border-left-width: 4px !important;
+  border-left-style: solid !important;
 }
 
-/* If V113/V114 Milk cards exist, keep their premium semantic glow but no color transition */
-#main-app #milk-list .aarish-milk-v113-card,
-#main-app #milk-list .aarish-milk-v113-card * {
-  transition-property: transform, opacity !important;
-  transition-duration: 0.075s !important;
+#main-app :is(#milk-list,#udhar-list,#salary-list,#dash-balances-list) .glass-card:has(:is(.text-green-400,.text-green-500,.text-green-600,[class*="text-[#34C759]"],[class*="text-[#10B981]"])) {
+  border-left-color: var(--v125-green) !important;
 }
 
-/* Dark mode initial no-white-flash fallback */
-.dark #main-app :is(
-  #tab-milk,
-  #tab-udhar,
-  #tab-expenses,
-  #tab-salary,
-  #milk-screen .header-sticky h1,
-  #udhar-screen .header-sticky h1,
-  #expenses-screen .header-sticky h1,
-  #salary-screen .header-sticky h1
-):not([data-v116-paint-rail="1"]) {
-  color: var(--v116-blue) !important;
-  text-shadow: 0 0 12px rgba(0,122,255,0.28) !important;
+#main-app :is(#milk-list,#udhar-list,#salary-list,#expense-list-container,#dash-balances-list) .glass-card:has(:is(.text-red-400,.text-red-500,.text-red-600,[class*="text-[#FF3B30]"],[class*="text-[#FF4B4B]"])) {
+  border-left-color: var(--v125-red) !important;
+}
+
+#main-app #expense-list-container .glass-card {
+  border-left-color: var(--v125-red) !important;
+}
+
+#main-app #diary-list :is(.glass-card,.diary-card) {
+  border-left-color: var(--v125-yellow) !important;
+}
+
+/* Milk V114 CSS ko data attrs milte rahenge, but JS lighter V125 se chalega */
+#milk-screen[data-aarish-milk-net-v114="positive"] #milk-new-btn-v50,
+#milk-screen #milk-new-btn-v50[data-aarish-milk-new-v114="green"],
+.dark #milk-screen[data-aarish-milk-net-v114="positive"] #milk-new-btn-v50,
+.dark #milk-screen #milk-new-btn-v50[data-aarish-milk-new-v114="green"] {
+  background: linear-gradient(135deg, #34C759, #22C55E) !important;
+  box-shadow: 0 8px 22px rgba(52,199,89,0.34) !important;
+}
+
+#milk-screen[data-aarish-milk-net-v114="negative"] #milk-new-btn-v50,
+#milk-screen #milk-new-btn-v50[data-aarish-milk-new-v114="red"],
+.dark #milk-screen[data-aarish-milk-net-v114="negative"] #milk-new-btn-v50,
+.dark #milk-screen #milk-new-btn-v50[data-aarish-milk-new-v114="red"] {
+  background: linear-gradient(135deg, #FF453A, #FF2D55) !important;
+  box-shadow: 0 8px 22px rgba(255,59,48,0.34) !important;
+}
+
+#milk-screen[data-aarish-milk-net-v114="neutral"] #milk-new-btn-v50,
+#milk-screen #milk-new-btn-v50[data-aarish-milk-new-v114="blue"],
+.dark #milk-screen[data-aarish-milk-net-v114="neutral"] #milk-new-btn-v50,
+.dark #milk-screen #milk-new-btn-v50[data-aarish-milk-new-v114="blue"] {
+  background: linear-gradient(135deg, #007AFF, #0A84FF) !important;
+  box-shadow: 0 8px 22px rgba(0,122,255,0.30) !important;
+}
+
+/* Login: fake localStorage login nahi. Firebase confirmed state par smooth glide. */
+#login-screen {
+  transition: opacity 260ms cubic-bezier(0.2,0.8,0.2,1), transform 260ms cubic-bezier(0.2,0.8,0.2,1) !important;
+}
+
+html.aarish-auth-confirmed #login-screen {
+  opacity: 0 !important;
+  transform: translateY(-18px) scale(1.01) translate3d(0,0,0) !important;
+  pointer-events: none !important;
+}
+
+/* Search identity stable blue */
+.dark #main-app :is(#milk-screen,#balances-screen,#udhar-screen,#expenses-screen,#salary-screen,#projects-screen) .fa-search {
+  color: var(--v125-blue) !important;
+  text-shadow: 0 0 10px rgba(0,122,255,0.28) !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #main-app *,
+  #login-screen {
+    animation-duration: 1ms !important;
+    transition-duration: 1ms !important;
+  }
 }
 </style>
 </head>
@@ -4801,7 +4763,15 @@
     
 <script>
     // ========================== HAPTICS & THEME ==========================
-    function haptic() { if (navigator.vibrate) navigator.vibrate(45); }
+    function haptic() {
+    try {
+        if (!navigator.vibrate) return;
+        var now = Date.now();
+        if (window.__aarishHapticLast && now - window.__aarishHapticLast < 100) return;
+        window.__aarishHapticLast = now;
+        setTimeout(function(){ try { navigator.vibrate(8); } catch(e) {} }, 0);
+    } catch(e) {}
+}
 
          // ========================== INTERNET CHECKER ==========================
     function updateOnlineStatus() {
@@ -5021,6 +4991,7 @@ let selectedMonth = new Date().getMonth(), selectedYear = new Date().getFullYear
         if (!app) {
             app = firebase.initializeApp(firebaseConfig);
             auth = firebase.auth();
+            try { auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL).catch(function(){}); } catch(e) {}
             database = firebase.database();
             
             auth.onAuthStateChanged((user) => {
@@ -5041,9 +5012,22 @@ let selectedMonth = new Date().getMonth(), selectedYear = new Date().getFullYear
     function handleGoogleLogin() {
         showLoader("CONNECTING...");
         const provider = new firebase.auth.GoogleAuthProvider();
-        auth.signInWithPopup(provider).then((result) => {
-            showToast('Welcome ' + result.user.displayName.split(' ')[0] + '!');
-        }).catch((err) => { hideLoader(); showToast(err.message); });
+
+        const doGoogleLogin = function() {
+            return auth.signInWithPopup(provider).then((result) => {
+                showToast('Welcome ' + result.user.displayName.split(' ')[0] + '!');
+            }).catch((err) => { hideLoader(); showToast(err.message); });
+        };
+
+        try {
+            if (auth && auth.setPersistence && firebase.auth.Auth && firebase.auth.Auth.Persistence) {
+                auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL).then(doGoogleLogin).catch(function(){ doGoogleLogin(); });
+            } else {
+                doGoogleLogin();
+            }
+        } catch(e) {
+            doGoogleLogin();
+        }
     }
 
     
@@ -9631,7 +9615,7 @@ window.onload = function(){ setTimeout(function(){ window.focus(); window.print(
     if (!title) return;
 
     var net = allMilkNetV24();
-    title.style.transition = "color 0.25s ease";
+    title.style.transition = "transform 80ms cubic-bezier(0.2,0.8,0.2,1), opacity 60ms ease";
 
     if (net > 0.0001) {
       title.style.color = "#34C759";
@@ -9807,7 +9791,7 @@ window.onload = function(){ setTimeout(function(){ window.focus(); window.print(
     applyingV27 = true;
 
     if (title) {
-      title.style.transition = "color 0.25s ease";
+      title.style.transition = "transform 80ms cubic-bezier(0.2,0.8,0.2,1), opacity 60ms ease";
 
       if (net > 0.0001) {
         title.style.color = "#34C759";
@@ -9960,7 +9944,7 @@ window.onload = function(){ setTimeout(function(){ window.focus(); window.print(
     var net = salaryNetV28();
 
     applyingV28 = true;
-    title.style.transition = "color 0.25s ease";
+    title.style.transition = "transform 80ms cubic-bezier(0.2,0.8,0.2,1), opacity 60ms ease";
 
     if (net > 0.0001) {
       title.style.color = "#34C759";
@@ -12850,7 +12834,7 @@ window.onload = function(){ setTimeout(function(){ window.focus(); window.print(
 
     var net = allMilkNetV50();
 
-    btn.style.transition = "background-color 0.18s ease, box-shadow 0.18s ease, transform 0.12s ease, color 0.18s ease";
+    btn.style.transition = "transform 80ms cubic-bezier(0.2,0.8,0.2,1), opacity 60ms ease";
     btn.style.color = "#FFFFFF";
     btn.style.borderColor = "transparent";
 
@@ -13007,13 +12991,13 @@ window.onload = function(){ setTimeout(function(){ window.focus(); window.print(
 
     tab.style.setProperty("color", color, "important");
     tab.style.setProperty("text-shadow", shadow, "important");
-    tab.style.setProperty("transition", "color 0.18s ease, text-shadow 0.18s ease, transform 0.12s ease", "important");
+    tab.style.setProperty("transition", "transform 80ms cubic-bezier(0.2,0.8,0.2,1), opacity 60ms ease", "important");
     tab.dataset.aarishMilkBottomV51 = state;
 
     if (icon) {
       icon.style.setProperty("color", color, "important");
       icon.style.setProperty("text-shadow", shadow, "important");
-      icon.style.setProperty("transition", "color 0.18s ease, text-shadow 0.18s ease, transform 0.12s ease", "important");
+      icon.style.setProperty("transition", "transform 80ms cubic-bezier(0.2,0.8,0.2,1), opacity 60ms ease", "important");
     }
   };
 
@@ -13331,7 +13315,7 @@ window.onload = function(){ setTimeout(function(){ window.focus(); window.print(
       btn.style.setProperty("color", "#FFFFFF", "important");
       btn.style.setProperty("border-color", "transparent", "important");
       btn.style.setProperty("box-shadow", DIARY_BOX_V54, "important");
-      btn.style.setProperty("transition", "background-color 0.18s ease, box-shadow 0.18s ease, transform 0.12s ease, color 0.18s ease", "important");
+      btn.style.setProperty("transition", "transform 80ms cubic-bezier(0.2,0.8,0.2,1), opacity 60ms ease", "important");
       btn.dataset.aarishDiaryV54 = "yellow";
 
       var btnIcon = btn.querySelector("i");
@@ -13341,14 +13325,14 @@ window.onload = function(){ setTimeout(function(){ window.focus(); window.print(
     if (tab) {
       tab.style.setProperty("color", DIARY_YELLOW_V54, "important");
       tab.style.setProperty("text-shadow", DIARY_SHADOW_V54, "important");
-      tab.style.setProperty("transition", "color 0.18s ease, text-shadow 0.18s ease, transform 0.12s ease", "important");
+      tab.style.setProperty("transition", "transform 80ms cubic-bezier(0.2,0.8,0.2,1), opacity 60ms ease", "important");
       tab.dataset.aarishDiaryV54 = "yellow";
 
       var icon = tab.querySelector("i");
       if (icon) {
         icon.style.setProperty("color", DIARY_YELLOW_V54, "important");
         icon.style.setProperty("text-shadow", DIARY_SHADOW_V54, "important");
-        icon.style.setProperty("transition", "color 0.18s ease, text-shadow 0.18s ease, transform 0.12s ease", "important");
+        icon.style.setProperty("transition", "transform 80ms cubic-bezier(0.2,0.8,0.2,1), opacity 60ms ease", "important");
       }
     }
   };
@@ -13603,13 +13587,8 @@ window.onload = function(){ setTimeout(function(){ window.focus(); window.print(
   document.addEventListener("visibilitychange", function () {
     if (!document.hidden) scheduleV65();
   }, { passive: true });
-  document.addEventListener("click", function (ev) {
-    try {
-      if (ev.target && ev.target.closest && ev.target.closest("#balances-screen, [onclick*='openAllBalances']")) scheduleV65();
-    } catch (e) {}
-  }, { passive: true });
-
-  scheduleV65();
+  /* V125 removed old targeted click scheduler; render/lifecycle handles it. */
+scheduleV65();
 })();
 </script>
 
@@ -13680,8 +13659,8 @@ window.onload = function(){ setTimeout(function(){ window.focus(); window.print(
 
   document.addEventListener("DOMContentLoaded", schedule, { passive: true, once: true });
   window.addEventListener("load", schedule, { passive: true, once: true });
-  document.addEventListener("click", schedule, { passive: true });
-  schedule();
+  /* V125 removed every-click stripe scheduler. */
+schedule();
 })();
 </script>
 
@@ -13757,7 +13736,7 @@ window.onload = function(){ setTimeout(function(){ window.focus(); window.print(
     if (!el || !el.style) return;
     el.style.setProperty("color", pack.color, "important");
     el.style.setProperty("text-shadow", pack.shadow, "important");
-    el.style.setProperty("transition", "color 0.18s ease, text-shadow 0.18s ease", "important");
+    el.style.setProperty("transition", "transform 80ms cubic-bezier(0.2,0.8,0.2,1), opacity 60ms ease", "important");
   }
 
   function paintCreditButtonTabV67(state) {
@@ -13862,12 +13841,8 @@ window.onload = function(){ setTimeout(function(){ window.focus(); window.print(
   document.addEventListener("visibilitychange", function () {
     if (!document.hidden) scheduleV67();
   }, { passive: true });
-  document.addEventListener("click", function (ev) {
-    try {
-      if (ev.target && ev.target.closest && ev.target.closest("#udhar-screen,#tab-udhar,#credit-entry-btn-v52")) scheduleV67();
-    } catch (e) {}
-  }, { passive: true });
-  scheduleV67();
+  /* V125 removed old targeted click scheduler; render/lifecycle handles it. */
+scheduleV67();
 })();
 </script>
 
@@ -13974,7 +13949,7 @@ window.onload = function(){ setTimeout(function(){ window.focus(); window.print(
     if (!el || !el.style) return;
     el.style.setProperty("color", pack.color, "important");
     el.style.setProperty("text-shadow", pack.shadow, "important");
-    el.style.setProperty("transition", "color 0.18s ease, text-shadow 0.18s ease", "important");
+    el.style.setProperty("transition", "transform 80ms cubic-bezier(0.2,0.8,0.2,1), opacity 60ms ease", "important");
   }
 
   function paintBtnV68(id, state, attrName) {
@@ -14157,13 +14132,8 @@ window.onload = function(){ setTimeout(function(){ window.focus(); window.print(
   document.addEventListener("visibilitychange", function () {
     if (!document.hidden) scheduleV68();
   }, { passive: true });
-  document.addEventListener("click", function (ev) {
-    try {
-      if (ev.target && ev.target.closest && ev.target.closest("#expenses-screen,#expense-detail-screen,#salary-screen,#salary-detail-screen,#tab-expenses,#tab-salary,#expense-add-btn-v52,#salary-new-btn-v52")) scheduleV68();
-    } catch (e) {}
-  }, { passive: true });
-
-  scheduleV68();
+  /* V125 removed old targeted click scheduler; render/lifecycle handles it. */
+scheduleV68();
 })();
 </script>
 
@@ -14301,148 +14271,11 @@ window.onload = function(){ setTimeout(function(){ window.focus(); window.print(
   document.addEventListener("visibilitychange", function () {
     if (!document.hidden) scheduleV69();
   }, { passive: true });
-
-  document.addEventListener("click", function (e) {
-    try {
-      if (e.target && e.target.closest && e.target.closest("#udhar-screen, #tab-udhar, #credit-entry-btn-v52")) {
-        scheduleV69();
-      }
-    } catch (err) {}
-  }, { passive: true });
-
-  scheduleV69();
+  /* V125 removed old targeted click scheduler; render/lifecycle handles it. */
+scheduleV69();
 })();
 </script>
 
-
-
-<script id="aarish-zero-color-flicker-v75-js">
-// AARISH_ZERO_COLOR_FLICKER_V75_JS
-// Runs existing color updaters immediately after screen/list render and before next paint.
-// No Firebase writes, no data edits, no setInterval, no MutationObserver.
-(function () {
-  if (window.__AARISH_ZERO_COLOR_FLICKER_V75_READY) return;
-  window.__AARISH_ZERO_COLOR_FLICKER_V75_READY = true;
-
-  function callV75(name) {
-    try {
-      if (typeof window[name] === "function") window[name]();
-    } catch (e) {}
-  }
-
-  function syncColorsV75() {
-    callV75("updateMilkRecordHeaderColorV24");
-    callV75("updateMilkNewButtonColorV50");
-    callV75("updateMilkBottomNavColorV51");
-    callV75("updateFinanceActionNavColorsV52");
-    callV75("updateDiaryPermanentYellowV54");
-
-    callV75("updateCreditBookNetV27");
-    callV75("updateCreditBookDynamicColorV67");
-    callV75("updateExpenseSalaryDynamicColorV68");
-    callV75("updateCreditTopBgV69");
-    callV75("updateSalaryRecordHeadingColorV28");
-
-    callV75("ensureCreditDetailDeleteButtonV29");
-    callV75("ensureExpenseDetailDeleteButtonV30");
-    callV75("ensureSalaryDetailDeleteButtonV31");
-  }
-
-  function prePaintSyncV75() {
-    syncColorsV75();
-    try {
-      if (typeof queueMicrotask === "function") {
-        queueMicrotask(syncColorsV75);
-      } else {
-        Promise.resolve().then(syncColorsV75);
-      }
-    } catch (e) {}
-  }
-
-  function wrapV75(name) {
-    try {
-      var old = window[name];
-      if (typeof old !== "function" || old.__aarishZeroFlickerV75Wrapped) return;
-
-      var wrapped = function () {
-        var out = old.apply(this, arguments);
-        prePaintSyncV75();
-        return out;
-      };
-
-      wrapped.__aarishZeroFlickerV75Wrapped = true;
-      window[name] = wrapped;
-      try { Function("wrapped", name + " = wrapped;")(wrapped); } catch (e) {}
-    } catch (e) {}
-  }
-
-  [
-    "switchTab",
-    "updateActiveScreen",
-
-    "renderMilkList",
-    "filterMilkList",
-    "renderMilkRecords",
-    "openMilkDetail",
-    "saveMilkEntry",
-    "deleteMilkEntry",
-    "addMilkCustomer",
-    "deleteMilkCustomerProfile",
-
-    "renderUdharList",
-    "filterUdharList",
-    "renderUdharRecords",
-    "openUdharDetail",
-    "saveUdharEntry",
-    "deleteUdhar",
-    "deleteUdharPersonProfile",
-    "deleteActiveCreditProfileV29",
-
-    "renderExpenseList",
-    "filterExpenseList",
-    "renderExpenseRecords",
-    "openExpenseDetail",
-    "saveExpenseEntry",
-    "deleteExpense",
-    "deleteExpenseCategoryProfile",
-    "deleteActiveExpenseCategoryV30",
-
-    "renderSalaryList",
-    "filterSalaryList",
-    "renderSalaryRecords",
-    "openSalaryDetail",
-    "saveSalaryEntry",
-    "deleteSalarySingleEntry",
-    "deleteSalaryPersonProfile",
-
-    "renderDiaryList",
-    "filterDiaryList",
-    "saveDiaryEntry",
-    "deleteDiary",
-
-    "updateDashboard",
-    "openAllBalances",
-    "renderDashboardBalances"
-  ].forEach(wrapV75);
-
-  // AARISH_V87_V75_DEBOUNCED_EVENTS
-  // Avoid full color sync on every keystroke/click; keeps typing smooth.
-  let __v75DebounceV87 = null;
-  function debouncedPrePaintSyncV87() {
-    try { clearTimeout(__v75DebounceV87); } catch(e) {}
-    __v75DebounceV87 = setTimeout(prePaintSyncV75, 50);
-  }
-  document.addEventListener("click", debouncedPrePaintSyncV87, { passive: true, capture: true });
-  document.addEventListener("change", debouncedPrePaintSyncV87, { passive: true, capture: true });
-  // input listener intentionally removed: rapid typing should not repaint the whole app.
-
-  prePaintSyncV75();
-
-  if (typeof requestAnimationFrame === "function") {
-    requestAnimationFrame(syncColorsV75);
-  }
-})();
-</script>
 
 
 <script id="aarish-final-sync-optimizer-v87">
@@ -16511,10 +16344,8 @@ window.onload = function(){ setTimeout(function(){ window.focus(); window.print(
   install();
   setTimeout(install, 350);
   setTimeout(function(){ install(); refreshVisible(); }, 1300);
-  ["click","input","change"].forEach(function(ev) {
-    document.addEventListener(ev, function(){ setTimeout(normalizeButtonsV99, 0); }, { passive:true });
-  });
-  window.addEventListener("pageshow", function(){ install(); setTimeout(refreshVisible, 80); }, { passive:true });
+  /* V125 removed V99 per-click scan; render/lifecycle handles it. */
+window.addEventListener("pageshow", function(){ install(); setTimeout(refreshVisible, 80); }, { passive:true });
   document.addEventListener("visibilitychange", function(){ if (!document.hidden) { install(); setTimeout(refreshVisible, 80); } }, { passive:true });
 
   console.log("✅ AARISH_V99_UI_CONSISTENCY_PREMIUM_DARK_MODE active");
@@ -16652,14 +16483,8 @@ window.onload = function(){ setTimeout(function(){ window.focus(); window.print(
   installV100();
   setTimeout(installV100, 350);
   setTimeout(function () { installV100(); polishCurrentV100(); }, 1300);
-
-  ["click", "input", "change"].forEach(function (ev) {
-    document.addEventListener(ev, function () {
-      setTimeout(polishCurrentV100, 0);
-    }, { passive: true });
-  });
-
-  window.addEventListener("pageshow", function () {
+  /* V125 removed V100 per-click polish scan; render/lifecycle handles it. */
+window.addEventListener("pageshow", function () {
     installV100();
     setTimeout(polishCurrentV100, 80);
   }, { passive: true });
@@ -16843,12 +16668,8 @@ window.onload = function(){ setTimeout(function(){ window.focus(); window.print(
   markAll();
   setTimeout(markAll, 300);
   setTimeout(markAll, 1200);
-
-  ["click", "input", "change"].forEach(function (ev) {
-    document.addEventListener(ev, function () { setTimeout(markAll, 0); }, { passive: true });
-  });
-
-  window.addEventListener("pageshow", function () { setTimeout(markAll, 60); }, { passive: true });
+  /* V125 removed V100-final per-click markAll scan; render/lifecycle handles it. */
+window.addEventListener("pageshow", function () { setTimeout(markAll, 60); }, { passive: true });
   document.addEventListener("visibilitychange", function () {
     if (!document.hidden) setTimeout(markAll, 60);
   }, { passive: true });
@@ -17128,17 +16949,8 @@ window.onload = function(){ setTimeout(function(){ window.focus(); window.print(
       setTimeout(renderMilkListV113, 90);
     }
   }, { passive:true });
-
-  document.addEventListener("click", function () {
-    setTimeout(function () {
-      try {
-        var active = document.querySelector(".screen.active");
-        if (active && active.id === "milk-screen") renderMilkListV113();
-      } catch(e) {}
-    }, 120);
-  }, { passive:true });
-
-  window.addEventListener("pageshow", function () { setTimeout(install, 120); }, { passive:true });
+  /* V125 removed V113 app-wide click rerender. */
+window.addEventListener("pageshow", function () { setTimeout(install, 120); }, { passive:true });
   document.addEventListener("visibilitychange", function () {
     if (!document.hidden) setTimeout(install, 120);
   }, { passive:true });
@@ -17146,19 +16958,26 @@ window.onload = function(){ setTimeout(function(){ window.focus(); window.print(
   console.log("✅ AARISH V113 Milk UI + Business leak fix active");
 })();
 </script>
-<script id="aarish-v114-milk-compact-net-button-js">
-/* AARISH V114
-   Restores Milk +New button net-color logic after V113 fixed-red override.
-   No Firebase write. No save/delete/data mutation.
+<script id="aarish-v125-master-refactor-js">
+/* AARISH V125 MASTER REFACTOR
+   One light coordinator instead of overlay-on-overlay.
+   No global pointerdown/touchstart scanner.
+   No MutationObserver.
+   No setInterval.
+   No fake login.
 */
 (function () {
-  if (window.__AARISH_V114_MILK_NET_BUTTON_READY) return;
-  window.__AARISH_V114_MILK_NET_BUTTON_READY = true;
+  if (window.__AARISH_V125_MASTER_REFACTOR_READY) return;
+  window.__AARISH_V125_MASTER_REFACTOR_READY = true;
 
-  function byId(id) { return document.getElementById(id); }
-  function n(v) { var x = Number(v); return isFinite(x) ? x : 0; }
+  var raf = 0;
 
-  function records(v) {
+  function n(v) {
+    var x = Number(v);
+    return isFinite(x) ? x : 0;
+  }
+
+  function arr(v) {
     if (Array.isArray(v)) return v.filter(Boolean);
     if (v && typeof v === "object") {
       return Object.keys(v).map(function (k) {
@@ -17170,16 +16989,31 @@ window.onload = function(){ setTimeout(function(){ window.focus(); window.print(
     return [];
   }
 
-  function milkDb() {
-    try { if (typeof milkDB !== "undefined" && milkDB) return milkDB; } catch(e) {}
-    try { if (window.milkDB) return window.milkDB; } catch(e) {}
-    return {};
+  function getGlobal(name, fallback) {
+    try {
+      var v = Function("return (typeof " + name + " !== 'undefined') ? " + name + " : undefined;")();
+      if (v !== undefined && v !== null) return v;
+    } catch(e) {}
+    try {
+      if (window[name] !== undefined && window[name] !== null) return window[name];
+    } catch(e) {}
+    return fallback;
   }
 
-  function flow(record, customer, rawQty) {
+  function milkDBV125() {
+    return getGlobal("milkDB", {});
+  }
+
+  function milkRateV125(customer, record) {
+    return n(record && (record.rate || record.milkRate)) ||
+           n(customer && (customer.rate || customer.milkRate)) ||
+           n(getGlobal("DEFAULT_RATE", 55)) || 55;
+  }
+
+  function milkFlowV125(record, customer, rawQty) {
     try {
-      if (typeof milkFlow === "function") {
-        var mf = String(milkFlow(record, customer) || "").toLowerCase();
+      if (typeof window.milkFlow === "function") {
+        var mf = String(window.milkFlow(record, customer) || "").toLowerCase();
         if (mf === "taken" || mf === "negative") return "taken";
         if (mf === "given" || mf === "positive") return "given";
       }
@@ -17187,32 +17021,28 @@ window.onload = function(){ setTimeout(function(){ window.focus(); window.print(
 
     if (rawQty < 0) return "taken";
 
-    var raw = String(
-      (record && (record.flow || record.milkFlow || record.direction || record.entryType || record.type || record.mode)) || ""
-    ).toLowerCase();
-
+    var raw = String((record && (record.flow || record.milkFlow || record.direction || record.entryType || record.type || record.mode)) || "").toLowerCase();
     if (["taken","take","minus","debit","pay","paid","dene_wala","buyer","negative"].indexOf(raw) !== -1) return "taken";
     if (["given","give","plus","credit","receive","received","lene_wala","seller","positive"].indexOf(raw) !== -1) return "given";
 
     return customer && (customer.type === "dene_wala" || customer.type === "buyer" || customer.type === "pay") ? "taken" : "given";
   }
 
-  function allMilkNet() {
-    var db = milkDb();
+  function allMilkNetV125() {
+    var db = milkDBV125();
     var net = 0;
 
     try {
       Object.keys(db || {}).forEach(function (name) {
-        var c = db[name] || {};
-        records(c.records).forEach(function (r) {
-          var rawQty = n(r && r.morning) + n(r && r.evening);
+        var customer = db[name] || {};
+        arr(customer.records).forEach(function (record) {
+          var rawQty = n(record && record.morning) + n(record && record.evening);
           if (!rawQty) return;
 
-          var qty = Math.abs(rawQty);
-          var rate = n(r && (r.rate || r.milkRate)) || n(c && (c.rate || c.milkRate)) || (typeof DEFAULT_RATE !== "undefined" ? n(DEFAULT_RATE) : 55) || 55;
-          var amount = qty * rate;
+          var amount = Math.abs(rawQty) * milkRateV125(customer, record);
+          if (!amount) return;
 
-          net += flow(r, c, rawQty) === "taken" ? -amount : amount;
+          net += milkFlowV125(record, customer, rawQty) === "taken" ? -amount : amount;
         });
       });
     } catch(e) {}
@@ -17220,24 +17050,24 @@ window.onload = function(){ setTimeout(function(){ window.focus(); window.print(
     return net;
   }
 
-  function applyMilkNetButtonV114() {
+  function applyMilkNetButtonV125() {
     try {
-      var screen = byId("milk-screen");
-      var btn = byId("milk-new-btn-v50") || document.querySelector("#milk-screen .header-sticky button[onclick*='add-milk-customer-modal']");
+      var screen = document.getElementById("milk-screen");
+      var btn = document.getElementById("milk-new-btn-v50") ||
+                document.querySelector("#milk-screen .header-sticky button[onclick*='add-milk-customer-modal']");
       if (!screen || !btn) return;
 
-      var net = allMilkNet();
+      var net = allMilkNetV125();
       var tone = net > 0.0001 ? "positive" : (net < -0.0001 ? "negative" : "neutral");
       var btnTone = tone === "positive" ? "green" : (tone === "negative" ? "red" : "blue");
 
       screen.setAttribute("data-aarish-milk-net-v114", tone);
       btn.setAttribute("data-aarish-milk-new-v114", btnTone);
+      btn.setAttribute("data-aarish-milk-new-v125", btnTone);
 
       btn.style.setProperty("color", "#FFFFFF", "important");
       btn.style.setProperty("border-color", "transparent", "important");
-      btn.style.setProperty("min-height", "46px", "important");
-      btn.style.setProperty("padding", "10px 18px", "important");
-      btn.style.setProperty("border-radius", "18px", "important");
+      btn.style.setProperty("transition", "transform 80ms cubic-bezier(0.2,0.8,0.2,1), opacity 60ms ease", "important");
 
       if (btnTone === "green") {
         btn.style.setProperty("background", "linear-gradient(135deg, #34C759, #22C55E)", "important");
@@ -17249,83 +17079,20 @@ window.onload = function(){ setTimeout(function(){ window.focus(); window.print(
         btn.style.setProperty("background", "linear-gradient(135deg, #007AFF, #0A84FF)", "important");
         btn.style.setProperty("box-shadow", "0 8px 22px rgba(0,122,255,0.30)", "important");
       }
-
-      var title = document.querySelector("#milk-screen .header-sticky h1");
-      if (title) title.setAttribute("data-aarish-milk-title-v114", tone);
     } catch(e) {}
   }
 
-  function schedule() {
-    setTimeout(applyMilkNetButtonV114, 0);
-    setTimeout(applyMilkNetButtonV114, 120);
-    setTimeout(applyMilkNetButtonV114, 360);
-  }
-
-  function wrap(name) {
+  function patchInlineTransitionsV125(root) {
     try {
-      var old = window[name];
-      if (typeof old !== "function" || old.__aarishV114Wrapped) return;
-
-      var wrapped = function () {
-        var out = old.apply(this, arguments);
-        schedule();
-        return out;
-      };
-
-      wrapped.__aarishV114Wrapped = true;
-      window[name] = wrapped;
-      try { Function("fn", name + " = fn;")(wrapped); } catch(e) {}
+      (root || document).querySelectorAll(
+        "#milk-new-btn-v50,#credit-entry-btn-v52,#expense-add-btn-v52,#salary-new-btn-v52,#diary-new-btn-v54,#tab-milk,#tab-udhar,#tab-expenses,#tab-salary,#tab-diary,#tab-projects,[data-v99-tone],[data-v100-tone],.v100-harmony-card"
+      ).forEach(function (el) {
+        try {
+          el.style.setProperty("transition", "transform 80ms cubic-bezier(0.2,0.8,0.2,1), opacity 60ms ease", "important");
+        } catch(e) {}
+      });
     } catch(e) {}
   }
-
-  [
-    "renderMilkList",
-    "filterMilkList",
-    "updateMilkNewButtonColorV50",
-    "updateDashboard",
-    "switchTab",
-    "updateActiveScreen",
-    "saveMilkEntry",
-    "saveMilkCustomer",
-    "deleteMilkEntry",
-    "deleteMilk",
-    "deleteMilkCustomerProfile",
-    "openModal",
-    "closeModal"
-  ].forEach(wrap);
-
-  schedule();
-  [700, 1400, 2600, 4000].forEach(function (ms) { setTimeout(schedule, ms); });
-
-  document.addEventListener("click", schedule, { passive: true });
-  document.addEventListener("input", schedule, { passive: true });
-  window.addEventListener("pageshow", schedule, { passive: true });
-
-  try {
-    var target = byId("milk-screen") || document.body;
-    if (target && !target.__aarishV114Observer) {
-      var obs = new MutationObserver(schedule);
-      obs.observe(target, { childList: true, subtree: true, attributes: true });
-      target.__aarishV114Observer = obs;
-    }
-  } catch(e) {}
-
-  console.log("✅ AARISH V114 Milk compact card + net New button active");
-})();
-</script>
-<script id="aarish-v116-semantic-paint-rail-js">
-/* AARISH V116 SEMANTIC PAINT RAIL
-   Big-Tech style paint pipeline:
-   - run existing color engines before/after render
-   - immediately lock inline transitions so color/background never animates
-   - no DB mutation, no Firebase write, no save/delete logic change
-*/
-(function () {
-  if (window.__AARISH_V116_SEMANTIC_PAINT_RAIL_READY) return;
-  window.__AARISH_V116_SEMANTIC_PAINT_RAIL_READY = true;
-
-  var pending = false;
-  var painting = false;
 
   var PAINTERS = [
     "updateMilkRecordHeaderColorV24",
@@ -17341,256 +17108,140 @@ window.onload = function(){ setTimeout(function(){ window.focus(); window.print(
     "updateMilkDetailBlueTotalCardV64"
   ];
 
-  var WRAP_TARGETS = [
-    "switchTab",
-    "updateActiveScreen",
-    "updateDashboard",
-
-    "renderMilkList",
-    "renderMilkListV113",
-    "renderMilkListV99",
-    "renderMilkRecords",
-    "renderMilkRecordsV99",
-
-    "renderUdharList",
-    "renderUdharListV99",
-    "renderUdharRecords",
-    "renderUdharRecordsV99",
-
-    "renderExpenseList",
-    "renderExpenseListV99",
-    "renderExpenseRecords",
-    "renderExpenseRecordsV99",
-
-    "renderSalaryList",
-    "renderSalaryListV99",
-    "renderSalaryRecords",
-    "renderSalaryRecordsV99",
-
-    "renderDiaryList",
-    "renderDiaryListV99",
-    "renderProjectsList",
-    "renderProjectsListV99",
-    "renderProjectRecords",
-    "renderDashboardBalances",
-
-    "saveMilkEntry",
-    "saveUdharEntry",
-    "saveExpenseEntry",
-    "saveSalaryEntry",
-    "saveDiaryEntry",
-    "saveNewProject",
-    "saveProjectEntry",
-
-    "deleteMilkEntry",
-    "deleteMilkCustomerProfile",
-    "deleteUdhar",
-    "deleteUdharPersonProfile",
-    "deleteExpense",
-    "deleteExpenseCategoryProfile",
-    "deleteSalarySingleEntry",
-    "deleteSalaryPersonProfile",
-    "deleteDiary",
-    "deleteProject",
-    "deleteProjectEntry"
-  ];
-
-  var LOCK_SELECTOR = [
-    "#milk-new-btn-v50",
-    "#credit-entry-btn-v52",
-    "#expense-add-btn-v52",
-    "#salary-new-btn-v52",
-    "#diary-new-btn-v54",
-
-    "#tab-home",
-    "#tab-milk",
-    "#tab-udhar",
-    "#tab-expenses",
-    "#tab-salary",
-    "#tab-diary",
-    "#tab-projects",
-
-    "#milk-screen .header-sticky h1",
-    "#udhar-screen .header-sticky h1",
-    "#expenses-screen .header-sticky h1",
-    "#salary-screen .header-sticky h1",
-    "#diary-screen .header-sticky h1",
-    "#projects-screen .header-sticky h1",
-    "#balances-screen .header-sticky h1",
-
-    "#milk-detail-title",
-    "#udhar-detail-title",
-    "#expense-detail-title",
-    "#salary-detail-title",
-    "#project-detail-title",
-
-    "#milk-list .glass-card",
-    "#udhar-list .glass-card",
-    "#expense-list-container .glass-card",
-    "#salary-list .glass-card",
-    "#diary-list .glass-card",
-    "#project-list .glass-card",
-    "#dash-balances-list .glass-card",
-
-    "#milk-list .squircle",
-    "#udhar-list .squircle",
-    "#expense-list-container .squircle",
-    "#salary-list .squircle",
-    "#diary-list .squircle",
-    "#project-list .squircle",
-    "#dash-balances-list .squircle",
-
-    "#milk-list .fa-chevron-right",
-    "#udhar-list .fa-chevron-right",
-    "#expense-list-container .fa-chevron-right",
-    "#salary-list .fa-chevron-right",
-    "#diary-list .fa-chevron-right",
-    "#project-list .fa-chevron-right",
-    "#dash-balances-list .fa-chevron-right"
-  ].join(",");
-
-  function lockOne(el) {
-    if (!el || !el.style) return;
-
-    el.setAttribute("data-v116-paint-rail", "1");
-
-    el.style.setProperty(
-      "transition",
-      "transform 0.075s cubic-bezier(0.32,0.72,0,1), opacity 0.06s ease",
-      "important"
-    );
-    el.style.setProperty("transition-property", "transform, opacity", "important");
-    el.style.setProperty("transition-duration", "0.075s", "important");
-    el.style.setProperty("transition-timing-function", "cubic-bezier(0.32,0.72,0,1)", "important");
+  function runPaintersV125() {
+    PAINTERS.forEach(function (name) {
+      try { if (typeof window[name] === "function") window[name](); } catch(e) {}
+    });
+    applyMilkNetButtonV125();
+    patchInlineTransitionsV125(document);
   }
 
-  function lockPaintRailV116() {
-    try {
-      document.querySelectorAll(LOCK_SELECTOR).forEach(function (el) {
-        lockOne(el);
-
-        if (el.id === "credit-entry-btn-v52" ||
-            el.id === "expense-add-btn-v52" ||
-            el.id === "salary-new-btn-v52" ||
-            el.id === "milk-new-btn-v50" ||
-            el.id === "diary-new-btn-v54") {
-          try {
-            el.querySelectorAll("i,span,svg").forEach(lockOne);
-          } catch (e) {}
-        }
-      });
-    } catch (e) {}
-  }
-
-  function runExistingPaintersV116() {
-    if (painting) return;
-    painting = true;
-
-    try {
-      PAINTERS.forEach(function (name) {
-        try {
-          if (typeof window[name] === "function") window[name]();
-        } catch (e) {}
-      });
-    } finally {
-      painting = false;
-    }
-  }
-
-  function immediatePaintV116() {
-    runExistingPaintersV116();
-    lockPaintRailV116();
-  }
-
-  function schedulePaintV116() {
-    if (pending) return;
-    pending = true;
-
-    try {
-      if (typeof queueMicrotask === "function") {
-        queueMicrotask(function () {
-          immediatePaintV116();
-        });
-      }
-    } catch (e) {}
-
-    requestAnimationFrame(function () {
-      pending = false;
-      immediatePaintV116();
-
-      requestAnimationFrame(function () {
-        lockPaintRailV116();
-      });
+  function scheduleV125() {
+    if (raf) return;
+    raf = requestAnimationFrame(function () {
+      raf = 0;
+      runPaintersV125();
     });
   }
 
-  function wrapFunctionV116(name) {
+  function wrapLightV125(name) {
     try {
       var old = window[name];
-      if (typeof old !== "function" || old.__aarishV116PaintRailWrapped) return;
+      if (typeof old !== "function" || old.__aarishV125Wrapped) return;
 
       var wrapped = function () {
-        immediatePaintV116();
         var out = old.apply(this, arguments);
-        immediatePaintV116();
-        schedulePaintV116();
+        scheduleV125();
         return out;
       };
 
-      wrapped.__aarishV116PaintRailWrapped = true;
+      wrapped.__aarishV125Wrapped = true;
       window[name] = wrapped;
-      try { Function("fn", name + " = fn;")(wrapped); } catch (e) {}
-    } catch (e) {}
+      try { Function("fn", name + " = fn;")(wrapped); } catch(e) {}
+    } catch(e) {}
   }
 
-  function wrapPaintersV116() {
-    PAINTERS.forEach(function (name) {
-      try {
-        var old = window[name];
-        if (typeof old !== "function" || old.__aarishV116PainterLockWrapped) return;
+  function installAuthV125() {
+    try {
+      if (typeof firebase !== "undefined" && firebase.auth) {
+        var auth = firebase.auth();
 
-        var wrapped = function () {
-          var out = old.apply(this, arguments);
-          lockPaintRailV116();
-          return out;
-        };
+        if (auth && auth.setPersistence && firebase.auth.Auth && firebase.auth.Auth.Persistence) {
+          auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL).catch(function(){});
+        }
 
-        wrapped.__aarishV116PainterLockWrapped = true;
-        window[name] = wrapped;
-        try { Function("fn", name + " = fn;")(wrapped); } catch (e) {}
-      } catch (e) {}
-    });
+        if (!window.__aarishV125AuthSync) {
+          window.__aarishV125AuthSync = true;
+          auth.onAuthStateChanged(function (user) {
+            try {
+              if (user) {
+                document.documentElement.classList.add("aarish-auth-confirmed");
+              } else {
+                document.documentElement.classList.remove("aarish-auth-confirmed");
+                var login = document.getElementById("login-screen");
+                if (login) {
+                  login.style.display = "";
+                  login.style.opacity = "";
+                  login.style.transform = "";
+                }
+              }
+            } catch(e) {}
+          });
+        }
+      }
+    } catch(e) {}
   }
 
-  function bootV116() {
-    wrapPaintersV116();
-    WRAP_TARGETS.forEach(wrapFunctionV116);
-    immediatePaintV116();
-    schedulePaintV116();
+  function installHapticV125() {
+    try {
+      window.haptic = function () {
+        try {
+          if (!navigator.vibrate) return;
+          var now = Date.now();
+          if (window.__aarishHapticLast && now - window.__aarishHapticLast < 100) return;
+          window.__aarishHapticLast = now;
+          setTimeout(function () {
+            try { navigator.vibrate(8); } catch(e) {}
+          }, 0);
+        } catch(e) {}
+      };
+      try { Function("fn", "haptic = fn;")(window.haptic); } catch(e) {}
+    } catch(e) {}
   }
 
-  /* Capture phase: paint-lock before browser shows old color */
-  ["pointerdown", "touchstart", "mousedown", "click", "change", "input"].forEach(function (evt) {
-    document.addEventListener(evt, function () {
-      immediatePaintV116();
-      schedulePaintV116();
-    }, { passive: true, capture: true });
-  });
+  function bootV125() {
+    installAuthV125();
+    installHapticV125();
 
-  document.addEventListener("DOMContentLoaded", bootV116, { passive: true, once: true });
-  window.addEventListener("load", bootV116, { passive: true, once: true });
-  window.addEventListener("pageshow", bootV116, { passive: true });
+    [
+      "switchTab",
+      "updateActiveScreen",
+      "updateDashboard",
+      "renderDashboardBalances",
+      "renderMilkList",
+      "filterMilkList",
+      "renderUdharList",
+      "renderExpenseList",
+      "renderSalaryList",
+      "renderDiaryList",
+      "renderProjectsList",
+      "renderMilkRecords",
+      "renderUdharRecords",
+      "renderExpenseRecords",
+      "renderSalaryRecords",
+      "renderProjectRecords",
+      "saveMilkEntry",
+      "saveMilkCustomer",
+      "saveUdharEntry",
+      "saveExpenseEntry",
+      "saveSalaryEntry",
+      "saveDiaryEntry",
+      "saveProjectEntry",
+      "deleteMilkEntry",
+      "deleteMilkCustomerProfile",
+      "deleteUdhar",
+      "deleteExpense",
+      "deleteSalarySingleEntry",
+      "deleteDiary",
+      "deleteProject",
+      "openModal",
+      "closeModal"
+    ].forEach(wrapLightV125);
 
+    scheduleV125();
+  }
+
+  document.addEventListener("DOMContentLoaded", bootV125, { passive:true, once:true });
+  window.addEventListener("load", bootV125, { passive:true, once:true });
+  window.addEventListener("pageshow", bootV125, { passive:true });
   document.addEventListener("visibilitychange", function () {
-    if (!document.hidden) bootV116();
-  }, { passive: true });
+    if (!document.hidden) bootV125();
+  }, { passive:true });
 
-  bootV116();
-  setTimeout(bootV116, 60);
-  setTimeout(bootV116, 240);
-  setTimeout(bootV116, 900);
+  bootV125();
+  setTimeout(bootV125, 250);
 
-  console.log("✅ AARISH V116 semantic paint rail active");
+  console.log("✅ AARISH V125 master refactor active");
 })();
 </script>
 </body>
