@@ -4669,6 +4669,36 @@ html:not(.dark) #credit-entry-btn-v52[data-credit-net-v128] * {
 }
 /* AARISH_V142_CREDIT_DETAIL_MILK_PARITY_CSS_END */
 
+
+/* AARISH_V143_CREDIT_DELETE_PERMANENT_RED_START
+   Credit Book detail: delete button/icon permanent red.
+   Row GIVEN/TAKEN color must NOT affect delete cell.
+   No JS scanner. No MutationObserver. CSS only inside existing credit CSS block.
+*/
+#udhar-detail-records tr[data-credit-row-tone-v142] td:last-child,
+#udhar-detail-records tr[data-credit-row-tone-v142] td:last-child *,
+#udhar-detail-records tr[data-credit-row-tone-v142] td:last-child .action-btn,
+#udhar-detail-records tr[data-credit-row-tone-v142] td:last-child .action-btn *,
+#udhar-detail-records tr[data-credit-row-tone-v142] td:last-child i,
+#udhar-detail-records tr[data-credit-row-tone-v142] td:last-child i.fa-trash,
+#udhar-detail-screen #udhar-detail-records .credit-delete-cell-v143,
+#udhar-detail-screen #udhar-detail-records .credit-delete-cell-v143 *,
+#udhar-detail-screen #udhar-detail-records .credit-delete-btn-v143,
+#udhar-detail-screen #udhar-detail-records .credit-delete-btn-v143 *,
+#udhar-detail-screen #udhar-detail-records .credit-delete-icon-v143 {
+  color: #FF3B30 !important;
+  text-shadow: 0 0 9px rgba(255,59,48,0.24) !important;
+}
+
+#udhar-detail-screen #udhar-detail-records .credit-delete-btn-v143,
+#udhar-detail-records tr[data-credit-row-tone-v142] td:last-child .action-btn {
+  background: rgba(255,59,48,0.10) !important;
+  border-color: rgba(255,59,48,0.18) !important;
+  box-shadow: 0 8px 18px rgba(255,59,48,0.13) !important;
+  transition-property: transform, opacity !important;
+}
+/* AARISH_V143_CREDIT_DELETE_PERMANENT_RED_END */
+
 </style>
 </head>
 
@@ -7566,9 +7596,9 @@ window.renderCreditDetailV142 = function () {
                 <span class="credit-badge-v142 text-[10px] font-extrabold uppercase px-2 py-1 rounded-md" style="color:${rowColor}!important;background:${given ? "rgba(52,199,89,0.10)" : "rgba(255,59,48,0.10)"}!important;">${badgeText}</span>
             </td>
             <td class="font-extrabold text-[16px]" style="color:${rowColor}!important;text-shadow:0 0 9px ${given ? "rgba(52,199,89,0.20)" : "rgba(255,59,48,0.20)"}!important;">${sign}${money(amount)}</td>
-            <td class="text-right">
-                <button onclick="event.stopPropagation(); try{haptic()}catch(e){}; deleteUdhar(${idArg})" class="action-btn shrink-0">
-                    <i class="fa-solid fa-trash text-xs"></i>
+            <td class="text-right credit-delete-cell-v143" style="color:#FF3B30!important;text-shadow:0 0 9px rgba(255,59,48,0.24)!important;">
+                <button onclick="event.stopPropagation(); try{haptic()}catch(e){}; deleteUdhar(${idArg})" class="action-btn shrink-0 credit-delete-btn-v143" style="color:#FF3B30!important;background:rgba(255,59,48,0.10)!important;border-color:rgba(255,59,48,0.18)!important;box-shadow:0 8px 18px rgba(255,59,48,0.13)!important;">
+                    <i class="fa-solid fa-trash text-xs credit-delete-icon-v143" style="color:#FF3B30!important;text-shadow:0 0 9px rgba(255,59,48,0.24)!important;"></i>
                 </button>
             </td>
         </tr>`;
