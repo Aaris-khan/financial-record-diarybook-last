@@ -6455,7 +6455,7 @@ function filterMilkList() {
         const recordsBox = document.getElementById('milk-detail-records');
         const billEl = document.getElementById('milk-detail-bill');
         const kgEl = document.getElementById('milk-detail-kg');
-        const detailCard = document.querySelector('#milk-detail-screen .glass-card');
+        const detailCard = document.querySelector('#milk-detail-screen .milk-detail-total-card-v64, #milk-detail-screen .glass-card');
 
         let netKg = 0;
         let netAmount = 0;
@@ -6463,6 +6463,24 @@ function filterMilkList() {
         function n(v) {
             const x = Number(v);
             return Number.isFinite(x) ? x : 0;
+        }
+
+        function cleanZero(v) {
+            return Math.abs(Number(v) || 0) < 0.0001 ? 0 : (Number(v) || 0);
+        }
+
+        function displayTone(amount) {
+            const rounded = Math.round(Math.abs(cleanZero(amount)));
+            if (rounded === 0) return "neutral";
+            return amount > 0 ? "positive" : "negative";
+        }
+
+        function toneColor(tone) {
+            return tone === "positive" ? "#34C759" : (tone === "negative" ? "#FF3B30" : "#007AFF");
+        }
+
+        function toneGlow(tone) {
+            return tone === "positive" ? "rgba(52,199,89,0.30)" : (tone === "negative" ? "rgba(255,59,48,0.30)" : "rgba(0,122,255,0.30)");
         }
 
         function rateFor(record) {
@@ -6492,49 +6510,58 @@ function filterMilkList() {
         const html = records.map((r, index) => {
             const qty = n(r.morning) + n(r.evening);
             const flow = flowFor(r);
-            const signedQty = flow === "taken" ? -Math.abs(qty) : Math.abs(qty);
-            const signedAmount = signedQty * rateFor(r);
+            const signedQty = cleanZero(flow === "taken" ? -Math.abs(qty) : Math.abs(qty));
+            const signedAmount = cleanZero(signedQty * rateFor(r));
 
             netKg += signedQty;
             netAmount += signedAmount;
 
-            const rowTone = signedQty > 0.0001 ? "positive" : (signedQty < -0.0001 ? "negative" : "neutral");
-            const rowColor = rowTone === "positive" ? "#34C759" : (rowTone === "negative" ? "#FF3B30" : "#007AFF");
-            const rowSign = rowTone === "positive" ? "+" : (rowTone === "negative" ? "-" : "");
+            const rowTone = Math.abs(signedQty) < 0.0001 ? "neutral" : (signedQty > 0 ? "positive" : "negative");
+            const rowColor = toneColor(rowTone);
+            const rowSign = rowTone === "negative" ? "-" : "+";
+            const shadow = rowTone === "positive" ? "rgba(52,199,89,0.22)" : (rowTone === "negative" ? "rgba(255,59,48,0.22)" : "rgba(0,122,255,0.22)");
 
-            return `<tr class="list-enter" data-v99-tone="${rowTone}" data-v107-tone="${rowTone}" style="animation-delay: ${index * 0.05}s;">
-                <td style="color:${rowColor}!important;text-shadow:0 0 9px ${rowTone === "positive" ? "rgba(52,199,89,0.22)" : rowTone === "negative" ? "rgba(255,59,48,0.22)" : "rgba(0,122,255,0.22)"}!important;">${formatDisplayDate(r.date)}</td>
-                <td style="color:${rowColor}!important;text-shadow:0 0 9px ${rowTone === "positive" ? "rgba(52,199,89,0.22)" : rowTone === "negative" ? "rgba(255,59,48,0.22)" : "rgba(0,122,255,0.22)"}!important;">${r.morning || '-'}</td>
-                <td style="color:${rowColor}!important;text-shadow:0 0 9px ${rowTone === "positive" ? "rgba(52,199,89,0.22)" : rowTone === "negative" ? "rgba(255,59,48,0.22)" : "rgba(0,122,255,0.22)"}!important;">${r.evening || '-'}</td>
-                <td class="font-bold" style="color:${rowColor}!important;text-shadow:0 0 9px ${rowTone === "positive" ? "rgba(52,199,89,0.22)" : rowTone === "negative" ? "rgba(255,59,48,0.22)" : "rgba(0,122,255,0.22)"}!important;">${rowSign}${Math.abs(qty).toFixed(2)}</td>
+            return `<tr class="list-enter" data-v99-tone="${rowTone}" data-v100-tone="${rowTone}" data-v107-tone="${rowTone}" style="animation-delay: ${index * 0.05}s;">
+                <td style="color:${rowColor}!important;text-shadow:0 0 9px ${shadow}!important;">${formatDisplayDate(r.date)}</td>
+                <td style="color:${rowColor}!important;text-shadow:0 0 9px ${shadow}!important;">${r.morning || '-'}</td>
+                <td style="color:${rowColor}!important;text-shadow:0 0 9px ${shadow}!important;">${r.evening || '-'}</td>
+                <td class="font-bold" style="color:${rowColor}!important;text-shadow:0 0 9px ${shadow}!important;">${rowSign}${Math.abs(qty).toFixed(2)}</td>
                 <td class="text-right"><button onclick="haptic(); deleteMilkEntry('${r.id}')" class="action-btn shrink-0"><i class="fa-solid fa-trash text-xs"></i></button></td>
             </tr>`;
         }).join('');
 
         if (recordsBox) {
-            recordsBox.innerHTML = html || `<tr data-v99-tone="neutral" data-v107-tone="neutral"><td colspan="5" class="text-center py-8 font-extrabold" style="color:#007AFF!important;text-shadow:0 0 10px rgba(0,122,255,0.24)!important;">No entries found</td></tr>`;
+            recordsBox.innerHTML = html || `<tr data-v99-tone="neutral" data-v100-tone="neutral" data-v107-tone="neutral"><td colspan="5" class="text-center py-8 font-extrabold" style="color:#007AFF!important;text-shadow:0 0 10px rgba(0,122,255,0.24)!important;">No entries found</td></tr>`;
         }
 
-        const tone = netAmount > 0.0001 ? "positive" : (netAmount < -0.0001 ? "negative" : "neutral");
-        const color = tone === "positive" ? "#34C759" : (tone === "negative" ? "#FF3B30" : "#007AFF");
-        const glow = tone === "positive" ? "rgba(52,199,89,0.30)" : (tone === "negative" ? "rgba(255,59,48,0.30)" : "rgba(0,122,255,0.30)");
+        netKg = cleanZero(netKg);
+        netAmount = cleanZero(netAmount);
+
+        const roundedAmount = Math.round(Math.abs(netAmount));
+        const tone = roundedAmount === 0 ? "neutral" : (netAmount > 0 ? "positive" : "negative");
+        const color = toneColor(tone);
+        const glow = toneGlow(tone);
         const from = tone === "positive" ? "#34C759" : (tone === "negative" ? "#FF3B30" : "#007AFF");
-        const to = tone === "positive" ? "#28a745" : (tone === "negative" ? "#c92a2a" : "#0A84FF");
-        const sign = tone === "positive" ? "+" : (tone === "negative" ? "-" : "");
+        const to = tone === "positive" ? "#28A745" : (tone === "negative" ? "#C92A2A" : "#0A84FF");
+        const sign = tone === "negative" ? "-" : "+";
 
         if (screen) {
             screen.setAttribute("data-v107-tone", tone);
+            screen.setAttribute("data-v99-tone", tone);
+            screen.setAttribute("data-v100-tone", tone);
             screen.setAttribute("data-milk-net-v64", tone === "neutral" ? "zero" : tone);
         }
 
         if (detailCard) {
-            detailCard.className = `glass-card mb-6 flex justify-between items-center bg-gradient-to-br from-[${from}] to-[${to}] text-white border-none shadow-[0_8px_24px_${glow}] ring-1 ring-white/30 w-full min-w-0 gap-3 milk-detail-total-card-v64`;
+            detailCard.className = "glass-card mb-6 flex justify-between items-center text-white border-none ring-1 ring-white/30 w-full min-w-0 gap-3 milk-detail-total-card-v64";
             detailCard.setAttribute("data-v99-tone", tone);
             detailCard.setAttribute("data-v100-tone", tone);
             detailCard.setAttribute("data-v107-tone", tone);
             detailCard.setAttribute("data-milk-net-v64", tone === "neutral" ? "zero" : tone);
             detailCard.style.setProperty("background", `linear-gradient(135deg, ${from}, ${to})`, "important");
+            detailCard.style.setProperty("border-color", color, "important");
             detailCard.style.setProperty("box-shadow", `0 8px 24px ${glow}`, "important");
+            detailCard.style.setProperty("transition", "transform 80ms cubic-bezier(0.2,0.8,0.2,1), opacity 60ms ease", "important");
         }
 
         if (kgEl) {
@@ -6543,7 +6570,7 @@ function filterMilkList() {
         }
 
         if (billEl) {
-            billEl.textContent = `${sign}₹${Math.abs(Math.round(netAmount)).toLocaleString('en-IN')}`;
+            billEl.textContent = `${sign}₹${roundedAmount.toLocaleString('en-IN')}`;
             billEl.style.setProperty("color", "#FFFFFF", "important");
         }
     }
@@ -16612,65 +16639,10 @@ scheduleV69();
   }
 
   function renderMilkRecordsV99() {
-    if (!activeMilkCustomer || !milkDB || !milkDB[activeMilkCustomer]) return;
-    var c = milkDB[activeMilkCustomer];
-    var records = monthRecords(c.records).sort(function(a,b){ return String(b.date || "").localeCompare(String(a.date || "")); });
-    
-    var netKg = 0, netAmt = 0;
-    var rate = num(c.rate || (typeof DEFAULT_RATE !== "undefined" ? DEFAULT_RATE : 55));
-    
-    var html = records.map(function(r, index) {
-        var m = num(r.morning), e = num(r.evening), q = m + e;
-        var isTaken = milkFlow(r, c) === "taken";
-        var rTone = isTaken ? "negative" : "positive";
-        var rCls = toneClass(rTone);
-        
-        if (isTaken) {
-            netKg -= q;
-            netAmt -= (q * rate);
-        } else {
-            netKg += q;
-            netAmt += (q * rate);
-        }
-        
-        return `<tr class="list-enter" data-v99-tone="${rTone}" style="animation-delay:${index * 0.05}s;">
-            <td>${fmtDate(r.date)}</td>
-            <td class="${rCls}">${r.morning || "-"}</td>
-            <td class="${rCls}">${r.evening || "-"}</td>
-            <td class="font-bold ${rCls}">${q.toFixed(2)}</td>
-            <td class="text-right"><button onclick="haptic(); deleteMilkEntry(${js(r.id)})" class="action-btn shrink-0"><i class="fa-solid fa-trash"></i></button></td>
-        </tr>`;
-    }).join("");
-    
-    var target = byId("milk-detail-records");
-    if (target) target.innerHTML = html || `<tr><td colspan="5" class="text-center py-8 text-gray-400 font-semibold">No entries found</td></tr>`;
-    
-    // STRICTLY PURE COLOR LOGIC (Changes card background)
-    var finalTone = toneFrom(netAmt);
-    var card = document.querySelector("#milk-detail-screen .glass-card");
-    if (card) {
-        card.setAttribute("data-v99-tone", finalTone);
-        card.className = finalTone !== "negative" ? "glass-card mb-6 flex justify-between items-center bg-gradient-to-br from-[#34C759] to-[#28a745] text-white border-none shadow-[0_8px_24px_rgba(52,199,89,0.3)] ring-1 ring-white/30 w-full min-w-0 gap-3" : "glass-card mb-6 flex justify-between items-center bg-gradient-to-br from-[#FF3B30] to-[#c92a2a] text-white border-none shadow-[0_8px_24px_rgba(255,59,48,0.3)] ring-1 ring-white/30 w-full min-w-0 gap-3";
-    }
-    
-    var kgEl = byId("milk-detail-kg"), billEl = byId("milk-detail-bill");
-    if (kgEl) {
-        kgEl.textContent = Math.abs(netKg).toFixed(2) + " KG";
-        var klbl = kgEl.previousElementSibling;
-        if (klbl && klbl.tagName && klbl.tagName.toLowerCase() === "p") {
-            klbl.textContent = "Net Milk"; // EXACT SAME TEXT AS BEFORE
-        }
-    }
-    if (billEl) {
-        billEl.textContent = (finalTone === "positive" ? "+" : "-") + "₹" + Math.abs(Math.round(netAmt)).toLocaleString("en-IN");
-        var lbl = billEl.previousElementSibling;
-        if (lbl && lbl.tagName && lbl.tagName.toLowerCase() === "p") {
-            lbl.textContent = "Net Bill"; // EXACT SAME TEXT AS BEFORE
-            lbl.classList.remove("text-[10.5px]");
-            lbl.classList.add("text-[13px]"); // RESTORING ORIGINAL FONT SIZE
-        }
-    }
-}
+    try {
+      renderMilkRecords();
+    } catch(e) {}
+  }
 
   function renderSalaryRecordsV99() {
     if (!activeSalaryPerson || !salaryDB || !salaryDB[activeSalaryPerson]) return;
@@ -17130,14 +17102,15 @@ window.addEventListener("pageshow", function () { setTimeout(markAll, 60); }, { 
       var bill = byId("milk-detail-bill");
       var text = bill ? String(bill.textContent || "") : "";
       var digits = Number(text.replace(/[^\d.-]/g, ""));
-      if (Number.isFinite(digits) && Math.abs(digits) < 0.0001) return "neutral";
-      if (text.indexOf("-") !== -1) return "negative";
-      if (text.indexOf("+") !== -1) return "positive";
+      if (Number.isFinite(digits) && Math.round(Math.abs(digits)) === 0) return "neutral";
 
       var card = document.querySelector("#milk-detail-screen .glass-card[data-v99-tone], #milk-detail-screen .glass-card[data-v100-tone], #milk-detail-screen .milk-detail-total-card-v64");
       var t = card ? String(card.getAttribute("data-v99-tone") || card.getAttribute("data-v100-tone") || card.getAttribute("data-milk-net-v64") || "") : "";
       t = t.toLowerCase();
       if (t === "zero" || t === "neutral" || t === "blue") return "neutral";
+
+      if (text.indexOf("-") !== -1) return "negative";
+      if (text.indexOf("+") !== -1) return "positive";
       if (t === "positive" || t === "negative") return t;
     } catch(e) {}
     return "neutral";
