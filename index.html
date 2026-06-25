@@ -6448,131 +6448,8 @@ function filterMilkList() {
     }
 
     function renderMilkRecords() {
-        if (!activeMilkCustomer || !milkDB[activeMilkCustomer]) return;
-
-        const c = milkDB[activeMilkCustomer];
-        const screen = document.getElementById('milk-detail-screen');
-        const recordsBox = document.getElementById('milk-detail-records');
-        const billEl = document.getElementById('milk-detail-bill');
-        const kgEl = document.getElementById('milk-detail-kg');
-        const detailCard = document.querySelector('#milk-detail-screen .milk-detail-total-card-v64, #milk-detail-screen .glass-card');
-
-        let netKg = 0;
-        let netAmount = 0;
-
-        function n(v) {
-            const x = Number(v);
-            return Number.isFinite(x) ? x : 0;
-        }
-
-        function cleanZero(v) {
-            return Math.abs(Number(v) || 0) < 0.0001 ? 0 : (Number(v) || 0);
-        }
-
-        function displayTone(amount) {
-            const rounded = Math.round(Math.abs(cleanZero(amount)));
-            if (rounded === 0) return "neutral";
-            return amount > 0 ? "positive" : "negative";
-        }
-
-        function toneColor(tone) {
-            return tone === "positive" ? "#34C759" : (tone === "negative" ? "#FF3B30" : "#007AFF");
-        }
-
-        function toneGlow(tone) {
-            return tone === "positive" ? "rgba(52,199,89,0.30)" : (tone === "negative" ? "rgba(255,59,48,0.30)" : "rgba(0,122,255,0.30)");
-        }
-
-        function rateFor(record) {
-            return n(record && record.rate) || n(c && c.rate) || n(typeof DEFAULT_RATE !== 'undefined' ? DEFAULT_RATE : 0);
-        }
-
-        function flowFor(record) {
-            try {
-                if (typeof milkFlow === "function") {
-                    const mf = String(milkFlow(record, c) || "").toLowerCase();
-                    if (mf === "taken" || mf === "negative") return "taken";
-                    if (mf === "given" || mf === "positive") return "given";
-                }
-            } catch(e) {}
-
-            const raw = String((record && (record.flow || record.milkFlow || record.direction || record.entryType || record.type || record.mode)) || "").toLowerCase();
-
-            if (["taken","take","minus","debit","pay","paid","dene_wala","buyer","negative"].includes(raw)) return "taken";
-            if (["given","give","plus","credit","receive","received","lene_wala","seller","positive"].includes(raw)) return "given";
-
-            return c && c.type === "dene_wala" ? "taken" : "given";
-        }
-
-        const records = filterByMonth((c.records || []).map((r, i) => ({...r, originalIndex: i})))
-                        .sort((a,b) => String(b.date || '').localeCompare(String(a.date || '')));
-
-        const html = records.map((r, index) => {
-            const qty = n(r.morning) + n(r.evening);
-            const flow = flowFor(r);
-            const signedQty = cleanZero(flow === "taken" ? -Math.abs(qty) : Math.abs(qty));
-            const signedAmount = cleanZero(signedQty * rateFor(r));
-
-            netKg += signedQty;
-            netAmount += signedAmount;
-
-            const rowTone = Math.abs(signedQty) < 0.0001 ? "neutral" : (signedQty > 0 ? "positive" : "negative");
-            const rowColor = toneColor(rowTone);
-            const rowSign = rowTone === "negative" ? "-" : "+";
-            const shadow = rowTone === "positive" ? "rgba(52,199,89,0.22)" : (rowTone === "negative" ? "rgba(255,59,48,0.22)" : "rgba(0,122,255,0.22)");
-
-            return `<tr class="list-enter" data-v99-tone="${rowTone}" data-v100-tone="${rowTone}" data-v107-tone="${rowTone}" style="animation-delay: ${index * 0.05}s;">
-                <td style="color:${rowColor}!important;text-shadow:0 0 9px ${shadow}!important;">${formatDisplayDate(r.date)}</td>
-                <td style="color:${rowColor}!important;text-shadow:0 0 9px ${shadow}!important;">${r.morning || '-'}</td>
-                <td style="color:${rowColor}!important;text-shadow:0 0 9px ${shadow}!important;">${r.evening || '-'}</td>
-                <td class="font-bold" style="color:${rowColor}!important;text-shadow:0 0 9px ${shadow}!important;">${rowSign}${Math.abs(qty).toFixed(2)}</td>
-                <td class="text-right"><button onclick="haptic(); deleteMilkEntry('${r.id}')" class="action-btn shrink-0"><i class="fa-solid fa-trash text-xs"></i></button></td>
-            </tr>`;
-        }).join('');
-
-        if (recordsBox) {
-            recordsBox.innerHTML = html || `<tr data-v99-tone="neutral" data-v100-tone="neutral" data-v107-tone="neutral"><td colspan="5" class="text-center py-8 font-extrabold" style="color:#007AFF!important;text-shadow:0 0 10px rgba(0,122,255,0.24)!important;">No entries found</td></tr>`;
-        }
-
-        netKg = cleanZero(netKg);
-        netAmount = cleanZero(netAmount);
-
-        const roundedAmount = Math.round(Math.abs(netAmount));
-        const tone = roundedAmount === 0 ? "neutral" : (netAmount > 0 ? "positive" : "negative");
-        const color = toneColor(tone);
-        const glow = toneGlow(tone);
-        const from = tone === "positive" ? "#34C759" : (tone === "negative" ? "#FF3B30" : "#007AFF");
-        const to = tone === "positive" ? "#28A745" : (tone === "negative" ? "#C92A2A" : "#0A84FF");
-        const sign = tone === "negative" ? "-" : "+";
-
-        if (screen) {
-            screen.setAttribute("data-v107-tone", tone);
-            screen.setAttribute("data-v99-tone", tone);
-            screen.setAttribute("data-v100-tone", tone);
-            screen.setAttribute("data-milk-net-v64", tone === "neutral" ? "zero" : tone);
-        }
-
-        if (detailCard) {
-            detailCard.className = "glass-card mb-6 flex justify-between items-center text-white border-none ring-1 ring-white/30 w-full min-w-0 gap-3 milk-detail-total-card-v64";
-            detailCard.setAttribute("data-v99-tone", tone);
-            detailCard.setAttribute("data-v100-tone", tone);
-            detailCard.setAttribute("data-v107-tone", tone);
-            detailCard.setAttribute("data-milk-net-v64", tone === "neutral" ? "zero" : tone);
-            detailCard.style.setProperty("background", `linear-gradient(135deg, ${from}, ${to})`, "important");
-            detailCard.style.setProperty("border-color", color, "important");
-            detailCard.style.setProperty("box-shadow", `0 8px 24px ${glow}`, "important");
-            detailCard.style.setProperty("transition", "transform 80ms cubic-bezier(0.2,0.8,0.2,1), opacity 60ms ease", "important");
-        }
-
-        if (kgEl) {
-            kgEl.textContent = `${Math.abs(netKg).toFixed(2)} KG`;
-            kgEl.style.setProperty("color", "#FFFFFF", "important");
-        }
-
-        if (billEl) {
-            billEl.textContent = `${sign}₹${roundedAmount.toLocaleString('en-IN')}`;
-            billEl.style.setProperty("color", "#FFFFFF", "important");
-        }
+        if (window.aarishRenderMilkRecordsCoreV134) return window.aarishRenderMilkRecordsCoreV134();
+        return;
     }
 
     function openMilkEntryModal() {
@@ -9388,80 +9265,175 @@ window.onload = function(){ setTimeout(function(){ window.focus(); window.print(
 
   window.filterMilkList = function () { renderMilkList(); };
 
-  window.renderMilkRecords = function () {
-    if (!activeMilkCustomer || !milkDB[activeMilkCustomer]) return;
+  window.aarishRenderMilkRecordsCoreV134 = function () {
+    if (!activeMilkCustomer || !milkDB || !milkDB[activeMilkCustomer]) return;
+
     const c = milkDB[activeMilkCustomer];
 
-    const records = monthRecords(c).map((r, i) => ({ ...r, originalIndex: i }))
-      .sort((a,b) => String(b.date || '').localeCompare(String(a.date || '')));
+    const recordsBox = document.getElementById("milk-detail-records");
+    const kgEl = document.getElementById("milk-detail-kg");
+    const billEl = document.getElementById("milk-detail-bill");
+    const screen = document.getElementById("milk-detail-screen");
 
-    const mt = totals(c, true);
-    const isPlus = mt.netAmt >= 0;
+    let detailCard = null;
+    try { if (billEl) detailCard = billEl.closest(".glass-card"); } catch(e) {}
+    if (!detailCard) detailCard = document.querySelector("#milk-detail-screen .milk-detail-total-card-v64");
+    if (!detailCard) detailCard = document.querySelector("#milk-detail-screen .glass-card");
+
+    function n(v) {
+      var x = Number(v);
+      return Number.isFinite(x) ? x : 0;
+    }
+
+    function cleanZero(v) {
+      var x = n(v);
+      return Math.abs(x) < 0.0001 ? 0 : x;
+    }
+
+    function arr(v) {
+      if (Array.isArray(v)) return v.filter(Boolean);
+      if (v && typeof v === "object") return Object.keys(v).map(function(k){ return v[k]; }).filter(Boolean);
+      return [];
+    }
+
+    function monthList(records) {
+      try {
+        if (typeof filterByMonth === "function") return filterByMonth(arr(records)) || [];
+      } catch(e) {}
+      return arr(records);
+    }
+
+    function flowOfV134(record) {
+      try {
+        if (typeof milkFlow === "function") {
+          var mf = String(milkFlow(record, c) || "").toLowerCase();
+          if (mf === "taken" || mf === "negative") return "taken";
+          if (mf === "given" || mf === "positive") return "given";
+        }
+      } catch(e) {}
+
+      var raw = String((record && (record.flow || record.milkFlow || record.direction || record.entryType || record.type || record.mode)) || "").toLowerCase();
+      if (["taken","take","minus","debit","pay","paid","dene_wala","buyer","negative"].indexOf(raw) !== -1) return "taken";
+      if (["given","give","plus","credit","receive","received","lene_wala","seller","positive"].indexOf(raw) !== -1) return "given";
+      return c && c.type === "dene_wala" ? "taken" : "given";
+    }
+
+    function rateFor(record) {
+      return n(record && record.rate) || n(c && c.rate) || n(typeof DEFAULT_RATE !== "undefined" ? DEFAULT_RATE : 55) || 55;
+    }
+
+    function toneFromAmount(v) {
+      var x = cleanZero(v);
+      if (Math.round(Math.abs(x)) === 0) return "neutral";
+      return x > 0 ? "positive" : "negative";
+    }
+
+    function toneColor(tone) {
+      return tone === "positive" ? "#34C759" : (tone === "negative" ? "#FF3B30" : "#007AFF");
+    }
+
+    function toneTo(tone) {
+      return tone === "positive" ? "#28A745" : (tone === "negative" ? "#C92A2A" : "#0A84FF");
+    }
+
+    function toneGlow(tone) {
+      return tone === "positive" ? "rgba(52,199,89,0.30)" : (tone === "negative" ? "rgba(255,59,48,0.30)" : "rgba(0,122,255,0.30)");
+    }
+
+    function fmtDateSafe(v) {
+      try { if (typeof formatDisplayDate === "function") return formatDisplayDate(v); } catch(e) {}
+      try { if (typeof fmtDate === "function") return fmtDate(v); } catch(e) {}
+      return String(v || "-");
+    }
+
+    const records = monthList(c.records).map((r, i) => ({...r, originalIndex: i}))
+      .sort((a,b) => String(b.date || "").localeCompare(String(a.date || "")));
+
+    let netKg = 0;
+    let netAmount = 0;
 
     const html = records.map((r, index) => {
-      const flow = flowOf(r, c);
-      const qty = q(r);
-      const sign = flow === "taken" ? "-" : "+";
-      const color = flow === "taken" ? "#FF3B30" : "#34C759";
+      const qty = n(r.morning) + n(r.evening);
+      const flow = flowOfV134(r);
+      const signedQty = cleanZero(flow === "taken" ? -Math.abs(qty) : Math.abs(qty));
+      const signedAmount = cleanZero(signedQty * rateFor(r));
 
-      return `<tr class="list-enter" style="animation-delay:${index * 0.05}s;">
-        <td>
-          <div class="font-bold">${formatDisplayDate(r.date)}</div>
-          <div class="mt-1">${badge(flow)}</div>
-        </td>
-        <td>${n(r.morning) || "-"}</td>
-        <td>${n(r.evening) || "-"}</td>
-        <td class="font-extrabold" style="color:${color};">${sign}${qty.toFixed(2)}</td>
+      netKg = cleanZero(netKg + signedQty);
+      netAmount = cleanZero(netAmount + signedAmount);
+
+      const rowTone = Math.abs(signedQty) < 0.0001 ? "neutral" : (signedQty > 0 ? "positive" : "negative");
+      const rowColor = toneColor(rowTone);
+      const rowSign = rowTone === "negative" ? "-" : "+";
+      const shadow = rowTone === "positive" ? "rgba(52,199,89,0.22)" : (rowTone === "negative" ? "rgba(255,59,48,0.22)" : "rgba(0,122,255,0.22)");
+
+      return `<tr class="list-enter" data-v99-tone="${rowTone}" data-v100-tone="${rowTone}" data-v107-tone="${rowTone}" style="animation-delay:${index * 0.05}s;">
+        <td style="color:${rowColor}!important;text-shadow:0 0 9px ${shadow}!important;">${fmtDateSafe(r.date)}</td>
+        <td style="color:${rowColor}!important;text-shadow:0 0 9px ${shadow}!important;">${n(r.morning) || "-"}</td>
+        <td style="color:${rowColor}!important;text-shadow:0 0 9px ${shadow}!important;">${n(r.evening) || "-"}</td>
+        <td class="font-extrabold" style="color:${rowColor}!important;text-shadow:0 0 9px ${shadow}!important;">${rowSign}${Math.abs(qty).toFixed(2)}</td>
         <td class="text-right">
-          <button onclick="haptic(); deleteMilkEntry('${r.id}')" class="action-btn shrink-0">
+          <button onclick="haptic(); deleteMilkEntry('${String(r.id || "").replace(/'/g, "\\'")}')" class="action-btn shrink-0">
             <i class="fa-solid fa-trash text-xs"></i>
           </button>
         </td>
       </tr>`;
     }).join("");
 
-    const tbody = document.getElementById("milk-detail-records");
-    if (tbody) tbody.innerHTML = html || `<tr><td colspan="5" class="text-center py-8 text-gray-400 font-semibold">No entries for ${MONTHS[selectedMonth]}</td></tr>`;
+    if (recordsBox) {
+      recordsBox.innerHTML = html || `<tr data-v99-tone="neutral" data-v100-tone="neutral" data-v107-tone="neutral">
+        <td colspan="5" class="text-center py-8 font-extrabold" style="color:#007AFF!important;text-shadow:0 0 10px rgba(0,122,255,0.24)!important;">No entries found</td>
+      </tr>`;
+    }
 
-    const detailCard = document.querySelector("#milk-detail-screen .glass-card");
+    netKg = cleanZero(netKg);
+    netAmount = cleanZero(netAmount);
+
+    const finalTone = toneFromAmount(netAmount);
+    const color = toneColor(finalTone);
+    const to = toneTo(finalTone);
+    const glow = toneGlow(finalTone);
+    const sign = finalTone === "negative" ? "-" : "+";  // zero bhi +₹0
+
+    if (screen) {
+      screen.setAttribute("data-v99-tone", finalTone);
+      screen.setAttribute("data-v100-tone", finalTone);
+      screen.setAttribute("data-v107-tone", finalTone);
+      screen.setAttribute("data-milk-net-v64", finalTone === "neutral" ? "zero" : finalTone);
+    }
+
     if (detailCard) {
-      detailCard.className = isPlus
-        ? "glass-card mb-6 flex justify-between items-center bg-gradient-to-br from-[#34C759] to-[#28a745] text-white border-none shadow-[0_8px_24px_rgba(52,199,89,0.3)] ring-1 ring-white/30 w-full min-w-0 gap-3"
-        : "glass-card mb-6 flex justify-between items-center bg-gradient-to-br from-[#FF3B30] to-[#c92a2a] text-white border-none shadow-[0_8px_24px_rgba(255,59,48,0.3)] ring-1 ring-white/30 w-full min-w-0 gap-3";
+      detailCard.className = "glass-card mb-6 flex justify-between items-center text-white border-none ring-1 ring-white/30 w-full min-w-0 gap-3 milk-detail-total-card-v64";
+      detailCard.setAttribute("data-v99-tone", finalTone);
+      detailCard.setAttribute("data-v100-tone", finalTone);
+      detailCard.setAttribute("data-v107-tone", finalTone);
+      detailCard.setAttribute("data-milk-net-v64", finalTone === "neutral" ? "zero" : finalTone);
+      detailCard.style.setProperty("background", `linear-gradient(135deg, ${color}, ${to})`, "important");
+      detailCard.style.setProperty("border-color", color, "important");
+      detailCard.style.setProperty("box-shadow", `0 8px 24px ${glow}`, "important");
+      detailCard.style.setProperty("transition", "transform 80ms cubic-bezier(0.2,0.8,0.2,1), opacity 60ms ease", "important");
 
       const labels = detailCard.querySelectorAll("p");
-      if (labels[0]) labels[0].textContent = isPlus ? "Net Bill To Receive" : "Net Bill To Pay";
-      if (labels[1]) labels[1].textContent = "Net Milk";
+      if (labels[0]) labels[0].textContent = "MONTH BILL";
+      if (labels[1]) labels[1].textContent = "TOTAL MILK";
     }
 
-    const kgEl = document.getElementById("milk-detail-kg");
-    const billEl = document.getElementById("milk-detail-bill");
-    if (kgEl) kgEl.textContent = signedKg(mt.netKg);
-    if (billEl) billEl.textContent = signedMoney(mt.netAmt);
-
-    let summary = document.getElementById("milk-net-given-taken-summary");
-    if (!summary && detailCard) {
-      summary = document.createElement("div");
-      summary.id = "milk-net-given-taken-summary";
-      summary.className = "grid grid-cols-2 gap-3 mb-5 w-full";
-      detailCard.insertAdjacentElement("afterend", summary);
+    if (kgEl) {
+      kgEl.textContent = Math.abs(netKg).toFixed(2).replace(/\.00$/, "") + " KG";
+      kgEl.style.setProperty("color", "#FFFFFF", "important");
     }
 
-    if (summary) {
-      summary.innerHTML = `
-        <div class="glass-card !rounded-[18px] !p-4 bg-[#34C759]/10 border !border-[#34C759]/20">
-          <p class="text-[10px] font-extrabold uppercase tracking-wider text-[#34C759]">Given</p>
-          <h3 class="text-xl font-extrabold text-[#34C759] mt-1">${mt.givenKg.toFixed(2)} KG</h3>
-          <p class="text-[11px] font-bold text-[#34C759] mt-1">₹${rupeeAbs(mt.givenAmt)}</p>
-        </div>
-        <div class="glass-card !rounded-[18px] !p-4 bg-[#FF3B30]/10 border !border-[#FF3B30]/20">
-          <p class="text-[10px] font-extrabold uppercase tracking-wider text-[#FF3B30]">Taken</p>
-          <h3 class="text-xl font-extrabold text-[#FF3B30] mt-1">${mt.takenKg.toFixed(2)} KG</h3>
-          <p class="text-[11px] font-bold text-[#FF3B30] mt-1">₹${rupeeAbs(mt.takenAmt)}</p>
-        </div>
-      `;
+    if (billEl) {
+      billEl.textContent = `${sign}₹${Math.round(Math.abs(netAmount)).toLocaleString("en-IN")}`;
+      billEl.style.setProperty("color", "#FFFFFF", "important");
     }
+
+    try {
+      var summary = document.getElementById("milk-net-given-taken-summary");
+      if (summary) summary.remove();
+    } catch(e) {}
   };
+window.renderMilkRecords = window.aarishRenderMilkRecordsCoreV134;
+try { Function("fn", "renderMilkRecords = fn;")(window.aarishRenderMilkRecordsCoreV134); } catch(e) {}
 
   window.openMilkEntryModal = function () {
     const dateEl = document.getElementById("milk-entry-date");
@@ -16639,9 +16611,8 @@ scheduleV69();
   }
 
   function renderMilkRecordsV99() {
-    try {
-      renderMilkRecords();
-    } catch(e) {}
+    if (window.aarishRenderMilkRecordsCoreV134) return window.aarishRenderMilkRecordsCoreV134();
+    try { return renderMilkRecords(); } catch(e) {}
   }
 
   function renderSalaryRecordsV99() {
