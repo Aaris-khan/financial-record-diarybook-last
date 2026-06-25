@@ -3738,394 +3738,19 @@
 }
 
 
-/* AARISH_V136_MILK_DARK_LIGHT_PARITY_NATIVE_START
-   Dark mode Milk list now mirrors Light mode Milk list.
-   No JS. No scanner. Existing V113 block adjusted only.
-*/
-.dark #milk-screen #milk-list .aarish-milk-v113-card {
-  position: relative !important;
-  min-height: 118px !important;
-  padding: 22px 18px !important;
-  border-radius: 28px !important;
-  border-left-width: 6px !important;
-  border-left-style: solid !important;
-  border-left-color: var(--milkTone) !important;
-  background:
-    linear-gradient(135deg,
-      var(--milk-v113-dark-card, rgba(2,8,23,0.94)),
-      var(--milk-v113-dark-card-2, rgba(8,17,36,0.92))
-    ) !important;
-  border-top-color: rgba(148,163,184,0.16) !important;
-  border-right-color: rgba(148,163,184,0.16) !important;
-  border-bottom-color: rgba(148,163,184,0.16) !important;
-  box-shadow:
-    -5px 0 18px var(--milkGlow),
-    0 18px 46px rgba(0,0,0,0.54),
-    inset 1px 0 0 var(--milkInset),
-    inset 0 1px 0 rgba(255,255,255,0.07) !important;
-  transform: translate3d(0,0,0) !important;
-  contain: layout style !important;
-}
-
-.dark #milk-screen #milk-list .aarish-milk-v113-card,
-.dark #milk-screen #milk-list .aarish-milk-v113-card *:not(input):not(textarea):not(select):not(button) {
-  color: var(--milkTone) !important;
-  text-shadow: 0 0 12px var(--milkGlow) !important;
-  opacity: 1 !important;
-}
-
-.dark #milk-screen #milk-list .aarish-milk-v113-avatar {
-  background: var(--milkTint) !important;
-  border: 1px solid var(--milkBorder) !important;
-  color: var(--milkTone) !important;
-  box-shadow: inset 0 1px 0 rgba(255,255,255,0.08), 0 10px 28px var(--milkSoft) !important;
-}
-
-.dark #milk-screen #milk-list .aarish-milk-v113-card[data-aarish-milk-v113-tone="positive"] {
-  --milkTone: #34C759;
-  --milkTint: rgba(52,199,89,0.13);
-  --milkBorder: rgba(52,199,89,0.25);
-  --milkGlow: rgba(52,199,89,0.34);
-  --milkInset: rgba(52,199,89,0.52);
-  --milkSoft: rgba(52,199,89,0.13);
-}
-
-.dark #milk-screen #milk-list .aarish-milk-v113-card[data-aarish-milk-v113-tone="negative"] {
-  --milkTone: #FF3B30;
-  --milkTint: rgba(255,59,48,0.13);
-  --milkBorder: rgba(255,59,48,0.25);
-  --milkGlow: rgba(255,59,48,0.34);
-  --milkInset: rgba(255,59,48,0.52);
-  --milkSoft: rgba(255,59,48,0.13);
-}
-
-.dark #milk-screen #milk-list .aarish-milk-v113-card[data-aarish-milk-v113-tone="neutral"] {
-  --milkTone: #007AFF;
-  --milkTint: rgba(0,122,255,0.13);
-  --milkBorder: rgba(0,122,255,0.25);
-  --milkGlow: rgba(0,122,255,0.30);
-  --milkInset: rgba(0,122,255,0.48);
-  --milkSoft: rgba(0,122,255,0.13);
-}
-/* AARISH_V136_MILK_DARK_LIGHT_PARITY_NATIVE_END */
-
-/* AARISH_V138_MILK_DARK_CURVED_STRIPE_START
-   Dark Milk list curved stripe fix.
-   Keeps V136/V137 semantic logic:
-   positive green / negative red / zero blue.
-   Fixes only the left curved stripe thickness/glow like old premium UI.
-   No JS. No scanner. Existing V113 CSS block adjusted only.
-*/
-
-/* Kill ugly straight border-left and draw a premium curved stripe with ::before */
-html.dark body #main-app #milk-screen #milk-list .aarish-milk-v113-card {
-  position: relative !important;
-  overflow: hidden !important;
-  border-left-width: 0 !important;
-  border-left-color: transparent !important;
-  padding-left: 26px !important;
-}
-
-/* Real curved strip: thick, rounded, glowing, semantic */
-html.dark body #main-app #milk-screen #milk-list .aarish-milk-v113-card::before {
-  content: "" !important;
-  position: absolute !important;
-  left: 0 !important;
-  top: 0 !important;
-  bottom: 0 !important;
-  width: 7px !important;
-  border-radius: 28px 0 0 28px !important;
-  background: var(--milkTone, #007AFF) !important;
-  box-shadow:
-    0 0 0 1px var(--milkInset, rgba(0,122,255,0.45)),
-    0 0 18px var(--milkGlow, rgba(0,122,255,0.30)),
-    6px 0 26px var(--milkGlow, rgba(0,122,255,0.30)) !important;
-  opacity: 1 !important;
-  pointer-events: none !important;
-  z-index: 0 !important;
-}
-
-/* Keep content above the stripe */
-html.dark body #main-app #milk-screen #milk-list .aarish-milk-v113-card > * {
-  position: relative !important;
-  z-index: 1 !important;
-}
-
-/* Positive stripe */
-html.dark body #main-app #milk-screen #milk-list .aarish-milk-v113-card[data-aarish-milk-v113-tone="positive"] {
-  --milkTone: #34C759;
-  --milkTint: rgba(52,199,89,0.13);
-  --milkBorder: rgba(52,199,89,0.25);
-  --milkGlow: rgba(52,199,89,0.34);
-  --milkInset: rgba(52,199,89,0.56);
-  --milkSoft: rgba(52,199,89,0.13);
-}
-
-/* Negative stripe */
-html.dark body #main-app #milk-screen #milk-list .aarish-milk-v113-card[data-aarish-milk-v113-tone="negative"] {
-  --milkTone: #FF3B30;
-  --milkTint: rgba(255,59,48,0.13);
-  --milkBorder: rgba(255,59,48,0.25);
-  --milkGlow: rgba(255,59,48,0.34);
-  --milkInset: rgba(255,59,48,0.56);
-  --milkSoft: rgba(255,59,48,0.13);
-}
-
-/* Zero / neutral stripe */
-html.dark body #main-app #milk-screen #milk-list .aarish-milk-v113-card[data-aarish-milk-v113-tone="neutral"] {
-  --milkTone: #007AFF;
-  --milkTint: rgba(0,122,255,0.13);
-  --milkBorder: rgba(0,122,255,0.25);
-  --milkGlow: rgba(0,122,255,0.30);
-  --milkInset: rgba(0,122,255,0.50);
-  --milkSoft: rgba(0,122,255,0.13);
-}
-
-/* Extra fallback if tone attrs are V99/V100 */
-html.dark body #main-app #milk-screen #milk-list .aarish-milk-v113-card[data-v99-tone="positive"],
-html.dark body #main-app #milk-screen #milk-list .aarish-milk-v113-card[data-v100-tone="positive"] {
-  --milkTone: #34C759;
-  --milkGlow: rgba(52,199,89,0.34);
-  --milkInset: rgba(52,199,89,0.56);
-}
-
-html.dark body #main-app #milk-screen #milk-list .aarish-milk-v113-card[data-v99-tone="negative"],
-html.dark body #main-app #milk-screen #milk-list .aarish-milk-v113-card[data-v100-tone="negative"] {
-  --milkTone: #FF3B30;
-  --milkGlow: rgba(255,59,48,0.34);
-  --milkInset: rgba(255,59,48,0.56);
-}
-
-html.dark body #main-app #milk-screen #milk-list .aarish-milk-v113-card[data-v99-tone="neutral"],
-html.dark body #main-app #milk-screen #milk-list .aarish-milk-v113-card[data-v100-tone="neutral"],
-html.dark body #main-app #milk-screen #milk-list .aarish-milk-v113-card[data-v100-tone="blue"] {
-  --milkTone: #007AFF;
-  --milkGlow: rgba(0,122,255,0.30);
-  --milkInset: rgba(0,122,255,0.50);
-}
-
-@media (max-width: 380px) {
-  html.dark body #main-app #milk-screen #milk-list .aarish-milk-v113-card::before {
-    width: 6.5px !important;
-  }
-
-  html.dark body #main-app #milk-screen #milk-list .aarish-milk-v113-card {
-    padding-left: 24px !important;
-  }
-}
-/* AARISH_V138_MILK_DARK_CURVED_STRIPE_END */
-
-/* AARISH_V139_MILK_LIGHT_SURFACE_RESTORE_START
-   Light mode Milk list must stay premium white.
-   Dark mode Milk list stays premium dark.
-   Semantic logic same: green/red/blue text + stripe.
-   No JS. No scanner. Existing V113 block only.
-*/
-html:not(.dark) body #main-app #milk-screen #milk-list .aarish-milk-v113-card {
-  position: relative !important;
-  overflow: hidden !important;
-  min-height: 118px !important;
-  padding: 22px 18px 22px 26px !important;
-  border-radius: 28px !important;
-
-  /* Light mode card surface: white premium, never dark */
-  background: rgba(255,255,255,0.92) !important;
-  border-left-width: 0 !important;
-  border-left-color: transparent !important;
-  border-top-color: rgba(255,255,255,0.72) !important;
-  border-right-color: rgba(255,255,255,0.72) !important;
-  border-bottom-color: rgba(255,255,255,0.72) !important;
-
-  box-shadow:
-    -4px 0 14px var(--milkGlow),
-    0 14px 34px rgba(15,23,42,0.08),
-    inset 1px 0 0 var(--milkInset),
-    inset 0 1px 0 rgba(255,255,255,0.72) !important;
-
-  transform: translate3d(0,0,0) !important;
-  contain: layout style !important;
-}
-
-/* Light mode curved stripe like the correct screenshot */
-html:not(.dark) body #main-app #milk-screen #milk-list .aarish-milk-v113-card::before {
-  content: "" !important;
-  position: absolute !important;
-  left: 0 !important;
-  top: 0 !important;
-  bottom: 0 !important;
-  width: 6px !important;
-  border-radius: 28px 0 0 28px !important;
-  background: var(--milkTone, #007AFF) !important;
-  box-shadow:
-    0 0 0 1px var(--milkInset, rgba(0,122,255,0.40)),
-    0 0 16px var(--milkGlow, rgba(0,122,255,0.24)),
-    5px 0 22px var(--milkGlow, rgba(0,122,255,0.24)) !important;
-  pointer-events: none !important;
-  z-index: 0 !important;
-}
-
-html:not(.dark) body #main-app #milk-screen #milk-list .aarish-milk-v113-card > * {
-  position: relative !important;
-  z-index: 1 !important;
-}
-
-html:not(.dark) body #main-app #milk-screen #milk-list .aarish-milk-v113-card,
-html:not(.dark) body #main-app #milk-screen #milk-list .aarish-milk-v113-card *:not(input):not(textarea):not(select):not(button) {
-  color: var(--milkTone) !important;
-  text-shadow: 0 0 10px var(--milkGlow) !important;
-  opacity: 1 !important;
-}
-
-html:not(.dark) body #main-app #milk-screen #milk-list .aarish-milk-v113-avatar {
-  background: var(--milkTint) !important;
-  border: 1px solid var(--milkBorder) !important;
-  color: var(--milkTone) !important;
-  box-shadow:
-    inset 0 1px 0 rgba(255,255,255,0.64),
-    0 10px 24px var(--milkSoft) !important;
-}
-
-/* Light positive */
-html:not(.dark) body #main-app #milk-screen #milk-list .aarish-milk-v113-card[data-aarish-milk-v113-tone="positive"],
-html:not(.dark) body #main-app #milk-screen #milk-list .aarish-milk-v113-card[data-v99-tone="positive"],
-html:not(.dark) body #main-app #milk-screen #milk-list .aarish-milk-v113-card[data-v100-tone="positive"] {
-  --milkTone: #34C759;
-  --milkTint: rgba(52,199,89,0.12);
-  --milkBorder: rgba(52,199,89,0.24);
-  --milkGlow: rgba(52,199,89,0.24);
-  --milkInset: rgba(52,199,89,0.46);
-  --milkSoft: rgba(52,199,89,0.12);
-}
-
-/* Light negative */
-html:not(.dark) body #main-app #milk-screen #milk-list .aarish-milk-v113-card[data-aarish-milk-v113-tone="negative"],
-html:not(.dark) body #main-app #milk-screen #milk-list .aarish-milk-v113-card[data-v99-tone="negative"],
-html:not(.dark) body #main-app #milk-screen #milk-list .aarish-milk-v113-card[data-v100-tone="negative"] {
-  --milkTone: #FF3B30;
-  --milkTint: rgba(255,59,48,0.12);
-  --milkBorder: rgba(255,59,48,0.24);
-  --milkGlow: rgba(255,59,48,0.24);
-  --milkInset: rgba(255,59,48,0.46);
-  --milkSoft: rgba(255,59,48,0.12);
-}
-
-/* Light zero / neutral */
-html:not(.dark) body #main-app #milk-screen #milk-list .aarish-milk-v113-card[data-aarish-milk-v113-tone="neutral"],
-html:not(.dark) body #main-app #milk-screen #milk-list .aarish-milk-v113-card[data-v99-tone="neutral"],
-html:not(.dark) body #main-app #milk-screen #milk-list .aarish-milk-v113-card[data-v100-tone="neutral"],
-html:not(.dark) body #main-app #milk-screen #milk-list .aarish-milk-v113-card[data-v100-tone="blue"] {
-  --milkTone: #007AFF;
-  --milkTint: rgba(0,122,255,0.12);
-  --milkBorder: rgba(0,122,255,0.24);
-  --milkGlow: rgba(0,122,255,0.22);
-  --milkInset: rgba(0,122,255,0.42);
-  --milkSoft: rgba(0,122,255,0.12);
-}
-
-/* Dark mode explicit safety: card surface stays dark */
-html.dark body #main-app #milk-screen #milk-list .aarish-milk-v113-card {
-  background:
-    linear-gradient(135deg,
-      var(--milk-v113-dark-card, rgba(2,8,23,0.94)),
-      var(--milk-v113-dark-card-2, rgba(8,17,36,0.92))
-    ) !important;
-  border-top-color: rgba(148,163,184,0.16) !important;
-  border-right-color: rgba(148,163,184,0.16) !important;
-  border-bottom-color: rgba(148,163,184,0.16) !important;
-}
-
-@media (max-width: 380px) {
-  html:not(.dark) body #main-app #milk-screen #milk-list .aarish-milk-v113-card::before {
-    width: 5.8px !important;
-  }
-  html:not(.dark) body #main-app #milk-screen #milk-list .aarish-milk-v113-card {
-    padding-left: 24px !important;
-  }
-}
-/* AARISH_V139_MILK_LIGHT_SURFACE_RESTORE_END */
 
 
 
-/* AARISH_V136_MILK_DARK_LIGHT_PARITY_NATIVE_START
-   Dark mode Milk list uses old premium dark-glass surface.
-   V136 semantic colors/stripe remain:
-   positive green / negative red / zero blue.
-   No JS. No scanner. Existing V113 block adjusted only.
-*/
-.dark #milk-screen #milk-list .aarish-milk-v113-card {
-  position: relative !important;
-  min-height: 118px !important;
-  padding: 22px 18px !important;
-  border-radius: 28px !important;
-  border-left-width: 6px !important;
-  border-left-style: solid !important;
-  border-left-color: var(--milkTone) !important;
-  overflow: hidden !important;
 
-  /* IMPORTANT: dark mode card surface must stay dark, not light-mode white */
-  background:
-    linear-gradient(135deg,
-      var(--milk-v113-dark-card, rgba(2,8,23,0.94)),
-      var(--milk-v113-dark-card-2, rgba(8,17,36,0.92))
-    ) !important;
 
-  border-top-color: rgba(148,163,184,0.16) !important;
-  border-right-color: rgba(148,163,184,0.16) !important;
-  border-bottom-color: rgba(148,163,184,0.16) !important;
 
-  box-shadow:
-    -5px 0 22px var(--milkGlow),
-    0 18px 46px rgba(0,0,0,0.54),
-    inset 1px 0 0 var(--milkInset),
-    inset 0 1px 0 rgba(255,255,255,0.07) !important;
 
-  transform: translate3d(0,0,0) !important;
-  contain: layout style !important;
-}
 
-.dark #milk-screen #milk-list .aarish-milk-v113-card,
-.dark #milk-screen #milk-list .aarish-milk-v113-card *:not(input):not(textarea):not(select):not(button) {
-  color: var(--milkTone) !important;
-  text-shadow: 0 0 12px var(--milkGlow) !important;
-  opacity: 1 !important;
-}
 
-.dark #milk-screen #milk-list .aarish-milk-v113-avatar {
-  background: var(--milkTint) !important;
-  border: 1px solid var(--milkBorder) !important;
-  color: var(--milkTone) !important;
-  box-shadow:
-    inset 0 1px 0 rgba(255,255,255,0.08),
-    0 10px 28px var(--milkSoft) !important;
-}
 
-.dark #milk-screen #milk-list .aarish-milk-v113-card[data-aarish-milk-v113-tone="positive"] {
-  --milkTone: #34C759;
-  --milkTint: rgba(52,199,89,0.13);
-  --milkBorder: rgba(52,199,89,0.25);
-  --milkGlow: rgba(52,199,89,0.34);
-  --milkInset: rgba(52,199,89,0.52);
-  --milkSoft: rgba(52,199,89,0.13);
-}
 
-.dark #milk-screen #milk-list .aarish-milk-v113-card[data-aarish-milk-v113-tone="negative"] {
-  --milkTone: #FF3B30;
-  --milkTint: rgba(255,59,48,0.13);
-  --milkBorder: rgba(255,59,48,0.25);
-  --milkGlow: rgba(255,59,48,0.34);
-  --milkInset: rgba(255,59,48,0.52);
-  --milkSoft: rgba(255,59,48,0.13);
-}
 
-.dark #milk-screen #milk-list .aarish-milk-v113-card[data-aarish-milk-v113-tone="neutral"] {
-  --milkTone: #007AFF;
-  --milkTint: rgba(0,122,255,0.13);
-  --milkBorder: rgba(0,122,255,0.25);
-  --milkGlow: rgba(0,122,255,0.30);
-  --milkInset: rgba(0,122,255,0.48);
-  --milkSoft: rgba(0,122,255,0.13);
-}
-/* AARISH_V136_MILK_DARK_LIGHT_PARITY_NATIVE_END */
+
 @media (max-width: 380px) {
   #milk-screen #milk-list .aarish-milk-v113-card,
   .dark #milk-screen #milk-list .aarish-milk-v113-card {
@@ -4152,6 +3777,196 @@ html.dark body #main-app #milk-screen #milk-list .aarish-milk-v113-card {
     font-size: 19px !important;
   }
 }
+
+
+/* AARISH_V141_MILK_CARD_FINAL_RESCUE_START
+   Final Milk list card rescue:
+   - Light mode = compact premium WHITE card
+   - Dark mode = compact premium DARK card
+   - Stripe = clean curved LEFT BORDER, not pseudo/cut line
+   - Size matches Credit/Salary compact cards
+   - Semantic logic untouched: positive green / negative red / zero blue
+   - No JS, no scanner, no MutationObserver
+*/
+
+/* kill all broken pseudo stripes */
+#milk-screen #milk-list .aarish-milk-v113-card::before,
+.dark #milk-screen #milk-list .aarish-milk-v113-card::before,
+html.dark body #main-app #milk-screen #milk-list .aarish-milk-v113-card::before,
+html:not(.dark) body #main-app #milk-screen #milk-list .aarish-milk-v113-card::before {
+  content: none !important;
+  display: none !important;
+}
+
+/* same compact card size in both modes */
+#milk-screen #milk-list .aarish-milk-v113-card,
+.dark #milk-screen #milk-list .aarish-milk-v113-card,
+html.dark body #main-app #milk-screen #milk-list .aarish-milk-v113-card,
+html:not(.dark) body #main-app #milk-screen #milk-list .aarish-milk-v113-card {
+  position: relative !important;
+  min-height: 88px !important;
+  padding: 14px 14px 14px 17px !important;
+  border-radius: 22px !important;
+  border-left-width: 5px !important;
+  border-left-style: solid !important;
+  border-left-color: var(--milkTone, #007AFF) !important;
+  overflow: hidden !important;
+  transform: translate3d(0,0,0) !important;
+  contain: layout style !important;
+  transition-property: transform, opacity !important;
+}
+
+/* light mode surface must be white */
+html:not(.dark) body #main-app #milk-screen #milk-list .aarish-milk-v113-card {
+  background: rgba(255,255,255,0.94) !important;
+  border-top-color: rgba(255,255,255,0.78) !important;
+  border-right-color: rgba(255,255,255,0.78) !important;
+  border-bottom-color: rgba(255,255,255,0.78) !important;
+  box-shadow:
+    -5px 0 18px var(--milkGlow, rgba(0,122,255,0.22)),
+    0 10px 24px rgba(15,23,42,0.07),
+    inset 1px 0 0 var(--milkInset, rgba(0,122,255,0.42)),
+    inset 0 1px 0 rgba(255,255,255,0.72) !important;
+}
+
+/* dark mode surface must be dark */
+html.dark body #main-app #milk-screen #milk-list .aarish-milk-v113-card {
+  background:
+    linear-gradient(135deg, rgba(2,8,23,0.94), rgba(8,17,36,0.92)) !important;
+  border-top-color: rgba(148,163,184,0.16) !important;
+  border-right-color: rgba(148,163,184,0.16) !important;
+  border-bottom-color: rgba(148,163,184,0.16) !important;
+  box-shadow:
+    -5px 0 20px var(--milkGlow, rgba(0,122,255,0.30)),
+    0 14px 34px rgba(0,0,0,0.48),
+    inset 1px 0 0 var(--milkInset, rgba(0,122,255,0.50)),
+    inset 0 1px 0 rgba(255,255,255,0.07) !important;
+}
+
+/* text follows same semantic tone */
+#milk-screen #milk-list .aarish-milk-v113-card,
+#milk-screen #milk-list .aarish-milk-v113-card *:not(input):not(textarea):not(select):not(button),
+.dark #milk-screen #milk-list .aarish-milk-v113-card,
+.dark #milk-screen #milk-list .aarish-milk-v113-card *:not(input):not(textarea):not(select):not(button) {
+  color: var(--milkTone, #007AFF) !important;
+  text-shadow: 0 0 10px var(--milkGlow, rgba(0,122,255,0.24)) !important;
+  opacity: 1 !important;
+}
+
+/* avatar compact */
+#milk-screen #milk-list .aarish-milk-v113-avatar,
+.dark #milk-screen #milk-list .aarish-milk-v113-avatar {
+  width: 46px !important;
+  height: 46px !important;
+  min-width: 46px !important;
+  min-height: 46px !important;
+  border-radius: 16px !important;
+  font-size: 19px !important;
+  background: var(--milkTint, rgba(0,122,255,0.12)) !important;
+  border: 1px solid var(--milkBorder, rgba(0,122,255,0.24)) !important;
+  color: var(--milkTone, #007AFF) !important;
+}
+
+html:not(.dark) body #main-app #milk-screen #milk-list .aarish-milk-v113-avatar {
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.66), 0 8px 18px var(--milkSoft, rgba(0,122,255,0.10)) !important;
+}
+
+html.dark body #main-app #milk-screen #milk-list .aarish-milk-v113-avatar {
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.08), 0 10px 24px var(--milkSoft, rgba(0,122,255,0.13)) !important;
+}
+
+/* compact text */
+#milk-screen #milk-list .aarish-milk-v113-name,
+.dark #milk-screen #milk-list .aarish-milk-v113-name {
+  font-size: 17px !important;
+  line-height: 1.08 !important;
+  font-weight: 900 !important;
+}
+
+#milk-screen #milk-list .aarish-milk-v113-meta,
+.dark #milk-screen #milk-list .aarish-milk-v113-meta {
+  font-size: 13px !important;
+  line-height: 1.18 !important;
+  font-weight: 850 !important;
+}
+
+#milk-screen #milk-list .aarish-milk-v113-amount,
+.dark #milk-screen #milk-list .aarish-milk-v113-amount {
+  font-size: 18px !important;
+  line-height: 1.12 !important;
+  font-weight: 950 !important;
+}
+
+/* positive */
+#milk-screen #milk-list .aarish-milk-v113-card[data-aarish-milk-v113-tone="positive"],
+#milk-screen #milk-list .aarish-milk-v113-card[data-v99-tone="positive"],
+#milk-screen #milk-list .aarish-milk-v113-card[data-v100-tone="positive"],
+.dark #milk-screen #milk-list .aarish-milk-v113-card[data-aarish-milk-v113-tone="positive"],
+.dark #milk-screen #milk-list .aarish-milk-v113-card[data-v99-tone="positive"],
+.dark #milk-screen #milk-list .aarish-milk-v113-card[data-v100-tone="positive"] {
+  --milkTone: #34C759;
+  --milkTint: rgba(52,199,89,0.13);
+  --milkBorder: rgba(52,199,89,0.25);
+  --milkGlow: rgba(52,199,89,0.26);
+  --milkInset: rgba(52,199,89,0.50);
+  --milkSoft: rgba(52,199,89,0.12);
+}
+
+/* negative */
+#milk-screen #milk-list .aarish-milk-v113-card[data-aarish-milk-v113-tone="negative"],
+#milk-screen #milk-list .aarish-milk-v113-card[data-v99-tone="negative"],
+#milk-screen #milk-list .aarish-milk-v113-card[data-v100-tone="negative"],
+.dark #milk-screen #milk-list .aarish-milk-v113-card[data-aarish-milk-v113-tone="negative"],
+.dark #milk-screen #milk-list .aarish-milk-v113-card[data-v99-tone="negative"],
+.dark #milk-screen #milk-list .aarish-milk-v113-card[data-v100-tone="negative"] {
+  --milkTone: #FF3B30;
+  --milkTint: rgba(255,59,48,0.13);
+  --milkBorder: rgba(255,59,48,0.25);
+  --milkGlow: rgba(255,59,48,0.26);
+  --milkInset: rgba(255,59,48,0.50);
+  --milkSoft: rgba(255,59,48,0.12);
+}
+
+/* neutral / zero */
+#milk-screen #milk-list .aarish-milk-v113-card[data-aarish-milk-v113-tone="neutral"],
+#milk-screen #milk-list .aarish-milk-v113-card[data-v99-tone="neutral"],
+#milk-screen #milk-list .aarish-milk-v113-card[data-v100-tone="neutral"],
+#milk-screen #milk-list .aarish-milk-v113-card[data-v100-tone="blue"],
+.dark #milk-screen #milk-list .aarish-milk-v113-card[data-aarish-milk-v113-tone="neutral"],
+.dark #milk-screen #milk-list .aarish-milk-v113-card[data-v99-tone="neutral"],
+.dark #milk-screen #milk-list .aarish-milk-v113-card[data-v100-tone="neutral"],
+.dark #milk-screen #milk-list .aarish-milk-v113-card[data-v100-tone="blue"] {
+  --milkTone: #007AFF;
+  --milkTint: rgba(0,122,255,0.13);
+  --milkBorder: rgba(0,122,255,0.25);
+  --milkGlow: rgba(0,122,255,0.24);
+  --milkInset: rgba(0,122,255,0.46);
+  --milkSoft: rgba(0,122,255,0.12);
+}
+
+@media (max-width: 380px) {
+  #milk-screen #milk-list .aarish-milk-v113-card,
+  .dark #milk-screen #milk-list .aarish-milk-v113-card,
+  html.dark body #main-app #milk-screen #milk-list .aarish-milk-v113-card,
+  html:not(.dark) body #main-app #milk-screen #milk-list .aarish-milk-v113-card {
+    min-height: 84px !important;
+    padding: 13px 13px 13px 16px !important;
+    border-radius: 21px !important;
+    border-left-width: 5px !important;
+  }
+
+  #milk-screen #milk-list .aarish-milk-v113-avatar,
+  .dark #milk-screen #milk-list .aarish-milk-v113-avatar {
+    width: 44px !important;
+    height: 44px !important;
+    min-width: 44px !important;
+    min-height: 44px !important;
+    border-radius: 15px !important;
+    font-size: 18px !important;
+  }
+}
+/* AARISH_V141_MILK_CARD_FINAL_RESCUE_END */
+
 </style>
 <style id="aarish-v114-milk-compact-net-button-css">
 /* AARISH V114
