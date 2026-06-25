@@ -5061,8 +5061,8 @@ html:not(.dark) #credit-entry-btn-v52[data-credit-net-v128] * {
         </div>
         <div class="p-5">
             <div class="relative w-full mb-6">
-                <i class="fa-solid fa-search absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
-                <input id="salary-search" type="text" placeholder="Search name..." class="input-box w-full pl-11" onkeyup="filterSalaryList()">
+                <i class="fa-solid fa-search absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400" style="color:#007AFF!important;-webkit-text-fill-color:#007AFF!important;text-shadow:0 0 10px rgba(0,122,255,0.28)!important;"></i>
+                <input id="salary-search" type="text" placeholder="Search name..." class="input-box w-full pl-11" onkeyup="filterSalaryList()" style="color:#007AFF!important;-webkit-text-fill-color:#007AFF!important;caret-color:#007AFF!important;">
             </div>
             <div id="salary-list" class="space-y-3.5 w-full"></div>
         </div>
@@ -5077,8 +5077,8 @@ html:not(.dark) #credit-entry-btn-v52[data-credit-net-v128] * {
         </div>
         <div class="p-5">
             <div class="flex gap-2 mb-5 w-full">
-                <select id="filter-month-salary" class="input-box flex-1 min-w-0 py-2 px-4 text-[15px] font-semibold truncate cursor-pointer" onchange="updateMonthFilter()"></select>
-                <select id="filter-year-salary" class="input-box w-[100px] shrink-0 py-2 px-4 text-[15px] font-semibold cursor-pointer" onchange="updateMonthFilter()"></select>
+                <select id="filter-month-salary" class="input-box flex-1 min-w-0 py-2 px-4 text-[15px] font-semibold truncate cursor-pointer" onchange="updateMonthFilter()" style="color:#007AFF!important;-webkit-text-fill-color:#007AFF!important;text-shadow:0 0 10px rgba(0,122,255,0.28)!important;"></select>
+                <select id="filter-year-salary" class="input-box w-[100px] shrink-0 py-2 px-4 text-[15px] font-semibold cursor-pointer" onchange="updateMonthFilter()" style="color:#007AFF!important;-webkit-text-fill-color:#007AFF!important;text-shadow:0 0 10px rgba(0,122,255,0.28)!important;"></select>
             </div>
 
             <div class="glass-card mb-6 flex justify-between items-center bg-gradient-to-br from-[#10B981] to-[#059669] text-white border-none shadow-[0_8px_24px_rgba(16,185,129,0.3)] ring-1 ring-white/30 w-full min-w-0 gap-3">
@@ -5089,7 +5089,7 @@ html:not(.dark) #credit-entry-btn-v52[data-credit-net-v128] * {
             </div>
             
             <div class="flex justify-between items-center mb-4 w-full min-w-0 gap-2">
-                <h3 class="font-bold text-[19px] tracking-tight truncate flex-1 min-w-0">Daily Entries</h3>
+                <h3 class="font-bold text-[19px] tracking-tight truncate flex-1 min-w-0" style="color:#007AFF!important;-webkit-text-fill-color:#007AFF!important;text-shadow:0 0 10px rgba(0,122,255,0.28)!important;">Daily Entries</h3>
                 <div class="flex gap-2 shrink-0">
                     <button onclick="haptic(); shareSalaryBill(activeSalaryPerson)" class="btn-ios-share"><i class="fa-solid fa-arrow-up-right-from-square"></i> Share</button>
                     <button onclick="haptic(); openSalaryEntryModal(activeSalaryPerson)" class="btn-ios-add !bg-[#10B981]/10 !text-[#10B981] !border-[#10B981]/20"><i class="fa-solid fa-plus"></i> Add</button>
@@ -5099,7 +5099,7 @@ html:not(.dark) #credit-entry-btn-v52[data-credit-net-v128] * {
             <div class="glass-card p-0 overflow-x-auto w-full ring-1 ring-white/40 dark:ring-white/5">
                 <table class="table-custom min-w-full">
                     <thead class="bg-black/5 dark:bg-white/5">
-                        <tr><th>Date</th><th>Amount</th><th class="text-right"></th></tr>
+                        <tr><th style="color:#007AFF!important;-webkit-text-fill-color:#007AFF!important;text-shadow:0 0 10px rgba(0,122,255,0.28)!important;">Date</th><th style="color:#007AFF!important;-webkit-text-fill-color:#007AFF!important;text-shadow:0 0 10px rgba(0,122,255,0.28)!important;">Amount</th><th class="text-right"></th></tr>
                     </thead>
                     <tbody id="salary-detail-records"></tbody>
                 </table>
@@ -6905,70 +6905,7 @@ function filterSalaryList() {
             title.style.setProperty('-webkit-text-fill-color', salaryDetailColorV164, 'important');
             title.style.setProperty('text-shadow', salaryDetailShadowV164, 'important');
         }
-
-        /* AARISH_SALARY_DETAIL_STATIC_COLORS_V164_START */
-        try {
-            const salaryDetailBlueV164 = '#007AFF';
-            const salaryDetailBlueShadowV164 = '0 0 10px rgba(0,122,255,0.28)';
-            const paintSalaryBlueV164 = (el) => {
-                try {
-                    if (!el || !el.style) return;
-                    el.style.setProperty('color', salaryDetailBlueV164, 'important');
-                    el.style.setProperty('-webkit-text-fill-color', salaryDetailBlueV164, 'important');
-                    el.style.setProperty('text-shadow', salaryDetailBlueShadowV164, 'important');
-                } catch(e) {}
-            };
-
-            ['filter-month-salary', 'filter-year-salary'].forEach(id => {
-                paintSalaryBlueV164(document.getElementById(id));
-            });
-
-            const salaryScreenV164 = document.getElementById('salary-detail-screen');
-            if (salaryScreenV164) {
-                salaryScreenV164.querySelectorAll('h1,h2,h3,h4,p,span,div,label,th').forEach(el => {
-                    const txt = String(el.textContent || '').replace(/\s+/g, ' ').trim();
-                    const up = txt.toUpperCase();
-                    if (txt === 'Daily Entries' || up === 'DATE' || up === 'AMOUNT') {
-                        paintSalaryBlueV164(el);
-                    }
-                });
-
-                salaryScreenV164.querySelectorAll('th').forEach(th => {
-                    const up = String(th.textContent || '').replace(/\s+/g, ' ').trim().toUpperCase();
-                    if (up === 'DATE' || up === 'AMOUNT') paintSalaryBlueV164(th);
-                });
-
-                salaryScreenV164.querySelectorAll('button').forEach(btn => {
-                    const txt = String(btn.textContent || '').toLowerCase();
-                    const oc = String(btn.getAttribute('onclick') || '').toLowerCase();
-
-                    if (txt.includes('share') || oc.includes('share')) {
-                        btn.style.setProperty('color', '#007AFF', 'important');
-                        btn.style.setProperty('-webkit-text-fill-color', '#007AFF', 'important');
-                        btn.style.setProperty('background-color', 'rgba(0,122,255,0.08)', 'important');
-                        btn.style.setProperty('border-color', 'rgba(0,122,255,0.22)', 'important');
-                        try { btn.querySelectorAll('*').forEach(x => {
-                            x.style.setProperty('color', '#007AFF', 'important');
-                            x.style.setProperty('-webkit-text-fill-color', '#007AFF', 'important');
-                        }); } catch(e) {}
-                    }
-
-                    if (txt.includes('add') || oc.includes('opensalaryentrymodal') || oc.includes('salaryentry')) {
-                        btn.style.setProperty('background', 'linear-gradient(135deg, #34C759, #22C55E)', 'important');
-                        btn.style.setProperty('border-color', 'transparent', 'important');
-                        btn.style.setProperty('box-shadow', '0 8px 22px rgba(52,199,89,0.30)', 'important');
-                        btn.style.setProperty('color', '#FFFFFF', 'important');
-                        btn.style.setProperty('-webkit-text-fill-color', '#FFFFFF', 'important');
-                        try { btn.querySelectorAll('*').forEach(x => {
-                            x.style.setProperty('color', '#FFFFFF', 'important');
-                            x.style.setProperty('-webkit-text-fill-color', '#FFFFFF', 'important');
-                        }); } catch(e) {}
-                    }
-                });
-            }
-        } catch(e) {}
-        /* AARISH_SALARY_DETAIL_STATIC_COLORS_V164_END */
-    }
+}
 
 
 
