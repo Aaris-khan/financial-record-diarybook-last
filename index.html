@@ -2328,6 +2328,71 @@
 }
 /* AARISH_V144_EXPENSE_MILK_STYLE_END */
 
+
+/* AARISH_V145_EXPENSE_DETAIL_FINAL_CSS_START
+   Expense final color fix:
+   - All Entries permanent premium blue
+   - DATE/AMOUNT headers permanent blue
+   - Every expense row date + amount permanent red
+   - Delete permanent red
+   - No size/layout changes
+*/
+
+/* All Entries must be blue in light + dark */
+#expense-detail-screen [data-expense-all-entries-v145="true"],
+#expense-detail-screen .all-entries-title-v145 {
+  color: #007AFF !important;
+  text-shadow: 0 0 10px rgba(0,122,255,0.24) !important;
+  transition-property: transform, opacity !important;
+}
+
+/* Table headers permanent blue */
+#expense-detail-screen :is(
+  .table-custom th,
+  table th,
+  th[data-expense-fixed-blue-v145="true"],
+  [data-expense-fixed-blue-v145="true"]
+) {
+  color: #007AFF !important;
+  text-shadow: 0 0 10px rgba(0,122,255,0.22) !important;
+  transition-property: transform, opacity !important;
+}
+
+/* Row date + amount red before paint */
+#expense-detail-records tr[data-expense-row-tone-v145="negative"] td:not(:last-child),
+#expense-detail-records tr[data-expense-row-tone-v145="negative"] td:not(:last-child) *,
+#expense-detail-records .expense-date-v145,
+#expense-detail-records .expense-amount-v145 {
+  color: #FF3B30 !important;
+  text-shadow: 0 0 9px rgba(255,59,48,0.22) !important;
+}
+
+/* Delete stays permanent red */
+#expense-detail-records .expense-delete-cell-v145,
+#expense-detail-records .expense-delete-cell-v145 *,
+#expense-detail-records .expense-delete-btn-v145,
+#expense-detail-records .expense-delete-btn-v145 *,
+#expense-detail-records .expense-delete-icon-v145,
+#expense-detail-screen :is(.action-btn,.action-btn *,i.fa-trash) {
+  color: #FF3B30 !important;
+  text-shadow: 0 0 9px rgba(255,59,48,0.24) !important;
+}
+
+#expense-detail-records .expense-delete-btn-v145,
+#expense-detail-screen .action-btn {
+  background: rgba(255,59,48,0.10) !important;
+  border-color: rgba(255,59,48,0.18) !important;
+  box-shadow: 0 8px 18px rgba(255,59,48,0.13) !important;
+  transition-property: transform, opacity !important;
+}
+
+/* Empty state blue */
+#expense-detail-records tr[data-expense-empty-v145="true"] td {
+  color: #007AFF !important;
+  text-shadow: 0 0 10px rgba(0,122,255,0.24) !important;
+}
+/* AARISH_V145_EXPENSE_DETAIL_FINAL_CSS_END */
+
 </style>
 
 
@@ -7946,25 +8011,168 @@ async function deleteExpenseCategoryProfile(category) {
     }
 
 
-    function renderExpenseRecords() {
-        if (!activeExpenseCategory) return;
+    
+/* AARISH_V145_EXPENSE_DETAIL_FINAL_JS_START */
+window.renderExpenseRecordsCoreV145 = function () {
+    if (!activeExpenseCategory) return;
 
-        var RED = "#FF3B30";
-        var BLUE = "#007AFF";
+    var RED = "#FF3B30";
+    var BLUE = "#007AFF";
 
-        function n(v) {
-            var x = Number(v);
-            return Number.isFinite(x) ? x : 0;
-        }
+    function n(v) {
+        var x = Number(v);
+        return Number.isFinite(x) ? x : 0;
+    }
 
-        function money(v) {
-            return "₹" + Math.abs(Math.round(n(v))).toLocaleString("en-IN");
-        }
+    function money(v) {
+        return "₹" + Math.abs(Math.round(n(v))).toLocaleString("en-IN");
+    }
 
-        function esc(v) {
-            return String(v == null ? "" : v).replace(/[&<>"']/g, function(ch) {
-                return {"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[ch];
+    function esc(v) {
+        return String(v == null ? "" : v).replace(/[&<>"']/g, function(ch) {
+            return {"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[ch];
+        });
+    }
+
+    function jsArg(v) {
+        return JSON.stringify(String(v == null ? "" : v)).replace(/"/g, "&quot;");
+    }
+
+    function fmtDate(v) {
+        try { if (typeof formatDisplayDate === "function") return formatDisplayDate(v); } catch(e) {}
+        return String(v || "-");
+    }
+
+    function setText(el, color, glow) {
+        if (!el || !el.style) return;
+        el.style.setProperty("color", color, "important");
+        el.style.setProperty("text-shadow", glow || ("0 0 10px " + (color === RED ? "rgba(255,59,48,0.24)" : "rgba(0,122,255,0.24)")), "important");
+        el.style.setProperty("transition", "transform 80ms cubic-bezier(0.2,0.8,0.2,1), opacity 60ms ease", "important");
+    }
+
+    function markExpenseStaticUiV145() {
+        try {
+            var screen = document.getElementById("expense-detail-screen");
+            if (!screen) return;
+
+            screen.querySelectorAll("h1,h2,h3,h4,div,p,span").forEach(function(el) {
+                var txt = String(el.textContent || "").replace(/\s+/g, " ").trim().toLowerCase();
+                if (txt === "all entries" || txt === "all entry") {
+                    el.classList.add("all-entries-title-v145");
+                    el.setAttribute("data-expense-all-entries-v145", "true");
+                    setText(el, BLUE);
+                }
             });
+
+            screen.querySelectorAll("th").forEach(function(th) {
+                th.setAttribute("data-expense-fixed-blue-v145", "true");
+                setText(th, BLUE);
+            });
+
+            screen.querySelectorAll("button").forEach(function(btn) {
+                var txt = String(btn.textContent || "").replace(/\s+/g, " ").trim().toLowerCase();
+                var oc = String(btn.getAttribute("onclick") || "").toLowerCase();
+
+                if (txt.indexOf("share") !== -1 || oc.indexOf("share") !== -1) {
+                    btn.setAttribute("data-expense-share-v144", "true");
+                    btn.style.setProperty("color", BLUE, "important");
+                    btn.style.setProperty("border-color", "rgba(0,122,255,0.22)", "important");
+                    btn.style.setProperty("background-color", "rgba(0,122,255,0.08)", "important");
+                    btn.style.setProperty("box-shadow", "0 8px 18px rgba(0,122,255,0.14)", "important");
+                    try { btn.querySelectorAll("*").forEach(function(x){ x.style.setProperty("color", BLUE, "important"); }); } catch(e) {}
+                }
+
+                if (txt.indexOf("add") !== -1 || oc.indexOf("expense") !== -1 && oc.indexOf("modal") !== -1) {
+                    btn.setAttribute("data-expense-add-v144", "true");
+                    btn.style.setProperty("background", "linear-gradient(135deg, #FF453A, #FF2D55)", "important");
+                    btn.style.setProperty("color", "#FFFFFF", "important");
+                    btn.style.setProperty("border-color", "transparent", "important");
+                    btn.style.setProperty("box-shadow", "0 8px 22px rgba(255,59,48,0.30)", "important");
+                    try { btn.querySelectorAll("*").forEach(function(x){ x.style.setProperty("color", "#FFFFFF", "important"); }); } catch(e) {}
+                }
+            });
+        } catch(e) {}
+    }
+
+    var records = [];
+    try {
+        records = filterByMonth((expenseDB || []).map(function(e, i) {
+            return Object.assign({}, e, { originalIndex: i });
+        })).filter(function(e) {
+            return e && e.category === activeExpenseCategory;
+        }).sort(function(a, b) {
+            return String(b.date || "").localeCompare(String(a.date || ""));
+        });
+    } catch(e) {
+        records = [];
+    }
+
+    var total = 0;
+
+    var html = records.map(function(r) {
+        var amount = n(r && r.amount);
+        total += amount;
+
+        var idArg = jsArg((r && r.id) || "");
+
+        return `<tr class="list-enter" data-expense-row-tone-v145="negative" data-expense-row-tone-v144="negative" data-v99-tone="negative" data-v100-tone="negative">
+            <td class="expense-date-v145" style="color:#FF3B30!important;text-shadow:0 0 9px rgba(255,59,48,0.22)!important;">${esc(fmtDate(r && r.date))}</td>
+            <td class="font-extrabold text-[16px] expense-amount-v145" style="color:#FF3B30!important;text-shadow:0 0 9px rgba(255,59,48,0.22)!important;">-${money(amount)}</td>
+            <td class="text-right expense-delete-cell-v145" style="color:#FF3B30!important;text-shadow:0 0 9px rgba(255,59,48,0.24)!important;">
+                <button onclick="event.stopPropagation(); try{haptic()}catch(e){}; deleteExpense(${idArg})" class="action-btn shrink-0 expense-delete-btn-v145" style="color:#FF3B30!important;background:rgba(255,59,48,0.10)!important;border-color:rgba(255,59,48,0.18)!important;box-shadow:0 8px 18px rgba(255,59,48,0.13)!important;">
+                    <i class="fa-solid fa-trash text-xs expense-delete-icon-v145" style="color:#FF3B30!important;text-shadow:0 0 9px rgba(255,59,48,0.24)!important;"></i>
+                </button>
+            </td>
+        </tr>`;
+    }).join("");
+
+    var box = document.getElementById("expense-detail-records");
+    if (box) {
+        box.innerHTML = html || `<tr data-expense-empty-v145="true"><td colspan="3" class="text-center py-8 font-extrabold" style="color:#007AFF!important;text-shadow:0 0 10px rgba(0,122,255,0.24)!important;">No entries for ${esc((typeof MONTHS !== "undefined" && MONTHS[selectedMonth]) || "")}</td></tr>`;
+    }
+
+    var title = document.getElementById("expense-detail-title");
+    if (title) {
+        title.setAttribute("data-expense-tone-v144", "negative");
+        setText(title, RED);
+    }
+
+    var totalEl = document.getElementById("expense-detail-total");
+    if (totalEl) {
+        totalEl.textContent = money(total);
+        totalEl.style.setProperty("color", "#FFFFFF", "important");
+        totalEl.style.setProperty("text-shadow", "0 2px 10px rgba(0,0,0,0.18)", "important");
+    }
+
+    var card = null;
+    try { if (totalEl) card = totalEl.closest(".glass-card"); } catch(e) {}
+    if (!card) {
+        try { card = document.querySelector("#expense-detail-screen .glass-card"); } catch(e) {}
+    }
+
+    if (card) {
+        card.id = card.id || "expense-detail-card";
+        card.setAttribute("data-expense-tone-v144", "negative");
+        card.setAttribute("data-v99-tone", "negative");
+        card.setAttribute("data-v100-tone", "negative");
+        card.style.setProperty("background", "linear-gradient(135deg, #FF3B30, #C92A2A)", "important");
+        card.style.setProperty("border-color", "#FF3B30", "important");
+        card.style.setProperty("box-shadow", "0 8px 24px rgba(255,59,48,0.30)", "important");
+        card.style.setProperty("transition", "transform 80ms cubic-bezier(0.2,0.8,0.2,1), opacity 60ms ease", "important");
+        try {
+            card.querySelectorAll("p,h1,h2,h3,span,div").forEach(function(el) {
+                el.style.setProperty("color", "#FFFFFF", "important");
+                el.style.setProperty("text-shadow", "0 2px 10px rgba(0,0,0,0.18)", "important");
+            });
+        } catch(e) {}
+    }
+
+    markExpenseStaticUiV145();
+};
+/* AARISH_V145_EXPENSE_DETAIL_FINAL_JS_END */
+function renderExpenseRecords() {
+        if (window.renderExpenseRecordsCoreV145) return window.renderExpenseRecordsCoreV145();
+    });
         }
 
         function jsArg(v) {
@@ -17540,22 +17748,9 @@ scheduleV69();
   }
 
   function renderExpenseRecordsV99() {
-    if (!activeExpenseCategory) return;
-    var total = 0;
-    var records = monthRecords(typeof expenseDB !== "undefined" ? expenseDB : []).filter(function(e){ return e.category === activeExpenseCategory; }).sort(function(a,b){ return String(b.date || "").localeCompare(String(a.date || "")); });
-    var html = records.map(function(r, index) {
-      total += num(r.amount);
-      return `<tr class="list-enter" data-v99-tone="expense" style="animation-delay:${index * 0.05}s;">
-        <td>${fmtDate(r.date)}</td>
-        <td class="font-bold v99-sem-red text-[16px]">-₹${money(r.amount)}</td>
-        <td class="text-right"><button onclick="haptic(); deleteExpense(${js(r.id)})" class="action-btn shrink-0"><i class="fa-solid fa-trash"></i></button></td>
-      </tr>`;
-    }).join("");
-    var target = byId("expense-detail-records");
-    if (target) target.innerHTML = html || `<tr><td colspan="3" class="text-center py-8 text-gray-400 font-semibold">No entries found</td></tr>`;
-    var totalEl = byId("expense-detail-total");
-    if (totalEl) totalEl.textContent = "₹" + Math.round(total).toLocaleString("en-IN");
-  }
+        if (window.renderExpenseRecordsCoreV145) return window.renderExpenseRecordsCoreV145();
+        try { return renderExpenseRecords(); } catch(e) {}
+    }
 
   function normalizeButtonsV99() {
     try {
