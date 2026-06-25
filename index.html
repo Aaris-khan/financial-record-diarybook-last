@@ -5092,7 +5092,7 @@ html:not(.dark) #credit-entry-btn-v52[data-credit-net-v128] * {
         <div class="w-20 h-20 mx-auto bg-blue-500/20 shrink-0 rounded-[20px] flex items-center justify-center mb-6 box-shadow: 0 0 20px rgba(0,122,255,0.3);"><i class="fa-solid fa-leaf text-4xl text-blue-500"></i></div>
         <h2 style="font-size:28px; font-weight:800; color:#FFF; margin-bottom: 4px; letter-spacing: -0.5px;" class="truncate w-full min-w-0">Aarish Dairy</h2>
         <p style="color:#8E8E93; font-size:12px; margin-bottom: 36px; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px;" class="truncate w-full min-w-0">Pro Financial Hub</p>
-        <button onclick="haptic(); handleGoogleLogin()" class="btn-primary btn-google shrink-0 w-full flex items-center justify-center gap-3" style="background:#FFF; color:#000;">
+        <button class="btn-primary btn-google shrink-0 w-full flex items-center justify-center gap-3" style="background:#FFF; color:#000; pointer-events:auto; position:relative; z-index:10001;" id="google-login-btn" type="button" data-aarish-login-v153="true" onclick="return handleGoogleLogin(event)">
             <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="G" style="width: 20px; height: 20px;" class="shrink-0"> <span class="truncate flex-1 min-w-0 text-left font-bold">Continue with Google</span>
         </button>
     </div>
@@ -6019,41 +6019,93 @@ let selectedMonth = new Date().getMonth(), selectedYear = new Date().getFullYear
         }
     }
    
-    function handleGoogleLogin() {
+    function handleGoogleLogin(event) {
+        try {
+            if (event) {
+                event.preventDefault();
+                event.stopPropagation();
+            }
+        } catch(e) {}
+
+        try { if (typeof haptic === "function") haptic(); } catch(e) {}
+
         showLoader("CONNECTING...");
+
         try {
             if (typeof firebase === "undefined" || !firebase.auth) {
                 hideLoader();
-                showToast("Firebase not loaded. Check internet.");
-                return;
+                alert("Firebase load nahi hua. Internet/cache check karke reload karo.");
+                return false;
             }
+
+            try {
+                if (!app && typeof firebaseConfig !== "undefined") {
+                    app = (firebase.apps && firebase.apps.length) ? firebase.app() : firebase.initializeApp(firebaseConfig);
+                }
+            } catch(e) {}
 
             if (!auth) auth = firebase.auth();
+
+            try {
+                if (!database && firebase.database) database = firebase.database();
+            } catch(e) {}
+
+            /* IMPORTANT:
+               Persistence set karo, lekin popup ko is promise ke baad mat chalao.
+               Popup direct isi user click ke andar chalega, warna mobile browser block kar sakta hai.
+            */
+            try {
+                if (auth.setPersistence && firebase.auth.Auth && firebase.auth.Auth.Persistence) {
+                    auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL).catch(function(){});
+                }
+            } catch(e) {}
+
             const provider = new firebase.auth.GoogleAuthProvider();
+            try { provider.setCustomParameters({ prompt: "select_account" }); } catch(e) {}
 
-            const doLogin = function() {
-                return auth.signInWithPopup(provider).then((result) => {
-                    const firstName = result && result.user && result.user.displayName
-                        ? String(result.user.displayName).split(' ')[0]
-                        : "User";
-                    showToast('Welcome ' + firstName + '!');
-                }).catch((err) => {
-                    hideLoader();
-                    console.error("Google login error:", err);
-                    showToast((err && err.message) ? err.message : "Login failed");
-                });
-            };
+            const popupPromise = auth.signInWithPopup(provider);
 
-            if (auth.setPersistence && firebase.auth.Auth && firebase.auth.Auth.Persistence) {
-                auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL).then(doLogin).catch(function(){ doLogin(); });
-            } else {
-                doLogin();
-            }
+            popupPromise.then((result) => {
+                const firstName = result && result.user && result.user.displayName
+                    ? String(result.user.displayName).split(' ')[0]
+                    : "User";
+                try { showToast('Welcome ' + firstName + '!'); } catch(e) {}
+            }).catch((err) => {
+                hideLoader();
+
+                const code = err && err.code ? String(err.code) : "";
+                const msg = err && err.message ? String(err.message) : "Login failed";
+
+                console.error("Google login error:", err);
+
+                if (
+                    code === "auth/popup-blocked" ||
+                    code === "auth/cancelled-popup-request" ||
+                    code === "auth/popup-closed-by-user" ||
+                    code === "auth/web-storage-unsupported"
+                ) {
+                    try {
+                        showLoader("REDIRECTING...");
+                        auth.signInWithRedirect(provider).catch(function(e2) {
+                            hideLoader();
+                            alert("Login Error: " + ((e2 && e2.message) ? e2.message : msg));
+                        });
+                        return;
+                    } catch(e3) {
+                        hideLoader();
+                    }
+                }
+
+                alert("Login Error: " + msg);
+            });
+
         } catch(err) {
             hideLoader();
             console.error("Login fatal error:", err);
-            showToast((err && err.message) ? err.message : "Login failed");
+            alert("Login Error: " + ((err && err.message) ? err.message : String(err)));
         }
+
+        return false;
     }
 
     
@@ -16918,6 +16970,7 @@ scheduleV69();
           if (!window.__aarishTouchMovedV87) return;
           if (Date.now() - Number(window.__aarishTouchMoveAtV87 || 0) > 320) return;
           var t = e.target;
+          if (t && t.closest && t.closest("#login-screen,#google-login-btn,.btn-google,[data-aarish-login-v153]")) return;
           if (t && t.closest && t.closest(".glass-card,[onclick]")) {
             e.preventDefault();
             e.stopImmediatePropagation();
