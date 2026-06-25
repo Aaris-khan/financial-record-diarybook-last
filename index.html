@@ -5840,7 +5840,7 @@ async function logout() {
         else if (activeTab === 'diary') renderDiaryList();
         else if (activeTab === 'projects') renderProjectsList();
         
-        if(document.getElementById('milk-detail-screen').classList.contains('active')) renderMilkRecords();
+        if(document.getElementById('milk-detail-screen').classList.contains('active')) { renderMilkRecords(); try { if (typeof ensureMilkDetailDeleteButtonV135 === 'function') ensureMilkDetailDeleteButtonV135(); } catch(e) {} }
         if(document.getElementById('salary-detail-screen').classList.contains('active')) { renderSalaryRecords(); try { if (typeof ensureSalaryDetailDeleteButtonV31 === 'function') ensureSalaryDetailDeleteButtonV31(); } catch(e) {} }
         if(document.getElementById('udhar-detail-screen').classList.contains('active')) { renderUdharRecords(); try { if (typeof ensureCreditDetailDeleteButtonV29 === 'function') ensureCreditDetailDeleteButtonV29(); } catch(e) {} }
         if(document.getElementById('expense-detail-screen').classList.contains('active')) { renderExpenseRecords(); try { if (typeof ensureExpenseDetailDeleteButtonV30 === 'function') ensureExpenseDetailDeleteButtonV30(); } catch(e) {} }
@@ -6358,14 +6358,15 @@ async function addMilkCustomer() {
     
     let pressTimer;
     function startLongPress(name) {
-        isLongPress = false;
-        pressTimer = setTimeout(() => { 
-            isLongPress = true;
-            haptic(); 
-            deleteMilkCustomerProfile(name); 
-        }, 800); 
+        try { if (typeof pressTimer !== "undefined") clearTimeout(pressTimer); } catch(e) {}
+        try { isLongPress = false; } catch(e) {}
+        return false;
     }
-    function cancelLongPress() { clearTimeout(pressTimer); }
+    function cancelLongPress() {
+        try { if (typeof pressTimer !== "undefined") clearTimeout(pressTimer); } catch(e) {}
+        try { isLongPress = false; } catch(e) {}
+        return false;
+    }
 
     async function deleteMilkCustomerProfile(name) {
     if (confirm(`Delete customer "${name}" and all their records?`)) {
@@ -6387,6 +6388,109 @@ async function addMilkCustomer() {
     }
 }
 
+/* AARISH_V135_MILK_DETAIL_DELETE_TOP_START */
+function getActiveMilkNameV135() {
+    try {
+        if (activeMilkCustomer && milkDB && milkDB[activeMilkCustomer]) return activeMilkCustomer;
+    } catch(e) {}
+
+    try {
+        var title = document.getElementById("milk-detail-title");
+        var name = title ? String(title.textContent || "").trim() : "";
+        if (name && milkDB && milkDB[name]) return name;
+    } catch(e) {}
+
+    return "";
+}
+
+function makeMilkDetailDeleteButtonV135() {
+    var btn = document.getElementById("milk-detail-profile-delete-btn-v135");
+    if (!btn) {
+        btn = document.createElement("button");
+        btn.id = "milk-detail-profile-delete-btn-v135";
+        btn.type = "button";
+        btn.setAttribute("aria-label", "Delete milk customer");
+        btn.setAttribute("title", "Delete customer");
+    }
+
+    btn.className = "action-btn milk-detail-profile-delete-v135";
+    btn.style.cssText = [
+        "width:46px",
+        "height:46px",
+        "min-width:46px",
+        "min-height:46px",
+        "border-radius:18px",
+        "display:inline-flex",
+        "align-items:center",
+        "justify-content:center",
+        "flex-shrink:0",
+        "margin-left:auto",
+        "background:rgba(255,59,48,0.10)",
+        "color:#FF3B30",
+        "border:1px solid rgba(255,59,48,0.18)",
+        "box-shadow:0 8px 22px rgba(255,59,48,0.14)",
+        "transition:transform 80ms cubic-bezier(0.2,0.8,0.2,1), opacity 60ms ease"
+    ].join(";") + ";";
+
+    btn.innerHTML = '<i class="fa-solid fa-trash" style="font-size:18px;color:#FF3B30!important;"></i>';
+
+    btn.onclick = function(event) {
+        try {
+            if (event) {
+                event.preventDefault();
+                event.stopPropagation();
+            }
+            if (typeof haptic === "function") haptic();
+        } catch(e) {}
+
+        var name = getActiveMilkNameV135();
+        if (!name) {
+            try { showToast("Customer not found"); } catch(e) {}
+            return false;
+        }
+
+        return deleteMilkCustomerProfile(name);
+    };
+
+    return btn;
+}
+
+function ensureMilkDetailDeleteButtonV135() {
+    try {
+        var screen = document.getElementById("milk-detail-screen");
+        if (!screen) return;
+
+        var header = screen.querySelector(".header-sticky");
+        if (!header) return;
+
+        header.style.gap = "12px";
+
+        var leftGroup = header.querySelector(".flex.items-center");
+        if (leftGroup) {
+            leftGroup.style.flex = "1 1 auto";
+            leftGroup.style.minWidth = "0";
+            leftGroup.classList.remove("w-full");
+        }
+
+        var btn = makeMilkDetailDeleteButtonV135();
+        if (!btn.parentNode) header.appendChild(btn);
+
+        var name = getActiveMilkNameV135();
+        btn.style.display = name ? "inline-flex" : "none";
+    } catch(e) {}
+}
+
+window.getActiveMilkNameV135 = getActiveMilkNameV135;
+window.ensureMilkDetailDeleteButtonV135 = ensureMilkDetailDeleteButtonV135;
+window.makeMilkDetailDeleteButtonV135 = makeMilkDetailDeleteButtonV135;
+
+try {
+    document.addEventListener("DOMContentLoaded", function(){ setTimeout(ensureMilkDetailDeleteButtonV135, 0); }, {passive:true, once:true});
+    window.addEventListener("pageshow", function(){ setTimeout(ensureMilkDetailDeleteButtonV135, 0); }, {passive:true});
+} catch(e) {}
+/* AARISH_V135_MILK_DETAIL_DELETE_TOP_END */
+
+
 
     function renderMilkList() {
         const q = (document.getElementById('milk-search').value || '').toLowerCase();
@@ -6403,13 +6507,7 @@ async function addMilkCustomer() {
             const typeLabel = isDeneWala ? 'Seller' : 'Buyer';
 
             return `<div 
-                onclick="haptic(); openMilkDetail('${name}')" 
-                ontouchstart="startLongPress('${name}')" 
-                ontouchend="cancelLongPress()" 
-                ontouchmove="cancelLongPress()" 
-                onmousedown="startLongPress('${name}')" 
-                onmouseup="cancelLongPress()" 
-                onmouseleave="cancelLongPress()"
+                onclick="haptic(); openMilkDetail('${name}')"
                 class="glass-card mb-3.5 flex items-center justify-between cursor-pointer border-l-[3px] ${borderClass} w-full ring-1 ring-white/40 dark:ring-white/5 list-enter" style="animation-delay: ${index * 0.05}s;">
 
                 <div class="flex items-center gap-4 w-full min-w-0">
@@ -6437,7 +6535,7 @@ function filterMilkList() {
 }
 
     function openMilkDetail(name) {
-        if(isLongPress) { isLongPress = false; return; } // Touch conflict fix
+        try { isLongPress = false; } catch(e) {}
         activeMilkCustomer = name;
         document.getElementById('milk-detail-title').textContent = name;
         document.getElementById('filter-month-milk').value = selectedMonth;
@@ -6445,6 +6543,7 @@ function filterMilkList() {
         document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
         document.getElementById('milk-detail-screen').classList.add('active');
         renderMilkRecords();
+        try { if (typeof ensureMilkDetailDeleteButtonV135 === "function") ensureMilkDetailDeleteButtonV135(); } catch(e) {}
     }
 
     function renderMilkRecords() {
@@ -9231,11 +9330,7 @@ window.onload = function(){ setTimeout(function(){ window.focus(); window.print(
         return `<div
           onclick="haptic(); openMilkDetail('${String(name).replace(/'/g, "\\'")}')"
           ontouchstart="startLongPress('${String(name).replace(/'/g, "\\'")}')"
-          ontouchend="cancelLongPress()"
-          ontouchmove="cancelLongPress()"
           onmousedown="startLongPress('${String(name).replace(/'/g, "\\'")}')"
-          onmouseup="cancelLongPress()"
-          onmouseleave="cancelLongPress()"
           class="glass-card mb-3.5 flex items-center justify-between cursor-pointer border-l-[3px] ${borderClass} w-full ring-1 ring-white/40 dark:ring-white/5 list-enter"
           style="animation-delay:${index * 0.05}s;">
           <div class="flex items-center gap-4 w-full min-w-0">
