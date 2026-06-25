@@ -6886,7 +6886,49 @@ function filterSalaryList() {
             body.innerHTML = html || `<tr data-salary-empty-v160="true"><td colspan="3" class="text-center py-8 font-semibold">No entries for ${MONTHS[selectedMonth]}</td></tr>`;
         }
 
-        const sign = isLeneWala ? '+' : '-';
+        
+        /* AARISH_SALARY_ROW_TONE_FORCE_V166_START
+           Direct render fix only:
+           Date cell + Amount cell follow current salary tone.
+           No overlay, no MutationObserver, no extra script/style.
+        */
+        try {
+            const salaryRowToneV166 = s.type === 'lene_wala' ? 'positive' : 'negative';
+            const salaryRowColorV166 = salaryRowToneV166 === 'positive' ? '#34C759' : '#FF3B30';
+            const salaryRowShadowV166 = salaryRowToneV166 === 'positive'
+                ? '0 0 9px rgba(52,199,89,0.26)'
+                : '0 0 9px rgba(255,59,48,0.26)';
+
+            const paintSalaryRowCellV166 = (cell) => {
+                if (!cell || !cell.style) return;
+                cell.style.setProperty('color', salaryRowColorV166, 'important');
+                cell.style.setProperty('-webkit-text-fill-color', salaryRowColorV166, 'important');
+                cell.style.setProperty('text-shadow', salaryRowShadowV166, 'important');
+
+                try {
+                    cell.querySelectorAll('*').forEach(child => {
+                        child.style.setProperty('color', salaryRowColorV166, 'important');
+                        child.style.setProperty('-webkit-text-fill-color', salaryRowColorV166, 'important');
+                        child.style.setProperty('text-shadow', salaryRowShadowV166, 'important');
+                    });
+                } catch(e) {}
+            };
+
+            const salaryRowsV166 = document.querySelectorAll('#salary-detail-records tr');
+            salaryRowsV166.forEach(tr => {
+                const cells = tr.querySelectorAll('td');
+                if (!cells || cells.length < 2) return;
+
+                const rowText = String(tr.textContent || '').toLowerCase();
+                if (rowText.includes('no entries')) return;
+
+                tr.setAttribute('data-salary-row-tone-v166', salaryRowToneV166);
+                paintSalaryRowCellV166(cells[0]);
+                paintSalaryRowCellV166(cells[1]);
+            });
+        } catch(e) {}
+        /* AARISH_SALARY_ROW_TONE_FORCE_V166_END */
+const sign = isLeneWala ? '+' : '-';
 
         const detailCard = document.querySelector('#salary-detail-screen .glass-card');
         if (detailCard) {
