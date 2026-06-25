@@ -6840,34 +6840,86 @@ function filterSalaryList() {
 
     
 
+    function applySalaryDetailColorSyncV160() {
+        try {
+            const screen = document.getElementById('salary-detail-screen');
+            if (!screen) return;
+
+            const month = document.getElementById('filter-month-salary');
+            const year = document.getElementById('filter-year-salary');
+            if (month) month.setAttribute('data-salary-header-blue-v160', 'true');
+            if (year) year.setAttribute('data-salary-header-blue-v160', 'true');
+
+            screen.querySelectorAll('h1,h2,h3,h4,div,span,p').forEach((el) => {
+                const txt = (el.textContent || '').trim().replace(/\s+/g, ' ');
+                if (txt === 'Daily Entries') {
+                    el.setAttribute('data-salary-daily-title-v160', 'true');
+                    el.classList.add('salary-daily-title-v160');
+                }
+            });
+
+            screen.querySelectorAll('th').forEach((th) => {
+                const txt = (th.textContent || '').trim().toUpperCase();
+                if (txt === 'DATE' || txt === 'AMOUNT') {
+                    th.setAttribute('data-salary-header-blue-v160', 'true');
+                    th.classList.add('salary-header-blue-v160');
+                }
+            });
+        } catch(e) {}
+    }
+
     function renderSalaryRecords() {
         if (!activeSalaryPerson || !salaryDB[activeSalaryPerson]) return;
+
         const s = salaryDB[activeSalaryPerson];
         let totalAmt = 0;
-        
-        const records = filterByMonth((s.records || []).map((r, i) => ({...r, originalIndex: i})))
-                        .sort((a,b) => String(b.date || '').localeCompare(String(a.date || '')));
+
+        const isLeneWala = s.type === 'lene_wala';
+        const rowTone = isLeneWala ? 'positive' : 'negative';
+        const rowTextClass = isLeneWala ? 'text-[#10B981]' : 'text-[#FF3B30]';
+
+        const rawRecords = Array.isArray(s.records) ? s.records : [];
+        const records = filterByMonth(rawRecords.map((r, i) => ({ ...(r || {}), originalIndex: i })))
+            .sort((a, b) => String(b.date || '').localeCompare(String(a.date || '')));
 
         const html = records.map((r, index) => {
-            totalAmt += Number(r.amount||0);
-            return `<tr class="list-enter" style="animation-delay: ${index * 0.05}s;">
-                <td>${formatDisplayDate(r.date)}</td>
-                <td class="font-bold text-[#10B981]">₹${Number(r.amount).toLocaleString('en-IN')}</td>
-                <td class="text-right"><button onclick="haptic(); deleteSalarySingleEntry('${r.id}')"     class="action-btn shrink-0"><i class="fa-solid fa-trash text-xs"></i></button></td>
+            const amount = Number(r.amount || 0);
+            totalAmt += amount;
+
+            const rawId = String(r.id || '');
+            const safeId = rawId
+                .replace(/\\/g, '\\\\')
+                .replace(/'/g, "\\'")
+                .replace(/\n/g, '');
+
+            return `<tr class="list-enter" data-salary-row-tone-v160="${rowTone}" style="animation-delay: ${index * 0.05}s;">
+                <td class="salary-date-v160 font-bold" data-salary-row-tone-v160="${rowTone}">${formatDisplayDate(r.date)}</td>
+                <td class="salary-amount-v160 font-bold ${rowTextClass}" data-salary-row-tone-v160="${rowTone}">₹${amount.toLocaleString('en-IN')}</td>
+                <td class="text-right"><button onclick="haptic(); deleteSalarySingleEntry('${safeId}')" class="action-btn shrink-0"><i class="fa-solid fa-trash text-xs"></i></button></td>
             </tr>`;
         }).join('');
-        
-        document.getElementById('salary-detail-records').innerHTML = html || `<tr><td colspan="3" class="text-center py-8 text-gray-400 font-semibold">No entries for ${MONTHS[selectedMonth]}</td></tr>`;
-        
-        const isLeneWala = s.type === 'lene_wala';
-        const sign = isLeneWala ? '+' : '-';
-        
-        const detailCard = document.querySelector('#salary-detail-screen .glass-card');
-        detailCard.className = isLeneWala 
-            ? "glass-card mb-6 flex justify-between items-center bg-gradient-to-br from-[#10B981] to-[#059669] text-white border-none shadow-[0_8px_24px_rgba(16,185,129,0.3)] ring-1 ring-white/30 w-full min-w-0 gap-3"
-            : "glass-card mb-6 flex justify-between items-center bg-gradient-to-br from-[#FF3B30] to-[#c92a2a] text-white border-none shadow-[0_8px_24px_rgba(255,59,48,0.3)] ring-1 ring-white/30 w-full min-w-0 gap-3";
 
-        document.getElementById('salary-detail-total').textContent = `${sign}₹${totalAmt.toLocaleString('en-IN')}`;
+        const body = document.getElementById('salary-detail-records');
+        if (body) {
+            body.innerHTML = html || `<tr data-salary-empty-v160="true"><td colspan="3" class="text-center py-8 font-semibold">No entries for ${MONTHS[selectedMonth]}</td></tr>`;
+        }
+
+        const sign = isLeneWala ? '+' : '-';
+
+        const detailCard = document.querySelector('#salary-detail-screen .glass-card');
+        if (detailCard) {
+            detailCard.className = isLeneWala
+                ? "glass-card mb-6 flex justify-between items-center bg-gradient-to-br from-[#10B981] to-[#059669] text-white border-none shadow-[0_8px_24px_rgba(16,185,129,0.3)] ring-1 ring-white/30 w-full min-w-0 gap-3"
+                : "glass-card mb-6 flex justify-between items-center bg-gradient-to-br from-[#FF3B30] to-[#c92a2a] text-white border-none shadow-[0_8px_24px_rgba(255,59,48,0.3)] ring-1 ring-white/30 w-full min-w-0 gap-3";
+        }
+
+        const total = document.getElementById('salary-detail-total');
+        if (total) total.textContent = `${sign}₹${totalAmt.toLocaleString('en-IN')}`;
+
+        const title = document.getElementById('salary-detail-title');
+        if (title) title.setAttribute('data-salary-tone-v160', rowTone);
+
+        applySalaryDetailColorSyncV160();
     }
 
 
@@ -9765,7 +9817,66 @@ html, body {
    polishOnly: true
 */
 </style>
-\n</head>
+\n
+<style id="aarish-salary-detail-color-sync-v160">
+/* AARISH_SALARY_DETAIL_COLOR_SYNC_V160_SAFE
+   Salary detail only. No login, no Firebase, no style.css touch. */
+#salary-detail-screen {
+  --salary-blue-v160: #007AFF;
+  --salary-green-v160: #34C759;
+  --salary-red-v160: #FF3B30;
+  --salary-blue-glow-v160: rgba(0,122,255,0.24);
+  --salary-green-glow-v160: rgba(52,199,89,0.22);
+  --salary-red-glow-v160: rgba(255,59,48,0.22);
+}
+
+#salary-detail-screen #filter-month-salary,
+#salary-detail-screen #filter-year-salary,
+#salary-detail-screen select#filter-month-salary,
+#salary-detail-screen select#filter-year-salary,
+#salary-detail-screen [data-salary-daily-title-v160="true"],
+#salary-detail-screen .salary-daily-title-v160,
+#salary-detail-screen th,
+#salary-detail-screen [data-salary-header-blue-v160="true"],
+#salary-detail-screen .salary-header-blue-v160 {
+  color: var(--salary-blue-v160) !important;
+  -webkit-text-fill-color: var(--salary-blue-v160) !important;
+  text-shadow: 0 0 10px var(--salary-blue-glow-v160) !important;
+}
+
+#salary-detail-records tr[data-salary-row-tone-v160="positive"] td:not(:last-child),
+#salary-detail-records tr[data-salary-row-tone-v160="positive"] td:not(:last-child) *,
+#salary-detail-records .salary-date-v160[data-salary-row-tone-v160="positive"],
+#salary-detail-records .salary-amount-v160[data-salary-row-tone-v160="positive"] {
+  color: var(--salary-green-v160) !important;
+  -webkit-text-fill-color: var(--salary-green-v160) !important;
+  text-shadow: 0 0 9px var(--salary-green-glow-v160) !important;
+}
+
+#salary-detail-records tr[data-salary-row-tone-v160="negative"] td:not(:last-child),
+#salary-detail-records tr[data-salary-row-tone-v160="negative"] td:not(:last-child) *,
+#salary-detail-records .salary-date-v160[data-salary-row-tone-v160="negative"],
+#salary-detail-records .salary-amount-v160[data-salary-row-tone-v160="negative"] {
+  color: var(--salary-red-v160) !important;
+  -webkit-text-fill-color: var(--salary-red-v160) !important;
+  text-shadow: 0 0 9px var(--salary-red-glow-v160) !important;
+}
+
+#salary-detail-records tr[data-salary-empty-v160="true"] td {
+  color: var(--salary-blue-v160) !important;
+  -webkit-text-fill-color: var(--salary-blue-v160) !important;
+  text-shadow: 0 0 10px var(--salary-blue-glow-v160) !important;
+}
+
+#salary-detail-screen .action-btn,
+#salary-detail-screen .action-btn *,
+#salary-detail-screen i.fa-trash {
+  color: var(--salary-red-v160) !important;
+  -webkit-text-fill-color: var(--salary-red-v160) !important;
+}
+</style>
+
+</head>
 <body>
 <div class="report">
 ${top(title)}
@@ -19110,5 +19221,20 @@ window.addEventListener("pageshow", function () { setTimeout(install, 120); }, {
   console.log("✅ AARISH V128 Credit Book light Milk-safe paint active");
 })();
 </script>
+
+<script id="aarish-salary-detail-color-sync-v160">
+(function(){
+  try {
+    document.addEventListener('DOMContentLoaded', function() {
+      try {
+        if (typeof applySalaryDetailColorSyncV160 === 'function') {
+          applySalaryDetailColorSyncV160();
+        }
+      } catch(e) {}
+    }, { once: true });
+  } catch(e) {}
+})();
+</script>
+
 </body>
 </html>
