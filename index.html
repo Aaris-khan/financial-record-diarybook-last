@@ -3804,6 +3804,113 @@
 }
 /* AARISH_V136_MILK_DARK_LIGHT_PARITY_NATIVE_END */
 
+/* AARISH_V138_MILK_DARK_CURVED_STRIPE_START
+   Dark Milk list curved stripe fix.
+   Keeps V136/V137 semantic logic:
+   positive green / negative red / zero blue.
+   Fixes only the left curved stripe thickness/glow like old premium UI.
+   No JS. No scanner. Existing V113 CSS block adjusted only.
+*/
+
+/* Kill ugly straight border-left and draw a premium curved stripe with ::before */
+html.dark body #main-app #milk-screen #milk-list .aarish-milk-v113-card {
+  position: relative !important;
+  overflow: hidden !important;
+  border-left-width: 0 !important;
+  border-left-color: transparent !important;
+  padding-left: 26px !important;
+}
+
+/* Real curved strip: thick, rounded, glowing, semantic */
+html.dark body #main-app #milk-screen #milk-list .aarish-milk-v113-card::before {
+  content: "" !important;
+  position: absolute !important;
+  left: 0 !important;
+  top: 0 !important;
+  bottom: 0 !important;
+  width: 7px !important;
+  border-radius: 28px 0 0 28px !important;
+  background: var(--milkTone, #007AFF) !important;
+  box-shadow:
+    0 0 0 1px var(--milkInset, rgba(0,122,255,0.45)),
+    0 0 18px var(--milkGlow, rgba(0,122,255,0.30)),
+    6px 0 26px var(--milkGlow, rgba(0,122,255,0.30)) !important;
+  opacity: 1 !important;
+  pointer-events: none !important;
+  z-index: 0 !important;
+}
+
+/* Keep content above the stripe */
+html.dark body #main-app #milk-screen #milk-list .aarish-milk-v113-card > * {
+  position: relative !important;
+  z-index: 1 !important;
+}
+
+/* Positive stripe */
+html.dark body #main-app #milk-screen #milk-list .aarish-milk-v113-card[data-aarish-milk-v113-tone="positive"] {
+  --milkTone: #34C759;
+  --milkTint: rgba(52,199,89,0.13);
+  --milkBorder: rgba(52,199,89,0.25);
+  --milkGlow: rgba(52,199,89,0.34);
+  --milkInset: rgba(52,199,89,0.56);
+  --milkSoft: rgba(52,199,89,0.13);
+}
+
+/* Negative stripe */
+html.dark body #main-app #milk-screen #milk-list .aarish-milk-v113-card[data-aarish-milk-v113-tone="negative"] {
+  --milkTone: #FF3B30;
+  --milkTint: rgba(255,59,48,0.13);
+  --milkBorder: rgba(255,59,48,0.25);
+  --milkGlow: rgba(255,59,48,0.34);
+  --milkInset: rgba(255,59,48,0.56);
+  --milkSoft: rgba(255,59,48,0.13);
+}
+
+/* Zero / neutral stripe */
+html.dark body #main-app #milk-screen #milk-list .aarish-milk-v113-card[data-aarish-milk-v113-tone="neutral"] {
+  --milkTone: #007AFF;
+  --milkTint: rgba(0,122,255,0.13);
+  --milkBorder: rgba(0,122,255,0.25);
+  --milkGlow: rgba(0,122,255,0.30);
+  --milkInset: rgba(0,122,255,0.50);
+  --milkSoft: rgba(0,122,255,0.13);
+}
+
+/* Extra fallback if tone attrs are V99/V100 */
+html.dark body #main-app #milk-screen #milk-list .aarish-milk-v113-card[data-v99-tone="positive"],
+html.dark body #main-app #milk-screen #milk-list .aarish-milk-v113-card[data-v100-tone="positive"] {
+  --milkTone: #34C759;
+  --milkGlow: rgba(52,199,89,0.34);
+  --milkInset: rgba(52,199,89,0.56);
+}
+
+html.dark body #main-app #milk-screen #milk-list .aarish-milk-v113-card[data-v99-tone="negative"],
+html.dark body #main-app #milk-screen #milk-list .aarish-milk-v113-card[data-v100-tone="negative"] {
+  --milkTone: #FF3B30;
+  --milkGlow: rgba(255,59,48,0.34);
+  --milkInset: rgba(255,59,48,0.56);
+}
+
+html.dark body #main-app #milk-screen #milk-list .aarish-milk-v113-card[data-v99-tone="neutral"],
+html.dark body #main-app #milk-screen #milk-list .aarish-milk-v113-card[data-v100-tone="neutral"],
+html.dark body #main-app #milk-screen #milk-list .aarish-milk-v113-card[data-v100-tone="blue"] {
+  --milkTone: #007AFF;
+  --milkGlow: rgba(0,122,255,0.30);
+  --milkInset: rgba(0,122,255,0.50);
+}
+
+@media (max-width: 380px) {
+  html.dark body #main-app #milk-screen #milk-list .aarish-milk-v113-card::before {
+    width: 6.5px !important;
+  }
+
+  html.dark body #main-app #milk-screen #milk-list .aarish-milk-v113-card {
+    padding-left: 24px !important;
+  }
+}
+/* AARISH_V138_MILK_DARK_CURVED_STRIPE_END */
+
+
 /* AARISH_V136_MILK_DARK_LIGHT_PARITY_NATIVE_START
    Dark mode Milk list uses old premium dark-glass surface.
    V136 semantic colors/stripe remain:
