@@ -9554,7 +9554,44 @@ try { window.renderExpenseRecords = renderExpenseRecords; } catch(e) {}
         } catch(e) {}
         
         updateActiveScreen();
-    }
+    
+    /* AARISH_THREE_TABS_SLIDE_REPLAY_V1_START */
+    try {
+        setTimeout(function () {
+            var __aarishTabV1 = String(tab || "");
+            var __aarishMapV1 = {
+                "milk": "#milk-list",
+                "milk-screen": "#milk-list",
+                "udhar": "#udhar-list",
+                "credit": "#udhar-list",
+                "credit-screen": "#udhar-list",
+                "udhar-screen": "#udhar-list",
+                "salary": "#salary-list",
+                "salary-screen": "#salary-list",
+                "expenses": "#expense-list-container",
+                "expense": "#expense-list-container",
+                "diary": "#diary-list",
+                "projects": "#project-list",
+                "business": "#project-list"
+            };
+            var __aarishSelV1 = __aarishMapV1[__aarishTabV1] || "";
+            if (!__aarishSelV1) return;
+
+            var __aarishBoxV1 = document.querySelector(__aarishSelV1);
+            if (!__aarishBoxV1) return;
+
+            __aarishBoxV1.querySelectorAll(".glass-card, .list-enter").forEach(function (el, i) {
+                if (!el || !el.classList) return;
+                el.classList.add("list-enter");
+                el.style.animation = "none";
+                void el.offsetWidth;
+                el.style.animation = "";
+                el.style.animationDelay = Math.min(i * 0.05, 0.35) + "s";
+            });
+        }, 35);
+    } catch(e) {}
+    /* AARISH_THREE_TABS_SLIDE_REPLAY_V1_END */
+}
 
          // ========================== PREMIUM BUSINESS HUB LOGIC ==========================
 
