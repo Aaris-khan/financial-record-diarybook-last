@@ -17736,12 +17736,19 @@ scheduleV69();
     var s = salaryDB[activeSalaryPerson], total = 0;
     var tone = s.type === "lene_wala" ? "positive" : "negative";
     var cls = toneClass(tone);
+
+    /* AARISH_SALARY_V99_ROW_TONE_V169_VARS_START */
+    var salaryRowColorV169 = tone === "positive" ? "#34C759" : "#FF3B30";
+    var salaryRowShadowV169 = tone === "positive"
+      ? "0 0 9px rgba(52,199,89,0.26)"
+      : "0 0 9px rgba(255,59,48,0.26)";
+    /* AARISH_SALARY_V99_ROW_TONE_V169_VARS_END */
     var records = monthRecords(s.records).sort(function(a,b){ return String(b.date || "").localeCompare(String(a.date || "")); });
     var html = records.map(function(r, index) {
       total += num(r.amount);
-      return `<tr class="list-enter" data-v99-tone="${tone}" style="animation-delay:${index * 0.05}s;">
-        <td>${fmtDate(r.date)}</td>
-        <td class="font-bold ${cls}">₹${money(r.amount)}</td>
+      return `<tr class="list-enter salary-row-v169" data-v99-tone="${tone}" data-salary-row-tone-v169="${tone}" style="animation-delay:${index * 0.05}s;">
+        <td class="font-bold salary-date-v169" data-salary-row-tone-v169="${tone}" style="color:${salaryRowColorV169}!important;-webkit-text-fill-color:${salaryRowColorV169}!important;text-shadow:${salaryRowShadowV169}!important;">${fmtDate(r.date)}</td>
+        <td class="font-bold ${cls} salary-amount-v169" data-salary-row-tone-v169="${tone}" style="color:${salaryRowColorV169}!important;-webkit-text-fill-color:${salaryRowColorV169}!important;text-shadow:${salaryRowShadowV169}!important;">₹${money(r.amount)}</td>
         <td class="text-right"><button onclick="haptic(); deleteSalarySingleEntry(${js(r.id)})" class="action-btn shrink-0"><i class="fa-solid fa-trash"></i></button></td>
       </tr>`;
     }).join("");
