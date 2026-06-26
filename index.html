@@ -5924,6 +5924,19 @@ button[onclick] {
 }
 </style>
 
+
+<style id="aarish-hard-rtl-tab-replay-v2">
+/* AARISH_HARD_RTL_TAB_REPLAY_V2
+   Tiny hard replay for tab-open cards only.
+   No observer, no interval, no render/data/Firebase change.
+*/
+@keyframes aarishHardRtlTabReplayV2 {
+  0%   { opacity: 0; transform: translate3d(64px, 0, 0) scale3d(.992,.992,1); }
+  68%  { opacity: 1; transform: translate3d(-5px, 0, 0) scale3d(1.002,1.002,1); }
+  100% { opacity: 1; transform: translate3d(0, 0, 0) scale3d(1,1,1); }
+}
+</style>
+
 </head>
 
 <body>
@@ -9554,43 +9567,58 @@ try { window.renderExpenseRecords = renderExpenseRecords; } catch(e) {}
         } catch(e) {}
         
         updateActiveScreen();
-    
-    /* AARISH_THREE_TABS_SLIDE_REPLAY_V1_START */
+
+    /* AARISH_HARD_RTL_TAB_REPLAY_V2_START */
     try {
         setTimeout(function () {
-            var __aarishTabV1 = String(tab || "");
-            var __aarishMapV1 = {
-                "milk": "#milk-list",
-                "milk-screen": "#milk-list",
-                "udhar": "#udhar-list",
-                "credit": "#udhar-list",
-                "credit-screen": "#udhar-list",
-                "udhar-screen": "#udhar-list",
-                "salary": "#salary-list",
-                "salary-screen": "#salary-list",
-                "expenses": "#expense-list-container",
-                "expense": "#expense-list-container",
-                "diary": "#diary-list",
-                "projects": "#project-list",
-                "business": "#project-list"
+            var t = String(tab || "");
+            var map = {
+                milk: "#milk-list",
+                udhar: "#udhar-list",
+                credit: "#udhar-list",
+                salary: "#salary-list",
+                expenses: "#expense-list-container",
+                diary: "#diary-list",
+                projects: "#project-list",
+                business: "#project-list"
             };
-            var __aarishSelV1 = __aarishMapV1[__aarishTabV1] || "";
-            if (!__aarishSelV1) return;
+            var sel = map[t];
+            if (!sel) return;
 
-            var __aarishBoxV1 = document.querySelector(__aarishSelV1);
-            if (!__aarishBoxV1) return;
+            var box = document.querySelector(sel);
+            if (!box) return;
 
-            __aarishBoxV1.querySelectorAll(".glass-card, .list-enter").forEach(function (el, i) {
+            box.querySelectorAll(".glass-card").forEach(function (el, i) {
                 if (!el || !el.classList) return;
+
                 el.classList.add("list-enter");
-                el.style.animation = "none";
+
+                el.style.setProperty("opacity", "0", "important");
+                el.style.setProperty("transform", "translate3d(64px,0,0)", "important");
+                el.style.setProperty("animation", "none", "important");
+                el.style.setProperty("will-change", "transform, opacity", "important");
+
                 void el.offsetWidth;
-                el.style.animation = "";
-                el.style.animationDelay = Math.min(i * 0.05, 0.35) + "s";
+
+                el.style.setProperty(
+                  "animation",
+                  "aarishHardRtlTabReplayV2 520ms cubic-bezier(0.22, 0.82, 0.18, 1) " + Math.min(i * 0.045, 0.32) + "s both",
+                  "important"
+                );
+
+                setTimeout(function () {
+                    try {
+                        el.style.removeProperty("animation");
+                        el.style.removeProperty("animation-delay");
+                        el.style.removeProperty("will-change");
+                        el.style.removeProperty("opacity");
+                        el.style.removeProperty("transform");
+                    } catch(e) {}
+                }, 950);
             });
-        }, 35);
+        }, 80);
     } catch(e) {}
-    /* AARISH_THREE_TABS_SLIDE_REPLAY_V1_END */
+    /* AARISH_HARD_RTL_TAB_REPLAY_V2_END */
 }
 
          // ========================== PREMIUM BUSINESS HUB LOGIC ==========================
