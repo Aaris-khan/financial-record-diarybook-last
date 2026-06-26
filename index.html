@@ -5672,38 +5672,36 @@ html.dark body #diary-screen #diary-search::-webkit-input-placeholder,
 }
 </style>
 
-
-<style id="aarish-modal-bigtech-v202">
-/* AARISH_MODAL_BIGTECH_V202_START
-   Big-Tech zero-jank modal system:
-   1) No display:none -> flex on open
-   2) No border-radius animation
-   3) No live backdrop-filter blur on modal open
-   4) Transform/opacity-only compositor animation
-   5) GPU pre-promotion only during modal lifecycle
-   6) Dynamic export modal uses same pipeline
+<style id="aarish-bigtech-motion-v203">
+/* AARISH_BIGTECH_MOTION_V203_START
+   Big-Tech Motion Engine:
+   - modal display is layout-ready, not toggled on tap
+   - animations use transform + opacity only
+   - border-radius is not animated
+   - will-change is temporary, not permanent
+   - list/card/button/toast/screen motion is GPU-safe
 */
-
 :root {
-  --aarish-modal-open-v202: cubic-bezier(0.22, 0.82, 0.18, 1);
-  --aarish-modal-close-v202: cubic-bezier(0.32, 0.72, 0, 1);
+  --aarish-ios-spring-v203: cubic-bezier(0.22, 0.82, 0.18, 1);
+  --aarish-ios-snap-v203: cubic-bezier(0.32, 0.72, 0, 1);
+  --aarish-ios-fast-v203: cubic-bezier(0.2, 0, 0, 1);
 }
 
-/* Giant glow elements: transition:all was a hidden repaint trap. */
+/* Kill hidden repaint traps */
 .ambient-glow,
 .ambient-glow-2 {
-  transition: opacity 0.45s ease !important;
+  transition: opacity 420ms ease !important;
   will-change: opacity !important;
-  transform: translate3d(0, 0, 0) !important;
+  transform: translate3d(0,0,0) !important;
   contain: paint !important;
 }
 
-/* App pushback: only transform + opacity animate. Border-radius becomes instant, not per-frame. */
+/* App shell: compositor-only pushback. Border-radius is instant, not animated. */
 .app-container {
-  transform: translate3d(0, 0, 0) scale3d(1, 1, 1) !important;
+  transform: translate3d(0,0,0) scale3d(1,1,1) !important;
   transform-origin: top center !important;
   transition:
-    transform 300ms var(--aarish-modal-open-v202),
+    transform 300ms var(--aarish-ios-spring-v203),
     opacity 220ms ease-out !important;
   backface-visibility: hidden !important;
   -webkit-backface-visibility: hidden !important;
@@ -5711,7 +5709,7 @@ html.dark body #diary-screen #diary-search::-webkit-input-placeholder,
   will-change: auto !important;
 }
 
-.app-container.aarish-modal-prepromote-v202 {
+.app-container.aarish-motion-prepromote-v203 {
   will-change: transform, opacity !important;
 }
 
@@ -5722,8 +5720,81 @@ html.dark body #diary-screen #diary-search::-webkit-input-placeholder,
   pointer-events: none !important;
 }
 
-/* Modal is always layout-ready but invisible/non-interactive.
-   This kills the old display:flex first-frame reflow spike. */
+/* Screens: small premium entrance, no heavy slide distance. */
+.screen.active {
+  animation: aarish-screen-in-v203 170ms var(--aarish-ios-fast-v203) both !important;
+  will-change: transform, opacity !important;
+}
+
+@keyframes aarish-screen-in-v203 {
+  from { opacity: 0.94; transform: translate3d(10px,0,0); }
+  to   { opacity: 1; transform: translate3d(0,0,0); }
+}
+
+/* Lists: bounded stagger. JS assigns --aarish-motion-i only to first visible batch. */
+.list-enter.aarish-motion-item-v203 {
+  opacity: 0;
+  transform: translate3d(0, 10px, 0) scale3d(0.992, 0.992, 1);
+  animation: aarish-card-in-v203 280ms var(--aarish-ios-spring-v203) both !important;
+  animation-delay: calc(var(--aarish-motion-i, 0) * 14ms) !important;
+  will-change: transform, opacity !important;
+  backface-visibility: hidden !important;
+  -webkit-backface-visibility: hidden !important;
+}
+
+.list-enter.aarish-motion-done-v203 {
+  animation: none !important;
+  opacity: 1 !important;
+  transform: translate3d(0,0,0) !important;
+}
+
+@keyframes aarish-card-in-v203 {
+  from { opacity: 0; transform: translate3d(0, 12px, 0) scale3d(0.99,0.99,1); }
+  to   { opacity: 1; transform: translate3d(0, 0, 0) scale3d(1,1,1); }
+}
+
+/* Tactile elements: transform/opacity only. Avoid transition:all. */
+.glass-card {
+  transition: transform 160ms var(--aarish-ios-fast-v203), opacity 160ms ease-out !important;
+  transform: translate3d(0,0,0);
+  backface-visibility: hidden !important;
+  -webkit-backface-visibility: hidden !important;
+}
+
+.btn-primary,
+.btn-ios-share,
+.btn-ios-add,
+.btn-google,
+.action-btn,
+.nav-item,
+button[onclick] {
+  transition: transform 150ms var(--aarish-ios-fast-v203), opacity 150ms ease-out !important;
+  transform: translate3d(0,0,0);
+  backface-visibility: hidden !important;
+  -webkit-backface-visibility: hidden !important;
+}
+
+.aarish-pressing-v203 {
+  transform: translate3d(0,0,0) scale3d(0.965,0.965,1) !important;
+}
+
+.nav-item.aarish-pressing-v203,
+.action-btn.aarish-pressing-v203 {
+  transform: translate3d(0,0,0) scale3d(0.92,0.92,1) !important;
+}
+
+/* Toast/Gemini window: no transition:all. */
+#toast {
+  transition: transform 280ms var(--aarish-ios-spring-v203), opacity 220ms ease-out !important;
+  will-change: transform, opacity !important;
+}
+
+#gemini-chat-window {
+  transition: transform 240ms var(--aarish-ios-spring-v203), opacity 200ms ease-out !important;
+  will-change: transform, opacity !important;
+}
+
+/* Modal: always layout-ready, invisible when closed. */
 .modal-overlay {
   position: fixed !important;
   inset: 0 !important;
@@ -5740,19 +5811,19 @@ html.dark body #diary-screen #diary-search::-webkit-input-placeholder,
   backdrop-filter: none !important;
   -webkit-backdrop-filter: none !important;
 
-  transform: translate3d(0, 0, 0) !important;
+  transform: translate3d(0,0,0) !important;
   backface-visibility: hidden !important;
   -webkit-backface-visibility: hidden !important;
   contain: layout style paint !important;
   will-change: auto !important;
 
   transition:
-    opacity 280ms var(--aarish-modal-close-v202),
-    visibility 0s linear 300ms !important;
+    opacity 280ms var(--aarish-ios-snap-v203),
+    visibility 0s linear 310ms !important;
 }
 
 .dark .modal-overlay {
-  background: rgba(0, 0, 0, 0.56) !important;
+  background: rgba(0, 0, 0, 0.58) !important;
 }
 
 .modal-overlay.is-preopen,
@@ -5765,7 +5836,7 @@ html.dark body #diary-screen #diary-search::-webkit-input-placeholder,
   opacity: 1 !important;
   pointer-events: auto !important;
   transition:
-    opacity 280ms var(--aarish-modal-open-v202),
+    opacity 280ms var(--aarish-ios-spring-v203),
     visibility 0s linear 0s !important;
 }
 
@@ -5774,7 +5845,6 @@ html.dark body #diary-screen #diary-search::-webkit-input-placeholder,
   pointer-events: none !important;
 }
 
-/* Sheet uses transform-only animation. Old keyframe animation disabled. */
 .modal-content {
   animation: none !important;
   transform: translate3d(0, 106%, 0) scale3d(0.992, 0.992, 1) !important;
@@ -5790,39 +5860,49 @@ html.dark body #diary-screen #diary-search::-webkit-input-placeholder,
   -webkit-overflow-scrolling: touch !important;
 
   transition:
-    transform 320ms var(--aarish-modal-open-v202),
+    transform 320ms var(--aarish-ios-spring-v203),
     opacity 220ms ease-out !important;
 }
 
-.modal-content.aarish-sheet-prepromote-v202 {
+.modal-content.aarish-sheet-prepromote-v203 {
   will-change: transform, opacity !important;
 }
 
 .modal-overlay.is-open .modal-content {
-  transform: translate3d(0, 0, 0) scale3d(1, 1, 1) !important;
+  transform: translate3d(0,0,0) scale3d(1,1,1) !important;
   opacity: 1 !important;
 }
 
 .modal-overlay.is-closing .modal-content {
-  transform: translate3d(0, 106%, 0) scale3d(0.992, 0.992, 1) !important;
+  transform: translate3d(0, 106%, 0) scale3d(0.992,0.992,1) !important;
   opacity: 1 !important;
 }
 
-/* Safety override for old keyframe users. */
 @keyframes slideUpSheet {
-  from { transform: translate3d(0, 106%, 0); }
-  to   { transform: translate3d(0, 0, 0); }
+  from { transform: translate3d(0,106%,0); }
+  to   { transform: translate3d(0,0,0); }
+}
+
+/* Low-end phones: keep premium feel but cap motion cost. */
+.aarish-motion-lite-v203 .list-enter.aarish-motion-item-v203 {
+  animation-duration: 180ms !important;
+  animation-delay: 0ms !important;
 }
 
 @media (prefers-reduced-motion: reduce) {
   .app-container,
   .modal-overlay,
-  .modal-content {
+  .modal-content,
+  .screen.active,
+  .list-enter.aarish-motion-item-v203,
+  #toast,
+  #gemini-chat-window {
     transition-duration: 1ms !important;
     animation-duration: 1ms !important;
+    animation-delay: 0ms !important;
   }
 }
-/* AARISH_MODAL_BIGTECH_V202_END */
+/* AARISH_BIGTECH_MOTION_V203_END */
 </style>
 
 </head>
@@ -6613,25 +6693,25 @@ let selectedMonth = new Date().getMonth(), selectedYear = new Date().getFullYear
         clearTimeout(window.__aarishToastTimerV97);
         window.__aarishToastTimerV97 = setTimeout(() => t.classList.remove('show'), 2500);
     }
-        // AARISH_MODAL_BIGTECH_V202_START
-    // Compositor-only modal lifecycle. Firebase/data/render logic untouched.
+    // AARISH_BIGTECH_MOTION_V203_START
+    // Big-Tech compositor-only motion runtime. Data/Firebase/render logic untouched.
     const __aarishModalCloseTimersV48 = {};
-    const __aarishModalAnimMsV202 = 340;
+    const __aarishMotionAnimMsV203 = 340;
 
-    function __aarishModalAppV202() {
+    function __aarishMotionAppV203() {
         return document.getElementById('main-app');
     }
 
-    function __aarishModalSheetV202(modal) {
+    function __aarishMotionSheetV203(modal) {
         return modal ? modal.querySelector('.modal-content') : null;
     }
 
-    function __aarishAnyModalOpenV202(exceptModal) {
+    function __aarishAnyModalOpenV203(exceptModal) {
         return Array.from(document.querySelectorAll('.modal-overlay.is-open, .modal-overlay.is-preopen'))
             .some(x => x !== exceptModal);
     }
 
-    function __aarishPrimeModalV202(modal) {
+    function __aarishPrimeModalV203(modal) {
         if (!modal) return;
 
         const id = modal.id || '';
@@ -6649,23 +6729,23 @@ let selectedMonth = new Date().getMonth(), selectedYear = new Date().getFullYear
         modal.classList.add('is-preopen');
         modal.setAttribute('aria-hidden', 'false');
 
-        const app = __aarishModalAppV202();
-        const sheet = __aarishModalSheetV202(modal);
+        const app = __aarishMotionAppV203();
+        const sheet = __aarishMotionSheetV203(modal);
 
-        if (app) app.classList.add('aarish-modal-prepromote-v202');
-        if (sheet) sheet.classList.add('aarish-sheet-prepromote-v202');
+        if (app) app.classList.add('aarish-motion-prepromote-v203');
+        if (sheet) sheet.classList.add('aarish-sheet-prepromote-v203');
     }
 
     function openModal(id) {
         const modal = document.getElementById(id);
         if (!modal) return;
 
-        __aarishPrimeModalV202(modal);
+        __aarishPrimeModalV203(modal);
 
-        // Commit hidden layout first. No display toggle, no paint storm.
+        // Hidden layout commit first; no display:flex jank during the tap frame.
         void modal.offsetHeight;
 
-        const app = __aarishModalAppV202();
+        const app = __aarishMotionAppV203();
 
         requestAnimationFrame(() => {
             if (app) app.classList.add('app-scale-down');
@@ -6675,10 +6755,10 @@ let selectedMonth = new Date().getMonth(), selectedYear = new Date().getFullYear
                 modal.classList.remove('is-preopen');
 
                 setTimeout(() => {
-                    const sheet = __aarishModalSheetV202(modal);
-                    if (sheet) sheet.classList.remove('aarish-sheet-prepromote-v202');
-                    if (app) app.classList.remove('aarish-modal-prepromote-v202');
-                }, __aarishModalAnimMsV202 + 80);
+                    const sheet = __aarishMotionSheetV203(modal);
+                    if (sheet) sheet.classList.remove('aarish-sheet-prepromote-v203');
+                    if (app) app.classList.remove('aarish-motion-prepromote-v203');
+                }, __aarishMotionAnimMsV203 + 90);
             });
         });
     }
@@ -6692,11 +6772,11 @@ let selectedMonth = new Date().getMonth(), selectedYear = new Date().getFullYear
             delete __aarishModalCloseTimersV48[id];
         }
 
-        const app = __aarishModalAppV202();
-        const sheet = __aarishModalSheetV202(modal);
+        const app = __aarishMotionAppV203();
+        const sheet = __aarishMotionSheetV203(modal);
 
-        if (app) app.classList.add('aarish-modal-prepromote-v202');
-        if (sheet) sheet.classList.add('aarish-sheet-prepromote-v202');
+        if (app) app.classList.add('aarish-motion-prepromote-v203');
+        if (sheet) sheet.classList.add('aarish-sheet-prepromote-v203');
 
         modal.classList.remove('is-open', 'is-preopen');
         modal.classList.add('is-closing');
@@ -6704,7 +6784,7 @@ let selectedMonth = new Date().getMonth(), selectedYear = new Date().getFullYear
         modal.style.pointerEvents = 'none';
 
         requestAnimationFrame(() => {
-            if (app && !__aarishAnyModalOpenV202(modal)) {
+            if (app && !__aarishAnyModalOpenV203(modal)) {
                 app.classList.remove('app-scale-down');
             }
         });
@@ -6716,19 +6796,19 @@ let selectedMonth = new Date().getMonth(), selectedYear = new Date().getFullYear
             modal.style.removeProperty('pointer-events');
             modal.style.removeProperty('visibility');
 
-            if (sheet) sheet.classList.remove('aarish-sheet-prepromote-v202');
-            if (app) app.classList.remove('aarish-modal-prepromote-v202');
+            if (sheet) sheet.classList.remove('aarish-sheet-prepromote-v203');
+            if (app) app.classList.remove('aarish-motion-prepromote-v203');
 
             delete __aarishModalCloseTimersV48[id];
-        }, __aarishModalAnimMsV202);
+        }, __aarishMotionAnimMsV203);
     }
 
-    window.__aarishOpenCreatedModalV202 = function(overlay) {
+    window.__aarishOpenCreatedModalV203 = function(overlay) {
         if (!overlay) return;
-        __aarishPrimeModalV202(overlay);
+        __aarishPrimeModalV203(overlay);
         void overlay.offsetHeight;
 
-        const app = __aarishModalAppV202();
+        const app = __aarishMotionAppV203();
 
         requestAnimationFrame(() => {
             if (app) app.classList.add('app-scale-down');
@@ -6738,41 +6818,89 @@ let selectedMonth = new Date().getMonth(), selectedYear = new Date().getFullYear
                 overlay.classList.remove('is-preopen');
 
                 setTimeout(() => {
-                    const sheet = __aarishModalSheetV202(overlay);
-                    if (sheet) sheet.classList.remove('aarish-sheet-prepromote-v202');
-                    if (app) app.classList.remove('aarish-modal-prepromote-v202');
-                }, __aarishModalAnimMsV202 + 80);
+                    const sheet = __aarishMotionSheetV203(overlay);
+                    if (sheet) sheet.classList.remove('aarish-sheet-prepromote-v203');
+                    if (app) app.classList.remove('aarish-motion-prepromote-v203');
+                }, __aarishMotionAnimMsV203 + 90);
             });
         });
     };
 
-    window.__aarishCloseCreatedModalV202 = function(overlay) {
+    window.__aarishCloseCreatedModalV203 = function(overlay) {
         if (!overlay) return;
 
-        const app = __aarishModalAppV202();
-        const sheet = __aarishModalSheetV202(overlay);
+        const app = __aarishMotionAppV203();
+        const sheet = __aarishMotionSheetV203(overlay);
 
-        if (app) app.classList.add('aarish-modal-prepromote-v202');
-        if (sheet) sheet.classList.add('aarish-sheet-prepromote-v202');
+        if (app) app.classList.add('aarish-motion-prepromote-v203');
+        if (sheet) sheet.classList.add('aarish-sheet-prepromote-v203');
 
         overlay.classList.remove('is-open', 'is-preopen');
         overlay.classList.add('is-closing');
         overlay.style.pointerEvents = 'none';
 
         requestAnimationFrame(() => {
-            if (app && !__aarishAnyModalOpenV202(overlay)) {
+            if (app && !__aarishAnyModalOpenV203(overlay)) {
                 app.classList.remove('app-scale-down');
             }
         });
 
         setTimeout(() => {
             try { overlay.remove(); } catch(e) {}
-            if (app) app.classList.remove('aarish-modal-prepromote-v202');
-        }, __aarishModalAnimMsV202);
+            if (app) app.classList.remove('aarish-motion-prepromote-v203');
+        }, __aarishMotionAnimMsV203);
     };
 
-    (function __aarishModalBootV202() {
-        const boot = () => {
+    (function __aarishMotionBootV203() {
+        const root = document.documentElement;
+        const isLite = (() => {
+            try {
+                const dm = Number(navigator.deviceMemory || 0);
+                const cores = Number(navigator.hardwareConcurrency || 0);
+                return (dm && dm <= 3) || (cores && cores <= 4);
+            } catch(e) { return false; }
+        })();
+
+        root.classList.add('aarish-motion-v203');
+        if (isLite) root.classList.add('aarish-motion-lite-v203');
+
+        let raf = 0;
+        const maxAnimated = isLite ? 8 : 18;
+
+        function applyListMotion(scope) {
+            try {
+                const base = scope && scope.querySelectorAll ? scope : document;
+                const active = document.querySelector('.screen.active') || base;
+                const cards = Array.from(active.querySelectorAll('.list-enter:not(.aarish-motion-seen-v203)'));
+                cards.forEach((el, i) => {
+                    el.classList.add('aarish-motion-seen-v203');
+                    if (i < maxAnimated) {
+                        el.style.setProperty('--aarish-motion-i', String(i));
+                        el.classList.add('aarish-motion-item-v203');
+                        setTimeout(() => {
+                            el.classList.remove('aarish-motion-item-v203');
+                            el.classList.add('aarish-motion-done-v203');
+                            el.style.removeProperty('--aarish-motion-i');
+                            el.style.removeProperty('will-change');
+                        }, 520 + (i * 14));
+                    } else {
+                        el.classList.add('aarish-motion-done-v203');
+                    }
+                });
+            } catch(e) {}
+        }
+
+        function scheduleListMotion(scope) {
+            if (raf) cancelAnimationFrame(raf);
+            raf = requestAnimationFrame(() => {
+                raf = 0;
+                applyListMotion(scope || document);
+            });
+        }
+
+        window.__aarishApplyMotionV203 = scheduleListMotion;
+
+        function boot() {
             try {
                 document.querySelectorAll('.modal-overlay').forEach(modal => {
                     modal.style.removeProperty('display');
@@ -6780,16 +6908,44 @@ let selectedMonth = new Date().getMonth(), selectedYear = new Date().getFullYear
                     modal.style.removeProperty('pointer-events');
                     modal.style.removeProperty('visibility');
                     modal.setAttribute('aria-hidden', 'true');
-
-                    const sheet = __aarishModalSheetV202(modal);
+                    const sheet = __aarishMotionSheetV203(modal);
                     if (sheet) {
                         sheet.style.removeProperty('animation');
                         sheet.style.backfaceVisibility = 'hidden';
                         sheet.style.webkitBackfaceVisibility = 'hidden';
                     }
                 });
+
+                scheduleListMotion(document);
+
+                const mo = new MutationObserver((mutations) => {
+                    let shouldRun = false;
+                    for (const m of mutations) {
+                        if (m.addedNodes && m.addedNodes.length) {
+                            shouldRun = true;
+                            break;
+                        }
+                    }
+                    if (shouldRun) scheduleListMotion(document);
+                });
+                mo.observe(document.body, { childList: true, subtree: true });
+
+                document.addEventListener('pointerdown', (e) => {
+                    const el = e.target && e.target.closest ? e.target.closest('button, .btn-primary, .btn-ios-share, .btn-ios-add, .btn-google, .action-btn, .nav-item, .glass-card[onclick]') : null;
+                    if (!el) return;
+                    el.classList.add('aarish-pressing-v203');
+                }, { passive: true, capture: true });
+
+                const clearPress = (e) => {
+                    try {
+                        document.querySelectorAll('.aarish-pressing-v203').forEach(el => el.classList.remove('aarish-pressing-v203'));
+                    } catch(err) {}
+                };
+                document.addEventListener('pointerup', clearPress, { passive: true, capture: true });
+                document.addEventListener('pointercancel', clearPress, { passive: true, capture: true });
+                document.addEventListener('pointerleave', clearPress, { passive: true, capture: true });
             } catch(e) {}
-        };
+        }
 
         if (document.readyState === 'loading') {
             document.addEventListener('DOMContentLoaded', boot, { once: true });
@@ -6797,7 +6953,7 @@ let selectedMonth = new Date().getMonth(), selectedYear = new Date().getFullYear
             boot();
         }
     })();
-    // AARISH_MODAL_BIGTECH_V202_END
+    // AARISH_BIGTECH_MOTION_V203_END
 
 // Empty State Helper Function
     function getEmptyState(iconClass, message) {
@@ -8540,7 +8696,16 @@ async function shareDiaryBill(id) {
         overlay.id = 'dynamic-download-modal';
         overlay.className = 'modal-overlay';
         // AARISH_MODAL_BIGTECH_V202: dynamic modal opens through compositor pipeline below
-        overlay.onclick = function(e) { if(e.target.id === 'dynamic-download-modal') { overlay.remove(); document.getElementById('main-app').classList.remove('app-scale-down'); } };
+        overlay.onclick = function(e) {
+            if (e.target.id === 'dynamic-download-modal') {
+                if (window.__aarishCloseCreatedModalV203) window.__aarishCloseCreatedModalV203(overlay);
+                else {
+                    overlay.remove();
+                    const app = document.getElementById('main-app');
+                    if (app) app.classList.remove('app-scale-down');
+                }
+            }
+        };
 
         // Modal content in pure English (Tailwind classes intact)
         overlay.innerHTML = `
@@ -8565,9 +8730,9 @@ async function shareDiaryBill(id) {
         `;
         document.body.appendChild(overlay);
 
-        // AARISH_MODAL_BIGTECH_V202: dynamic modal uses same zero-jank modal pipeline.
-        if (window.__aarishOpenCreatedModalV202) {
-            window.__aarishOpenCreatedModalV202(overlay);
+        // AARISH_BIGTECH_MOTION_V203: dynamic modal uses same compositor pipeline.
+        if (window.__aarishOpenCreatedModalV203) {
+            window.__aarishOpenCreatedModalV203(overlay);
         } else {
             overlay.classList.add('is-open');
             const app = document.getElementById('main-app');
@@ -8578,7 +8743,7 @@ async function shareDiaryBill(id) {
     // Function that executes the download based on the user's choice
     function executeDownload(type) {
         const modal = document.getElementById('dynamic-download-modal');
-        if (modal && window.__aarishCloseCreatedModalV202) window.__aarishCloseCreatedModalV202(modal);
+        if (modal && window.__aarishCloseCreatedModalV203) window.__aarishCloseCreatedModalV203(modal);
         else if (modal) modal.remove();
         const app = document.getElementById('main-app');
         if (app) app.classList.remove('app-scale-down'); // Revert 3D effect
