@@ -4026,8 +4026,7 @@ html:not(.dark) body #main-app #milk-screen #milk-list .aarish-milk-v113-card {
   border-left-style: solid !important;
   border-left-color: var(--milkTone, #007AFF) !important;
   overflow: hidden !important;
-  transform: translate3d(0,0,0) !important;
-  contain: layout style !important;
+contain: layout style !important;
   transition-property: transform, opacity !important;
 }
 
@@ -4515,9 +4514,7 @@ html:not(.dark) #salary-screen {
 /* Salary light mode: card should appear already colored, not animate color later */
 html:not(.dark) #salary-list .list-enter,
 html:not(.dark) #salary-detail-records .list-enter {
-  animation: none !important;
-  opacity: 1 !important;
-  transform: none !important;
+  /* AARISH_CARD_ENTRY_MOTION_SAFE: right-to-left slide preserved. */
 }
 
 html:not(.dark) #salary-screen :is(
@@ -4647,9 +4644,7 @@ html:not(.dark) #udhar-screen {
 /* Light mode: no entry slide/stagger flash */
 html:not(.dark) #udhar-list .list-enter,
 html:not(.dark) #udhar-detail-records .list-enter {
-  animation: none !important;
-  opacity: 1 !important;
-  transform: none !important;
+  /* AARISH_CARD_ENTRY_MOTION_SAFE: right-to-left slide preserved. */
 }
 
 /* Color/background/border should snap instantly, only tap movement animates */
@@ -4872,9 +4867,7 @@ html:not(.dark) #credit-entry-btn-v52[data-credit-net-v128] * {
 }
 
 #udhar-detail-records .list-enter {
-  animation: none !important;
-  opacity: 1 !important;
-  transform: none !important;
+  /* AARISH_CARD_ENTRY_MOTION_SAFE: right-to-left slide preserved. */
 }
 
 /* Empty state blue */
@@ -5923,20 +5916,6 @@ button[onclick] {
   will-change: transform, opacity;
 }
 </style>
-
-
-<style id="aarish-hard-rtl-tab-replay-v2">
-/* AARISH_HARD_RTL_TAB_REPLAY_V2
-   Tiny hard replay for tab-open cards only.
-   No observer, no interval, no render/data/Firebase change.
-*/
-@keyframes aarishHardRtlTabReplayV2 {
-  0%   { opacity: 0; transform: translate3d(64px, 0, 0) scale3d(.992,.992,1); }
-  68%  { opacity: 1; transform: translate3d(-5px, 0, 0) scale3d(1.002,1.002,1); }
-  100% { opacity: 1; transform: translate3d(0, 0, 0) scale3d(1,1,1); }
-}
-</style>
-
 </head>
 
 <body>
@@ -9567,58 +9546,6 @@ try { window.renderExpenseRecords = renderExpenseRecords; } catch(e) {}
         } catch(e) {}
         
         updateActiveScreen();
-
-    /* AARISH_HARD_RTL_TAB_REPLAY_V2_START */
-    try {
-        setTimeout(function () {
-            var t = String(tab || "");
-            var map = {
-                milk: "#milk-list",
-                udhar: "#udhar-list",
-                credit: "#udhar-list",
-                salary: "#salary-list",
-                expenses: "#expense-list-container",
-                diary: "#diary-list",
-                projects: "#project-list",
-                business: "#project-list"
-            };
-            var sel = map[t];
-            if (!sel) return;
-
-            var box = document.querySelector(sel);
-            if (!box) return;
-
-            box.querySelectorAll(".glass-card").forEach(function (el, i) {
-                if (!el || !el.classList) return;
-
-                el.classList.add("list-enter");
-
-                el.style.setProperty("opacity", "0", "important");
-                el.style.setProperty("transform", "translate3d(64px,0,0)", "important");
-                el.style.setProperty("animation", "none", "important");
-                el.style.setProperty("will-change", "transform, opacity", "important");
-
-                void el.offsetWidth;
-
-                el.style.setProperty(
-                  "animation",
-                  "aarishHardRtlTabReplayV2 520ms cubic-bezier(0.22, 0.82, 0.18, 1) " + Math.min(i * 0.045, 0.32) + "s both",
-                  "important"
-                );
-
-                setTimeout(function () {
-                    try {
-                        el.style.removeProperty("animation");
-                        el.style.removeProperty("animation-delay");
-                        el.style.removeProperty("will-change");
-                        el.style.removeProperty("opacity");
-                        el.style.removeProperty("transform");
-                    } catch(e) {}
-                }, 950);
-            });
-        }, 80);
-    } catch(e) {}
-    /* AARISH_HARD_RTL_TAB_REPLAY_V2_END */
 }
 
          // ========================== PREMIUM BUSINESS HUB LOGIC ==========================
