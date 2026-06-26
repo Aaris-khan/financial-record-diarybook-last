@@ -93,15 +93,16 @@
         
                 /* 2. PREMIUM SIDE-SLIDE ANIMATION */
         .list-enter {
-            animation: aarishButterCardInV5 320ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
+            animation: aarishPremiumSideSlideV6 360ms cubic-bezier(0.16, 1, 0.3, 1) both;
             opacity: 0;
-            transform: translate3d(0, 12px, 0) scale3d(0.992, 0.992, 1);
+            transform: translate3d(28px, 0, 0) scale3d(0.992, 0.992, 1);
             backface-visibility: hidden;
             -webkit-backface-visibility: hidden;
         }
         @keyframes slideInRight {
-            0%   { opacity: 0; transform: translate3d(0, 12px, 0) scale3d(0.992, 0.992, 1); }
-            100% { opacity: 1; transform: translate3d(0, 0, 0) scale3d(1, 1, 1); }
+            0%   { opacity: 0; transform: translate3d(28px, 0, 0) scale3d(0.992,0.992,1); }
+            58%  { opacity: 1; transform: translate3d(-2px, 0, 0) scale3d(1.001,1.001,1); }
+            100% { opacity: 1; transform: translate3d(0, 0, 0) scale3d(1,1,1); }
         }
 
 
@@ -5706,7 +5707,7 @@ html.dark body #diary-screen #diary-search::-webkit-input-placeholder,
 }
 
 .app-scale-down {
-  transform: translate3d(0, 8px, 0) scale3d(0.965, 0.965, 1) !important;
+  transform: translate3d(14px, 0, 0) scale3d(0.965, 0.965, 1) !important;
   border-radius: 28px !important;
   opacity: 0.82 !important;
   pointer-events: none !important;
@@ -5897,38 +5898,29 @@ button[onclick] {
 /* AARISH_BIGTECH_MOTION_V203_END */
 </style>
 
-<style id="aarish-butter-premium-motion-v5">
-/* AARISH_BUTTER_PREMIUM_MOTION_V5
-   Final smooth motion layer.
-   - No observer / no interval / no modal rewrite.
+<style id="aarish-premium-side-slide-v6">
+/* AARISH_PREMIUM_SIDE_SLIDE_V6
+   Final stable premium sliding:
+   - Real RIGHT -> LEFT side-slide.
    - Transform + opacity only.
-   - Removes cheap long horizontal push.
-   - Uses small vertical glide like premium mobile apps.
+   - No observer, no interval, no modal rewrite.
    - Color/Firebase/data/render/stripe logic untouched.
 */
-
 :root {
-  --aarish-butter-ease-v5: cubic-bezier(0.2, 0.8, 0.2, 1);
-  --aarish-butter-spring-v5: cubic-bezier(0.16, 1, 0.3, 1);
+  --aarish-slide-ease-v6: cubic-bezier(0.16, 1, 0.3, 1);
+  --aarish-screen-ease-v6: cubic-bezier(0.2, 0.8, 0.2, 1);
 }
 
-/* Stop double-motion: screen only does tiny fade/settle. */
 #main-app .screen.active {
-  animation: aarishButterScreenV5 135ms var(--aarish-butter-ease-v5) both !important;
+  animation: aarishScreenFadeV6 120ms var(--aarish-screen-ease-v6) both !important;
 }
 
-@keyframes aarishButterScreenV5 {
-  0%   { opacity: 0.985; transform: translate3d(0, 3px, 0); }
+@keyframes aarishScreenFadeV6 {
+  0%   { opacity: 0.992; transform: translate3d(0, 0, 0); }
   100% { opacity: 1; transform: translate3d(0, 0, 0); }
 }
 
-/* Existing legacy animation name now points to butter motion too. */
-@keyframes slideInRight {
-  0%   { opacity: 0; transform: translate3d(0, 12px, 0) scale3d(0.992,0.992,1); }
-  100% { opacity: 1; transform: translate3d(0, 0, 0) scale3d(1,1,1); }
-}
-
-/* Main list cards + diary/project/party cards. */
+.list-enter,
 #main-app :is(
   #milk-list,
   #udhar-list,
@@ -5937,17 +5929,32 @@ button[onclick] {
   #diary-list,
   #project-list,
   #dash-balances-list
-) :is(.glass-card, .diary-card).list-enter {
-  animation: aarishButterCardInV5 318ms var(--aarish-butter-spring-v5) both !important;
+) :is(.glass-card, .diary-card).list-enter,
+#main-app .screen.active :is(.glass-card, .diary-card).list-enter {
+  animation-name: aarishPremiumSideSlideV6 !important;
+  animation-duration: 360ms !important;
+  animation-timing-function: var(--aarish-slide-ease-v6) !important;
   animation-delay: var(--aarish-stagger-v5, var(--aarish-stagger-v4, 0ms)) !important;
+  animation-fill-mode: both !important;
   opacity: 0;
-  transform: translate3d(0, 12px, 0) scale3d(0.992,0.992,1);
-  transform-origin: center bottom !important;
+  transform: translate3d(28px, 0, 0) scale3d(0.992,0.992,1);
+  transform-origin: center center !important;
   backface-visibility: hidden !important;
   -webkit-backface-visibility: hidden !important;
 }
 
-/* Detail rows: faster, less dramatic. */
+@keyframes aarishPremiumSideSlideV6 {
+  0%   { opacity: 0; transform: translate3d(28px, 0, 0) scale3d(0.992,0.992,1); }
+  58%  { opacity: 1; transform: translate3d(-2px, 0, 0) scale3d(1.001,1.001,1); }
+  100% { opacity: 1; transform: translate3d(0, 0, 0) scale3d(1,1,1); }
+}
+
+@keyframes slideInRight {
+  0%   { opacity: 0; transform: translate3d(28px, 0, 0) scale3d(0.992,0.992,1); }
+  58%  { opacity: 1; transform: translate3d(-2px, 0, 0) scale3d(1.001,1.001,1); }
+  100% { opacity: 1; transform: translate3d(0, 0, 0) scale3d(1,1,1); }
+}
+
 #main-app :is(
   #milk-detail-records,
   #udhar-detail-records,
@@ -5955,54 +5962,22 @@ button[onclick] {
   #expense-detail-records,
   #project-detail-records
 ) tr.list-enter {
-  animation: aarishButterRowInV5 230ms var(--aarish-butter-ease-v5) both !important;
+  animation: aarishDetailRowSlideV6 240ms var(--aarish-screen-ease-v6) both !important;
   animation-delay: var(--aarish-stagger-v5, var(--aarish-stagger-v4, 0ms)) !important;
 }
 
-/* Cards inside active screens that are list-enter but not in known containers. */
-#main-app .screen.active :is(.glass-card, .diary-card).list-enter {
-  animation-name: aarishButterCardInV5 !important;
-  animation-duration: 318ms !important;
-  animation-timing-function: var(--aarish-butter-spring-v5) !important;
-  animation-fill-mode: both !important;
-}
-
-@keyframes aarishButterCardInV5 {
-  0%   { opacity: 0; transform: translate3d(0, 12px, 0) scale3d(0.992,0.992,1); filter: saturate(0.98); }
-  56%  { opacity: 1; transform: translate3d(0, -0.75px, 0) scale3d(1.001,1.001,1); filter: saturate(1); }
-  100% { opacity: 1; transform: translate3d(0, 0, 0) scale3d(1,1,1); filter: none; }
-}
-
-@keyframes aarishButterRowInV5 {
-  0%   { opacity: 0; transform: translate3d(0, 8px, 0); }
+@keyframes aarishDetailRowSlideV6 {
+  0%   { opacity: 0; transform: translate3d(14px, 0, 0); }
   100% { opacity: 1; transform: translate3d(0, 0, 0); }
-}
-
-/* Taps: fast and soft, no “bad UI” squash. */
-#main-app :is(
-  .glass-card,
-  .diary-card,
-  .btn-primary,
-  .btn-ios-share,
-  .btn-ios-add,
-  .btn-google,
-  .action-btn,
-  .nav-item,
-  button[onclick]
-) {
-  transition-property: transform, opacity, box-shadow !important;
-  transition-duration: 130ms !important;
-  transition-timing-function: var(--aarish-butter-ease-v5) !important;
-  backface-visibility: hidden !important;
-  -webkit-backface-visibility: hidden !important;
 }
 
 #main-app :is(.glass-card, .diary-card):active {
   transform: translate3d(0,0,0) scale3d(0.982,0.982,1) !important;
+  transition: transform 120ms var(--aarish-screen-ease-v6) !important;
 }
 
-/* Low-end phone safety: no long stagger. */
 @media (max-width: 430px) {
+  .list-enter,
   #main-app :is(
     #milk-list,
     #udhar-list,
@@ -6012,21 +5987,21 @@ button[onclick] {
     #project-list,
     #dash-balances-list
   ) :is(.glass-card, .diary-card).list-enter {
-    animation-duration: 285ms !important;
+    animation-duration: 315ms !important;
   }
 }
 
-/* Accessibility */
 @media (prefers-reduced-motion: reduce) {
   #main-app .screen.active,
+  .list-enter,
   #main-app :is(.glass-card, .diary-card).list-enter,
   #main-app tr.list-enter {
-    animation: aarishButterFadeV5 90ms ease-out both !important;
+    animation: aarishReducedFadeV6 90ms ease-out both !important;
     transform: none !important;
   }
 }
 
-@keyframes aarishButterFadeV5 {
+@keyframes aarishReducedFadeV6 {
   0% { opacity: 0; }
   100% { opacity: 1; }
 }
