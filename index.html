@@ -5672,6 +5672,159 @@ html.dark body #diary-screen #diary-search::-webkit-input-placeholder,
 }
 </style>
 
+
+<style id="aarish-modal-bigtech-v202">
+/* AARISH_MODAL_BIGTECH_V202_START
+   Big-Tech zero-jank modal system:
+   1) No display:none -> flex on open
+   2) No border-radius animation
+   3) No live backdrop-filter blur on modal open
+   4) Transform/opacity-only compositor animation
+   5) GPU pre-promotion only during modal lifecycle
+   6) Dynamic export modal uses same pipeline
+*/
+
+:root {
+  --aarish-modal-open-v202: cubic-bezier(0.22, 0.82, 0.18, 1);
+  --aarish-modal-close-v202: cubic-bezier(0.32, 0.72, 0, 1);
+}
+
+/* Giant glow elements: transition:all was a hidden repaint trap. */
+.ambient-glow,
+.ambient-glow-2 {
+  transition: opacity 0.45s ease !important;
+  will-change: opacity !important;
+  transform: translate3d(0, 0, 0) !important;
+  contain: paint !important;
+}
+
+/* App pushback: only transform + opacity animate. Border-radius becomes instant, not per-frame. */
+.app-container {
+  transform: translate3d(0, 0, 0) scale3d(1, 1, 1) !important;
+  transform-origin: top center !important;
+  transition:
+    transform 300ms var(--aarish-modal-open-v202),
+    opacity 220ms ease-out !important;
+  backface-visibility: hidden !important;
+  -webkit-backface-visibility: hidden !important;
+  perspective: 1000px !important;
+  will-change: auto !important;
+}
+
+.app-container.aarish-modal-prepromote-v202 {
+  will-change: transform, opacity !important;
+}
+
+.app-scale-down {
+  transform: translate3d(0, 8px, 0) scale3d(0.965, 0.965, 1) !important;
+  border-radius: 28px !important;
+  opacity: 0.82 !important;
+  pointer-events: none !important;
+}
+
+/* Modal is always layout-ready but invisible/non-interactive.
+   This kills the old display:flex first-frame reflow spike. */
+.modal-overlay {
+  position: fixed !important;
+  inset: 0 !important;
+  z-index: 100 !important;
+  display: flex !important;
+  align-items: flex-end !important;
+  justify-content: center !important;
+
+  visibility: hidden !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+
+  background: rgba(0, 0, 0, 0.38) !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+
+  transform: translate3d(0, 0, 0) !important;
+  backface-visibility: hidden !important;
+  -webkit-backface-visibility: hidden !important;
+  contain: layout style paint !important;
+  will-change: auto !important;
+
+  transition:
+    opacity 280ms var(--aarish-modal-close-v202),
+    visibility 0s linear 300ms !important;
+}
+
+.dark .modal-overlay {
+  background: rgba(0, 0, 0, 0.56) !important;
+}
+
+.modal-overlay.is-preopen,
+.modal-overlay.is-open,
+.modal-overlay.is-closing {
+  visibility: visible !important;
+}
+
+.modal-overlay.is-open {
+  opacity: 1 !important;
+  pointer-events: auto !important;
+  transition:
+    opacity 280ms var(--aarish-modal-open-v202),
+    visibility 0s linear 0s !important;
+}
+
+.modal-overlay.is-closing {
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+
+/* Sheet uses transform-only animation. Old keyframe animation disabled. */
+.modal-content {
+  animation: none !important;
+  transform: translate3d(0, 106%, 0) scale3d(0.992, 0.992, 1) !important;
+  opacity: 1 !important;
+
+  will-change: auto !important;
+  backface-visibility: hidden !important;
+  -webkit-backface-visibility: hidden !important;
+  transform-origin: bottom center !important;
+
+  contain: layout style paint !important;
+  overscroll-behavior: contain !important;
+  -webkit-overflow-scrolling: touch !important;
+
+  transition:
+    transform 320ms var(--aarish-modal-open-v202),
+    opacity 220ms ease-out !important;
+}
+
+.modal-content.aarish-sheet-prepromote-v202 {
+  will-change: transform, opacity !important;
+}
+
+.modal-overlay.is-open .modal-content {
+  transform: translate3d(0, 0, 0) scale3d(1, 1, 1) !important;
+  opacity: 1 !important;
+}
+
+.modal-overlay.is-closing .modal-content {
+  transform: translate3d(0, 106%, 0) scale3d(0.992, 0.992, 1) !important;
+  opacity: 1 !important;
+}
+
+/* Safety override for old keyframe users. */
+@keyframes slideUpSheet {
+  from { transform: translate3d(0, 106%, 0); }
+  to   { transform: translate3d(0, 0, 0); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .app-container,
+  .modal-overlay,
+  .modal-content {
+    transition-duration: 1ms !important;
+    animation-duration: 1ms !important;
+  }
+}
+/* AARISH_MODAL_BIGTECH_V202_END */
+</style>
+
 </head>
 
 <body>
@@ -6460,37 +6613,193 @@ let selectedMonth = new Date().getMonth(), selectedYear = new Date().getFullYear
         clearTimeout(window.__aarishToastTimerV97);
         window.__aarishToastTimerV97 = setTimeout(() => t.classList.remove('show'), 2500);
     }
-    // AARISH_MODAL_STALE_TIMER_FIX_V48: clear stale close timer before reopening same modal.
+        // AARISH_MODAL_BIGTECH_V202_START
+    // Compositor-only modal lifecycle. Firebase/data/render logic untouched.
     const __aarishModalCloseTimersV48 = {};
-    function openModal(id) { 
-        const m = document.getElementById(id);
-        if (!m) return;
+    const __aarishModalAnimMsV202 = 340;
+
+    function __aarishModalAppV202() {
+        return document.getElementById('main-app');
+    }
+
+    function __aarishModalSheetV202(modal) {
+        return modal ? modal.querySelector('.modal-content') : null;
+    }
+
+    function __aarishAnyModalOpenV202(exceptModal) {
+        return Array.from(document.querySelectorAll('.modal-overlay.is-open, .modal-overlay.is-preopen'))
+            .some(x => x !== exceptModal);
+    }
+
+    function __aarishPrimeModalV202(modal) {
+        if (!modal) return;
+
+        const id = modal.id || '';
+        if (id && __aarishModalCloseTimersV48[id]) {
+            clearTimeout(__aarishModalCloseTimersV48[id]);
+            delete __aarishModalCloseTimersV48[id];
+        }
+
+        modal.style.removeProperty('display');
+        modal.style.removeProperty('opacity');
+        modal.style.removeProperty('pointer-events');
+        modal.style.removeProperty('visibility');
+
+        modal.classList.remove('is-open', 'is-closing');
+        modal.classList.add('is-preopen');
+        modal.setAttribute('aria-hidden', 'false');
+
+        const app = __aarishModalAppV202();
+        const sheet = __aarishModalSheetV202(modal);
+
+        if (app) app.classList.add('aarish-modal-prepromote-v202');
+        if (sheet) sheet.classList.add('aarish-sheet-prepromote-v202');
+    }
+
+    function openModal(id) {
+        const modal = document.getElementById(id);
+        if (!modal) return;
+
+        __aarishPrimeModalV202(modal);
+
+        // Commit hidden layout first. No display toggle, no paint storm.
+        void modal.offsetHeight;
+
+        const app = __aarishModalAppV202();
+
+        requestAnimationFrame(() => {
+            if (app) app.classList.add('app-scale-down');
+
+            requestAnimationFrame(() => {
+                modal.classList.add('is-open');
+                modal.classList.remove('is-preopen');
+
+                setTimeout(() => {
+                    const sheet = __aarishModalSheetV202(modal);
+                    if (sheet) sheet.classList.remove('aarish-sheet-prepromote-v202');
+                    if (app) app.classList.remove('aarish-modal-prepromote-v202');
+                }, __aarishModalAnimMsV202 + 80);
+            });
+        });
+    }
+
+    function closeModal(id) {
+        const modal = document.getElementById(id);
+        if (!modal) return;
+
         if (__aarishModalCloseTimersV48[id]) {
             clearTimeout(__aarishModalCloseTimersV48[id]);
             delete __aarishModalCloseTimersV48[id];
         }
-        m.style.pointerEvents = 'auto';
-        m.style.opacity = '0';
-        m.style.display = 'flex';
-        const app = document.getElementById('main-app');
-        if (app) app.classList.add('app-scale-down');
-        requestAnimationFrame(() => requestAnimationFrame(() => { m.style.opacity = '1'; }));
-    }
-    function closeModal(id) { 
-        const m = document.getElementById(id);
-        if (!m) return;
-        if (__aarishModalCloseTimersV48[id]) clearTimeout(__aarishModalCloseTimersV48[id]);
-        m.style.opacity = '0';
-        m.style.pointerEvents = 'none';
-        const app = document.getElementById('main-app');
-        if (app) app.classList.remove('app-scale-down');
+
+        const app = __aarishModalAppV202();
+        const sheet = __aarishModalSheetV202(modal);
+
+        if (app) app.classList.add('aarish-modal-prepromote-v202');
+        if (sheet) sheet.classList.add('aarish-sheet-prepromote-v202');
+
+        modal.classList.remove('is-open', 'is-preopen');
+        modal.classList.add('is-closing');
+        modal.setAttribute('aria-hidden', 'true');
+        modal.style.pointerEvents = 'none';
+
+        requestAnimationFrame(() => {
+            if (app && !__aarishAnyModalOpenV202(modal)) {
+                app.classList.remove('app-scale-down');
+            }
+        });
+
         __aarishModalCloseTimersV48[id] = setTimeout(() => {
-            m.style.display = 'none';
+            modal.classList.remove('is-closing');
+            modal.style.removeProperty('display');
+            modal.style.removeProperty('opacity');
+            modal.style.removeProperty('pointer-events');
+            modal.style.removeProperty('visibility');
+
+            if (sheet) sheet.classList.remove('aarish-sheet-prepromote-v202');
+            if (app) app.classList.remove('aarish-modal-prepromote-v202');
+
             delete __aarishModalCloseTimersV48[id];
-        }, 260);
+        }, __aarishModalAnimMsV202);
     }
-    
-    // Empty State Helper Function
+
+    window.__aarishOpenCreatedModalV202 = function(overlay) {
+        if (!overlay) return;
+        __aarishPrimeModalV202(overlay);
+        void overlay.offsetHeight;
+
+        const app = __aarishModalAppV202();
+
+        requestAnimationFrame(() => {
+            if (app) app.classList.add('app-scale-down');
+
+            requestAnimationFrame(() => {
+                overlay.classList.add('is-open');
+                overlay.classList.remove('is-preopen');
+
+                setTimeout(() => {
+                    const sheet = __aarishModalSheetV202(overlay);
+                    if (sheet) sheet.classList.remove('aarish-sheet-prepromote-v202');
+                    if (app) app.classList.remove('aarish-modal-prepromote-v202');
+                }, __aarishModalAnimMsV202 + 80);
+            });
+        });
+    };
+
+    window.__aarishCloseCreatedModalV202 = function(overlay) {
+        if (!overlay) return;
+
+        const app = __aarishModalAppV202();
+        const sheet = __aarishModalSheetV202(overlay);
+
+        if (app) app.classList.add('aarish-modal-prepromote-v202');
+        if (sheet) sheet.classList.add('aarish-sheet-prepromote-v202');
+
+        overlay.classList.remove('is-open', 'is-preopen');
+        overlay.classList.add('is-closing');
+        overlay.style.pointerEvents = 'none';
+
+        requestAnimationFrame(() => {
+            if (app && !__aarishAnyModalOpenV202(overlay)) {
+                app.classList.remove('app-scale-down');
+            }
+        });
+
+        setTimeout(() => {
+            try { overlay.remove(); } catch(e) {}
+            if (app) app.classList.remove('aarish-modal-prepromote-v202');
+        }, __aarishModalAnimMsV202);
+    };
+
+    (function __aarishModalBootV202() {
+        const boot = () => {
+            try {
+                document.querySelectorAll('.modal-overlay').forEach(modal => {
+                    modal.style.removeProperty('display');
+                    modal.style.removeProperty('opacity');
+                    modal.style.removeProperty('pointer-events');
+                    modal.style.removeProperty('visibility');
+                    modal.setAttribute('aria-hidden', 'true');
+
+                    const sheet = __aarishModalSheetV202(modal);
+                    if (sheet) {
+                        sheet.style.removeProperty('animation');
+                        sheet.style.backfaceVisibility = 'hidden';
+                        sheet.style.webkitBackfaceVisibility = 'hidden';
+                    }
+                });
+            } catch(e) {}
+        };
+
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', boot, { once: true });
+        } else {
+            boot();
+        }
+    })();
+    // AARISH_MODAL_BIGTECH_V202_END
+
+// Empty State Helper Function
     function getEmptyState(iconClass, message) {
         const isMilkEmpty = message === 'No customers found';
         const wrapperPad = isMilkEmpty ? 'py-20' : 'py-16';
@@ -8230,8 +8539,7 @@ async function shareDiaryBill(id) {
         const overlay = document.createElement('div');
         overlay.id = 'dynamic-download-modal';
         overlay.className = 'modal-overlay';
-        overlay.style.display = 'flex';
-        setTimeout(() => overlay.style.opacity = '1', 10); // Smooth animation
+        // AARISH_MODAL_BIGTECH_V202: dynamic modal opens through compositor pipeline below
         overlay.onclick = function(e) { if(e.target.id === 'dynamic-download-modal') { overlay.remove(); document.getElementById('main-app').classList.remove('app-scale-down'); } };
 
         // Modal content in pure English (Tailwind classes intact)
@@ -8256,16 +8564,24 @@ async function shareDiaryBill(id) {
             </div>
         `;
         document.body.appendChild(overlay);
-        
-        // Push background back (3D effect)
-        document.getElementById('main-app').classList.add('app-scale-down');
+
+        // AARISH_MODAL_BIGTECH_V202: dynamic modal uses same zero-jank modal pipeline.
+        if (window.__aarishOpenCreatedModalV202) {
+            window.__aarishOpenCreatedModalV202(overlay);
+        } else {
+            overlay.classList.add('is-open');
+            const app = document.getElementById('main-app');
+            if (app) app.classList.add('app-scale-down');
+        }
     }
 
     // Function that executes the download based on the user's choice
     function executeDownload(type) {
         const modal = document.getElementById('dynamic-download-modal');
-        if (modal) modal.remove();
-        document.getElementById('main-app').classList.remove('app-scale-down'); // Revert 3D effect
+        if (modal && window.__aarishCloseCreatedModalV202) window.__aarishCloseCreatedModalV202(modal);
+        else if (modal) modal.remove();
+        const app = document.getElementById('main-app');
+        if (app) app.classList.remove('app-scale-down'); // Revert 3D effect
         
         let csv = `"AARISH DAIRY PRO - ${type.toUpperCase()} REPORT"\n`;
         csv += `"Generated On:","${formatDisplayDate(getTodayISO())}"\n\n`;
