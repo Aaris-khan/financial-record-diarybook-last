@@ -93,12 +93,17 @@
         
                 /* 2. PREMIUM SIDE-SLIDE ANIMATION */
         .list-enter {
-            animation: slideInRight 0.45s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+            animation: slideInRight 0.48s cubic-bezier(0.22, 0.82, 0.18, 1) both;
             opacity: 0;
-            transform: translateX(40px);
+            transform: translate3d(-46px, 0, 0);
+            will-change: transform, opacity;
+            backface-visibility: hidden;
+            -webkit-backface-visibility: hidden;
         }
         @keyframes slideInRight {
-            to { opacity: 1; transform: translateX(0); }
+            0%   { opacity: 0; transform: translate3d(-46px, 0, 0); }
+            68%  { opacity: 1; transform: translate3d(4px, 0, 0); }
+            100% { opacity: 1; transform: translate3d(0, 0, 0); }
         }
 
 
@@ -424,11 +429,7 @@
             backdrop-filter: none !important;
             -webkit-backdrop-filter: none !important;
         }
-        .list-enter {
-            animation: none !important;
-            opacity: 1 !important;
-            transform: none !important;
-        }
+        /* AARISH_LIST_ENTER_KEEP_ANIMATION: list slide preserved; no JS observer needed. */
         .screen.active {
             animation-duration: 0.14s !important;
         }
@@ -5905,57 +5906,22 @@ button[onclick] {
 /* AARISH_BIGTECH_MOTION_V203_END */
 </style>
 
-<style id="aarish-list-scroll-slide-v205">
-/* AARISH_LIST_SCROLL_SLIDE_V205_START
-   REAL BODY viewport slide engine.
-   Fixes V204 wrong injection into report/download template.
-   Cards slide left -> right on list open + scroll enter.
+<style id="aarish-list-enter-clean-v1">
+/* AARISH_LIST_ENTER_CLEAN_V1
+   No observer. No new engine. Existing .list-enter only.
+   Prevents old V203 classes from causing salary-card ghatab/flicker.
 */
-:root { --aarish-list-slide-v205: cubic-bezier(0.22, 0.82, 0.18, 1); }
-
-#milk-list .glass-card,
-#expense-list-container .glass-card,
-#salary-list .glass-card,
-#udhar-list .glass-card,
-#dash-balances-list .glass-card,
-#diary-list .glass-card,
-#project-list .glass-card {
-  backface-visibility: hidden !important;
-  -webkit-backface-visibility: hidden !important;
+.list-enter.aarish-motion-item-v203,
+.list-enter.aarish-motion-done-v203,
+.list-enter.aarish-list-card-v205,
+.list-enter.aarish-v206-primed,
+.list-enter.aarish-v206-run,
+.list-enter.aarish-v206-done {
+  animation: slideInRight 0.48s cubic-bezier(0.22, 0.82, 0.18, 1) both !important;
+  opacity: 0;
+  transform: translate3d(-46px, 0, 0);
+  will-change: transform, opacity;
 }
-
-html body .aarish-list-card-v205.aarish-slide-primed-v205:not(.aarish-slide-play-v205) {
-  opacity: 0.001 !important;
-  transform: translate3d(-42px, 0, 0) scale3d(0.992, 0.992, 1) !important;
-}
-
-html body .aarish-list-card-v205.aarish-slide-play-v205,
-html body .list-enter.aarish-list-card-v205.aarish-slide-play-v205,
-html body .aarish-motion-done-v203.aarish-list-card-v205.aarish-slide-play-v205 {
-  animation: aarishListSlideLeftRightV205 390ms var(--aarish-list-slide-v205) both !important;
-  animation-delay: var(--aarish-slide-delay-v205, 0ms) !important;
-  will-change: transform, opacity !important;
-  transform-origin: center left !important;
-}
-
-@keyframes aarishListSlideLeftRightV205 {
-  0% { opacity: 0; transform: translate3d(-42px, 0, 0) scale3d(0.992,0.992,1); }
-  62% { opacity: 1; transform: translate3d(4px, 0, 0) scale3d(1.002,1.002,1); }
-  100% { opacity: 1; transform: translate3d(0, 0, 0) scale3d(1,1,1); }
-}
-
-.aarish-list-slide-lite-v205 .aarish-list-card-v205.aarish-slide-play-v205 {
-  animation-duration: 260ms !important;
-  animation-delay: 0ms !important;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  html body .aarish-list-card-v205.aarish-slide-play-v205 {
-    animation-duration: 1ms !important;
-    animation-delay: 0ms !important;
-  }
-}
-/* AARISH_LIST_SCROLL_SLIDE_V205_END */
 </style>
 
 </head>
@@ -6904,108 +6870,7 @@ let selectedMonth = new Date().getMonth(), selectedYear = new Date().getFullYear
         }, __aarishMotionAnimMsV203);
     };
 
-    (function __aarishMotionBootV203() {
-        const root = document.documentElement;
-        const isLite = (() => {
-            try {
-                const dm = Number(navigator.deviceMemory || 0);
-                const cores = Number(navigator.hardwareConcurrency || 0);
-                return (dm && dm <= 3) || (cores && cores <= 4);
-            } catch(e) { return false; }
-        })();
-
-        root.classList.add('aarish-motion-v203');
-        if (isLite) root.classList.add('aarish-motion-lite-v203');
-
-        let raf = 0;
-        const maxAnimated = isLite ? 8 : 18;
-
-        function applyListMotion(scope) {
-            try {
-                const base = scope && scope.querySelectorAll ? scope : document;
-                const active = document.querySelector('.screen.active') || base;
-                const cards = Array.from(active.querySelectorAll('.list-enter:not(.aarish-motion-seen-v203)'));
-                cards.forEach((el, i) => {
-                    el.classList.add('aarish-motion-seen-v203');
-                    if (i < maxAnimated) {
-                        el.style.setProperty('--aarish-motion-i', String(i));
-                        el.classList.add('aarish-motion-item-v203');
-                        setTimeout(() => {
-                            el.classList.remove('aarish-motion-item-v203');
-                            el.classList.add('aarish-motion-done-v203');
-                            el.style.removeProperty('--aarish-motion-i');
-                            el.style.removeProperty('will-change');
-                        }, 520 + (i * 14));
-                    } else {
-                        el.classList.add('aarish-motion-done-v203');
-                    }
-                });
-            } catch(e) {}
-        }
-
-        function scheduleListMotion(scope) {
-            if (raf) cancelAnimationFrame(raf);
-            raf = requestAnimationFrame(() => {
-                raf = 0;
-                applyListMotion(scope || document);
-            });
-        }
-
-        window.__aarishApplyMotionV203 = scheduleListMotion;
-
-        function boot() {
-            try {
-                document.querySelectorAll('.modal-overlay').forEach(modal => {
-                    modal.style.removeProperty('display');
-                    modal.style.removeProperty('opacity');
-                    modal.style.removeProperty('pointer-events');
-                    modal.style.removeProperty('visibility');
-                    modal.setAttribute('aria-hidden', 'true');
-                    const sheet = __aarishMotionSheetV203(modal);
-                    if (sheet) {
-                        sheet.style.removeProperty('animation');
-                        sheet.style.backfaceVisibility = 'hidden';
-                        sheet.style.webkitBackfaceVisibility = 'hidden';
-                    }
-                });
-
-                scheduleListMotion(document);
-
-                const mo = new MutationObserver((mutations) => {
-                    let shouldRun = false;
-                    for (const m of mutations) {
-                        if (m.addedNodes && m.addedNodes.length) {
-                            shouldRun = true;
-                            break;
-                        }
-                    }
-                    if (shouldRun) scheduleListMotion(document);
-                });
-                mo.observe(document.body, { childList: true, subtree: true });
-
-                document.addEventListener('pointerdown', (e) => {
-                    const el = e.target && e.target.closest ? e.target.closest('button, .btn-primary, .btn-ios-share, .btn-ios-add, .btn-google, .action-btn, .nav-item, .glass-card[onclick]') : null;
-                    if (!el) return;
-                    el.classList.add('aarish-pressing-v203');
-                }, { passive: true, capture: true });
-
-                const clearPress = (e) => {
-                    try {
-                        document.querySelectorAll('.aarish-pressing-v203').forEach(el => el.classList.remove('aarish-pressing-v203'));
-                    } catch(err) {}
-                };
-                document.addEventListener('pointerup', clearPress, { passive: true, capture: true });
-                document.addEventListener('pointercancel', clearPress, { passive: true, capture: true });
-                document.addEventListener('pointerleave', clearPress, { passive: true, capture: true });
-            } catch(e) {}
-        }
-
-        if (document.readyState === 'loading') {
-            document.addEventListener('DOMContentLoaded', boot, { once: true });
-        } else {
-            boot();
-        }
-    })();
+    /* AARISH_V203_LIST_OBSERVER_REMOVED: list animation now uses original .list-enter only. */
     // AARISH_BIGTECH_MOTION_V203_END
 
 // Empty State Helper Function
@@ -20674,202 +20539,5 @@ window.addEventListener("pageshow", function () { setTimeout(install, 120); }, {
   console.log("✅ AARISH V128 Credit Book light Milk-safe paint active");
 })();
 </script>
-
-<script id="aarish-list-scroll-slide-v205">
-/* AARISH_LIST_SCROLL_SLIDE_V205_START */
-(function(){
-  if (window.__aarishListSlideV205Installed) return;
-  window.__aarishListSlideV205Installed = true;
-
-  const root = document.documentElement;
-  const selector = [
-    '#milk-list .glass-card',
-    '#expense-list-container .glass-card',
-    '#salary-list .glass-card',
-    '#udhar-list .glass-card',
-    '#dash-balances-list .glass-card',
-    '#diary-list .glass-card',
-    '#project-list .glass-card'
-  ].join(',');
-
-  const isLite = (() => {
-    try {
-      const dm = Number(navigator.deviceMemory || 0);
-      const cores = Number(navigator.hardwareConcurrency || 0);
-      return (dm && dm <= 3) || (cores && cores <= 4);
-    } catch(e) { return false; }
-  })();
-
-  if (isLite) root.classList.add('aarish-list-slide-lite-v205');
-
-  const observed = new WeakSet();
-  let discoverRaf = 0;
-
-  function parentIndex(el) {
-    try {
-      const p = el.parentElement;
-      if (!p) return 0;
-      const cards = Array.from(p.querySelectorAll('.glass-card'));
-      const i = cards.indexOf(el);
-      return i < 0 ? 0 : i;
-    } catch(e) { return 0; }
-  }
-
-  function isVisible(el) {
-    try {
-      if (!el || !el.isConnected) return false;
-      const screen = el.closest('.screen');
-      if (screen && !screen.classList.contains('active')) return false;
-      const r = el.getBoundingClientRect();
-      const vh = window.innerHeight || document.documentElement.clientHeight || 0;
-      const vw = window.innerWidth || document.documentElement.clientWidth || 0;
-      return r.width > 0 && r.height > 0 && r.bottom > 56 && r.top < (vh - 70) && r.right > 0 && r.left < vw;
-    } catch(e) { return false; }
-  }
-
-  function playSlide(el, force) {
-    if (!el || !el.isConnected || !isVisible(el)) return;
-
-    const now = performance.now ? performance.now() : Date.now();
-    const last = Number(el.__aarishSlideLastV205 || 0);
-    if (!force && now - last < 620) return;
-    el.__aarishSlideLastV205 = now;
-
-    const delay = isLite ? 0 : Math.min(parentIndex(el) % 10, 9) * 16;
-
-    el.classList.add('aarish-list-card-v205');
-    el.classList.remove('aarish-slide-play-v205');
-    el.classList.add('aarish-slide-primed-v205');
-    el.style.setProperty('--aarish-slide-delay-v205', delay + 'ms');
-
-    requestAnimationFrame(() => {
-      requestAnimationFrame(() => {
-        if (!el.isConnected || !isVisible(el)) return;
-        el.classList.add('aarish-slide-play-v205');
-        setTimeout(() => {
-          if (!el.isConnected) return;
-          el.classList.remove('aarish-slide-play-v205');
-          el.classList.remove('aarish-slide-primed-v205');
-          el.style.removeProperty('--aarish-slide-delay-v205');
-          el.style.removeProperty('will-change');
-        }, 520 + delay);
-      });
-    });
-  }
-
-  const io = new IntersectionObserver((entries) => {
-    for (const entry of entries) {
-      const el = entry.target;
-      if (!el || !el.isConnected) continue;
-      if (entry.isIntersecting && entry.intersectionRatio >= 0.14) {
-        playSlide(el, false);
-      } else if (entry.intersectionRatio <= 0.01) {
-        el.classList.remove('aarish-slide-play-v205');
-        el.classList.remove('aarish-slide-primed-v205');
-      }
-    }
-  }, {
-    root: null,
-    threshold: [0, 0.01, 0.14, 0.34, 0.7],
-    rootMargin: '0px 0px -3% 0px'
-  });
-
-  function discoverCards(scope) {
-    try {
-      const base = scope && scope.querySelectorAll ? scope : document;
-      base.querySelectorAll(selector).forEach((el) => {
-        el.classList.add('aarish-list-card-v205');
-        if (!observed.has(el)) {
-          observed.add(el);
-          io.observe(el);
-        }
-      });
-    } catch(e) {}
-  }
-
-  function animateVisibleNow(force) {
-    try {
-      document.querySelectorAll(selector).forEach((el) => {
-        if (isVisible(el)) playSlide(el, !!force);
-      });
-    } catch(e) {}
-  }
-
-  function scheduleDiscover(scope, forceVisible) {
-    if (discoverRaf) cancelAnimationFrame(discoverRaf);
-    discoverRaf = requestAnimationFrame(() => {
-      discoverRaf = 0;
-      discoverCards(scope || document);
-      if (forceVisible) animateVisibleNow(true);
-    });
-  }
-
-  window.__aarishListSlideV205 = function(force) {
-    scheduleDiscover(document, !!force);
-  };
-
-  function wrapRender(name) {
-    try {
-      const old = window[name];
-      if (typeof old !== 'function' || old.__aarishListSlideV205Wrapped) return;
-      const wrapped = function() {
-        const out = old.apply(this, arguments);
-        setTimeout(() => scheduleDiscover(document, true), 30);
-        setTimeout(() => scheduleDiscover(document, true), 180);
-        return out;
-      };
-      wrapped.__aarishListSlideV205Wrapped = true;
-      window[name] = wrapped;
-      try { Function('fn', name + ' = fn;')(wrapped); } catch(e) {}
-    } catch(e) {}
-  }
-
-  [
-    'renderMilkList',
-    'filterMilkList',
-    'renderExpenseList',
-    'renderExpensesList',
-    'filterExpenseList',
-    'renderSalaryList',
-    'filterSalaryList',
-    'renderUdharList',
-    'filterUdharList',
-    'renderAllBalances',
-    'openAllBalances',
-    'renderDiaryList',
-    'renderProjectList',
-    'switchTab',
-    'updateActiveScreen'
-  ].forEach(wrapRender);
-
-  function boot() {
-    scheduleDiscover(document, true);
-    setTimeout(() => scheduleDiscover(document, true), 350);
-    setTimeout(() => scheduleDiscover(document, true), 1100);
-
-    const mo = new MutationObserver(() => scheduleDiscover(document, false));
-    mo.observe(document.body, { childList: true, subtree: true });
-
-    document.addEventListener('click', (e) => {
-      const t = e.target && e.target.closest ? e.target.closest('.nav-item, [onclick*="switchTab"], [onclick*="openAllBalances"], [onclick*="showScreen"]') : null;
-      if (!t) return;
-      setTimeout(() => scheduleDiscover(document, true), 80);
-      setTimeout(() => scheduleDiscover(document, true), 260);
-    }, { passive: true, capture: true });
-
-    document.addEventListener('scroll', () => {
-      scheduleDiscover(document, false);
-    }, { passive: true, capture: true });
-  }
-
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', boot, { once: true });
-  } else {
-    boot();
-  }
-})();
-/* AARISH_LIST_SCROLL_SLIDE_V205_END */
-</script>
-
 </body>
 </html>
