@@ -4961,153 +4961,149 @@ html.aarish-auth-confirmed #login-screen {
 </style>
 
 
-<style id="aarish-ui-ux-unify-v192">
-/* AARISH_UI_UX_UNIFY_V192
-   CSS-only Apple HIG UI/UX unification.
-   Scope: Business Hub/Projects + neutral search inputs.
-   No JS, no Firebase, no render/data logic, no inline white/black background rewrites.
+<style id="aarish-business-page-permanent-blue-v193">
+/* AARISH_BUSINESS_PAGE_PERMANENT_BLUE_V193
+   Scope: Business Hub list page only.
+   Locks current screenshot look permanently:
+   premium blue title/search/card/icon/chevron + red delete.
+   CSS-only. No JS, no Firebase, no render/data logic touched.
 */
 
-:root {
-  --aarish-v192-blue: var(--ios-blue, #007AFF);
-  --aarish-v192-blue-soft: #0A84FF;
-  --aarish-v192-blue-glow: rgba(0,122,255,0.30);
-  --aarish-v192-blue-glow-strong: rgba(0,122,255,0.42);
-  --aarish-v192-blue-tint: rgba(0,122,255,0.10);
-  --aarish-v192-blue-tint-2: rgba(0,122,255,0.055);
-  --aarish-v192-green: #34C759;
-  --aarish-v192-red: #FF3B30;
-  --aarish-v192-orange: #FF9500;
+#projects-screen {
+  --biz-v193-blue: #007AFF;
+  --biz-v193-blue-soft: #0A84FF;
+  --biz-v193-blue-glow: rgba(0,122,255,0.28);
+  --biz-v193-blue-glow-strong: rgba(0,122,255,0.36);
+  --biz-v193-blue-tint: rgba(0,122,255,0.10);
+  --biz-v193-blue-tint-2: rgba(0,122,255,0.055);
+  --biz-v193-red: #FF3B30;
 }
 
-/* ===================== GLOBAL NEUTRAL SEARCH UNIFICATION ===================== */
-/* Diary is intentionally excluded because its yellow theme is already consistent. */
-:is(#projects-screen,#project-detail-screen,#udhar-screen,#udhar-detail-screen,#expenses-screen,#expense-detail-screen,#salary-screen,#salary-detail-screen,#balances-screen,#milk-screen,#milk-detail-screen) .relative .fa-search {
-  color: var(--aarish-v192-blue) !important;
-  -webkit-text-fill-color: var(--aarish-v192-blue) !important;
-  opacity: 0.62 !important;
-  text-shadow: 0 0 10px var(--aarish-v192-blue-glow) !important;
-}
-
-:is(#projects-screen,#project-detail-screen,#udhar-screen,#udhar-detail-screen,#expenses-screen,#expense-detail-screen,#salary-screen,#salary-detail-screen,#balances-screen,#milk-screen,#milk-detail-screen) input[id$="-search"],
-:is(#projects-screen,#project-detail-screen,#udhar-screen,#udhar-detail-screen,#expenses-screen,#expense-detail-screen,#salary-screen,#salary-detail-screen,#balances-screen,#milk-screen,#milk-detail-screen) .input-box[id$="-search"] {
-  color: var(--aarish-v192-blue) !important;
-  -webkit-text-fill-color: var(--aarish-v192-blue) !important;
-  caret-color: var(--aarish-v192-blue) !important;
-  background: rgba(0,122,255,0.055) !important;
-  border-color: rgba(0,122,255,0.18) !important;
-  box-shadow:
-    inset 0 1px 0 rgba(255,255,255,0.22),
-    0 0 0 0 rgba(0,122,255,0.00) !important;
-}
-
-.dark :is(#projects-screen,#project-detail-screen,#udhar-screen,#udhar-detail-screen,#expenses-screen,#expense-detail-screen,#salary-screen,#salary-detail-screen,#balances-screen,#milk-screen,#milk-detail-screen) input[id$="-search"],
-.dark :is(#projects-screen,#project-detail-screen,#udhar-screen,#udhar-detail-screen,#expenses-screen,#expense-detail-screen,#salary-screen,#salary-detail-screen,#balances-screen,#milk-screen,#milk-detail-screen) .input-box[id$="-search"] {
-  background: rgba(10,132,255,0.10) !important;
-  border-color: rgba(10,132,255,0.24) !important;
-  box-shadow:
-    inset 0 1px 0 rgba(255,255,255,0.06),
-    0 0 18px rgba(0,122,255,0.08) !important;
-}
-
-:is(#projects-screen,#project-detail-screen,#udhar-screen,#udhar-detail-screen,#expenses-screen,#expense-detail-screen,#salary-screen,#salary-detail-screen,#balances-screen,#milk-screen,#milk-detail-screen) input[id$="-search"]::placeholder,
-:is(#projects-screen,#project-detail-screen,#udhar-screen,#udhar-detail-screen,#expenses-screen,#expense-detail-screen,#salary-screen,#salary-detail-screen,#balances-screen,#milk-screen,#milk-detail-screen) .input-box[id$="-search"]::placeholder,
-:is(#projects-screen,#project-detail-screen,#udhar-screen,#udhar-detail-screen,#expenses-screen,#expense-detail-screen,#salary-screen,#salary-detail-screen,#balances-screen,#milk-screen,#milk-detail-screen) input[id$="-search"]::-webkit-input-placeholder,
-:is(#projects-screen,#project-detail-screen,#udhar-screen,#udhar-detail-screen,#expenses-screen,#expense-detail-screen,#salary-screen,#salary-detail-screen,#balances-screen,#milk-screen,#milk-detail-screen) .input-box[id$="-search"]::-webkit-input-placeholder {
-  color: var(--aarish-v192-blue) !important;
-  -webkit-text-fill-color: var(--aarish-v192-blue) !important;
-  opacity: 0.74 !important;
-}
-
-/* ===================== BUSINESS HUB HEADER / ACTIONS ===================== */
-#projects-screen,
-#project-detail-screen {
-  --aarish-business-blue-v192: var(--aarish-v192-blue);
-  --aarish-business-glow-v192: var(--aarish-v192-blue-glow);
-  --aarish-business-tint-v192: var(--aarish-v192-blue-tint);
-}
-
-#projects-screen .header-sticky h1,
-#project-detail-screen .header-sticky h1,
-#project-detail-screen #project-detail-title,
-#project-detail-screen h3 {
-  color: var(--aarish-business-blue-v192) !important;
-  -webkit-text-fill-color: var(--aarish-business-blue-v192) !important;
+/* Header title */
+#projects-screen .header-sticky h1 {
+  color: var(--biz-v193-blue) !important;
+  -webkit-text-fill-color: var(--biz-v193-blue) !important;
+  text-shadow: 0 0 12px var(--biz-v193-blue-glow) !important;
   opacity: 1 !important;
-  text-shadow: 0 0 12px var(--aarish-business-glow-v192) !important;
 }
 
-/* Black/white Business buttons -> premium neutral blue glass */
-#projects-screen .header-sticky .btn-primary,
-#project-detail-screen .header-sticky .btn-primary,
-#add-project-modal .btn-primary,
-#add-project-entry-modal .btn-primary {
-  color: var(--aarish-business-blue-v192) !important;
-  -webkit-text-fill-color: var(--aarish-business-blue-v192) !important;
+/* New button same blue glass as screenshot */
+#projects-screen .header-sticky .btn-primary {
+  color: var(--biz-v193-blue) !important;
+  -webkit-text-fill-color: var(--biz-v193-blue) !important;
   background: rgba(0,122,255,0.10) !important;
   border: 1px solid rgba(0,122,255,0.18) !important;
   box-shadow:
-    0 8px 22px rgba(0,122,255,0.16),
-    inset 0 1px 0 rgba(255,255,255,0.24) !important;
+    0 10px 26px rgba(0,122,255,0.16),
+    inset 0 1px 0 rgba(255,255,255,0.34) !important;
   text-shadow: 0 0 10px rgba(0,122,255,0.22) !important;
 }
 
-.dark #projects-screen .header-sticky .btn-primary,
-.dark #project-detail-screen .header-sticky .btn-primary,
-.dark #add-project-modal .btn-primary,
-.dark #add-project-entry-modal .btn-primary {
-  background: rgba(10,132,255,0.16) !important;
-  border-color: rgba(10,132,255,0.30) !important;
+#projects-screen .header-sticky .btn-primary i {
+  color: var(--biz-v193-blue) !important;
+  -webkit-text-fill-color: var(--biz-v193-blue) !important;
+  opacity: 0.94 !important;
+}
+
+/* Search box: icon, text, placeholder, border all premium blue */
+#projects-screen .relative .fa-search,
+#projects-screen i.fa-search {
+  color: var(--biz-v193-blue) !important;
+  -webkit-text-fill-color: var(--biz-v193-blue) !important;
+  opacity: 0.62 !important;
+  text-shadow: 0 0 10px var(--biz-v193-blue-glow) !important;
+}
+
+#projects-screen #project-search {
+  color: var(--biz-v193-blue) !important;
+  -webkit-text-fill-color: var(--biz-v193-blue) !important;
+  caret-color: var(--biz-v193-blue) !important;
+  background: rgba(0,122,255,0.055) !important;
+  border-color: rgba(0,122,255,0.18) !important;
   box-shadow:
-    0 8px 24px rgba(0,122,255,0.18),
-    inset 0 1px 0 rgba(255,255,255,0.07) !important;
+    inset 0 1px 0 rgba(255,255,255,0.30),
+    0 0 18px rgba(0,122,255,0.08) !important;
 }
 
-#projects-screen .header-sticky .btn-primary i,
-#project-detail-screen .header-sticky .btn-primary i,
-#add-project-modal .btn-primary i,
-#add-project-entry-modal .btn-primary i {
-  color: inherit !important;
-  -webkit-text-fill-color: inherit !important;
-  opacity: 0.86 !important;
-  text-shadow: inherit !important;
+#projects-screen #project-search::placeholder,
+#projects-screen #project-search::-webkit-input-placeholder {
+  color: var(--biz-v193-blue) !important;
+  -webkit-text-fill-color: var(--biz-v193-blue) !important;
+  opacity: 0.74 !important;
 }
 
-/* Detail back button blue glass */
-#project-detail-screen .header-sticky button:not(.btn-primary):not(.action-btn) {
-  color: var(--aarish-business-blue-v192) !important;
-  background: rgba(0,122,255,0.10) !important;
-  border: 1px solid rgba(0,122,255,0.16) !important;
-  box-shadow:
-    0 7px 18px rgba(0,122,255,0.13),
-    inset 0 1px 0 rgba(255,255,255,0.22) !important;
-}
-
-.dark #project-detail-screen .header-sticky button:not(.btn-primary):not(.action-btn) {
-  background: rgba(10,132,255,0.14) !important;
-  border-color: rgba(10,132,255,0.24) !important;
-}
-
-#project-detail-screen .header-sticky button:not(.btn-primary):not(.action-btn) i {
-  color: var(--aarish-business-blue-v192) !important;
-  opacity: 0.86 !important;
-  text-shadow: 0 0 10px var(--aarish-business-glow-v192) !important;
-}
-
-/* ===================== BUSINESS HUB LIST CARDS ===================== */
+/* Project card surface exactly premium neutral-blue look */
 #projects-screen #project-list .glass-card {
   border-left-width: 4px !important;
   border-left-style: solid !important;
-  border-left-color: var(--aarish-business-blue-v192) !important;
-  background: linear-gradient(145deg, rgba(255,255,255,0.70), rgba(255,255,255,0.44)) !important;
-  border-top-color: rgba(255,255,255,0.58) !important;
+  border-left-color: var(--biz-v193-blue) !important;
+  background: linear-gradient(145deg, rgba(255,255,255,0.72), rgba(255,255,255,0.46)) !important;
+  border-top-color: rgba(255,255,255,0.62) !important;
   border-right-color: rgba(255,255,255,0.34) !important;
   border-bottom-color: rgba(255,255,255,0.22) !important;
   box-shadow:
-    -5px 0 18px rgba(0,122,255,0.22),
-    0 14px 30px rgba(15,23,42,0.08),
-    inset 1px 0 0 rgba(0,122,255,0.36),
-    inset 0 1px 0 rgba(255,255,255,0.54) !important;
+    -5px 0 18px rgba(0,122,255,0.24),
+    0 16px 34px rgba(15,23,42,0.08),
+    inset 1px 0 0 rgba(0,122,255,0.42),
+    inset 0 1px 0 rgba(255,255,255,0.58) !important;
+}
+
+/* Briefcase icon box */
+#projects-screen #project-list .glass-card .squircle {
+  color: var(--biz-v193-blue) !important;
+  -webkit-text-fill-color: var(--biz-v193-blue) !important;
+  background: rgba(0,122,255,0.11) !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.34),
+    0 8px 22px rgba(0,122,255,0.20) !important;
+}
+
+#projects-screen #project-list .glass-card .squircle i {
+  color: var(--biz-v193-blue) !important;
+  -webkit-text-fill-color: var(--biz-v193-blue) !important;
+  opacity: 0.94 !important;
+  text-shadow: 0 0 10px var(--biz-v193-blue-glow) !important;
+}
+
+/* Text hierarchy: title 100%, subtitle 74%, chevron 62% */
+#projects-screen #project-list .glass-card h4 {
+  color: var(--biz-v193-blue) !important;
+  -webkit-text-fill-color: var(--biz-v193-blue) !important;
+  opacity: 1 !important;
+  text-shadow: 0 0 10px var(--biz-v193-blue-glow) !important;
+}
+
+#projects-screen #project-list .glass-card p {
+  color: var(--biz-v193-blue) !important;
+  -webkit-text-fill-color: var(--biz-v193-blue) !important;
+  opacity: 0.74 !important;
+  text-shadow: 0 0 8px rgba(0,122,255,0.18) !important;
+}
+
+#projects-screen #project-list .glass-card .fa-chevron-right {
+  color: var(--biz-v193-blue) !important;
+  -webkit-text-fill-color: var(--biz-v193-blue) !important;
+  opacity: 0.62 !important;
+  text-shadow: 0 0 8px rgba(0,122,255,0.18) !important;
+}
+
+/* Delete stays red */
+#projects-screen #project-list .glass-card .action-btn,
+#projects-screen #project-list .glass-card .action-btn * {
+  color: var(--biz-v193-red) !important;
+  -webkit-text-fill-color: var(--biz-v193-red) !important;
+  background-color: rgba(255,59,48,0.10) !important;
+  border-color: rgba(255,59,48,0.18) !important;
+  text-shadow: 0 0 8px rgba(255,59,48,0.24) !important;
+}
+
+/* Dark mode harmony */
+.dark #projects-screen #project-search {
+  background: rgba(10,132,255,0.10) !important;
+  border-color: rgba(10,132,255,0.24) !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.07),
+    0 0 18px rgba(0,122,255,0.10) !important;
 }
 
 .dark #projects-screen #project-list .glass-card {
@@ -5116,19 +5112,10 @@ html.aarish-auth-confirmed #login-screen {
   border-right-color: rgba(10,132,255,0.16) !important;
   border-bottom-color: rgba(0,0,0,0.34) !important;
   box-shadow:
-    -5px 0 22px rgba(0,122,255,0.26),
+    -5px 0 22px rgba(0,122,255,0.28),
     0 18px 42px rgba(0,0,0,0.42),
-    inset 1px 0 0 rgba(0,122,255,0.42),
+    inset 1px 0 0 rgba(0,122,255,0.44),
     inset 0 1px 0 rgba(255,255,255,0.08) !important;
-}
-
-#projects-screen #project-list .glass-card .squircle {
-  color: var(--aarish-business-blue-v192) !important;
-  -webkit-text-fill-color: var(--aarish-business-blue-v192) !important;
-  background: rgba(0,122,255,0.11) !important;
-  box-shadow:
-    inset 0 1px 0 rgba(255,255,255,0.30),
-    0 8px 20px rgba(0,122,255,0.20) !important;
 }
 
 .dark #projects-screen #project-list .glass-card .squircle {
@@ -5137,116 +5124,398 @@ html.aarish-auth-confirmed #login-screen {
     inset 0 1px 0 rgba(255,255,255,0.09),
     0 8px 22px rgba(0,122,255,0.22) !important;
 }
+</style>
 
-#projects-screen #project-list .glass-card .squircle i,
-#projects-screen #project-list .glass-card h4 {
-  color: var(--aarish-business-blue-v192) !important;
-  -webkit-text-fill-color: var(--aarish-business-blue-v192) !important;
+
+<style id="aarish-project-detail-blue-lock-v194">
+/* AARISH_PROJECT_DETAIL_BLUE_LOCK_V194
+   Scope: Business Project Detail page only.
+   Locks:
+   - top business name title
+   - + Entry button
+   - All Entries heading
+   - table headings DATE / DETAIL / AMOUNT
+   CSS-only. No JS, no Firebase, no render/data logic.
+   Entry row semantic colors remain untouched.
+*/
+
+#project-detail-screen {
+  --pd-v194-blue: #007AFF;
+  --pd-v194-blue-soft: #0A84FF;
+  --pd-v194-blue-glow: rgba(0,122,255,0.30);
+  --pd-v194-blue-glow-strong: rgba(0,122,255,0.42);
+  --pd-v194-blue-tint: rgba(0,122,255,0.10);
+  --pd-v194-blue-border: rgba(0,122,255,0.18);
+}
+
+/* Top business name: Hh / any khata name */
+#project-detail-screen #project-detail-title,
+#project-detail-screen .header-sticky h1#project-detail-title {
+  color: var(--pd-v194-blue) !important;
+  -webkit-text-fill-color: var(--pd-v194-blue) !important;
   opacity: 1 !important;
-  text-shadow: 0 0 10px var(--aarish-business-glow-v192) !important;
+  text-shadow: 0 0 12px var(--pd-v194-blue-glow) !important;
 }
 
-#projects-screen #project-list .glass-card p {
-  color: var(--aarish-business-blue-v192) !important;
-  -webkit-text-fill-color: var(--aarish-business-blue-v192) !important;
-  opacity: 0.74 !important;
-  text-shadow: 0 0 8px rgba(0,122,255,0.18) !important;
+/* + Entry button: premium blue glass instead of black/white */
+#project-detail-screen .header-sticky button[onclick*="openProjectEntryModal"],
+#project-detail-screen .header-sticky .btn-primary[onclick*="openProjectEntryModal"] {
+  color: var(--pd-v194-blue) !important;
+  -webkit-text-fill-color: var(--pd-v194-blue) !important;
+  background: rgba(0,122,255,0.10) !important;
+  border: 1px solid var(--pd-v194-blue-border) !important;
+  box-shadow:
+    0 10px 26px rgba(0,122,255,0.16),
+    inset 0 1px 0 rgba(255,255,255,0.34) !important;
+  text-shadow: 0 0 10px rgba(0,122,255,0.24) !important;
 }
 
-#projects-screen #project-list .glass-card .fa-chevron-right {
-  color: var(--aarish-business-blue-v192) !important;
-  opacity: 0.62 !important;
-  text-shadow: 0 0 8px rgba(0,122,255,0.18) !important;
-}
-
-#projects-screen #project-list .glass-card .action-btn,
-#projects-screen #project-list .glass-card .action-btn * {
-  color: var(--aarish-v192-red) !important;
-  -webkit-text-fill-color: var(--aarish-v192-red) !important;
-  background-color: rgba(255,59,48,0.10) !important;
-  border-color: rgba(255,59,48,0.18) !important;
-  text-shadow: 0 0 8px rgba(255,59,48,0.24) !important;
-}
-
-/* ===================== PROJECT DETAIL TABLE / TOTAL CARDS ===================== */
-#project-detail-screen #project-dynamic-totals .glass-card {
-  border-radius: 22px !important;
-  overflow: hidden !important;
-}
-
-#project-detail-screen #project-dynamic-totals .glass-card p {
-  opacity: 0.74 !important;
-}
-
-#project-detail-screen #project-dynamic-totals .glass-card h3 {
+#project-detail-screen .header-sticky button[onclick*="openProjectEntryModal"] i,
+#project-detail-screen .header-sticky .btn-primary[onclick*="openProjectEntryModal"] i {
+  color: var(--pd-v194-blue) !important;
+  -webkit-text-fill-color: var(--pd-v194-blue) !important;
   opacity: 0.94 !important;
+  text-shadow: 0 0 10px var(--pd-v194-blue-glow) !important;
 }
 
-#project-detail-screen .table-custom th {
-  color: var(--aarish-business-blue-v192) !important;
-  -webkit-text-fill-color: var(--aarish-business-blue-v192) !important;
-  opacity: 0.74 !important;
-  text-shadow: 0 0 8px rgba(0,122,255,0.20) !important;
+/* All Entries heading */
+#project-detail-screen .p-5 > .flex.justify-between.items-center.mb-4 h3,
+#project-detail-screen h3.font-bold.text-\[19px\] {
+  color: var(--pd-v194-blue) !important;
+  -webkit-text-fill-color: var(--pd-v194-blue) !important;
+  opacity: 1 !important;
+  text-shadow: 0 0 12px var(--pd-v194-blue-glow) !important;
 }
 
-#project-detail-screen #project-detail-records td:not(:has(.action-btn)) {
-  color: var(--aarish-business-blue-v192) !important;
-  -webkit-text-fill-color: var(--aarish-business-blue-v192) !important;
-  opacity: 0.74 !important;
+/* Table glass surface: keep clean, only soft blue border glow */
+#project-detail-screen .table-custom,
+#project-detail-screen .glass-card:has(#project-detail-records) {
+  border-color: rgba(0,122,255,0.12) !important;
 }
 
-#project-detail-screen #project-detail-records td.font-extrabold {
-  opacity: 0.94 !important;
-}
-
-#project-detail-screen #project-detail-records .action-btn,
-#project-detail-screen #project-detail-records .action-btn * {
-  color: var(--aarish-v192-red) !important;
-  -webkit-text-fill-color: var(--aarish-v192-red) !important;
-  background: rgba(255,59,48,0.10) !important;
-  border-color: rgba(255,59,48,0.18) !important;
-  text-shadow: 0 0 8px rgba(255,59,48,0.24) !important;
-}
-
-/* Empty state in Business Kit also gets neutral blue */
-#projects-screen #project-list .text-gray-400,
-#projects-screen #project-list .text-gray-500,
-#project-detail-screen #project-detail-records .text-gray-400,
-#project-detail-screen #project-detail-records .text-gray-500 {
-  color: var(--aarish-business-blue-v192) !important;
-  -webkit-text-fill-color: var(--aarish-business-blue-v192) !important;
-  opacity: 0.74 !important;
-}
-
-/* Project modals input/icon harmony */
-#add-project-modal .input-box,
-#add-project-entry-modal .input-box,
-#add-project-entry-modal select,
-#add-project-entry-modal input,
-#add-project-modal input {
-  color: var(--aarish-business-blue-v192) !important;
-  -webkit-text-fill-color: var(--aarish-business-blue-v192) !important;
-  caret-color: var(--aarish-business-blue-v192) !important;
-  border-color: rgba(0,122,255,0.18) !important;
+/* DATE / DETAIL / AMOUNT headings premium blue */
+#project-detail-screen .table-custom thead,
+#project-detail-screen .table-custom thead.bg-black\/5,
+#project-detail-screen .table-custom thead.dark\:bg-white\/5 {
   background: rgba(0,122,255,0.055) !important;
 }
 
-.dark #add-project-modal .input-box,
-.dark #add-project-entry-modal .input-box,
-.dark #add-project-entry-modal select,
-.dark #add-project-entry-modal input,
-.dark #add-project-modal input {
-  background: rgba(10,132,255,0.10) !important;
-  border-color: rgba(10,132,255,0.24) !important;
+#project-detail-screen .table-custom thead th {
+  color: var(--pd-v194-blue) !important;
+  -webkit-text-fill-color: var(--pd-v194-blue) !important;
+  opacity: 0.74 !important;
+  text-shadow: 0 0 9px rgba(0,122,255,0.22) !important;
+  border-bottom-color: rgba(0,122,255,0.14) !important;
 }
 
-#add-project-modal .input-box::placeholder,
-#add-project-entry-modal .input-box::placeholder,
+/* Dark mode harmony */
+.dark #project-detail-screen .header-sticky button[onclick*="openProjectEntryModal"],
+.dark #project-detail-screen .header-sticky .btn-primary[onclick*="openProjectEntryModal"] {
+  background: rgba(10,132,255,0.16) !important;
+  border-color: rgba(10,132,255,0.30) !important;
+  box-shadow:
+    0 10px 28px rgba(0,122,255,0.20),
+    inset 0 1px 0 rgba(255,255,255,0.08) !important;
+}
+
+.dark #project-detail-screen .table-custom thead,
+.dark #project-detail-screen .table-custom thead.bg-black\/5,
+.dark #project-detail-screen .table-custom thead.dark\:bg-white\/5 {
+  background: rgba(10,132,255,0.10) !important;
+}
+
+.dark #project-detail-screen .glass-card:has(#project-detail-records) {
+  border-color: rgba(10,132,255,0.16) !important;
+  box-shadow:
+    0 14px 34px rgba(0,0,0,0.34),
+    inset 0 1px 0 rgba(255,255,255,0.06),
+    0 0 18px rgba(0,122,255,0.08) !important;
+}
+</style>
+
+
+<style id="aarish-project-entry-premium-blue-v195">
+/* AARISH_PROJECT_ENTRY_PREMIUM_BLUE_V195
+   Scope: add-project-entry-modal only
+   CSS-only. No logic/Firebase/render structure touched.
+*/
+
+#add-project-entry-modal{
+  --aarishBlue:#007AFF;
+  --aarishBlueStrong:#0A84FF;
+  --aarishBlueTint:rgba(0,122,255,0.10);
+  --aarishBlueTintSoft:rgba(0,122,255,0.07);
+  --aarishBlueBorder:rgba(0,122,255,0.18);
+  --aarishBlueGlow:rgba(0,122,255,0.24);
+  --aarishBlueGlowStrong:rgba(0,122,255,0.34);
+}
+
+/* Modal title */
+#add-project-entry-modal h2{
+  color:var(--aarishBlue) !important;
+  -webkit-text-fill-color:var(--aarishBlue) !important;
+  text-shadow:0 0 12px var(--aarishBlueGlow) !important;
+  letter-spacing:-0.025em !important;
+}
+
+/* Section subtitle */
+#add-project-entry-modal p{
+  color:var(--aarishBlue) !important;
+  -webkit-text-fill-color:var(--aarishBlue) !important;
+  opacity:.76 !important;
+  text-shadow:0 0 10px rgba(0,122,255,0.16) !important;
+}
+
+/* Inputs + placeholders */
+#add-project-entry-modal input,
+#add-project-entry-modal textarea{
+  color:var(--aarishBlue) !important;
+  -webkit-text-fill-color:var(--aarishBlue) !important;
+  caret-color:var(--aarishBlue) !important;
+  border-color:rgba(0,122,255,0.10) !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.30),
+    0 6px 16px rgba(0,122,255,0.05) !important;
+}
+
 #add-project-entry-modal input::placeholder,
-#add-project-modal input::placeholder {
-  color: var(--aarish-business-blue-v192) !important;
-  -webkit-text-fill-color: var(--aarish-business-blue-v192) !important;
-  opacity: 0.74 !important;
+#add-project-entry-modal textarea::placeholder{
+  color:rgba(0,122,255,0.58) !important;
+  -webkit-text-fill-color:rgba(0,122,255,0.58) !important;
+  opacity:1 !important;
+}
+
+/* Category labels below round icons */
+#add-project-entry-modal span.text-\[10px\],
+#add-project-entry-modal span.text-\[10px\].font-bold,
+#add-project-entry-modal .font-bold.text-gray-600,
+#add-project-entry-modal .dark\:text-gray-300{
+  color:var(--aarishBlue) !important;
+  -webkit-text-fill-color:var(--aarishBlue) !important;
+  opacity:.84 !important;
+  text-shadow:0 0 8px rgba(0,122,255,0.12) !important;
+}
+
+/* Make selected category label feel premium blue too */
+#add-project-entry-modal .ring-2 span,
+#add-project-entry-modal .border-2 span{
+  color:var(--aarishBlueStrong) !important;
+  -webkit-text-fill-color:var(--aarishBlueStrong) !important;
+  opacity:1 !important;
+}
+
+/* Save button = smoky blue premium glass */
+#add-project-entry-modal button[onclick*="saveProjectEntry"]{
+  background:linear-gradient(180deg, rgba(0,122,255,0.16), rgba(0,122,255,0.10)) !important;
+  color:var(--aarishBlue) !important;
+  -webkit-text-fill-color:var(--aarishBlue) !important;
+  border:1px solid rgba(0,122,255,0.18) !important;
+  box-shadow:
+    0 14px 30px rgba(0,122,255,0.14),
+    0 4px 10px rgba(15,23,42,0.06),
+    inset 0 1px 0 rgba(255,255,255,0.40),
+    inset 0 -1px 0 rgba(0,122,255,0.04) !important;
+  text-shadow:0 0 12px rgba(0,122,255,0.18) !important;
+}
+
+#add-project-entry-modal button[onclick*="saveProjectEntry"] i,
+#add-project-entry-modal button[onclick*="saveProjectEntry"] span{
+  color:var(--aarishBlue) !important;
+  -webkit-text-fill-color:var(--aarishBlue) !important;
+  text-shadow:0 0 10px rgba(0,122,255,0.18) !important;
+}
+
+/* Hover / active polish without changing logic */
+#add-project-entry-modal button[onclick*="saveProjectEntry"]:active{
+  transform:translateY(1px) scale(0.995);
+}
+
+/* Modal card slight premium blue polish */
+#add-project-entry-modal .bg-white,
+#add-project-entry-modal .dark\:bg-\[\#1C1C1E\]{
+  box-shadow:
+    0 24px 60px rgba(15,23,42,0.12),
+    inset 0 1px 0 rgba(255,255,255,0.35) !important;
+}
+
+/* Dark mode harmony */
+.dark #add-project-entry-modal h2{
+  color:#58A6FF !important;
+  -webkit-text-fill-color:#58A6FF !important;
+  text-shadow:0 0 14px rgba(88,166,255,0.28) !important;
+}
+
+.dark #add-project-entry-modal p,
+.dark #add-project-entry-modal span.text-\[10px\],
+.dark #add-project-entry-modal .font-bold.text-gray-600,
+.dark #add-project-entry-modal .dark\:text-gray-300,
+.dark #add-project-entry-modal input,
+.dark #add-project-entry-modal textarea{
+  color:#58A6FF !important;
+  -webkit-text-fill-color:#58A6FF !important;
+}
+
+.dark #add-project-entry-modal input::placeholder,
+.dark #add-project-entry-modal textarea::placeholder{
+  color:rgba(88,166,255,0.62) !important;
+  -webkit-text-fill-color:rgba(88,166,255,0.62) !important;
+}
+
+.dark #add-project-entry-modal button[onclick*="saveProjectEntry"]{
+  background:linear-gradient(180deg, rgba(10,132,255,0.20), rgba(10,132,255,0.12)) !important;
+  color:#58A6FF !important;
+  -webkit-text-fill-color:#58A6FF !important;
+  border-color:rgba(88,166,255,0.24) !important;
+  box-shadow:
+    0 18px 40px rgba(0,122,255,0.18),
+    0 6px 16px rgba(0,0,0,0.22),
+    inset 0 1px 0 rgba(255,255,255,0.08) !important;
+}
+</style>
+
+
+<style id="aarish-new-business-modal-blue-v196">
+/* AARISH_NEW_BUSINESS_MODAL_BLUE_V196
+   Scope: New Business Khata modal only.
+   Premium blue permanent + smoky transparent Create button.
+   CSS-only. No overlay, no JS, no Firebase/render/data logic.
+*/
+
+#add-project-modal {
+  --nb-v196-blue: #007AFF;
+  --nb-v196-blue-soft: #0A84FF;
+  --nb-v196-glow: rgba(0,122,255,0.30);
+  --nb-v196-glow-strong: rgba(0,122,255,0.42);
+  --nb-v196-tint: rgba(0,122,255,0.10);
+  --nb-v196-border: rgba(0,122,255,0.18);
+}
+
+/* Modal title: New Business Khata */
+#add-project-modal h2 {
+  color: var(--nb-v196-blue) !important;
+  -webkit-text-fill-color: var(--nb-v196-blue) !important;
+  opacity: 1 !important;
+  text-shadow:
+    0 0 12px var(--nb-v196-glow),
+    0 8px 24px rgba(0,122,255,0.10) !important;
+  letter-spacing: -0.032em !important;
+}
+
+/* Input: typed text + placeholder premium blue */
+#add-project-modal #new-project-name,
+#add-project-modal input {
+  color: var(--nb-v196-blue) !important;
+  -webkit-text-fill-color: var(--nb-v196-blue) !important;
+  caret-color: var(--nb-v196-blue) !important;
+  background:
+    linear-gradient(145deg, rgba(0,122,255,0.060), rgba(0,122,255,0.035)) !important;
+  border: 1px solid rgba(0,122,255,0.12) !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.36),
+    0 10px 24px rgba(0,122,255,0.055) !important;
+}
+
+#add-project-modal #new-project-name::placeholder,
+#add-project-modal input::placeholder,
+#add-project-modal #new-project-name::-webkit-input-placeholder,
+#add-project-modal input::-webkit-input-placeholder {
+  color: var(--nb-v196-blue) !important;
+  -webkit-text-fill-color: var(--nb-v196-blue) !important;
+  opacity: 0.58 !important;
+}
+
+/* Create Khata button: smoky transparent premium blue glass */
+#add-project-modal button[onclick*="saveNewProject"],
+#add-project-modal .btn-primary[onclick*="saveNewProject"] {
+  color: var(--nb-v196-blue) !important;
+  -webkit-text-fill-color: var(--nb-v196-blue) !important;
+  background:
+    radial-gradient(circle at 50% -40%, rgba(0,122,255,0.28), transparent 58%),
+    linear-gradient(180deg, rgba(0,122,255,0.155), rgba(0,122,255,0.090)) !important;
+  border: 1px solid rgba(0,122,255,0.20) !important;
+  box-shadow:
+    0 18px 42px rgba(0,122,255,0.18),
+    0 8px 20px rgba(15,23,42,0.055),
+    inset 0 1px 0 rgba(255,255,255,0.42),
+    inset 0 -1px 0 rgba(0,122,255,0.10) !important;
+  text-shadow:
+    0 0 12px rgba(0,122,255,0.30),
+    0 2px 8px rgba(0,122,255,0.10) !important;
+  backdrop-filter: blur(14px) saturate(150%) !important;
+  -webkit-backdrop-filter: blur(14px) saturate(150%) !important;
+}
+
+#add-project-modal button[onclick*="saveNewProject"] i,
+#add-project-modal .btn-primary[onclick*="saveNewProject"] i {
+  color: var(--nb-v196-blue) !important;
+  -webkit-text-fill-color: var(--nb-v196-blue) !important;
+  opacity: 0.96 !important;
+  text-shadow:
+    0 0 12px rgba(0,122,255,0.34),
+    0 2px 8px rgba(0,122,255,0.10) !important;
+}
+
+/* Button press premium feel */
+#add-project-modal button[onclick*="saveNewProject"]:active,
+#add-project-modal .btn-primary[onclick*="saveNewProject"]:active {
+  transform: scale(0.985) !important;
+  box-shadow:
+    0 12px 28px rgba(0,122,255,0.15),
+    inset 0 1px 0 rgba(255,255,255,0.34) !important;
+}
+
+/* Tiny sheet handle stays subtle but slightly premium */
+#add-project-modal .w-12.h-1\.5 {
+  background: rgba(0,122,255,0.18) !important;
+  box-shadow: 0 0 10px rgba(0,122,255,0.12) !important;
+}
+
+/* Dark mode harmony */
+.dark #add-project-modal h2,
+.dark #add-project-modal #new-project-name,
+.dark #add-project-modal input {
+  color: #58A6FF !important;
+  -webkit-text-fill-color: #58A6FF !important;
+}
+
+.dark #add-project-modal #new-project-name,
+.dark #add-project-modal input {
+  background:
+    linear-gradient(145deg, rgba(10,132,255,0.120), rgba(10,132,255,0.065)) !important;
+  border-color: rgba(88,166,255,0.22) !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.08),
+    0 10px 24px rgba(0,122,255,0.10) !important;
+}
+
+.dark #add-project-modal #new-project-name::placeholder,
+.dark #add-project-modal input::placeholder,
+.dark #add-project-modal #new-project-name::-webkit-input-placeholder,
+.dark #add-project-modal input::-webkit-input-placeholder {
+  color: #58A6FF !important;
+  -webkit-text-fill-color: #58A6FF !important;
+  opacity: 0.62 !important;
+}
+
+.dark #add-project-modal button[onclick*="saveNewProject"],
+.dark #add-project-modal .btn-primary[onclick*="saveNewProject"] {
+  color: #58A6FF !important;
+  -webkit-text-fill-color: #58A6FF !important;
+  background:
+    radial-gradient(circle at 50% -40%, rgba(88,166,255,0.24), transparent 58%),
+    linear-gradient(180deg, rgba(10,132,255,0.20), rgba(10,132,255,0.105)) !important;
+  border-color: rgba(88,166,255,0.26) !important;
+  box-shadow:
+    0 18px 42px rgba(0,122,255,0.20),
+    0 8px 22px rgba(0,0,0,0.26),
+    inset 0 1px 0 rgba(255,255,255,0.09),
+    inset 0 -1px 0 rgba(10,132,255,0.16) !important;
+}
+
+.dark #add-project-modal button[onclick*="saveNewProject"] i,
+.dark #add-project-modal .btn-primary[onclick*="saveNewProject"] i {
+  color: #58A6FF !important;
+  -webkit-text-fill-color: #58A6FF !important;
 }
 </style>
 
