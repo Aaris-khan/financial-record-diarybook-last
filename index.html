@@ -1767,20 +1767,6 @@
 }
 
 
-/* AARISH_CREDIT_PARTY_NAME_LAST_ENTRY_BLUE_V1
-   Credit list left text only:
-   Party name + Last entry always blue.
-   Amount/status/stripe/card/title still follow plus-minus red/green logic.
-*/
-.dark #udhar-screen #udhar-list .glass-card[data-aarish-credit-card-v67] > div.flex-1 h4,
-.dark #udhar-screen #udhar-list .glass-card[data-aarish-credit-card-v67] > div.flex-1 p,
-.dark #udhar-screen #udhar-list .glass-card[data-aarish-credit-card-v67] > div.flex-1 [data-aarish-credit-party-blue-v1] {
-  color: var(--aarish-credit-blue-v67, #007AFF) !important;
-  text-shadow: 0 0 10px var(--aarish-credit-blue-shadow-v67, rgba(0,122,255,0.26)) !important;
-  opacity: 1 !important;
-}
-/* END_AARISH_CREDIT_PARTY_NAME_LAST_ENTRY_BLUE_V1 */
-
 /* Amount text semantic safety */
 .dark #udhar-list .glass-card[data-aarish-credit-card-v67="positive"] :is(.text-green-400,.text-green-500,.text-green-600,[class*="text-[#34C759]"],[class*="text-[#10B981]"]) {
   color: var(--aarish-credit-green-v67) !important;
@@ -19159,11 +19145,15 @@ window.addEventListener("pageshow", function () { setTimeout(install, 120); }, {
         var cls = toneClass(tone);
         var label = g.net >= 0 ? "To Receive" : "To Pay";
         var arg = jsArg(g.name);
+        var txtStyle = "color:var(--creditTone)!important;-webkit-text-fill-color:var(--creditTone)!important;text-shadow:0 0 10px var(--creditGlow)!important;";
+        var avatarStyle = "color:var(--creditTone)!important;-webkit-text-fill-color:var(--creditTone)!important;background:var(--creditTint)!important;";
 
         return `<div
           data-v99-tone="${tone}"
           data-v100-tone="${tone}"
           data-credit-tone-v128="${tone}"
+          data-aarish-credit-card-v67="${tone}"
+          data-credit-native-v176="true"
           onclick="try{haptic()}catch(e){}; openUdharDetail(${arg})"
           ontouchstart="try{startUdharLongPress(${arg})}catch(e){}"
           ontouchend="try{cancelUdharLongPress()}catch(e){}"
@@ -19172,24 +19162,25 @@ window.addEventListener("pageshow", function () { setTimeout(install, 120); }, {
           onmouseup="try{cancelUdharLongPress()}catch(e){}"
           onmouseleave="try{cancelUdharLongPress()}catch(e){}"
           class="glass-card mb-3.5 flex items-center justify-between cursor-pointer border-l-[4px] ${borderClass(tone)} w-full min-w-0 ring-1 ring-white/40 dark:ring-white/5 list-enter rounded-2xl"
-          style="${toneVars(tone)}">
+          style="${toneVars(tone)}border-left-color:var(--creditTone)!important;">
           <div class="flex items-center gap-4 w-full min-w-0">
-            <div class="w-12 h-12 shrink-0 squircle ${bgClass(tone)} ${cls} font-extrabold flex items-center justify-center text-lg">
-              <i class="fa-solid fa-book-open"></i>
+            <div class="w-12 h-12 shrink-0 squircle ${bgClass(tone)} ${cls} font-extrabold flex items-center justify-center text-lg" style="${avatarStyle}">
+              <i class="fa-solid fa-book-open" style="${txtStyle}"></i>
             </div>
             <div class="flex-1 min-w-0">
-              <h4 class="font-bold text-[17px] truncate w-full min-w-0 ${cls} flex items-center gap-2">${esc(g.name)}</h4>
-              <p class="text-[13px] ${cls} font-semibold truncate w-full mt-0.5 tracking-tight opacity-90">
-                ${label} <span class="font-extrabold text-[15px]">${g.net >= 0 ? "+" : "-"}${money(g.net)}</span>
+              <h4 class="font-bold text-[17px] truncate w-full min-w-0 ${cls} flex items-center gap-2" style="${txtStyle}">${esc(g.name)}</h4>
+              <p class="text-[13px] ${cls} font-semibold truncate w-full mt-0.5 tracking-tight opacity-90" style="${txtStyle}">
+                ${label} <span class="font-extrabold text-[15px]" style="${txtStyle}">${g.net >= 0 ? "+" : "-"}${money(g.net)}</span>
               </p>
             </div>
           </div>
-          <i class="fa-solid fa-chevron-right ${cls} shrink-0 ml-3 text-[13px]"></i>
+          <i class="fa-solid fa-chevron-right ${cls} shrink-0 ml-3 text-[13px]" style="${txtStyle}"></i>
         </div>`;
       }).join("");
 
     box.innerHTML = html || (typeof getEmptyState === "function" ? getEmptyState("fa-users", "No records found") : `<div class="py-20 text-center text-[#007AFF] font-extrabold">No records found</div>`);
     applyCreditHeaderButtonV128();
+    try { paintExistingCreditCardsV128(); } catch(e) {}
   }
 
   function renderCreditRecordsV128() {
@@ -19207,6 +19198,15 @@ window.addEventListener("pageshow", function () { setTimeout(install, 120); }, {
         el.style.setProperty("transform", "none", "important");
       });
 
+      function putVars(card, tone) {
+        try {
+          String(toneVars(tone)).split(";").forEach(function (part) {
+            var cut = part.indexOf(":");
+            if (cut > 0) card.style.setProperty(part.slice(0, cut).trim(), part.slice(cut + 1).trim());
+          });
+        } catch(e) {}
+      }
+
       list.querySelectorAll(".glass-card").forEach(function (card) {
         var tone = String(card.getAttribute("data-credit-tone-v128") || card.getAttribute("data-v99-tone") || card.getAttribute("data-v100-tone") || "").toLowerCase();
         if (tone === "green") tone = "positive";
@@ -19215,10 +19215,15 @@ window.addEventListener("pageshow", function () { setTimeout(install, 120); }, {
         if (tone !== "positive" && tone !== "negative" && tone !== "neutral") tone = "neutral";
 
         var color = toneColor(tone);
+        var glow = tone === "positive" ? "rgba(52,199,89,0.30)" : (tone === "negative" ? "rgba(255,59,48,0.30)" : "rgba(0,122,255,0.28)");
+
         card.setAttribute("data-credit-tone-v128", tone);
+        card.setAttribute("data-aarish-credit-card-v67", tone);
         card.setAttribute("data-v99-tone", tone);
         card.setAttribute("data-v100-tone", tone);
-        card.style.cssText += ";" + toneVars(tone);
+        card.setAttribute("data-credit-native-v176", "true");
+        putVars(card, tone);
+
         card.style.setProperty("border-left-width", "4px", "important");
         card.style.setProperty("border-left-style", "solid", "important");
         card.style.setProperty("border-left-color", color, "important");
@@ -19226,12 +19231,15 @@ window.addEventListener("pageshow", function () { setTimeout(install, 120); }, {
 
         card.querySelectorAll("h4,p,span,i,.font-bold,.font-extrabold").forEach(function (x) {
           x.style.setProperty("color", color, "important");
+          x.style.setProperty("-webkit-text-fill-color", color, "important");
+          x.style.setProperty("text-shadow", "0 0 10px " + glow, "important");
           safeTransition(x);
         });
 
         var av = card.querySelector(".squircle");
         if (av) {
           av.style.setProperty("color", color, "important");
+          av.style.setProperty("-webkit-text-fill-color", color, "important");
           av.style.setProperty("background", tone === "positive" ? "rgba(52,199,89,0.13)" : tone === "negative" ? "rgba(255,59,48,0.13)" : "rgba(0,122,255,0.13)", "important");
           safeTransition(av);
         }
