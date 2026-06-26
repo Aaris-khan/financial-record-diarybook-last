@@ -5519,6 +5519,159 @@ html.aarish-auth-confirmed #login-screen {
 }
 </style>
 
+
+<style id="aarish-project-total-semantic-text-v197">
+/* AARISH_PROJECT_TOTAL_SEMANTIC_TEXT_V197
+   Scope: Business Project Detail 4 summary cards only.
+   Fix: Dark mode total-card text must follow card smoke color:
+   green card -> green text, red -> red, blue -> blue, orange -> orange.
+   CSS-only. No JS/Firebase/render/data logic touched.
+*/
+
+#project-detail-screen #project-dynamic-totals .glass-card {
+  --pt-v197-blue: #007AFF;
+  --pt-v197-green: #34C759;
+  --pt-v197-red: #FF3B30;
+  --pt-v197-orange: #FF9500;
+}
+
+/* Tone detection from existing gradient classes */
+#project-detail-screen #project-dynamic-totals .glass-card[class*="from-[#34C759]"],
+#project-detail-screen #project-dynamic-totals .glass-card[class*="from-[#28a745]"],
+#project-detail-screen #project-dynamic-totals .glass-card[class*="from-[#10B981]"] {
+  --pt-v197-tone: var(--pt-v197-green);
+  --pt-v197-glow: rgba(52,199,89,0.36);
+  --pt-v197-bg1: rgba(52,199,89,0.18);
+  --pt-v197-bg2: rgba(52,199,89,0.055);
+  --pt-v197-border: rgba(52,199,89,0.38);
+}
+
+#project-detail-screen #project-dynamic-totals .glass-card[class*="from-[#FF3B30]"],
+#project-detail-screen #project-dynamic-totals .glass-card[class*="from-[#c92a2a]"],
+#project-detail-screen #project-dynamic-totals .glass-card[class*="from-[#FF4B4B]"] {
+  --pt-v197-tone: var(--pt-v197-red);
+  --pt-v197-glow: rgba(255,59,48,0.34);
+  --pt-v197-bg1: rgba(255,59,48,0.17);
+  --pt-v197-bg2: rgba(255,59,48,0.052);
+  --pt-v197-border: rgba(255,59,48,0.36);
+}
+
+#project-detail-screen #project-dynamic-totals .glass-card[class*="from-[#007AFF]"],
+#project-detail-screen #project-dynamic-totals .glass-card[class*="from-[#0056b3]"] {
+  --pt-v197-tone: var(--pt-v197-blue);
+  --pt-v197-glow: rgba(0,122,255,0.36);
+  --pt-v197-bg1: rgba(0,122,255,0.18);
+  --pt-v197-bg2: rgba(0,122,255,0.055);
+  --pt-v197-border: rgba(0,122,255,0.38);
+}
+
+#project-detail-screen #project-dynamic-totals .glass-card[class*="from-[#FF9500]"],
+#project-detail-screen #project-dynamic-totals .glass-card[class*="from-[#d67a00]"],
+#project-detail-screen #project-dynamic-totals .glass-card[class*="from-[#F59E0B]"] {
+  --pt-v197-tone: var(--pt-v197-orange);
+  --pt-v197-glow: rgba(255,149,0,0.36);
+  --pt-v197-bg1: rgba(255,149,0,0.18);
+  --pt-v197-bg2: rgba(255,149,0,0.055);
+  --pt-v197-border: rgba(255,149,0,0.38);
+}
+
+/* Dark mode smoky cards: background and border stay same tone */
+.dark #project-detail-screen #project-dynamic-totals .glass-card[class*="from["],
+.dark #project-detail-screen #project-dynamic-totals .glass-card[class*="from-[#"] {
+  background:
+    radial-gradient(circle at 18% 8%, var(--pt-v197-bg1, rgba(0,122,255,0.16)), transparent 58%),
+    linear-gradient(145deg, rgba(2,6,23,0.80), rgba(2,6,23,0.58)) !important;
+  border: 1px solid var(--pt-v197-border, rgba(0,122,255,0.34)) !important;
+  box-shadow:
+    0 0 0 1px rgba(255,255,255,0.035),
+    0 16px 38px rgba(0,0,0,0.36),
+    0 0 24px var(--pt-v197-glow, rgba(0,122,255,0.25)),
+    inset 0 1px 0 rgba(255,255,255,0.08) !important;
+}
+
+/* Main fix: text follows its own card color, not global premium blue */
+.dark #project-detail-screen #project-dynamic-totals .glass-card[class*="from-[#"] :is(p,h3,span,div,i),
+.dark #project-detail-screen #project-dynamic-totals .glass-card[class*="from["] :is(p,h3,span,div,i) {
+  color: var(--pt-v197-tone, #007AFF) !important;
+  -webkit-text-fill-color: var(--pt-v197-tone, #007AFF) !important;
+  text-shadow:
+    0 0 10px var(--pt-v197-glow, rgba(0,122,255,0.28)),
+    0 2px 10px rgba(0,0,0,0.20) !important;
+}
+
+/* Hierarchy inside cards */
+.dark #project-detail-screen #project-dynamic-totals .glass-card[class*="from-[#"] p,
+.dark #project-detail-screen #project-dynamic-totals .glass-card[class*="from["] p {
+  opacity: 0.78 !important;
+  letter-spacing: 0.09em !important;
+}
+
+.dark #project-detail-screen #project-dynamic-totals .glass-card[class*="from-[#"] h3,
+.dark #project-detail-screen #project-dynamic-totals .glass-card[class*="from["] h3 {
+  opacity: 0.96 !important;
+  letter-spacing: -0.035em !important;
+}
+
+/* Light mode: keep semantic text too, but softer so it stays premium */
+#project-detail-screen #project-dynamic-totals .glass-card[class*="from-[#"] :is(p,h3,span,div,i),
+#project-detail-screen #project-dynamic-totals .glass-card[class*="from["] :is(p,h3,span,div,i) {
+  color: var(--pt-v197-tone, #FFFFFF) !important;
+  -webkit-text-fill-color: var(--pt-v197-tone, #FFFFFF) !important;
+}
+</style>
+
+
+<style id="aarish-diary-search-icon-yellow-v198">
+/* AARISH_DIARY_SEARCH_ICON_YELLOW_V198
+   Scope: Personal Diary search icon only.
+   Fix: Search text is yellow, search icon must also stay yellow.
+   CSS-only. No overlay, no JS, no Firebase/render/data logic.
+*/
+
+#diary-screen {
+  --diary-v198-yellow: #F5A623;
+  --diary-v198-yellow-glow: rgba(245,166,35,0.34);
+}
+
+/* Ultra-specific final lock so later/global blue rules cannot win */
+html body #diary-screen .relative > i.fa-search,
+html body #diary-screen .relative i.fa-search,
+html body #diary-screen i.fa-solid.fa-search,
+html.dark body #diary-screen .relative > i.fa-search,
+html.dark body #diary-screen .relative i.fa-search,
+html.dark body #diary-screen i.fa-solid.fa-search,
+.dark #diary-screen .relative > i.fa-search,
+.dark #diary-screen .relative i.fa-search,
+.dark #diary-screen i.fa-solid.fa-search {
+  color: var(--diary-v198-yellow) !important;
+  -webkit-text-fill-color: var(--diary-v198-yellow) !important;
+  opacity: 0.92 !important;
+  text-shadow:
+    0 0 10px var(--diary-v198-yellow-glow),
+    0 0 18px rgba(245,166,35,0.16) !important;
+}
+
+/* Keep the whole search cluster harmonized without changing layout */
+html body #diary-screen #diary-search,
+html.dark body #diary-screen #diary-search,
+.dark #diary-screen #diary-search {
+  color: var(--diary-v198-yellow) !important;
+  -webkit-text-fill-color: var(--diary-v198-yellow) !important;
+  caret-color: var(--diary-v198-yellow) !important;
+}
+
+html body #diary-screen #diary-search::placeholder,
+html body #diary-screen #diary-search::-webkit-input-placeholder,
+html.dark body #diary-screen #diary-search::placeholder,
+html.dark body #diary-screen #diary-search::-webkit-input-placeholder,
+.dark #diary-screen #diary-search::placeholder,
+.dark #diary-screen #diary-search::-webkit-input-placeholder {
+  color: var(--diary-v198-yellow) !important;
+  -webkit-text-fill-color: var(--diary-v198-yellow) !important;
+  opacity: 0.82 !important;
+}
+</style>
+
 </head>
 
 <body>
