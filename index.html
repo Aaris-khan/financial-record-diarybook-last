@@ -4914,6 +4914,52 @@ html:not(.dark) #credit-entry-btn-v52[data-credit-net-v128] * {
 /* AARISH_V143_CREDIT_DELETE_PERMANENT_RED_END */
 
 </style>
+
+<style id="aarish-login-center-lock-v188">
+/* AARISH_LOGIN_CENTER_LOCK_V188
+   Fix: fresh/no-user login card must stay exactly centered.
+   Reason: V125 auth sync cleared display, causing block layout shift.
+   CSS-only visual lock; Firebase/auth/business logic untouched.
+*/
+html:not(.aarish-auth-confirmed) #login-screen {
+  position: fixed !important;
+  inset: 0 !important;
+  width: 100% !important;
+  min-height: 100vh !important;
+  min-height: 100dvh !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  padding: max(18px, env(safe-area-inset-top)) 20px max(18px, env(safe-area-inset-bottom)) !important;
+  overflow: hidden !important;
+  transform: none !important;
+  opacity: 1 !important;
+}
+
+html:not(.aarish-auth-confirmed) #login-screen > .glass-card {
+  margin: auto !important;
+  width: min(90vw, 360px) !important;
+  max-width: 360px !important;
+  min-width: 0 !important;
+  align-self: center !important;
+  justify-self: center !important;
+  transform: none !important;
+}
+
+html:not(.aarish-auth-confirmed) #google-login-btn,
+html:not(.aarish-auth-confirmed) #login-screen .btn-google {
+  width: 100% !important;
+  max-width: 100% !important;
+  justify-content: center !important;
+}
+
+html.aarish-auth-confirmed #login-screen {
+  opacity: 0 !important;
+  transform: translateY(-18px) scale(1.01) translate3d(0,0,0) !important;
+  pointer-events: none !important;
+}
+</style>
+
 </head>
 
 <body>
@@ -18759,9 +18805,18 @@ window.addEventListener("pageshow", function () { setTimeout(install, 120); }, {
                 document.documentElement.classList.remove("aarish-auth-confirmed");
                 var login = document.getElementById("login-screen");
                 if (login) {
-                  login.style.display = "";
-                  login.style.opacity = "";
-                  login.style.transform = "";
+                  /* AARISH_LOGIN_CENTER_SHIFT_FIX_V188
+                     Fresh/no-user state must stay flex-centered.
+                     Never clear display here; clearing display turns #login-screen into block layout. */
+                  login.style.setProperty("display", "flex", "important");
+                  login.style.setProperty("align-items", "center", "important");
+                  login.style.setProperty("justify-content", "center", "important");
+                  login.style.setProperty("position", "fixed", "important");
+                  login.style.setProperty("inset", "0", "important");
+                  login.style.setProperty("width", "100%", "important");
+                  login.style.setProperty("min-height", "100dvh", "important");
+                  login.style.setProperty("opacity", "1", "important");
+                  login.style.setProperty("transform", "none", "important");
                 }
               }
             } catch(e) {}
