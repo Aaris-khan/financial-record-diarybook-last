@@ -5905,83 +5905,57 @@ button[onclick] {
 /* AARISH_BIGTECH_MOTION_V203_END */
 </style>
 
-
-<style id="aarish-list-scroll-slide-v204">
-/* AARISH_LIST_SCROLL_SLIDE_V204_START
-   Premium left-to-right viewport slide engine.
-   Scope only: real list/customer cards.
-   No Firebase, no data logic, no render rewrite.
+<style id="aarish-list-scroll-slide-v205">
+/* AARISH_LIST_SCROLL_SLIDE_V205_START
+   REAL BODY viewport slide engine.
+   Fixes V204 wrong injection into report/download template.
+   Cards slide left -> right on list open + scroll enter.
 */
+:root { --aarish-list-slide-v205: cubic-bezier(0.22, 0.82, 0.18, 1); }
 
-:root {
-  --aarish-list-slide-v204: cubic-bezier(0.22, 0.82, 0.18, 1);
-}
-
-/* Only list cards, not every glass-card in app */
-#milk-screen #milk-list .glass-card,
-#expenses-screen #expense-list-container .glass-card,
-#salary-screen #salary-list .glass-card,
-#udhar-screen #udhar-list .glass-card,
-#balances-screen #dash-balances-list .glass-card,
-#diary-screen #diary-list .glass-card,
-#projects-screen #project-list .glass-card {
+#milk-list .glass-card,
+#expense-list-container .glass-card,
+#salary-list .glass-card,
+#udhar-list .glass-card,
+#dash-balances-list .glass-card,
+#diary-list .glass-card,
+#project-list .glass-card {
   backface-visibility: hidden !important;
   -webkit-backface-visibility: hidden !important;
-  transform: translate3d(0,0,0) !important;
 }
 
-/* One-frame primed state before the slide plays */
-html body .aarish-list-card-v204.aarish-slide-primed-v204:not(.aarish-slide-play-v204) {
+html body .aarish-list-card-v205.aarish-slide-primed-v205:not(.aarish-slide-play-v205) {
   opacity: 0.001 !important;
-  transform: translate3d(-34px, 0, 0) scale3d(0.992, 0.992, 1) !important;
+  transform: translate3d(-42px, 0, 0) scale3d(0.992, 0.992, 1) !important;
 }
 
-/* Actual premium left -> right card motion */
-html body .aarish-list-card-v204.aarish-slide-play-v204 {
-  animation: aarishListSlideLeftRightV204 360ms var(--aarish-list-slide-v204) both !important;
-  animation-delay: var(--aarish-slide-delay-v204, 0ms) !important;
+html body .aarish-list-card-v205.aarish-slide-play-v205,
+html body .list-enter.aarish-list-card-v205.aarish-slide-play-v205,
+html body .aarish-motion-done-v203.aarish-list-card-v205.aarish-slide-play-v205 {
+  animation: aarishListSlideLeftRightV205 390ms var(--aarish-list-slide-v205) both !important;
+  animation-delay: var(--aarish-slide-delay-v205, 0ms) !important;
   will-change: transform, opacity !important;
   transform-origin: center left !important;
-  opacity: 1 !important;
 }
 
-/* Stronger specificity to beat old .list-enter animation:none/transform:none patches */
-html body .list-enter.aarish-list-card-v204.aarish-slide-play-v204,
-html body .aarish-motion-done-v203.aarish-list-card-v204.aarish-slide-play-v204 {
-  animation: aarishListSlideLeftRightV204 360ms var(--aarish-list-slide-v204) both !important;
-  animation-delay: var(--aarish-slide-delay-v204, 0ms) !important;
-  transform-origin: center left !important;
-  will-change: transform, opacity !important;
+@keyframes aarishListSlideLeftRightV205 {
+  0% { opacity: 0; transform: translate3d(-42px, 0, 0) scale3d(0.992,0.992,1); }
+  62% { opacity: 1; transform: translate3d(4px, 0, 0) scale3d(1.002,1.002,1); }
+  100% { opacity: 1; transform: translate3d(0, 0, 0) scale3d(1,1,1); }
 }
 
-@keyframes aarishListSlideLeftRightV204 {
-  0% {
-    opacity: 0;
-    transform: translate3d(-34px, 0, 0) scale3d(0.992, 0.992, 1);
-  }
-  62% {
-    opacity: 1;
-    transform: translate3d(3px, 0, 0) scale3d(1.002, 1.002, 1);
-  }
-  100% {
-    opacity: 1;
-    transform: translate3d(0, 0, 0) scale3d(1, 1, 1);
-  }
-}
-
-/* low-end phones still get slide, but lighter */
-.aarish-list-slide-lite-v204 .aarish-list-card-v204.aarish-slide-play-v204 {
-  animation-duration: 250ms !important;
+.aarish-list-slide-lite-v205 .aarish-list-card-v205.aarish-slide-play-v205 {
+  animation-duration: 260ms !important;
   animation-delay: 0ms !important;
 }
 
 @media (prefers-reduced-motion: reduce) {
-  html body .aarish-list-card-v204.aarish-slide-play-v204 {
+  html body .aarish-list-card-v205.aarish-slide-play-v205 {
     animation-duration: 1ms !important;
     animation-delay: 0ms !important;
   }
 }
-/* AARISH_LIST_SCROLL_SLIDE_V204_END */
+/* AARISH_LIST_SCROLL_SLIDE_V205_END */
 </style>
 
 </head>
@@ -11445,172 +11419,6 @@ window.onload = function(){ setTimeout(function(){ window.focus(); window.print(
   window.addEventListener("pageshow", function(){ setTimeout(applyMilkV106, 80); }, { passive: true });
 })();
 <\/script>
-
-<script id="aarish-list-scroll-slide-v204">
-/* AARISH_LIST_SCROLL_SLIDE_V204_START */
-(function(){
-  if (window.__aarishListSlideV204Installed) return;
-  window.__aarishListSlideV204Installed = true;
-
-  const root = document.documentElement;
-  const selector = [
-    '#milk-screen #milk-list .glass-card',
-    '#expenses-screen #expense-list-container .glass-card',
-    '#salary-screen #salary-list .glass-card',
-    '#udhar-screen #udhar-list .glass-card',
-    '#balances-screen #dash-balances-list .glass-card',
-    '#diary-screen #diary-list .glass-card',
-    '#projects-screen #project-list .glass-card'
-  ].join(',');
-
-  const isLite = (() => {
-    try {
-      const dm = Number(navigator.deviceMemory || 0);
-      const cores = Number(navigator.hardwareConcurrency || 0);
-      return (dm && dm <= 3) || (cores && cores <= 4);
-    } catch(e) {
-      return false;
-    }
-  })();
-
-  if (isLite) root.classList.add('aarish-list-slide-lite-v204');
-
-  const observed = new WeakSet();
-  let discoverRaf = 0;
-
-  function activeIndexFor(el) {
-    try {
-      const parent = el.parentElement;
-      if (!parent) return 0;
-      const cards = Array.from(parent.querySelectorAll('.glass-card'));
-      const idx = cards.indexOf(el);
-      return idx < 0 ? 0 : idx;
-    } catch(e) {
-      return 0;
-    }
-  }
-
-  function playSlide(el) {
-    if (!el || !el.isConnected) return;
-
-    const now = performance.now ? performance.now() : Date.now();
-    const last = Number(el.__aarishSlideLastV204 || 0);
-
-    /* cooldown prevents flicker on tiny scroll boundary changes */
-    if (now - last < 520) return;
-    el.__aarishSlideLastV204 = now;
-
-    const idx = activeIndexFor(el);
-    const delay = isLite ? 0 : Math.min(idx % 10, 9) * 18;
-
-    el.classList.add('aarish-list-card-v204');
-    el.classList.remove('aarish-slide-play-v204');
-    el.classList.add('aarish-slide-primed-v204');
-    el.style.setProperty('--aarish-slide-delay-v204', delay + 'ms');
-
-    requestAnimationFrame(() => {
-      requestAnimationFrame(() => {
-        if (!el.isConnected) return;
-        el.classList.add('aarish-slide-play-v204');
-
-        setTimeout(() => {
-          if (!el.isConnected) return;
-          el.classList.remove('aarish-slide-play-v204');
-          el.classList.remove('aarish-slide-primed-v204');
-          el.style.removeProperty('--aarish-slide-delay-v204');
-          el.style.removeProperty('will-change');
-        }, 460 + delay);
-      });
-    });
-  }
-
-  const io = new IntersectionObserver((entries) => {
-    for (const entry of entries) {
-      const el = entry.target;
-      if (!el || !el.isConnected) continue;
-
-      if (entry.isIntersecting && entry.intersectionRatio >= 0.18) {
-        playSlide(el);
-      } else if (entry.intersectionRatio <= 0.02) {
-        /* reset when it truly leaves viewport, so scroll-back also slides */
-        el.classList.remove('aarish-slide-play-v204');
-        el.classList.remove('aarish-slide-primed-v204');
-      }
-    }
-  }, {
-    root: null,
-    threshold: [0, 0.02, 0.18, 0.36, 0.70],
-    rootMargin: '0px 0px -4% 0px'
-  });
-
-  function discoverCards(scope) {
-    try {
-      const base = scope && scope.querySelectorAll ? scope : document;
-      base.querySelectorAll(selector).forEach((el) => {
-        if (observed.has(el)) return;
-        observed.add(el);
-        el.classList.add('aarish-list-card-v204');
-        io.observe(el);
-      });
-    } catch(e) {}
-  }
-
-  function scheduleDiscover(scope) {
-    if (discoverRaf) cancelAnimationFrame(discoverRaf);
-    discoverRaf = requestAnimationFrame(() => {
-      discoverRaf = 0;
-      discoverCards(scope || document);
-    });
-  }
-
-  window.__aarishListSlideV204 = scheduleDiscover;
-
-  function boot() {
-    scheduleDiscover(document);
-
-    const mo = new MutationObserver((mutations) => {
-      let shouldRun = false;
-      for (const m of mutations) {
-        if ((m.type === 'childList' && m.addedNodes && m.addedNodes.length) ||
-            (m.type === 'attributes' && m.attributeName === 'class')) {
-          shouldRun = true;
-          break;
-        }
-      }
-      if (shouldRun) scheduleDiscover(document);
-    });
-
-    mo.observe(document.body, {
-      childList: true,
-      subtree: true,
-      attributes: true,
-      attributeFilter: ['class']
-    });
-
-    /* When user changes tab/list screen, re-discover and animate visible cards */
-    document.addEventListener('click', (e) => {
-      const t = e.target && e.target.closest ? e.target.closest('.nav-item, [onclick*="switchTab"], [onclick*="openAllBalances"]') : null;
-      if (!t) return;
-      setTimeout(() => scheduleDiscover(document), 80);
-      setTimeout(() => scheduleDiscover(document), 260);
-    }, { passive: true, capture: true });
-
-    /* Scroll fallback: IntersectionObserver handles most cases;
-       this only nudges discovery for newly inserted/filtered lists. */
-    document.addEventListener('scroll', () => {
-      scheduleDiscover(document);
-    }, { passive: true, capture: true });
-  }
-
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', boot, { once: true });
-  } else {
-    boot();
-  }
-})();
-/* AARISH_LIST_SCROLL_SLIDE_V204_END */
-</script>
-
 </body>
 </html>`;
   }
@@ -20866,5 +20674,202 @@ window.addEventListener("pageshow", function () { setTimeout(install, 120); }, {
   console.log("✅ AARISH V128 Credit Book light Milk-safe paint active");
 })();
 </script>
+
+<script id="aarish-list-scroll-slide-v205">
+/* AARISH_LIST_SCROLL_SLIDE_V205_START */
+(function(){
+  if (window.__aarishListSlideV205Installed) return;
+  window.__aarishListSlideV205Installed = true;
+
+  const root = document.documentElement;
+  const selector = [
+    '#milk-list .glass-card',
+    '#expense-list-container .glass-card',
+    '#salary-list .glass-card',
+    '#udhar-list .glass-card',
+    '#dash-balances-list .glass-card',
+    '#diary-list .glass-card',
+    '#project-list .glass-card'
+  ].join(',');
+
+  const isLite = (() => {
+    try {
+      const dm = Number(navigator.deviceMemory || 0);
+      const cores = Number(navigator.hardwareConcurrency || 0);
+      return (dm && dm <= 3) || (cores && cores <= 4);
+    } catch(e) { return false; }
+  })();
+
+  if (isLite) root.classList.add('aarish-list-slide-lite-v205');
+
+  const observed = new WeakSet();
+  let discoverRaf = 0;
+
+  function parentIndex(el) {
+    try {
+      const p = el.parentElement;
+      if (!p) return 0;
+      const cards = Array.from(p.querySelectorAll('.glass-card'));
+      const i = cards.indexOf(el);
+      return i < 0 ? 0 : i;
+    } catch(e) { return 0; }
+  }
+
+  function isVisible(el) {
+    try {
+      if (!el || !el.isConnected) return false;
+      const screen = el.closest('.screen');
+      if (screen && !screen.classList.contains('active')) return false;
+      const r = el.getBoundingClientRect();
+      const vh = window.innerHeight || document.documentElement.clientHeight || 0;
+      const vw = window.innerWidth || document.documentElement.clientWidth || 0;
+      return r.width > 0 && r.height > 0 && r.bottom > 56 && r.top < (vh - 70) && r.right > 0 && r.left < vw;
+    } catch(e) { return false; }
+  }
+
+  function playSlide(el, force) {
+    if (!el || !el.isConnected || !isVisible(el)) return;
+
+    const now = performance.now ? performance.now() : Date.now();
+    const last = Number(el.__aarishSlideLastV205 || 0);
+    if (!force && now - last < 620) return;
+    el.__aarishSlideLastV205 = now;
+
+    const delay = isLite ? 0 : Math.min(parentIndex(el) % 10, 9) * 16;
+
+    el.classList.add('aarish-list-card-v205');
+    el.classList.remove('aarish-slide-play-v205');
+    el.classList.add('aarish-slide-primed-v205');
+    el.style.setProperty('--aarish-slide-delay-v205', delay + 'ms');
+
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        if (!el.isConnected || !isVisible(el)) return;
+        el.classList.add('aarish-slide-play-v205');
+        setTimeout(() => {
+          if (!el.isConnected) return;
+          el.classList.remove('aarish-slide-play-v205');
+          el.classList.remove('aarish-slide-primed-v205');
+          el.style.removeProperty('--aarish-slide-delay-v205');
+          el.style.removeProperty('will-change');
+        }, 520 + delay);
+      });
+    });
+  }
+
+  const io = new IntersectionObserver((entries) => {
+    for (const entry of entries) {
+      const el = entry.target;
+      if (!el || !el.isConnected) continue;
+      if (entry.isIntersecting && entry.intersectionRatio >= 0.14) {
+        playSlide(el, false);
+      } else if (entry.intersectionRatio <= 0.01) {
+        el.classList.remove('aarish-slide-play-v205');
+        el.classList.remove('aarish-slide-primed-v205');
+      }
+    }
+  }, {
+    root: null,
+    threshold: [0, 0.01, 0.14, 0.34, 0.7],
+    rootMargin: '0px 0px -3% 0px'
+  });
+
+  function discoverCards(scope) {
+    try {
+      const base = scope && scope.querySelectorAll ? scope : document;
+      base.querySelectorAll(selector).forEach((el) => {
+        el.classList.add('aarish-list-card-v205');
+        if (!observed.has(el)) {
+          observed.add(el);
+          io.observe(el);
+        }
+      });
+    } catch(e) {}
+  }
+
+  function animateVisibleNow(force) {
+    try {
+      document.querySelectorAll(selector).forEach((el) => {
+        if (isVisible(el)) playSlide(el, !!force);
+      });
+    } catch(e) {}
+  }
+
+  function scheduleDiscover(scope, forceVisible) {
+    if (discoverRaf) cancelAnimationFrame(discoverRaf);
+    discoverRaf = requestAnimationFrame(() => {
+      discoverRaf = 0;
+      discoverCards(scope || document);
+      if (forceVisible) animateVisibleNow(true);
+    });
+  }
+
+  window.__aarishListSlideV205 = function(force) {
+    scheduleDiscover(document, !!force);
+  };
+
+  function wrapRender(name) {
+    try {
+      const old = window[name];
+      if (typeof old !== 'function' || old.__aarishListSlideV205Wrapped) return;
+      const wrapped = function() {
+        const out = old.apply(this, arguments);
+        setTimeout(() => scheduleDiscover(document, true), 30);
+        setTimeout(() => scheduleDiscover(document, true), 180);
+        return out;
+      };
+      wrapped.__aarishListSlideV205Wrapped = true;
+      window[name] = wrapped;
+      try { Function('fn', name + ' = fn;')(wrapped); } catch(e) {}
+    } catch(e) {}
+  }
+
+  [
+    'renderMilkList',
+    'filterMilkList',
+    'renderExpenseList',
+    'renderExpensesList',
+    'filterExpenseList',
+    'renderSalaryList',
+    'filterSalaryList',
+    'renderUdharList',
+    'filterUdharList',
+    'renderAllBalances',
+    'openAllBalances',
+    'renderDiaryList',
+    'renderProjectList',
+    'switchTab',
+    'updateActiveScreen'
+  ].forEach(wrapRender);
+
+  function boot() {
+    scheduleDiscover(document, true);
+    setTimeout(() => scheduleDiscover(document, true), 350);
+    setTimeout(() => scheduleDiscover(document, true), 1100);
+
+    const mo = new MutationObserver(() => scheduleDiscover(document, false));
+    mo.observe(document.body, { childList: true, subtree: true });
+
+    document.addEventListener('click', (e) => {
+      const t = e.target && e.target.closest ? e.target.closest('.nav-item, [onclick*="switchTab"], [onclick*="openAllBalances"], [onclick*="showScreen"]') : null;
+      if (!t) return;
+      setTimeout(() => scheduleDiscover(document, true), 80);
+      setTimeout(() => scheduleDiscover(document, true), 260);
+    }, { passive: true, capture: true });
+
+    document.addEventListener('scroll', () => {
+      scheduleDiscover(document, false);
+    }, { passive: true, capture: true });
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', boot, { once: true });
+  } else {
+    boot();
+  }
+})();
+/* AARISH_LIST_SCROLL_SLIDE_V205_END */
+</script>
+
 </body>
 </html>
