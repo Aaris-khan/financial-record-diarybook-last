@@ -93,17 +93,16 @@
         
                 /* 2. PREMIUM SIDE-SLIDE ANIMATION */
         .list-enter {
-            animation: slideInRight 0.48s cubic-bezier(0.22, 0.82, 0.18, 1) both;
+            animation: slideInRight 0.34s cubic-bezier(0.16, 1, 0.3, 1) both;
             opacity: 0;
-            transform: translate3d(46px, 0, 0);
-            will-change: transform, opacity;
+            transform: translate3d(24px, 0, 0) scale3d(0.985, 0.985, 1);
             backface-visibility: hidden;
             -webkit-backface-visibility: hidden;
         }
         @keyframes slideInRight {
-            0%   { opacity: 0; transform: translate3d(46px, 0, 0); }
-            68%  { opacity: 1; transform: translate3d(-4px, 0, 0); }
-            100% { opacity: 1; transform: translate3d(0, 0, 0); }
+            0%   { opacity: 0; transform: translate3d(24px, 0, 0) scale3d(0.985,0.985,1); }
+            62%  { opacity: 1; transform: translate3d(-1.5px, 0, 0) scale3d(1.002,1.002,1); }
+            100% { opacity: 1; transform: translate3d(0, 0, 0) scale3d(1,1,1); }
         }
 
 
@@ -5916,6 +5915,104 @@ button[onclick] {
   will-change: transform, opacity;
 }
 </style>
+
+<style id="aarish-bigtech-card-motion-v4">
+/* AARISH_BIGTECH_CARD_MOTION_V4
+   Premium Big-Tech list motion:
+   - RIGHT -> LEFT, but short and smooth, not cheap long slide.
+   - Transform + opacity only: compositor-friendly.
+   - Screen slide reduced to micro-settle to avoid double horizontal motion.
+   - Stagger capped using --aarish-stagger-v4.
+   - No color, Firebase, data, amount, stripe, or render logic changes.
+*/
+:root {
+  --aarish-card-ease-v4: cubic-bezier(0.16, 1, 0.3, 1);
+  --aarish-screen-ease-v4: cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+/* Screen should not fight cards with another big horizontal slide. */
+#main-app .screen.active {
+  animation: aarishScreenSettleV4 150ms var(--aarish-screen-ease-v4) both !important;
+}
+
+@keyframes aarishScreenSettleV4 {
+  0%   { opacity: 0.985; transform: translate3d(3px, 0, 0); }
+  100% { opacity: 1; transform: translate3d(0, 0, 0); }
+}
+
+/* Main list cards: same premium motion for Milk, Credit, Salary, Expense, Diary, Business, Party Ledger. */
+#main-app :is(
+  #milk-list,
+  #udhar-list,
+  #salary-list,
+  #expense-list-container,
+  #diary-list,
+  #project-list,
+  #dash-balances-list
+) :is(.glass-card, .diary-card).list-enter {
+  animation-name: aarishCardEnterV4 !important;
+  animation-duration: 340ms !important;
+  animation-timing-function: var(--aarish-card-ease-v4) !important;
+  animation-delay: var(--aarish-stagger-v4, 0ms) !important;
+  animation-fill-mode: both !important;
+
+  opacity: 0;
+  transform: translate3d(24px, 0, 0) scale3d(0.985, 0.985, 1);
+
+  backface-visibility: hidden !important;
+  -webkit-backface-visibility: hidden !important;
+  transform-origin: center center !important;
+  will-change: auto !important;
+}
+
+/* Empty states can stay softer, not card-heavy. */
+#main-app .screen.active > .list-enter:not(.glass-card):not(.diary-card) {
+  animation: aarishSoftFadeV4 220ms var(--aarish-screen-ease-v4) both !important;
+}
+
+@keyframes aarishCardEnterV4 {
+  0%   { opacity: 0; transform: translate3d(24px, 0, 0) scale3d(0.985, 0.985, 1); }
+  58%  { opacity: 1; transform: translate3d(-1.5px, 0, 0) scale3d(1.002, 1.002, 1); }
+  100% { opacity: 1; transform: translate3d(0, 0, 0) scale3d(1, 1, 1); }
+}
+
+@keyframes aarishSoftFadeV4 {
+  0%   { opacity: 0; transform: translate3d(8px, 0, 0); }
+  100% { opacity: 1; transform: translate3d(0, 0, 0); }
+}
+
+/* Existing tap feedback remains premium and fast. */
+#main-app :is(
+  #milk-list,
+  #udhar-list,
+  #salary-list,
+  #expense-list-container,
+  #diary-list,
+  #project-list,
+  #dash-balances-list
+) :is(.glass-card, .diary-card):active {
+  transform: translate3d(0,0,0) scale3d(0.975,0.975,1) !important;
+  transition: transform 120ms cubic-bezier(0.2, 0.8, 0.2, 1) !important;
+}
+
+/* Accessibility: reduce motion should fade only. */
+@media (prefers-reduced-motion: reduce) {
+  #main-app .screen.active,
+  #main-app :is(
+    #milk-list,
+    #udhar-list,
+    #salary-list,
+    #expense-list-container,
+    #diary-list,
+    #project-list,
+    #dash-balances-list
+  ) :is(.glass-card, .diary-card).list-enter {
+    animation: aarishSoftFadeV4 120ms ease-out both !important;
+    transform: none !important;
+  }
+}
+</style>
+
 </head>
 
 <body>
@@ -7681,7 +7778,7 @@ async function logout() {
             let label = isPlus ? 'To Receive' : 'To Pay';
             let displayNet = Math.round(Math.abs(net)).toLocaleString('en-IN');
 
-            html += `<div class="glass-card mb-3 flex items-center justify-between w-full min-w-0 list-enter" style="padding: 16px; border-left: 4px solid ${isPlus ? '#34C759' : '#FF3B30'}; animation-delay: ${i * 0.05}s; flex-shrink: 0 !important; min-width: 0 !important;">
+            html += `<div class="glass-card mb-3 flex items-center justify-between w-full min-w-0 list-enter" style="padding: 16px; border-left: 4px solid ${isPlus ? '#34C759' : '#FF3B30'}; --aarish-stagger-v4:${Math.min(i * 0.014, 0.112)}s; flex-shrink: 0 !important; min-width: 0 !important;">
                 <div class="flex items-center gap-3 w-full min-w-0 mr-2">
                     <div class="w-10 h-10 shrink-0 squircle ${bgClass} ${colorClass} font-extrabold flex items-center justify-center text-sm">${name[0].toUpperCase()}</div>
                     <div class="flex-1 min-w-0">
@@ -7778,7 +7875,7 @@ function renderDiaryList() {
     
     const html = records.map((d, index) => {
         const previewText = d.content.length > 60 ? d.content.substring(0, 60) + '...' : d.content;
-        return `<div onclick="haptic(); openDiaryDetail('${d.id}')" class="glass-card diary-card mb-4 cursor-pointer w-full ring-1 ring-white/40 dark:ring-white/5 list-enter" style="animation-delay: ${index * 0.05}s;">
+        return `<div onclick="haptic(); openDiaryDetail('${d.id}')" class="glass-card diary-card mb-4 cursor-pointer w-full ring-1 ring-white/40 dark:ring-white/5 list-enter" style="--aarish-stagger-v4:${Math.min(index * 0.014, 0.112)}s;">
             <div class="flex justify-between items-center mb-2 w-full min-w-0 gap-2">
                 <h4 class="font-bold text-xl text-[#F5A623] truncate flex-1 min-w-0 tracking-tight">${d.title}</h4>
                 <i class="fa-solid fa-chevron-right text-gray-300 shrink-0 text-[13px]"></i>
@@ -8038,7 +8135,7 @@ function filterSalaryList() {
                 .replace(/'/g, "\\'")
                 .replace(/\n/g, '');
 
-            return `<tr class="list-enter" data-salary-row-tone-v160="${rowTone}" style="animation-delay: ${index * 0.05}s;">
+            return `<tr class="list-enter" data-salary-row-tone-v160="${rowTone}" style="--aarish-stagger-v4:${Math.min(index * 0.014, 0.112)}s;">
                 <td class="salary-detail-date-tone-v164 font-bold" style="color:${salaryDetailColorV164}!important;-webkit-text-fill-color:${salaryDetailColorV164}!important;text-shadow:${salaryDetailShadowV164}!important;">${formatDisplayDate(r.date)}</td>
                 <td class="salary-detail-amount-tone-v164 font-bold" style="color:${salaryDetailColorV164}!important;-webkit-text-fill-color:${salaryDetailColorV164}!important;text-shadow:${salaryDetailShadowV164}!important;">₹${amount.toLocaleString('en-IN')}</td>
                 <td class="text-right"><button onclick="haptic(); deleteSalarySingleEntry('${safeId}')" class="action-btn shrink-0"><i class="fa-solid fa-trash text-xs"></i></button></td>
@@ -8357,7 +8454,7 @@ try {
 
             return `<div 
                 onclick="haptic(); openMilkDetail('${name}')"
-                class="glass-card aarish-premium-card-v183 bg-white/10 dark:bg-white/5 mb-3.5 flex items-center justify-between cursor-pointer border-l-[3px] ${borderClass} w-full ring-1 ring-white/40 dark:ring-white/5 list-enter" style="animation-delay: ${index * 0.05}s;">
+                class="glass-card aarish-premium-card-v183 bg-white/10 dark:bg-white/5 mb-3.5 flex items-center justify-between cursor-pointer border-l-[3px] ${borderClass} w-full ring-1 ring-white/40 dark:ring-white/5 list-enter" style="--aarish-stagger-v4:${Math.min(index * 0.014, 0.112)}s;">
 
                 <div class="flex items-center gap-4 w-full min-w-0">
                     <div class="w-12 h-12 shrink-0 squircle ${bgClass} ${colorClass} font-extrabold flex items-center justify-center text-lg">${name[0].toUpperCase()}</div>
@@ -9268,7 +9365,7 @@ function renderUdharRecords() {
                 onmousedown="startExpenseLongPress('${g.category}')" 
                 onmouseup="cancelExpenseLongPress()" 
                 onmouseleave="cancelExpenseLongPress()"
-                class="glass-card mb-3.5 flex items-center justify-between border-l-[3px] border-l-[#FF3B30] w-full min-w-0 cursor-pointer ring-1 ring-white/40 dark:ring-white/5 list-enter" style="animation-delay: ${index * 0.05}s;">
+                class="glass-card mb-3.5 flex items-center justify-between border-l-[3px] border-l-[#FF3B30] w-full min-w-0 cursor-pointer ring-1 ring-white/40 dark:ring-white/5 list-enter" style="--aarish-stagger-v4:${Math.min(index * 0.014, 0.112)}s;">
                 <div class="flex-1 min-w-0 mr-3">
 
                     <h4 class="font-bold text-[17px] truncate w-full min-w-0 text-gray-900 dark:text-white">${g.category}</h4>
@@ -9573,7 +9670,7 @@ async function saveNewProject() {
             const p = projectDB[name];
             const recCount = p.records ? p.records.length : 0;
 
-            return `<div onclick="haptic(); openProjectDetail('${name}')" class="glass-card mb-3.5 flex items-center justify-between cursor-pointer border-l-[3px] border-l-black dark:border-l-white w-full min-w-0 ring-1 ring-white/40 dark:ring-white/5 list-enter" style="animation-delay: ${index * 0.05}s;">
+            return `<div onclick="haptic(); openProjectDetail('${name}')" class="glass-card mb-3.5 flex items-center justify-between cursor-pointer border-l-[3px] border-l-black dark:border-l-white w-full min-w-0 ring-1 ring-white/40 dark:ring-white/5 list-enter" style="--aarish-stagger-v4:${Math.min(index * 0.014, 0.112)}s;">
                 <div class="flex items-center gap-4 w-full min-w-0">
                     <div class="w-12 h-12 shrink-0 squircle bg-black/5 dark:bg-white/10 text-gray-800 dark:text-white font-extrabold flex items-center justify-center text-xl shadow-inner"><i class="fa-solid fa-briefcase"></i></div>
                     <div class="flex-1 min-w-0">
@@ -9706,7 +9803,7 @@ function filterProjectList() {
             const badgeStyle = `background-color: ${colorHex[safeColor]}1A; color: ${colorHex[safeColor]};`;
             const badgeClass = `px-2 py-0.5 rounded-md text-[9px] font-extrabold uppercase tracking-wider w-fit mt-1`;
             
-            return `<tr class="list-enter" style="animation-delay: ${index * 0.05}s;">
+            return `<tr class="list-enter" style="--aarish-stagger-v4:${Math.min(index * 0.014, 0.112)}s;">
                 <td class="text-gray-500 font-medium text-[13px] shrink-0">${formatDisplayDate(r.date)}</td>
                 <td class="w-full max-w-[120px]">
                     <div class="flex flex-col min-w-0">
@@ -11533,7 +11630,7 @@ window.onload = function(){ setTimeout(function(){ window.focus(); window.print(
           ontouchstart="startLongPress('${String(name).replace(/'/g, "\\'")}')"
           onmousedown="startLongPress('${String(name).replace(/'/g, "\\'")}')"
           class="glass-card mb-3.5 flex items-center justify-between cursor-pointer border-l-[3px] ${borderClass} w-full ring-1 ring-white/40 dark:ring-white/5 list-enter"
-          style="animation-delay:${index * 0.05}s;">
+          style="--aarish-stagger-v4:${Math.min(index * 0.014, 0.112)}s;">
           <div class="flex items-center gap-4 w-full min-w-0">
             <div class="w-12 h-12 shrink-0 squircle ${bgClass} ${colorClass} font-extrabold flex items-center justify-center text-lg">${first}</div>
             <div class="flex-1 min-w-0">
@@ -11662,7 +11759,7 @@ window.onload = function(){ setTimeout(function(){ window.focus(); window.print(
       const rowSign = rowTone === "negative" ? "-" : "+";
       const shadow = rowTone === "positive" ? "rgba(52,199,89,0.22)" : (rowTone === "negative" ? "rgba(255,59,48,0.22)" : "rgba(0,122,255,0.22)");
 
-      return `<tr class="list-enter" data-v99-tone="${rowTone}" data-v100-tone="${rowTone}" data-v107-tone="${rowTone}" style="animation-delay:${index * 0.05}s;">
+      return `<tr class="list-enter" data-v99-tone="${rowTone}" data-v100-tone="${rowTone}" data-v107-tone="${rowTone}" style="--aarish-stagger-v4:${Math.min(index * 0.014, 0.112)}s;">
         <td style="color:${rowColor}!important;text-shadow:0 0 9px ${shadow}!important;">${fmtDateSafe(r.date)}</td>
         <td style="color:${rowColor}!important;text-shadow:0 0 9px ${shadow}!important;">${n(r.morning) || "-"}</td>
         <td style="color:${rowColor}!important;text-shadow:0 0 9px ${shadow}!important;">${n(r.evening) || "-"}</td>
@@ -12202,7 +12299,7 @@ try { Function("fn", "renderMilkRecords = fn;")(window.aarishRenderMilkRecordsCo
       const first = row.name && row.name[0] ? row.name[0].toUpperCase() : "?";
 
       return `<div class="glass-card list-enter flex items-center justify-between border-l-[4px] ${border} w-full cursor-pointer"
-        style="animation-delay:${i * 0.04}s;">
+        style="--aarish-stagger-v4:${Math.min(i * 0.014, 0.112)}s;">
         <div class="flex items-center gap-4 min-w-0 flex-1">
           <div class="w-12 h-12 shrink-0 squircle ${bg} ${color} font-extrabold flex items-center justify-center text-lg">${first}</div>
           <div class="flex-1 min-w-0">
@@ -18731,7 +18828,7 @@ scheduleV69();
         var t = milkTotals(g);
         var tone = toneFrom(t.netAmt); // DYNAMIC TONE: Changes color based on math
         var cls = toneClass(tone);
-        return `<div data-v99-tone="${tone}" onclick="haptic(); window.aarishV98OpenMilkGroup ? window.aarishV98OpenMilkGroup(${js(g.norm)}) : openMilkDetail(${js(g.keys[0])})" class="glass-card mb-3.5 flex items-center justify-between cursor-pointer border-l-[3px] ${borderClass(tone)} w-full ring-1 ring-white/40 dark:ring-white/5 list-enter" style="animation-delay:${index * 0.05}s;">
+        return `<div data-v99-tone="${tone}" onclick="haptic(); window.aarishV98OpenMilkGroup ? window.aarishV98OpenMilkGroup(${js(g.norm)}) : openMilkDetail(${js(g.keys[0])})" class="glass-card mb-3.5 flex items-center justify-between cursor-pointer border-l-[3px] ${borderClass(tone)} w-full ring-1 ring-white/40 dark:ring-white/5 list-enter" style="--aarish-stagger-v4:${Math.min(index * 0.014, 0.112)}s;">
             <div class="flex items-center gap-4 w-full min-w-0">
                 <div class="w-12 h-12 shrink-0 squircle ${bgClass(tone)} ${cls} font-extrabold flex items-center justify-center text-lg">${firstChar(g.name)}</div>
                 <div class="flex-1 min-w-0">
@@ -18806,7 +18903,7 @@ scheduleV69();
           onclick="haptic(); openSalaryDetail(${js(name)})"
           ${longPressAttrs("Salary", name)}
           class="glass-card aarish-premium-card-v183 bg-white/10 dark:bg-white/5 mb-3.5 flex items-center justify-between cursor-pointer border-l-[4px] ${borderClass(tone)} w-full ring-1 ring-white/40 dark:ring-white/5 list-enter"
-          style="${cardStyle}animation-delay:${index * 0.05}s;">
+          style="${cardStyle}--aarish-stagger-v4:${Math.min(index * 0.014, 0.112)}s;">
           <div class="flex items-center gap-4 w-full min-w-0" style="${noColorTransition}">
             <div class="w-12 h-12 shrink-0 squircle ${bgClass(tone)} ${cls} font-extrabold flex items-center justify-center text-lg" style="${iconBoxStyle}">
               <i class="fa-solid fa-indian-rupee-sign" style="${textStyle}"></i>
@@ -18910,7 +19007,7 @@ scheduleV69();
           onclick="haptic(); openExpenseDetail(${js(g.category)})"
           ${longPressAttrs("Expense", g.category)}
           class="glass-card aarish-premium-card-v183 bg-white/10 dark:bg-white/5 mb-3.5 flex items-center justify-between border-l-[3px] ${borderClass("expense")} w-full min-w-0 cursor-pointer ring-1 ring-white/40 dark:ring-white/5 list-enter"
-          style="${CARD_TONE_VARS}${CARD_STYLE}animation-delay:${index * 0.05}s;">
+          style="${CARD_TONE_VARS}${CARD_STYLE}--aarish-stagger-v4:${Math.min(index * 0.014, 0.112)}s;">
           <div class="flex-1 min-w-0 mr-3" style="${NO_COLOR_TRANSITION}">
             <h4 class="font-bold text-[17px] truncate w-full min-w-0 v99-sem-red text-[#FF3B30]" style="${TEXT_STYLE}">${esc(g.category)}</h4>
             <p class="text-[13px] v99-sem-red text-[#FF3B30] font-medium truncate w-full min-w-0 mt-0.5 tracking-tight opacity-80" style="${SUB_TEXT_STYLE}">Last entry: ${fmtDate(g.lastDate)}</p>
@@ -18940,7 +19037,7 @@ scheduleV69();
     var q = String((byId("project-search") || {}).value || "").toLowerCase();
     var html = Object.keys((typeof projectDB !== "undefined" && projectDB) || {}).filter(function(name){ return name.toLowerCase().indexOf(q) !== -1; }).map(function(name, index) {
       var p = projectDB[name] || {}, recCount = list(p.records).length, cls = toneClass("neutral");
-      return `<div data-v99-tone="neutral" onclick="haptic(); openProjectDetail(${js(name)})" class="glass-card mb-3.5 flex items-center justify-between cursor-pointer border-l-[3px] border-l-[#007AFF] w-full min-w-0 ring-1 ring-white/40 dark:ring-white/5 list-enter" style="animation-delay:${index * 0.05}s;">
+      return `<div data-v99-tone="neutral" onclick="haptic(); openProjectDetail(${js(name)})" class="glass-card mb-3.5 flex items-center justify-between cursor-pointer border-l-[3px] border-l-[#007AFF] w-full min-w-0 ring-1 ring-white/40 dark:ring-white/5 list-enter" style="--aarish-stagger-v4:${Math.min(index * 0.014, 0.112)}s;">
         <div class="flex items-center gap-4 w-full min-w-0">
           <div class="w-12 h-12 shrink-0 squircle v99-bg-blue ${cls} font-extrabold flex items-center justify-center text-xl shadow-inner"><i class="fa-solid fa-briefcase"></i></div>
           <div class="flex-1 min-w-0">
@@ -18968,7 +19065,7 @@ scheduleV69();
     var html = records.map(function(d, index) {
       var content = String(d.content || "");
       var preview = content.length > 60 ? content.slice(0, 60) + "..." : content;
-      return `<div data-v99-tone="diary" onclick="haptic(); openDiaryDetail(${js(d.id)})" class="glass-card diary-card mb-4 cursor-pointer w-full border-l-[3px] border-l-[#F5A623] ring-1 ring-white/40 dark:ring-white/5 list-enter" style="animation-delay:${index * 0.05}s;">
+      return `<div data-v99-tone="diary" onclick="haptic(); openDiaryDetail(${js(d.id)})" class="glass-card diary-card mb-4 cursor-pointer w-full border-l-[3px] border-l-[#F5A623] ring-1 ring-white/40 dark:ring-white/5 list-enter" style="--aarish-stagger-v4:${Math.min(index * 0.014, 0.112)}s;">
         <div class="flex justify-between items-center mb-2 w-full min-w-0 gap-2">
           <h4 class="font-bold text-xl v99-sem-amber truncate flex-1 min-w-0 tracking-tight">${esc(d.title || "Untitled")}</h4>
           <i class="fa-solid fa-chevron-right v99-sem-amber shrink-0 text-[13px]"></i>
@@ -19000,7 +19097,7 @@ scheduleV69();
     var records = monthRecords(s.records).sort(function(a,b){ return String(b.date || "").localeCompare(String(a.date || "")); });
     var html = records.map(function(r, index) {
       total += num(r.amount);
-      return `<tr class="list-enter salary-row-v169" data-v99-tone="${tone}" data-salary-row-tone-v169="${tone}" style="animation-delay:${index * 0.05}s;">
+      return `<tr class="list-enter salary-row-v169" data-v99-tone="${tone}" data-salary-row-tone-v169="${tone}" style="--aarish-stagger-v4:${Math.min(index * 0.014, 0.112)}s;">
         <td class="font-bold salary-date-v169" data-salary-row-tone-v169="${tone}" style="color:${salaryRowColorV169}!important;-webkit-text-fill-color:${salaryRowColorV169}!important;text-shadow:${salaryRowShadowV169}!important;">${fmtDate(r.date)}</td>
         <td class="font-bold ${cls} salary-amount-v169" data-salary-row-tone-v169="${tone}" style="color:${salaryRowColorV169}!important;-webkit-text-fill-color:${salaryRowColorV169}!important;text-shadow:${salaryRowShadowV169}!important;">₹${money(r.amount)}</td>
         <td class="text-right"><button onclick="haptic(); deleteSalarySingleEntry(${js(r.id)})" class="action-btn shrink-0"><i class="fa-solid fa-trash"></i></button></td>
