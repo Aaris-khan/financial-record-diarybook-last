@@ -5823,6 +5823,68 @@ html.dark body #diary-screen #diary-search::-webkit-input-placeholder,
 /* AARISH_GOD_TIER_MOTION_V300_END */
 </style>
 
+<style id="aarish-continuous-scroll-motion-v301">
+/* AARISH_CONTINUOUS_SCROLL_MOTION_V301_START
+   Repeatable scroll-enter motion.
+   No Firebase/data/render logic touched.
+   GPU only: transform + opacity.
+*/
+:root {
+  --aarish-scroll-spring-v301: cubic-bezier(0.16, 1, 0.3, 1);
+  --aarish-scroll-snap-v301: cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+/* V301 takes control only for JS-managed list items. */
+html body .list-enter.aarish-scroll-managed-v301 {
+  animation: none !important;
+  transition-property: transform, opacity !important;
+  transition-duration: var(--aarish-scroll-duration-v301, 430ms), var(--aarish-scroll-opacity-v301, 260ms) !important;
+  transition-timing-function: var(--aarish-scroll-spring-v301), ease-out !important;
+  transition-delay: var(--aarish-scroll-delay-v301, 0ms), var(--aarish-scroll-delay-v301, 0ms) !important;
+  transform: translate3d(var(--aarish-scroll-x-v301, 22px), var(--aarish-scroll-y-v301, 18px), 0) scale3d(0.988, 0.988, 1) !important;
+  opacity: 0 !important;
+  backface-visibility: hidden !important;
+  -webkit-backface-visibility: hidden !important;
+  transform-origin: center center !important;
+}
+
+html body .list-enter.aarish-scroll-managed-v301.aarish-scroll-in-v301 {
+  transform: translate3d(0, 0, 0) scale3d(1, 1, 1) !important;
+  opacity: 1 !important;
+}
+
+/* Dynamic RAM safe promotion only while animating. */
+html body .list-enter.aarish-scroll-managed-v301.aarish-scroll-animating-v301 {
+  will-change: transform, opacity !important;
+}
+
+/* Detail table rows: lighter movement so table does not feel jumpy. */
+html body tr.list-enter.aarish-scroll-managed-v301 {
+  --aarish-scroll-x-v301: 12px;
+  --aarish-scroll-y-v301: 0px;
+  --aarish-scroll-duration-v301: 310ms;
+  --aarish-scroll-opacity-v301: 180ms;
+}
+
+/* Empty states should not stay invisible if observer is delayed. */
+html body .list-enter.aarish-scroll-empty-v301 {
+  opacity: 1 !important;
+  transform: none !important;
+}
+
+/* Keep reduced-motion users safe. */
+@media (prefers-reduced-motion: reduce) {
+  html body .list-enter.aarish-scroll-managed-v301 {
+    transition-duration: 80ms, 80ms !important;
+    transition-delay: 0ms, 0ms !important;
+    transform: none !important;
+  }
+}
+/* AARISH_CONTINUOUS_SCROLL_MOTION_V301_END */
+</style>
+
+
+
 </head>
 
 <body>
@@ -20494,6 +20556,297 @@ window.addEventListener("pageshow", function () { setTimeout(install, 120); }, {
 })();
 /* AARISH_GOD_TIER_MOTION_V300_JS_END */
 </script>
+
+<script id="aarish-continuous-scroll-motion-v301-js">
+/* AARISH_CONTINUOUS_SCROLL_MOTION_V301_JS_START
+   Repeatable viewport animation. No unobserve. No data mutation.
+*/
+(function () {
+  "use strict";
+  if (window.__AARISH_CONTINUOUS_SCROLL_MOTION_V301__) return;
+  window.__AARISH_CONTINUOUS_SCROLL_MOTION_V301__ = true;
+
+  var ITEM_SELECTOR = [
+    "#milk-list .list-enter",
+    "#udhar-list .list-enter",
+    "#expense-list-container .list-enter",
+    "#salary-list .list-enter",
+    "#diary-list .list-enter",
+    "#project-list .list-enter",
+    "#dash-balances-list .list-enter",
+    "#milk-detail-records .list-enter",
+    "#udhar-detail-records .list-enter",
+    "#expense-detail-records .list-enter",
+    "#salary-detail-records .list-enter",
+    "#project-detail-records .list-enter"
+  ].join(",");
+
+  var observed = new WeakSet();
+  var animTimers = new WeakMap();
+  var enterQueue = [];
+  var queueRaf = 0;
+  var scanRaf = 0;
+  var lastScrollTop = 0;
+  var lastScrollTime = Date.now();
+  var scrollVelocity = 0;
+  var scrollDirection = 1;
+  var io = null;
+
+  function now() {
+    return Date.now ? Date.now() : new Date().getTime();
+  }
+
+  function activeScroller() {
+    try {
+      var active = document.querySelector(".screen.active");
+      if (active) return active;
+    } catch(e) {}
+    return document.scrollingElement || document.documentElement || document.body;
+  }
+
+  function updateScrollMetrics() {
+    var sc = activeScroller();
+    var y = 0;
+    try {
+      y = sc === document.documentElement || sc === document.body ? (window.scrollY || sc.scrollTop || 0) : (sc.scrollTop || 0);
+    } catch(e) {}
+    var t = now();
+    var dt = Math.max(16, t - lastScrollTime);
+    var dy = y - lastScrollTop;
+    scrollDirection = dy >= 0 ? 1 : -1;
+    scrollVelocity = Math.abs(dy) / dt * 1000;
+    lastScrollTop = y;
+    lastScrollTime = t;
+  }
+
+  function isRealListItem(el) {
+    if (!el || !el.classList) return false;
+    if (!el.closest) return false;
+    if (!el.closest(".screen")) return false;
+    if (el.closest("#login-screen")) return false;
+
+    var text = "";
+    try { text = String(el.textContent || "").trim().toLowerCase(); } catch(e) {}
+
+    if (!text || text.indexOf("no ") === 0 || text.indexOf("no entries") !== -1 || text.indexOf("no customers") !== -1 || text.indexOf("no expenses") !== -1) {
+      el.classList.add("aarish-scroll-empty-v301");
+      return false;
+    }
+
+    return true;
+  }
+
+  function clearAnimTimer(el) {
+    var old = animTimers.get(el);
+    if (old) {
+      clearTimeout(old);
+      animTimers.delete(el);
+    }
+  }
+
+  function setOutPose(el, top) {
+    if (!el || !el.classList) return;
+    clearAnimTimer(el);
+
+    var y = top < 0 ? "-20px" : "22px";
+    var x = scrollDirection < 0 ? "-14px" : "22px";
+
+    el.style.setProperty("--aarish-scroll-x-v301", x);
+    el.style.setProperty("--aarish-scroll-y-v301", y);
+    el.style.setProperty("--aarish-scroll-delay-v301", "0ms");
+
+    el.classList.add("aarish-scroll-managed-v301");
+    el.classList.remove("aarish-scroll-in-v301");
+    el.classList.remove("aarish-scroll-animating-v301");
+    el.removeAttribute("data-aarish-scroll-state-v301");
+  }
+
+  function finishAnimating(el, ms) {
+    clearAnimTimer(el);
+    animTimers.set(el, setTimeout(function () {
+      try {
+        el.classList.remove("aarish-scroll-animating-v301");
+        el.style.removeProperty("will-change");
+        animTimers.delete(el);
+      } catch(e) {}
+    }, ms || 560));
+  }
+
+  function enterNow(el, delay, fastMode) {
+    if (!el || !el.classList) return;
+
+    el.classList.add("aarish-scroll-managed-v301");
+    el.classList.add("aarish-scroll-animating-v301");
+    el.style.setProperty("--aarish-scroll-delay-v301", String(delay || 0) + "ms");
+
+    if (fastMode) {
+      el.style.setProperty("--aarish-scroll-duration-v301", "285ms");
+      el.style.setProperty("--aarish-scroll-opacity-v301", "150ms");
+    } else {
+      el.style.setProperty("--aarish-scroll-duration-v301", "430ms");
+      el.style.setProperty("--aarish-scroll-opacity-v301", "260ms");
+    }
+
+    requestAnimationFrame(function () {
+      el.classList.add("aarish-scroll-in-v301");
+      el.setAttribute("data-aarish-scroll-state-v301", "in");
+      finishAnimating(el, (delay || 0) + (fastMode ? 360 : 540));
+    });
+  }
+
+  function queueEnter(el, top) {
+    if (!el || !el.classList) return;
+    if (el.getAttribute("data-aarish-scroll-state-v301") === "in") return;
+
+    var y = top < 0 ? "-20px" : "22px";
+    var x = scrollDirection < 0 ? "-14px" : "22px";
+
+    el.style.setProperty("--aarish-scroll-x-v301", x);
+    el.style.setProperty("--aarish-scroll-y-v301", y);
+    el.classList.add("aarish-scroll-managed-v301");
+
+    enterQueue.push({ el: el, top: top });
+
+    if (queueRaf) return;
+    queueRaf = requestAnimationFrame(flushEnterQueue);
+  }
+
+  function flushEnterQueue() {
+    queueRaf = 0;
+
+    var batch = enterQueue.splice(0, enterQueue.length);
+    if (!batch.length) return;
+
+    batch.sort(function (a, b) {
+      return scrollDirection >= 0 ? a.top - b.top : b.top - a.top;
+    });
+
+    var fastMode = scrollVelocity > 1700 || batch.length > 10;
+    var step = fastMode ? 6 : 22;
+    var cap = fastMode ? 42 : 154;
+
+    for (var i = 0; i < batch.length; i++) {
+      var delay = Math.min(i * step, cap);
+      enterNow(batch[i].el, delay, fastMode);
+    }
+  }
+
+  function onIntersect(entries) {
+    updateScrollMetrics();
+
+    for (var i = 0; i < entries.length; i++) {
+      var entry = entries[i];
+      var el = entry.target;
+      var top = entry.boundingClientRect ? entry.boundingClientRect.top : 0;
+
+      if (!isRealListItem(el)) continue;
+
+      if (entry.isIntersecting && entry.intersectionRatio > 0.035) {
+        queueEnter(el, top);
+      } else {
+        setOutPose(el, top);
+      }
+    }
+  }
+
+  function ensureObserver() {
+    if (io || !("IntersectionObserver" in window)) return;
+    io = new IntersectionObserver(onIntersect, {
+      root: null,
+      rootMargin: "18% 0px 18% 0px",
+      threshold: [0, 0.035, 0.12, 0.32]
+    });
+  }
+
+  function scan(root) {
+    if (!document.body) return;
+    ensureObserver();
+
+    var scope = root && root.querySelectorAll ? root : document;
+    var items = [];
+
+    try {
+      if (scope.matches && scope.matches(ITEM_SELECTOR)) items.push(scope);
+    } catch(e) {}
+
+    try {
+      scope.querySelectorAll(ITEM_SELECTOR).forEach(function (el) { items.push(el); });
+    } catch(e) {}
+
+    for (var i = 0; i < items.length; i++) {
+      var el = items[i];
+      if (!isRealListItem(el)) continue;
+
+      try { delete el.dataset.aarishMotionV300; } catch(e) {}
+      el.classList.add("aarish-scroll-managed-v301");
+
+      if (!observed.has(el)) {
+        observed.add(el);
+        if (io) io.observe(el);
+      }
+    }
+  }
+
+  function scheduleScan(root) {
+    if (scanRaf) return;
+    scanRaf = requestAnimationFrame(function () {
+      scanRaf = 0;
+      scan(root || document);
+    });
+  }
+
+  document.addEventListener("scroll", function () {
+    updateScrollMetrics();
+  }, { capture: true, passive: true });
+
+  document.addEventListener("visibilitychange", function () {
+    if (!document.hidden) scheduleScan(document);
+  }, { passive: true });
+
+  window.addEventListener("pageshow", function () {
+    updateScrollMetrics();
+    scheduleScan(document);
+  }, { passive: true });
+
+  var mo = new MutationObserver(function (records) {
+    var root = document;
+    for (var i = 0; i < records.length; i++) {
+      if (records[i].addedNodes && records[i].addedNodes.length) {
+        root = records[i].target || document;
+        break;
+      }
+    }
+    scheduleScan(root);
+  });
+
+  function boot() {
+    if (!document.body) return;
+    updateScrollMetrics();
+    ensureObserver();
+    scan(document);
+
+    try {
+      mo.observe(document.body, { childList: true, subtree: true });
+    } catch(e) {}
+
+    setTimeout(function () { scheduleScan(document); }, 80);
+    setTimeout(function () { scheduleScan(document); }, 350);
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", boot, { once: true, passive: true });
+  } else {
+    boot();
+  }
+
+  window.__aarishRefreshContinuousScrollMotionV301 = function () {
+    scheduleScan(document);
+  };
+})();
+/* AARISH_CONTINUOUS_SCROLL_MOTION_V301_JS_END */
+</script>
+
+
 
 </body>
 </html>
