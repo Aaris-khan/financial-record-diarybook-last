@@ -52,7 +52,6 @@
   --tw-contain-style:  ;
 }
 
-
 /*
 ! tailwindcss v3.4.19 | MIT License | https://tailwindcss.com
 */
@@ -1842,5 +1841,3 @@ video {
   border-color: rgba(105,240,160,0.24) !important;
   box-shadow: 0 8px 22px rgba(105,240,160,0.12), inset 0 1px 0 rgba(255,255,255,0.07) !important;
 }
-
-FILE END: style.css
