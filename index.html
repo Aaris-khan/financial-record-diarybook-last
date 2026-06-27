@@ -755,156 +755,6 @@
   color: var(--aarish-party-red-v61) !important;
 }
 </style>
-
-<style id="aarish-milk-detail-blue-total-v64">
-/* AARISH_MILK_DETAIL_BLUE_TOTAL_CARD_V64
-   Milk detail screen only:
-   - white text -> existing app blue (#007AFF)
-   - TOTAL card background positive green / negative red / zero blue
-   - TOTAL, TOTAL MILK, amount, KG all same semantic color inside card
-   - table headings + daily white texts blue
-   - red/green amount/delete logic untouched
-   - uses existing app/Tailwind colors only, no external library
-*/
-#milk-detail-screen,
-.dark #milk-detail-screen {
-  --aarish-md-blue-v64: var(--ios-blue, #007AFF);
-  --aarish-md-blue-soft-v64: #0A84FF;
-  --aarish-md-blue-glow-v64: rgba(0, 122, 255, 0.34);
-  --aarish-md-green-v64: #34C759;
-  --aarish-md-green-dark-v64: rgba(0, 64, 24, 0.90);
-  --aarish-md-green-dark2-v64: rgba(0, 36, 16, 0.94);
-  --aarish-md-red-v64: #FF3B30;
-  --aarish-md-red-dark-v64: rgba(92, 8, 8, 0.90);
-  --aarish-md-red-dark2-v64: rgba(48, 0, 0, 0.94);
-}
-
-/* Header title/back icon/month/year/Daily Entries -> blue */
-#milk-detail-screen .header-sticky h1,
-#milk-detail-screen .header-sticky button:not(.action-btn) i,
-#milk-detail-screen #milk-detail-title,
-#milk-detail-screen #filter-month-milk,
-#milk-detail-screen #filter-year-milk,
-#milk-detail-screen h3:not(#milk-detail-bill):not(#milk-detail-kg),
-.dark #milk-detail-screen .header-sticky h1,
-.dark #milk-detail-screen .header-sticky button:not(.action-btn) i,
-.dark #milk-detail-screen #milk-detail-title,
-.dark #milk-detail-screen #filter-month-milk,
-.dark #milk-detail-screen #filter-year-milk,
-.dark #milk-detail-screen h3:not(#milk-detail-bill):not(#milk-detail-kg) {
-  color: var(--aarish-md-blue-v64, #007AFF) !important;
-  text-shadow: 0 0 10px rgba(0,122,255,0.24) !important;
-  transition-property: transform, opacity !important;
-}
-
-/* Month/year boxes */
-#milk-detail-screen #filter-month-milk,
-#milk-detail-screen #filter-year-milk,
-.dark #milk-detail-screen #filter-month-milk,
-.dark #milk-detail-screen #filter-year-milk,
-.dark #milk-detail-screen .input-box {
-  color: var(--aarish-md-blue-v64, #007AFF) !important;
-  border-color: rgba(0,122,255,0.22) !important;
-  background-color: rgba(0,122,255,0.04) !important;
-  transition-property: transform, opacity !important;
-}
-
-/* Daily table headings + normal white values -> blue */
-.dark #milk-detail-screen .table-custom th,
-.dark #milk-detail-screen .table-custom td,
-.dark #milk-detail-screen #milk-detail-records td,
-.dark #milk-detail-screen #milk-detail-records td:not([class*="text-green"]):not([class*="text-red"]):not([class*="text-[#34C759]"]):not([class*="text-[#FF3B30]"]) {
-  color: var(--aarish-md-blue-v64) !important;
-  text-shadow: 0 0 9px var(--aarish-md-blue-glow-v64) !important;
-}
-
-/* GIVEN badge text remains green */
-.dark #milk-detail-screen #milk-detail-records .text-green-400,
-.dark #milk-detail-screen #milk-detail-records .text-green-500,
-.dark #milk-detail-screen #milk-detail-records .text-green-600,
-.dark #milk-detail-screen #milk-detail-records [class*="text-[#34C759]"],
-.dark #milk-detail-screen #milk-detail-records [class*="text-[#10B981]"] {
-  color: var(--aarish-md-green-v64) !important;
-  text-shadow: 0 0 10px rgba(52,199,89,0.34) !important;
-}
-
-.dark #milk-detail-screen #milk-detail-records .text-red-400,
-.dark #milk-detail-screen #milk-detail-records .text-red-500,
-.dark #milk-detail-screen #milk-detail-records .text-red-600,
-.dark #milk-detail-screen #milk-detail-records [class*="text-[#FF3B30]"],
-.dark #milk-detail-screen #milk-detail-records [class*="text-[#FF4B4B]"] {
-  color: var(--aarish-md-red-v64) !important;
-  text-shadow: 0 0 10px rgba(255,59,48,0.34) !important;
-}
-
-/* Delete remains red */
-.dark #milk-detail-screen .action-btn,
-.dark #milk-detail-screen .action-btn *,
-.dark #milk-detail-screen i.fa-trash {
-  color: var(--aarish-md-red-v64) !important;
-}
-
-/* Share remains blue, Add remains green */
-.dark #milk-detail-screen .btn-ios-share:not(.btn-ios-add),
-.dark #milk-detail-screen .btn-ios-share:not(.btn-ios-add) * {
-  color: var(--aarish-md-blue-v64) !important;
-  border-color: rgba(0,122,255,0.30) !important;
-  background-color: rgba(0,122,255,0.15) !important;
-}
-
-.dark #milk-detail-screen .btn-ios-add,
-.dark #milk-detail-screen .btn-ios-add * {
-  color: var(--aarish-md-green-v64) !important;
-  border-color: rgba(52,199,89,0.30) !important;
-  background-color: rgba(52,199,89,0.14) !important;
-}
-
-/* AARISH_V136_MILK_DETAIL_DARK_LIGHT_PARITY_START
-   Dark Milk detail now mirrors Light mode:
-   positive green / negative red / zero blue.
-   Total-card text stays white like light mode.
-*/
-.dark #milk-detail-screen .glass-card:has(#milk-detail-bill):not([data-milk-net-v64]),
-.dark #milk-detail-screen .milk-detail-total-card-v64:not([data-milk-net-v64]) {
-  background: linear-gradient(135deg, #007AFF, #0A84FF) !important;
-  border-color: rgba(0,122,255,0.45) !important;
-  box-shadow: 0 8px 24px rgba(0,122,255,0.30) !important;
-}
-
-.dark #milk-detail-screen .milk-detail-total-card-v64[data-milk-net-v64="positive"] {
-  background: linear-gradient(135deg, #34C759, #28A745) !important;
-  border-color: #34C759 !important;
-  box-shadow: 0 8px 24px rgba(52,199,89,0.30) !important;
-}
-
-.dark #milk-detail-screen .milk-detail-total-card-v64[data-milk-net-v64="negative"] {
-  background: linear-gradient(135deg, #FF3B30, #C92A2A) !important;
-  border-color: #FF3B30 !important;
-  box-shadow: 0 8px 24px rgba(255,59,48,0.30) !important;
-}
-
-.dark #milk-detail-screen .milk-detail-total-card-v64[data-milk-net-v64="zero"],
-.dark #milk-detail-screen .milk-detail-total-card-v64[data-milk-net-v64="neutral"] {
-  background: linear-gradient(135deg, #007AFF, #0A84FF) !important;
-  border-color: #007AFF !important;
-  box-shadow: 0 8px 24px rgba(0,122,255,0.30) !important;
-}
-
-.dark #milk-detail-screen .milk-detail-total-card-v64[data-milk-net-v64] p,
-.dark #milk-detail-screen .milk-detail-total-card-v64[data-milk-net-v64] h3,
-.dark #milk-detail-screen .milk-detail-total-card-v64[data-milk-net-v64] #milk-detail-bill,
-.dark #milk-detail-screen .milk-detail-total-card-v64[data-milk-net-v64] #milk-detail-kg,
-.dark #milk-detail-screen .glass-card:has(#milk-detail-bill):not([data-milk-net-v64]) p,
-.dark #milk-detail-screen .glass-card:has(#milk-detail-bill):not([data-milk-net-v64]) #milk-detail-bill,
-.dark #milk-detail-screen .glass-card:has(#milk-detail-bill):not([data-milk-net-v64]) #milk-detail-kg {
-  color: #FFFFFF !important;
-  text-shadow: 0 2px 10px rgba(0,0,0,0.18) !important;
-  opacity: 1 !important;
-}
-/* AARISH_V136_MILK_DETAIL_DARK_LIGHT_PARITY_END */
-
-</style>
-
 <style id="aarish-scoped-dark-uiux-v64">
 /* AARISH_SCOPED_DARK_UIUX_V64
    Dark-mode scoped UI/UX extension for:
@@ -3572,7 +3422,176 @@
   filter: none !important;
 }
 </style>
-<style id="aarish-v107-milk-detail-ui-sync">
+<style id="aarish-milk-records-master-ui-v201">
+/* AARISH_MILK_RECORDS_MASTER_UI_V201
+   CSS-only Milk Records consolidation.
+   Merged:
+   - aarish-milk-detail-blue-total-v64
+   - aarish-v107-milk-detail-ui-sync
+
+   Safety:
+   - V134 renderer untouched
+   - V99/V100/V100-final/V125 JS hooks untouched
+   - saveMilkEntry/deleteMilkEntry untouched
+   - Firebase/auth/database/sync/cache/outbox untouched
+   - style.css untouched
+
+   Cascade strategy:
+   - Master block is placed at old V107 position.
+   - V64 total-card CSS is first.
+   - V107 title/row CSS is second, so title/row tone remains final authority.
+*/
+
+/* ---- MERGED_FROM_aarish-milk-detail-blue-total-v64 ---- */
+
+/* AARISH_MILK_DETAIL_BLUE_TOTAL_CARD_V64
+   Milk detail screen only:
+   - white text -> existing app blue (#007AFF)
+   - TOTAL card background positive green / negative red / zero blue
+   - TOTAL, TOTAL MILK, amount, KG all same semantic color inside card
+   - table headings + daily white texts blue
+   - red/green amount/delete logic untouched
+   - uses existing app/Tailwind colors only, no external library
+*/
+#milk-detail-screen,
+.dark #milk-detail-screen {
+  --aarish-md-blue-v64: var(--ios-blue, #007AFF);
+  --aarish-md-blue-soft-v64: #0A84FF;
+  --aarish-md-blue-glow-v64: rgba(0, 122, 255, 0.34);
+  --aarish-md-green-v64: #34C759;
+  --aarish-md-green-dark-v64: rgba(0, 64, 24, 0.90);
+  --aarish-md-green-dark2-v64: rgba(0, 36, 16, 0.94);
+  --aarish-md-red-v64: #FF3B30;
+  --aarish-md-red-dark-v64: rgba(92, 8, 8, 0.90);
+  --aarish-md-red-dark2-v64: rgba(48, 0, 0, 0.94);
+}
+
+/* Header title/back icon/month/year/Daily Entries -> blue */
+#milk-detail-screen .header-sticky h1,
+#milk-detail-screen .header-sticky button:not(.action-btn) i,
+#milk-detail-screen #milk-detail-title,
+#milk-detail-screen #filter-month-milk,
+#milk-detail-screen #filter-year-milk,
+#milk-detail-screen h3:not(#milk-detail-bill):not(#milk-detail-kg),
+.dark #milk-detail-screen .header-sticky h1,
+.dark #milk-detail-screen .header-sticky button:not(.action-btn) i,
+.dark #milk-detail-screen #milk-detail-title,
+.dark #milk-detail-screen #filter-month-milk,
+.dark #milk-detail-screen #filter-year-milk,
+.dark #milk-detail-screen h3:not(#milk-detail-bill):not(#milk-detail-kg) {
+  color: var(--aarish-md-blue-v64, #007AFF) !important;
+  text-shadow: 0 0 10px rgba(0,122,255,0.24) !important;
+  transition-property: transform, opacity !important;
+}
+
+/* Month/year boxes */
+#milk-detail-screen #filter-month-milk,
+#milk-detail-screen #filter-year-milk,
+.dark #milk-detail-screen #filter-month-milk,
+.dark #milk-detail-screen #filter-year-milk,
+.dark #milk-detail-screen .input-box {
+  color: var(--aarish-md-blue-v64, #007AFF) !important;
+  border-color: rgba(0,122,255,0.22) !important;
+  background-color: rgba(0,122,255,0.04) !important;
+  transition-property: transform, opacity !important;
+}
+
+/* Daily table headings + normal white values -> blue */
+.dark #milk-detail-screen .table-custom th,
+.dark #milk-detail-screen .table-custom td,
+.dark #milk-detail-screen #milk-detail-records td,
+.dark #milk-detail-screen #milk-detail-records td:not([class*="text-green"]):not([class*="text-red"]):not([class*="text-[#34C759]"]):not([class*="text-[#FF3B30]"]) {
+  color: var(--aarish-md-blue-v64) !important;
+  text-shadow: 0 0 9px var(--aarish-md-blue-glow-v64) !important;
+}
+
+/* GIVEN badge text remains green */
+.dark #milk-detail-screen #milk-detail-records .text-green-400,
+.dark #milk-detail-screen #milk-detail-records .text-green-500,
+.dark #milk-detail-screen #milk-detail-records .text-green-600,
+.dark #milk-detail-screen #milk-detail-records [class*="text-[#34C759]"],
+.dark #milk-detail-screen #milk-detail-records [class*="text-[#10B981]"] {
+  color: var(--aarish-md-green-v64) !important;
+  text-shadow: 0 0 10px rgba(52,199,89,0.34) !important;
+}
+
+.dark #milk-detail-screen #milk-detail-records .text-red-400,
+.dark #milk-detail-screen #milk-detail-records .text-red-500,
+.dark #milk-detail-screen #milk-detail-records .text-red-600,
+.dark #milk-detail-screen #milk-detail-records [class*="text-[#FF3B30]"],
+.dark #milk-detail-screen #milk-detail-records [class*="text-[#FF4B4B]"] {
+  color: var(--aarish-md-red-v64) !important;
+  text-shadow: 0 0 10px rgba(255,59,48,0.34) !important;
+}
+
+/* Delete remains red */
+.dark #milk-detail-screen .action-btn,
+.dark #milk-detail-screen .action-btn *,
+.dark #milk-detail-screen i.fa-trash {
+  color: var(--aarish-md-red-v64) !important;
+}
+
+/* Share remains blue, Add remains green */
+.dark #milk-detail-screen .btn-ios-share:not(.btn-ios-add),
+.dark #milk-detail-screen .btn-ios-share:not(.btn-ios-add) * {
+  color: var(--aarish-md-blue-v64) !important;
+  border-color: rgba(0,122,255,0.30) !important;
+  background-color: rgba(0,122,255,0.15) !important;
+}
+
+.dark #milk-detail-screen .btn-ios-add,
+.dark #milk-detail-screen .btn-ios-add * {
+  color: var(--aarish-md-green-v64) !important;
+  border-color: rgba(52,199,89,0.30) !important;
+  background-color: rgba(52,199,89,0.14) !important;
+}
+
+/* AARISH_V136_MILK_DETAIL_DARK_LIGHT_PARITY_START
+   Dark Milk detail now mirrors Light mode:
+   positive green / negative red / zero blue.
+   Total-card text stays white like light mode.
+*/
+.dark #milk-detail-screen .glass-card:has(#milk-detail-bill):not([data-milk-net-v64]),
+.dark #milk-detail-screen .milk-detail-total-card-v64:not([data-milk-net-v64]) {
+  background: linear-gradient(135deg, #007AFF, #0A84FF) !important;
+  border-color: rgba(0,122,255,0.45) !important;
+  box-shadow: 0 8px 24px rgba(0,122,255,0.30) !important;
+}
+
+.dark #milk-detail-screen .milk-detail-total-card-v64[data-milk-net-v64="positive"] {
+  background: linear-gradient(135deg, #34C759, #28A745) !important;
+  border-color: #34C759 !important;
+  box-shadow: 0 8px 24px rgba(52,199,89,0.30) !important;
+}
+
+.dark #milk-detail-screen .milk-detail-total-card-v64[data-milk-net-v64="negative"] {
+  background: linear-gradient(135deg, #FF3B30, #C92A2A) !important;
+  border-color: #FF3B30 !important;
+  box-shadow: 0 8px 24px rgba(255,59,48,0.30) !important;
+}
+
+.dark #milk-detail-screen .milk-detail-total-card-v64[data-milk-net-v64="zero"],
+.dark #milk-detail-screen .milk-detail-total-card-v64[data-milk-net-v64="neutral"] {
+  background: linear-gradient(135deg, #007AFF, #0A84FF) !important;
+  border-color: #007AFF !important;
+  box-shadow: 0 8px 24px rgba(0,122,255,0.30) !important;
+}
+
+.dark #milk-detail-screen .milk-detail-total-card-v64[data-milk-net-v64] p,
+.dark #milk-detail-screen .milk-detail-total-card-v64[data-milk-net-v64] h3,
+.dark #milk-detail-screen .milk-detail-total-card-v64[data-milk-net-v64] #milk-detail-bill,
+.dark #milk-detail-screen .milk-detail-total-card-v64[data-milk-net-v64] #milk-detail-kg,
+.dark #milk-detail-screen .glass-card:has(#milk-detail-bill):not([data-milk-net-v64]) p,
+.dark #milk-detail-screen .glass-card:has(#milk-detail-bill):not([data-milk-net-v64]) #milk-detail-bill,
+.dark #milk-detail-screen .glass-card:has(#milk-detail-bill):not([data-milk-net-v64]) #milk-detail-kg {
+  color: #FFFFFF !important;
+  text-shadow: 0 2px 10px rgba(0,0,0,0.18) !important;
+  opacity: 1 !important;
+}
+/* AARISH_V136_MILK_DETAIL_DARK_LIGHT_PARITY_END */
+
+/* ---- MERGED_FROM_aarish-v107-milk-detail-ui-sync ---- */
+
 /* AARISH_V107_MILK_DETAIL_UI_SYNC
    Scope: Milk customer detail screen only.
    Logic preserved:
@@ -3684,6 +3703,8 @@
 .dark #milk-detail-screen #milk-detail-records tr td:last-child {
   color: #FF3B30 !important;
 }
+
+/* END_AARISH_MILK_RECORDS_MASTER_UI_V201 */
 </style>
 <style id="aarish-v113-milk-business-leak-ui-css">
 /* AARISH V113
@@ -10947,80 +10968,8 @@ window.onload = function(){ setTimeout(function(){ window.focus(); window.print(
 })();
 </script>
 
-<script id="aarish-v106-milk-dark-salary-style-js">
-/* AARISH_V106_MILK_DARK_SALARY_STYLE_BULLETPROOF_FIXED
-   UI-only marker. No math/Firebase/save/delete changes.
-*/
-(function () {
-  if (window.__AARISH_V106_MILK_DARK_SALARY_STYLE_READY) return;
-  window.__AARISH_V106_MILK_DARK_SALARY_STYLE_READY = true;
 
-  function toneFromCard(card) {
-    var text = "";
-    try { text = String(card.textContent || "").replace(/\s+/g, " "); } catch(e) {}
 
-    if (/[-−]\s*₹/.test(text)) return "negative";
-    if (/[-−]\s*\d[\d,]*(?:\.\d+)?\s*KG/i.test(text)) return "negative";
-    if (/(^|[\s•])[-−]\d/.test(text)) return "negative";
-
-    if (/\+\s*₹/.test(text)) return "positive";
-    if (/\+\s*\d[\d,]*(?:\.\d+)?\s*KG/i.test(text)) return "positive";
-    if (/(^|[\s•])\+\d/.test(text)) return "positive";
-
-    var oldTone = "";
-    try { oldTone = String(card.getAttribute("data-v99-tone") || card.getAttribute("data-v100-tone") || "").toLowerCase(); } catch(e) {}
-
-    if (oldTone === "positive" || oldTone === "negative") return oldTone;
-    return "neutral";
-  }
-
-  function applyMilkV106() {
-    try {
-      var list = document.getElementById("milk-list");
-      if (!list) return;
-
-      list.querySelectorAll(".glass-card").forEach(function(card) {
-        card.setAttribute("data-milk-v106-tone", toneFromCard(card));
-      });
-    } catch(e) {}
-  }
-
-  function wrapV106(name) {
-    try {
-      var old = window[name];
-      if (typeof old !== "function" || old.__aarishMilkV106Wrapped) return;
-
-      var wrapped = function() {
-        var out = old.apply(this, arguments);
-        setTimeout(applyMilkV106, 0);
-        setTimeout(applyMilkV106, 80);
-        return out;
-      };
-
-      wrapped.__aarishMilkV106Wrapped = true;
-      window[name] = wrapped;
-      try { Function("fn", name + " = fn;")(wrapped); } catch(e) {}
-    } catch(e) {}
-  }
-
-  ["renderMilkList", "filterMilkList", "switchTab", "updateActiveScreen", "updateDashboard"].forEach(wrapV106);
-
-  applyMilkV106();
-  setTimeout(applyMilkV106, 250);
-  setTimeout(applyMilkV106, 1000);
-
-  try {
-    var list = document.getElementById("milk-list");
-    if (list && window.MutationObserver) {
-      new MutationObserver(function(){ applyMilkV106(); }).observe(list, { childList: true, subtree: true, characterData: true });
-    }
-  } catch(e) {}
-
-  document.addEventListener("click", function(){ setTimeout(applyMilkV106, 0); }, { passive: true });
-  document.addEventListener("input", function(){ setTimeout(applyMilkV106, 0); }, { passive: true });
-  window.addEventListener("pageshow", function(){ setTimeout(applyMilkV106, 80); }, { passive: true });
-})();
-</script>
 
 <!-- AARISH_FORENSIC_MASTER_FIX_V1_START -->
 <script id="aarish-forensic-master-fix-v1">
@@ -18754,7 +18703,6 @@ scheduleV69();
       ["renderExpenseList", renderExpenseListV99],
       ["renderProjectsList", renderProjectsListV99],
       ["renderDiaryList", renderDiaryListV99],
-      ["renderMilkRecords", renderMilkRecordsV99],
       ["renderSalaryRecords", renderSalaryRecordsV99],
       ["renderUdharRecords", renderUdharRecordsV99],
       ["renderExpenseRecords", renderExpenseRecordsV99]
