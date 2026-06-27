@@ -5616,25 +5616,28 @@ html.dark body #diary-screen #diary-search::-webkit-input-placeholder,
 
 <style id="aarish-god-tier-motion-v300">
 /* AARISH_GOD_TIER_MOTION_V300_START
-   AARISH_UNIFIED_SLIDE_V306_START
-   Premium sliding-only unified engine.
-   Motion-only patch: Firebase/data/render/delete logic untouched.
+   AARISH_CSS_ONLY_PREMIUM_SLIDE_V307_FIXED_START
+   Motion-only fix. Firebase/data/render/delete logic untouched.
 */
 :root{
-  --aarish-v306-spring:cubic-bezier(0.16,1,0.3,1);
-  --aarish-v306-snap:cubic-bezier(0.2,0.8,0.2,1);
-  --aarish-v306-screen-ms:245ms;
-  --aarish-v306-sheet-ms:335ms;
-  --aarish-v306-list-ms:620ms;
-  --aarish-v306-list-opacity-ms:260ms;
-  --aarish-v306-press-ms:88ms;
-  --aarish-v306-release-ms:285ms;
+  --aarish-v307-spring:cubic-bezier(0.16,1,0.3,1);
+  --aarish-v307-snap:cubic-bezier(0.2,0.8,0.2,1);
+  --aarish-v307-screen-ms:210ms;
+  --aarish-v307-card-ms:320ms;
+  --aarish-v307-sheet-ms:300ms;
+  --aarish-v307-press-ms:86ms;
+  --aarish-v307-release-ms:220ms;
+}
+
+html,body{
+  transition-property:opacity!important;
+  transition-duration:120ms!important;
 }
 
 :is(button,.btn-primary,.btn-ios-share,.btn-ios-add,.btn-google,.action-btn,.nav-item,.glass-card,.diary-card,.squircle,[onclick]){
   transition-property:transform,opacity!important;
-  transition-duration:var(--aarish-v306-release-ms),150ms!important;
-  transition-timing-function:var(--aarish-v306-spring),ease-out!important;
+  transition-duration:var(--aarish-v307-release-ms),130ms!important;
+  transition-timing-function:var(--aarish-v307-spring),ease-out!important;
   backface-visibility:hidden!important;
   -webkit-backface-visibility:hidden!important;
   transform-style:preserve-3d!important;
@@ -5643,41 +5646,32 @@ html.dark body #diary-screen #diary-search::-webkit-input-placeholder,
 }
 
 .aarish-will-v300,
-.aarish-will-v300>.modal-content,
-.aarish-v306-moving{
+.aarish-will-v300>.modal-content{
   will-change:transform,opacity!important;
 }
 
 .app-container{
   transition-property:transform,opacity!important;
-  transition-duration:330ms,220ms!important;
-  transition-timing-function:var(--aarish-v306-spring),ease-out!important;
+  transition-duration:260ms,180ms!important;
+  transition-timing-function:var(--aarish-v307-spring),ease-out!important;
   transform-origin:top center!important;
 }
 .app-container.app-scale-down{
-  transform:translate3d(0,8px,0) scale3d(.965,.965,1)!important;
-  opacity:.78!important;
+  transform:translate3d(0,7px,0) scale3d(.97,.97,1)!important;
+  opacity:.80!important;
   pointer-events:none!important;
-  border-radius:inherit!important;
 }
 
 .screen.active{
-  animation:aarishScreenGlideV306 var(--aarish-v306-screen-ms) var(--aarish-v306-snap) both!important;
+  animation:aarishScreenGlideV307 var(--aarish-v307-screen-ms) var(--aarish-v307-snap) both!important;
 }
-.screen.aarish-will-v300{
-  will-change:transform,opacity!important;
-}
-
-@keyframes aarishScreenGlideV306{
-  0%{opacity:.965;transform:translate3d(14px,0,0) scale3d(.998,.998,1)}
-  70%{opacity:1;transform:translate3d(-1px,0,0) scale3d(1.001,1.001,1)}
+@keyframes aarishScreenGlideV307{
+  0%{opacity:.985;transform:translate3d(12px,0,0) scale3d(.999,.999,1)}
   100%{opacity:1;transform:translate3d(0,0,0) scale3d(1,1,1)}
 }
 
-/* Fail-safe: cards stay visible unless JS intentionally prepares reveal. */
 html body .list-enter,
 #main-app .list-enter{
-  animation:none!important;
   opacity:1!important;
   transform:translate3d(0,0,0) scale3d(1,1,1)!important;
   backface-visibility:hidden!important;
@@ -5685,48 +5679,45 @@ html body .list-enter,
   transform-origin:center center!important;
 }
 
-/* Prepared offscreen pose. Only V306 JS adds this class. */
-html body .list-enter.aarish-v306-ready,
-#main-app .list-enter.aarish-v306-ready{
-  animation:none!important;
-  opacity:0!important;
-  transform:translate3d(var(--aarish-v306-x,28px),var(--aarish-v306-y,22px),0) scale3d(.986,.986,1)!important;
-  transition:none!important;
+html body .screen.active .list-enter,
+#main-app .screen.active .list-enter{
+  animation-name:aarishCardSlideV307!important;
+  animation-duration:var(--aarish-v307-card-ms)!important;
+  animation-timing-function:var(--aarish-v307-spring)!important;
+  animation-fill-mode:both!important;
+  animation-delay:var(--aarish-stagger-v4,0s)!important;
 }
 
-/* Premium reveal pose. */
-html body .list-enter.aarish-v306-in,
-#main-app .list-enter.aarish-v306-in{
-  animation:none!important;
-  opacity:1!important;
-  transform:translate3d(0,0,0) scale3d(1,1,1)!important;
-  transition-property:transform,opacity!important;
-  transition-duration:var(--aarish-v306-list-ms),var(--aarish-v306-list-opacity-ms)!important;
-  transition-timing-function:var(--aarish-v306-spring),ease-out!important;
-  transition-delay:var(--aarish-v306-delay,0ms),var(--aarish-v306-delay,0ms)!important;
+html body .screen.active tr.list-enter,
+#main-app .screen.active tr.list-enter{
+  animation-name:aarishRowSlideV307!important;
+  animation-duration:260ms!important;
+  animation-timing-function:var(--aarish-v307-spring)!important;
+  animation-fill-mode:both!important;
+  animation-delay:var(--aarish-stagger-v4,0s)!important;
 }
 
-html body tr.list-enter.aarish-v306-ready,
-#main-app tr.list-enter.aarish-v306-ready{
-  transform:translate3d(var(--aarish-v306-x,12px),0,0) scale3d(.996,.996,1)!important;
+@keyframes aarishCardSlideV307{
+  0%{opacity:0;transform:translate3d(18px,8px,0) scale3d(.993,.993,1)}
+  100%{opacity:1;transform:translate3d(0,0,0) scale3d(1,1,1)}
+}
+@keyframes aarishRowSlideV307{
+  0%{opacity:0;transform:translate3d(10px,0,0) scale3d(.998,.998,1)}
+  100%{opacity:1;transform:translate3d(0,0,0) scale3d(1,1,1)}
 }
 
-html body .list-enter.aarish-v306-skip,
-#main-app .list-enter.aarish-v306-skip{
+html body .screen.active .list-enter:empty{
   animation:none!important;
   opacity:1!important;
   transform:none!important;
-  transition:none!important;
-  will-change:auto!important;
 }
 
-/* Press feedback */
 :is(button,.btn-primary,.btn-ios-share,.btn-ios-add,.btn-google,.action-btn,.nav-item,.glass-card,.diary-card,.squircle,[onclick]).aarish-pressing-v300{
-  transition-duration:var(--aarish-v306-press-ms),80ms!important;
+  transition-duration:var(--aarish-v307-press-ms),80ms!important;
   transform:translate3d(0,0,0) scale3d(.958,.958,1)!important;
 }
 :is(.btn-primary,.btn-ios-share,.btn-ios-add,.btn-google,button,[onclick]).aarish-pressing-v300{
-  transform:translate3d(0,0,0) scale3d(.944,.944,1)!important;
+  transform:translate3d(0,0,0) scale3d(.945,.945,1)!important;
 }
 .action-btn.aarish-pressing-v300,
 .squircle.aarish-pressing-v300{
@@ -5741,14 +5732,13 @@ html body .list-enter.aarish-v306-skip,
 .nav-item.active{--aarish-nav-y-v300:-3px}
 .nav-item.aarish-pressing-v300{--aarish-nav-scale-v300:.90}
 
-/* Modal motion preserved */
 .modal-overlay{
   display:none!important;
   opacity:0!important;
   pointer-events:none!important;
   visibility:hidden!important;
   transition-property:opacity!important;
-  transition-duration:230ms!important;
+  transition-duration:210ms!important;
   transition-timing-function:ease-out!important;
 }
 .modal-overlay.is-preopen,
@@ -5769,10 +5759,10 @@ html body .list-enter.aarish-v306-skip,
 .modal-content{
   animation:none!important;
   opacity:0;
-  transform:translate3d(0,108%,0) scale3d(.992,.992,1);
+  transform:translate3d(0,105%,0) scale3d(.994,.994,1);
   transition-property:transform,opacity!important;
-  transition-duration:var(--aarish-v306-sheet-ms),210ms!important;
-  transition-timing-function:var(--aarish-v306-spring),ease-out!important;
+  transition-duration:var(--aarish-v307-sheet-ms),190ms!important;
+  transition-timing-function:var(--aarish-v307-spring),ease-out!important;
   transform-origin:bottom center!important;
 }
 .modal-overlay.is-open .modal-content{
@@ -5782,42 +5772,38 @@ html body .list-enter.aarish-v306-skip,
 .modal-overlay.is-closing .modal-content,
 .modal-overlay.is-preopen .modal-content{
   opacity:0!important;
-  transform:translate3d(0,108%,0) scale3d(.992,.992,1)!important;
+  transform:translate3d(0,105%,0) scale3d(.994,.994,1)!important;
 }
 
 #toast,
 #gemini-chat-window,
 .hidden-chat{
   transition-property:transform,opacity!important;
-  transition-duration:280ms,200ms!important;
-  transition-timing-function:var(--aarish-v306-spring),ease-out!important;
+  transition-duration:240ms,170ms!important;
+  transition-timing-function:var(--aarish-v307-spring),ease-out!important;
 }
 
 @media (prefers-reduced-motion:reduce){
   .screen.active{
-    animation:aarishReducedFadeV306 80ms ease-out both!important;
+    animation:aarishReducedFadeV307 80ms ease-out both!important;
     transform:none!important;
   }
-  html body .list-enter,
-  #main-app .list-enter,
-  html body .list-enter.aarish-v306-ready,
-  #main-app .list-enter.aarish-v306-ready,
-  html body .list-enter.aarish-v306-in,
-  #main-app .list-enter.aarish-v306-in{
-    opacity:1!important;
+  html body .screen.active .list-enter,
+  #main-app .screen.active .list-enter,
+  html body .screen.active tr.list-enter,
+  #main-app .screen.active tr.list-enter{
+    animation:aarishReducedFadeV307 80ms ease-out both!important;
     transform:none!important;
-    transition-duration:80ms,80ms!important;
-    transition-delay:0ms,0ms!important;
   }
   :is(button,.btn-primary,.btn-ios-share,.btn-ios-add,.btn-google,.action-btn,.nav-item,.glass-card,.diary-card,.squircle,[onclick]){
     transition-duration:80ms,80ms!important;
   }
 }
-@keyframes aarishReducedFadeV306{
+@keyframes aarishReducedFadeV307{
   from{opacity:0}
   to{opacity:1}
 }
-/* AARISH_UNIFIED_SLIDE_V306_END */
+/* AARISH_CSS_ONLY_PREMIUM_SLIDE_V307_FIXED_END */
 /* AARISH_GOD_TIER_MOTION_V300_END */
 </style>
 </head>
@@ -20276,13 +20262,13 @@ window.addEventListener("pageshow", function () { setTimeout(install, 120); }, {
 
 <script id="aarish-god-tier-motion-v300-js">
 /* AARISH_GOD_TIER_MOTION_V300_JS_START
-   AARISH_UNIFIED_SLIDE_V306_JS_START
-   One ultra-light sliding engine. No Firebase/data/render logic touched.
+   AARISH_CSS_ONLY_PREMIUM_SLIDE_V307_FIXED_JS_START
+   Lean motion runtime: press feedback + modal transitions only.
 */
 (function(){
   "use strict";
-  if(window.__AARISH_UNIFIED_SLIDE_V306__) return;
-  window.__AARISH_UNIFIED_SLIDE_V306__=true;
+  if(window.__AARISH_CSS_ONLY_PREMIUM_SLIDE_V307_FIXED__) return;
+  window.__AARISH_CSS_ONLY_PREMIUM_SLIDE_V307_FIXED__=true;
   window.__AARISH_GOD_TIER_MOTION_V300__=true;
 
   var PRESS_SELECTOR=[
@@ -20290,35 +20276,10 @@ window.addEventListener("pageshow", function () { setTimeout(install, 120); }, {
     ".nav-item",".glass-card",".diary-card",".squircle","[onclick]"
   ].join(",");
   var FORM_SELECTOR="input, textarea, select, option, label, [contenteditable='true']";
-  var LIST_SELECTOR=[
-    "#milk-list .list-enter",
-    "#udhar-list .list-enter",
-    "#expense-list-container .list-enter",
-    "#salary-list .list-enter",
-    "#diary-list .list-enter",
-    "#project-list .list-enter",
-    "#dash-balances-list .list-enter",
-    "#milk-detail-records .list-enter",
-    "#udhar-detail-records .list-enter",
-    "#expense-detail-records .list-enter",
-    "#salary-detail-records .list-enter",
-    "#project-detail-records .list-enter"
-  ].join(",");
 
   var pressed=new Set();
   var willTimers=new WeakMap();
   var closeTimers=new WeakMap();
-
-  var io=null;
-  var ioRoot=null;
-  var observed=new WeakSet();
-  var state=new WeakMap();
-  var timers=new WeakMap();
-  var queue=[];
-  var queued=new WeakSet();
-  var queueRaf=0;
-  var scanRaf=0;
-  var mo=null;
 
   function closestMotionTarget(node){
     if(!node||!node.closest) return null;
@@ -20337,13 +20298,13 @@ window.addEventListener("pageshow", function () { setTimeout(install, 120); }, {
     willTimers.set(el,setTimeout(function(){
       try{el.classList.remove("aarish-will-v300")}catch(e){}
       willTimers.delete(el);
-    },ms||420));
+    },ms||360));
   }
 
   function releaseTarget(el){
     if(!el||!el.classList) return;
     el.classList.remove("aarish-pressing-v300");
-    addWill(el,330);
+    addWill(el,240);
   }
 
   function releaseAll(){
@@ -20355,7 +20316,7 @@ window.addEventListener("pageshow", function () { setTimeout(install, 120); }, {
     if(ev.button!=null&&ev.button!==0) return;
     var t=closestMotionTarget(ev.target);
     if(!t) return;
-    addWill(t,520);
+    addWill(t,360);
     t.classList.add("aarish-pressing-v300");
     pressed.add(t);
   },{capture:true,passive:true});
@@ -20400,11 +20361,12 @@ window.addEventListener("pageshow", function () { setTimeout(install, 120); }, {
   function openOverlay(o){
     if(!o) return;
     clearCloseTimer(o);
+
     var app=motionApp();
     var sheet=motionSheet(o);
-    addWill(o,540);
-    addWill(sheet,560);
-    addWill(app,560);
+    addWill(o,420);
+    addWill(sheet,440);
+    addWill(app,440);
 
     o.style.removeProperty("display");
     o.style.removeProperty("opacity");
@@ -20418,19 +20380,20 @@ window.addEventListener("pageshow", function () { setTimeout(install, 120); }, {
       if(app) app.classList.add("app-scale-down");
       o.classList.add("is-open");
       o.classList.remove("is-preopen");
-      addWill(sheet,460);
-      addWill(app,460);
+      addWill(sheet,360);
+      addWill(app,360);
     });
   }
 
   function closeOverlay(o){
     if(!o) return;
     clearCloseTimer(o);
+
     var app=motionApp();
     var sheet=motionSheet(o);
-    addWill(o,460);
-    addWill(sheet,460);
-    addWill(app,460);
+    addWill(o,360);
+    addWill(sheet,360);
+    addWill(app,360);
 
     o.classList.remove("is-open","is-preopen");
     o.classList.add("is-closing");
@@ -20450,7 +20413,7 @@ window.addEventListener("pageshow", function () { setTimeout(install, 120); }, {
       if(sheet) sheet.classList.remove("aarish-will-v300");
       if(app) app.classList.remove("aarish-will-v300");
       closeTimers.delete(o);
-    },360));
+    },330));
   }
 
   window.openModal=function(id){openOverlay(document.getElementById(id))};
@@ -20460,290 +20423,10 @@ window.addEventListener("pageshow", function () { setTimeout(install, 120); }, {
   window.__aarishOpenCreatedModalV203=openOverlay;
   window.__aarishCloseCreatedModalV203=closeOverlay;
 
-  function activeScreen(){
-    return document.querySelector(".screen.active")||null;
-  }
-
-  function rootRect(){
-    var r=ioRoot||activeScreen();
-    if(r){
-      try{return r.getBoundingClientRect()}catch(e){}
-    }
-    return{top:0,bottom:window.innerHeight||document.documentElement.clientHeight||800};
-  }
-
-  function itemMeta(el){
-    var r=el.getBoundingClientRect();
-    var rr=rootRect();
-    var visible=r.bottom>rr.top+4&&r.top<rr.bottom-4;
-    var farOut=r.bottom<rr.top-80||r.top>rr.bottom+80;
-    return{
-      top:r.top,
-      bottom:r.bottom,
-      visible:visible,
-      farOut:farOut,
-      fromTop:r.bottom<rr.top
-    };
-  }
-
-  function isSkip(el){
-    if(!el||!el.classList||!el.closest) return true;
-    if(!el.closest(".screen")) return true;
-
-    var txt="";
-    try{txt=String(el.textContent||"").trim().toLowerCase()}catch(e){}
-
-    if(!txt||txt.indexOf("no ")===0||txt.indexOf("no entries")>=0||txt.indexOf("no record")>=0||txt.indexOf("no customers")>=0||txt.indexOf("not found")>=0){
-      el.classList.add("aarish-v306-skip");
-      return true;
-    }
-    return false;
-  }
-
-  function clearTimer(el){
-    var t=timers.get(el);
-    if(t){
-      clearTimeout(t);
-      timers.delete(el);
-    }
-  }
-
-  function setReady(el,meta){
-    if(isSkip(el)) return;
-    clearTimer(el);
-    meta=meta||itemMeta(el);
-
-    var row=String(el.tagName||"").toLowerCase()==="tr";
-    el.style.setProperty("--aarish-v306-x",row?(meta.fromTop?"-10px":"12px"):(meta.fromTop?"-22px":"28px"));
-    el.style.setProperty("--aarish-v306-y",row?"0px":(meta.fromTop?"-18px":"24px"));
-    el.style.setProperty("--aarish-v306-delay","0ms");
-
-    el.classList.remove("aarish-v306-in","aarish-v306-moving");
-    el.classList.add("aarish-v306-ready");
-    state.set(el,"ready");
-  }
-
-  function finish(el,ms){
-    clearTimer(el);
-    timers.set(el,setTimeout(function(){
-      try{
-        el.classList.remove("aarish-v306-moving");
-        el.style.removeProperty("will-change");
-        el.style.removeProperty("--aarish-v306-delay");
-        timers.delete(el);
-      }catch(e){}
-    },ms||720));
-  }
-
-  function reveal(el,delay,fast){
-    if(isSkip(el)||state.get(el)==="in") return;
-    clearTimer(el);
-
-    el.classList.add("aarish-v306-moving");
-    el.style.setProperty("--aarish-v306-delay",(delay||0)+"ms");
-    el.style.setProperty("--aarish-v306-list-ms",fast?"360ms":"620ms");
-    el.style.setProperty("--aarish-v306-list-opacity-ms",fast?"150ms":"260ms");
-
-    requestAnimationFrame(function(){
-      try{
-        el.classList.remove("aarish-v306-ready");
-        el.classList.add("aarish-v306-in");
-        state.set(el,"in");
-        finish(el,(delay||0)+(fast?440:740));
-      }catch(e){}
-    });
-  }
-
-  function queueReveal(el,top){
-    if(!el||queued.has(el)||state.get(el)==="in") return;
-    queued.add(el);
-    queue.push({el:el,top:top||0});
-    if(!queueRaf) queueRaf=requestAnimationFrame(flushQueue);
-  }
-
-  function flushQueue(){
-    queueRaf=0;
-    var batch=queue.splice(0,queue.length);
-    if(!batch.length) return;
-
-    batch.sort(function(a,b){return a.top-b.top});
-
-    var fast=batch.length>7;
-    var step=fast?8:26;
-    var cap=fast?56:130;
-
-    for(var i=0;i<batch.length;i++){
-      queued.delete(batch[i].el);
-      reveal(batch[i].el,Math.min(i*step,cap),fast);
-    }
-  }
-
-  function onIO(entries){
-    for(var i=0;i<entries.length;i++){
-      var entry=entries[i];
-      var el=entry.target;
-      if(isSkip(el)) continue;
-
-      var m=itemMeta(el);
-
-      if(entry.isIntersecting&&entry.intersectionRatio>0.006){
-        if(!state.get(el)) setReady(el,m);
-        if(state.get(el)==="ready"){
-          queueReveal(el,entry.boundingClientRect?entry.boundingClientRect.top:m.top);
-        }
-      }else if(state.get(el)==="in"){
-        clearTimer(el);
-        timers.set(el,setTimeout(function(node){
-          try{
-            if(!node||isSkip(node)) return;
-            var mm=itemMeta(node);
-            if(mm.farOut&&!mm.visible) setReady(node,mm);
-          }catch(e){}
-        },170,el));
-      }
-    }
-  }
-
-  function makeIO(){
-    var root=activeScreen();
-
-    if(io&&root===ioRoot) return;
-
-    if(io){
-      try{io.disconnect()}catch(e){}
-    }
-
-    io=null;
-    ioRoot=root;
-    observed=new WeakSet();
-
-    if(!("IntersectionObserver" in window)) return;
-
-    io=new IntersectionObserver(onIO,{
-      root:ioRoot,
-      rootMargin:"6% 0px 18% 0px",
-      threshold:[0,0.006,0.06,0.16]
-    });
-  }
-
-  function attach(el){
-    if(!el||observed.has(el)||isSkip(el)) return;
-
-    observed.add(el);
-
-    var m=itemMeta(el);
-
-    if(!state.get(el)){
-      setReady(el,m);
-      if(m.visible) queueReveal(el,m.top);
-    }else if(state.get(el)==="ready"&&m.visible){
-      queueReveal(el,m.top);
-    }
-
-    if(io){
-      io.observe(el);
-    }else{
-      el.classList.remove("aarish-v306-ready");
-      el.classList.add("aarish-v306-in");
-      state.set(el,"in");
-    }
-  }
-
-  function primeScreens(){
-    document.querySelectorAll(".screen").forEach(function(screen){
-      var active=screen.classList.contains("active");
-      if(active&&!screen.__aarishActiveMotionV306){
-        screen.__aarishActiveMotionV306=true;
-        addWill(screen,360);
-      }else if(!active&&screen.__aarishActiveMotionV306){
-        screen.__aarishActiveMotionV306=false;
-        screen.classList.remove("aarish-will-v300");
-      }
-    });
-  }
-
-  function scan(root){
-    makeIO();
-    primeScreens();
-
-    var scope=activeScreen()||document;
-    if(root&&root.querySelectorAll&&root.closest&&root.closest(".screen.active")){
-      scope=root;
-    }
-
-    var items=[];
-
-    try{
-      if(scope.matches&&scope.matches(LIST_SELECTOR)) items.push(scope);
-    }catch(e){}
-
-    try{
-      scope.querySelectorAll(LIST_SELECTOR).forEach(function(el){items.push(el)});
-    }catch(e){}
-
-    for(var i=0;i<items.length;i++){
-      attach(items[i]);
-    }
-  }
-
-  function scheduleScan(root){
-    if(scanRaf) return;
-    scanRaf=requestAnimationFrame(function(){
-      scanRaf=0;
-      scan(root||document);
-    });
-  }
-
-  function boot(){
-    if(!document.body) return;
-
-    if(mo){
-      try{mo.disconnect()}catch(e){}
-    }
-
-    mo=new MutationObserver(function(records){
-      var need=false;
-      var root=document;
-
-      for(var i=0;i<records.length;i++){
-        var r=records[i];
-
-        if(r.type==="childList"&&r.addedNodes&&r.addedNodes.length){
-          need=true;
-          root=r.target||document;
-          break;
-        }
-
-        if(r.type==="attributes"&&r.attributeName==="class"&&r.target&&r.target.classList&&r.target.classList.contains("screen")){
-          need=true;
-          root=document;
-          break;
-        }
-      }
-
-      if(need) scheduleScan(root);
-    });
-
-    try{
-      mo.observe(document.body,{childList:true,subtree:true,attributes:true,attributeFilter:["class"]});
-    }catch(e){}
-
-    scheduleScan(document);
-    setTimeout(function(){scheduleScan(document)},180);
-    setTimeout(function(){scheduleScan(document)},700);
-  }
-
-  if(document.readyState==="loading"){
-    document.addEventListener("DOMContentLoaded",boot,{once:true,passive:true});
-  }else{
-    boot();
-  }
-
-  window.addEventListener("pageshow",function(){scheduleScan(document)},{passive:true});
-  window.__aarishRefreshMotionV300=function(){scheduleScan(document)};
+  window.__aarishRefreshMotionV300=function(){};
   window.__aarishRefreshScrollRevealV304=window.__aarishRefreshMotionV300;
 })();
-/* AARISH_UNIFIED_SLIDE_V306_JS_END */
+/* AARISH_CSS_ONLY_PREMIUM_SLIDE_V307_FIXED_JS_END */
 /* AARISH_GOD_TIER_MOTION_V300_JS_END */
 </script>
 </body>
