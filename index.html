@@ -2416,40 +2416,7 @@
 }
 </style>
 
-<style id="aarish-milk-neutral-title-blue-v74">
-/* AARISH_MILK_NEUTRAL_TITLE_BLUE_V74
-   Fix: Milk Record neutral title was staying white in dark mode.
-   CSS-only: no JS, no Firebase, no HTML structure change.
-   Logic:
-   - positive remains #34C759
-   - negative remains #FF3B30
-   - neutral becomes #007AFF like Credit Book / Salary neutral logic
-   - only opacity/glow tuned softly for dark mode readability
-*/
 
-/* Initial dark paint before V24 calculates net: avoid white flash */
-.dark #milk-screen .header-sticky h1:not([data-milk-net-color-v24]) {
-  color: #007AFF !important;
-  text-shadow: 0 0 12px rgba(0,122,255,0.30) !important;
-}
-
-/* V24 neutral state: Milk Record title must be blue, not white */
-.dark #milk-screen .header-sticky h1[data-milk-net-color-v24="neutral"] {
-  color: #007AFF !important;
-  text-shadow: 0 0 12px rgba(0,122,255,0.30) !important;
-}
-
-/* Same semantic colors, softer dark-mode glow balance */
-.dark #milk-screen .header-sticky h1[data-milk-net-color-v24="green"] {
-  color: #34C759 !important;
-  text-shadow: 0 0 12px rgba(52,199,89,0.30) !important;
-}
-
-.dark #milk-screen .header-sticky h1[data-milk-net-color-v24="red"] {
-  color: #FF3B30 !important;
-  text-shadow: 0 0 12px rgba(255,59,48,0.30) !important;
-}
-</style>
 
 <style id="aarish-v99-ui-consistency-premium-dark-mode-css">
 /* AARISH_V99_UI_CONSISTENCY_PREMIUM_DARK_MODE
@@ -3422,7 +3389,20 @@
   filter: none !important;
 }
 </style>
-<style id="aarish-milk-records-master-ui-v201">
+<style id="aarish-milk-all-master-ui-css-v203">
+/* AARISH_MILK_ALL_MASTER_UI_CSS_V203
+   Consolidated Milk UI/UX CSS master.
+   Merged blocks:
+   - aarish-milk-records-master-ui-v201
+   - aarish-v113-milk-business-leak-ui-css
+   - aarish-v114-milk-compact-net-button-css
+   - aarish-milk-neutral-title-blue-v74
+
+   UI-only:
+   - no Firebase/auth/database/cache/outbox/save/delete mutation
+   - no style.css touch
+   - no data structure rewrite
+*/
 /* AARISH_MILK_RECORDS_MASTER_UI_V201
    CSS-only Milk Records consolidation.
    Merged:
@@ -3705,8 +3685,7 @@
 }
 
 /* END_AARISH_MILK_RECORDS_MASTER_UI_V201 */
-</style>
-<style id="aarish-v113-milk-business-leak-ui-css">
+
 /* AARISH V113
    Fix 1: Business Kit raw JS leak is fixed by Python escaping inside fullHtml().
    Fix 2: Milk UI like premium dark screenshot.
@@ -4127,8 +4106,6 @@ html.dark body #main-app #milk-screen #milk-list .aarish-milk-v113-avatar {
 }
 /* AARISH_V141_MILK_CARD_FINAL_RESCUE_END */
 
-</style>
-<style id="aarish-v114-milk-compact-net-button-css">
 /* AARISH V114
    Fix:
    1) Milk list card size back near Credit/Salary card size.
@@ -4308,7 +4285,42 @@ html.dark body #main-app #milk-screen #milk-list .aarish-milk-v113-avatar {
     font-size: 17px !important;
   }
 }
+
+/* AARISH_MILK_NEUTRAL_TITLE_BLUE_V74
+   Fix: Milk Record neutral title was staying white in dark mode.
+   CSS-only: no JS, no Firebase, no HTML structure change.
+   Logic:
+   - positive remains #34C759
+   - negative remains #FF3B30
+   - neutral becomes #007AFF like Credit Book / Salary neutral logic
+   - only opacity/glow tuned softly for dark mode readability
+*/
+
+/* Initial dark paint before V24 calculates net: avoid white flash */
+.dark #milk-screen .header-sticky h1:not([data-milk-net-color-v24]) {
+  color: #007AFF !important;
+  text-shadow: 0 0 12px rgba(0,122,255,0.30) !important;
+}
+
+/* V24 neutral state: Milk Record title must be blue, not white */
+.dark #milk-screen .header-sticky h1[data-milk-net-color-v24="neutral"] {
+  color: #007AFF !important;
+  text-shadow: 0 0 12px rgba(0,122,255,0.30) !important;
+}
+
+/* Same semantic colors, softer dark-mode glow balance */
+.dark #milk-screen .header-sticky h1[data-milk-net-color-v24="green"] {
+  color: #34C759 !important;
+  text-shadow: 0 0 12px rgba(52,199,89,0.30) !important;
+}
+
+.dark #milk-screen .header-sticky h1[data-milk-net-color-v24="red"] {
+  color: #FF3B30 !important;
+  text-shadow: 0 0 12px rgba(255,59,48,0.30) !important;
+}
 </style>
+
+
 <style id="aarish-v125-master-refactor-css">
 /* AARISH V125 MASTER REFACTOR
    Same business/UI semantic logic:
@@ -18635,14 +18647,14 @@ window.addEventListener("pageshow", function () { setTimeout(markAll, 60); }, { 
   console.log("✅ AARISH_V100_ELITE_UX_POLISH_FINAL_PATCH active");
 })();
 </script>
-\n<script id="aarish-milk-master-ui-v202">
-// AARISH_MILK_MASTER_UI_V202
-// Consolidates Milk List V113 renderer + Milk List net painters V24/V50/V51/V116.1.
-// Milk Records stays on V134 core renderer + V201 CSS markers.
+\n<script id="aarish-milk-all-master-ui-v203">
+// AARISH_MILK_ALL_MASTER_UI_V203
+// Consolidates all Milk UI/UX: Milk List V113/V114/V202 + Milk Records V134/V201 markers.
+// Milk Records core renderer stays V134; CSS is merged into V203 master block.
 // UI-only: no Firebase/auth/database/cache/outbox/save/delete/data-structure mutation.
 (function () {
-  if (window.__AARISH_MILK_MASTER_UI_V202_READY) return;
-  window.__AARISH_MILK_MASTER_UI_V202_READY = true;
+  if (window.__AARISH_MILK_ALL_MASTER_UI_V203_READY) return;
+  window.__AARISH_MILK_ALL_MASTER_UI_V203_READY = true;
 
   var GREEN = "#34C759";
   var RED = "#FF3B30";
@@ -18949,13 +18961,14 @@ window.addEventListener("pageshow", function () { setTimeout(markAll, 60); }, { 
     } catch(e) {}
   }
 
-  window.__milkMasterStatusV202 = function () {
+  window.__milkMasterStatusV203 = function () {
     var state = applyMilkShellNetV202(true);
     var status = {
-      version: "V202",
+      version: "V203",
       replacedScripts: ["aarish-v113-milk-business-leak-ui-js", "aarish-milk-list-net-master-v116-1"],
+      mergedCssBlocks: ["aarish-milk-records-master-ui-v201", "aarish-v113-milk-business-leak-ui-css", "aarish-v114-milk-compact-net-button-css", "aarish-milk-neutral-title-blue-v74"],
       keptRecordCore: "aarishRenderMilkRecordsCoreV134",
-      keptRecordCss: "aarish-milk-records-master-ui-v201",
+      keptRecordCss: "aarish-milk-all-master-ui-css-v203",
       netAmount: state.net,
       tone: state.tone,
       buttonTone: state.buttonTone,
@@ -18978,7 +18991,23 @@ window.addEventListener("pageshow", function () { setTimeout(markAll, 60); }, { 
   var milkTab = byId("tab-milk");
   if (milkTab) milkTab.addEventListener("click", function () { setTimeout(function () { installMilkMasterV202(); scheduleMilkMasterV202(false, true); }, 0); }, { passive:true });
 
-  console.log("✅ AARISH_MILK_MASTER_UI_V202 active");
+
+
+  window.__milkMasterStatusV202 = window.__milkMasterStatusV203;
+  window.aarishMilkAllMasterRenderListV203 = renderMilkListMasterV202;
+  window.aarishMilkAllMasterApplyShellV203 = applyMilkShellNetV202;
+  window.aarishMilkAllMasterAllNetV203 = function () { return allMilkNetV202(true); };
+  window.aarishMilkRecordsCoreV203 = function () {
+    try {
+      if (typeof window.aarishRenderMilkRecordsCoreV134 === "function") {
+        return window.aarishRenderMilkRecordsCoreV134.apply(this, arguments);
+      }
+      if (typeof renderMilkRecords === "function") {
+        return renderMilkRecords.apply(this, arguments);
+      }
+    } catch(e) {}
+  };
+  console.log("✅ AARISH_MILK_ALL_MASTER_UI_V203 active");
 })();
 </script>
 <script id="aarish-v125-master-refactor-js">
