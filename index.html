@@ -5783,72 +5783,64 @@ html.dark body #diary-screen #diary-search::-webkit-input-placeholder,
 /* AARISH_GOD_TIER_MOTION_V300_END */
 </style>
 
-<style id="aarish-scroll-reveal-v302">
-/* AARISH_SCROLL_REVEAL_V302_START
-   Video-style scroll reveal:
-   - cards glide in while scrolling
-   - repeatable after leaving viewport
-   - no long backlog on fast scroll
-   - compositor only: transform + opacity
+<style id="aarish-scroll-reveal-v304">
+/* AARISH_SCROLL_REVEAL_V304_START
+   Hybrid smooth scroll reveal:
+   - V300 initial motion stays alive.
+   - Offscreen list cards reveal when they enter the active scroll screen.
+   - Re-arms only after the card fully leaves viewport.
+   - No force reflow, no scroll velocity loop, no visible reset.
 */
 :root {
-  --aarish-v302-spring: cubic-bezier(0.16, 1, 0.3, 1);
-  --aarish-v302-snap: cubic-bezier(0.2, 0.8, 0.2, 1);
+  --aarish-v304-spring: cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-html body .list-enter.aarish-reveal-item-v302 {
+html body .list-enter.aarish-v304-ready {
   animation: none !important;
-  transition-property: transform, opacity !important;
-  transition-duration: var(--aarish-v302-duration, 520ms), var(--aarish-v302-opacity, 280ms) !important;
-  transition-timing-function: var(--aarish-v302-spring), ease-out !important;
-  transition-delay: var(--aarish-v302-delay, 0ms), var(--aarish-v302-delay, 0ms) !important;
+  opacity: 0 !important;
+  transform: translate3d(var(--aarish-v304-x, 0px), var(--aarish-v304-y, 42px), 0) scale3d(0.985, 0.985, 1) !important;
+  transition: none !important;
   backface-visibility: hidden !important;
   -webkit-backface-visibility: hidden !important;
   transform-origin: center center !important;
 }
 
-/* Rest pose: hidden just outside viewport, ready to slide. */
-html body .list-enter.aarish-reveal-item-v302.aarish-reveal-out-v302 {
-  opacity: 0 !important;
-  transform: translate3d(var(--aarish-v302-x, 34px), var(--aarish-v302-y, 16px), 0) scale3d(0.986, 0.986, 1) !important;
-}
-
-/* Enter pose: visible final position. */
-html body .list-enter.aarish-reveal-item-v302.aarish-reveal-in-v302 {
-  opacity: 1 !important;
-  transform: translate3d(0, 0, 0) scale3d(1, 1, 1) !important;
-}
-
-/* RAM safe GPU promotion: only while moving. */
-html body .list-enter.aarish-reveal-item-v302.aarish-reveal-moving-v302 {
+html body .list-enter.aarish-v304-moving {
   will-change: transform, opacity !important;
 }
 
-/* Detail table rows get smaller movement. */
-html body tr.list-enter.aarish-reveal-item-v302.aarish-reveal-out-v302 {
-  transform: translate3d(var(--aarish-v302-x, 14px), 0, 0) scale3d(0.996, 0.996, 1) !important;
+html body .list-enter.aarish-v304-in {
+  animation: none !important;
+  opacity: 1 !important;
+  transform: translate3d(0,0,0) scale3d(1,1,1) !important;
+  transition-property: transform, opacity !important;
+  transition-duration: var(--aarish-v304-duration, 620ms), var(--aarish-v304-opacity, 280ms) !important;
+  transition-timing-function: var(--aarish-v304-spring), ease-out !important;
+  transition-delay: var(--aarish-v304-delay, 0ms), var(--aarish-v304-delay, 0ms) !important;
 }
 
-/* Empty/no-data blocks must never disappear. */
-html body .list-enter.aarish-reveal-skip-v302 {
+html body tr.list-enter.aarish-v304-ready {
+  transform: translate3d(var(--aarish-v304-x, 0px), 18px, 0) scale3d(0.995, 0.995, 1) !important;
+}
+
+html body .list-enter.aarish-v304-skip {
   animation: none !important;
-  transition: none !important;
   opacity: 1 !important;
   transform: none !important;
+  transition: none !important;
   will-change: auto !important;
 }
 
 @media (prefers-reduced-motion: reduce) {
-  html body .list-enter.aarish-reveal-item-v302 {
-    transition-duration: 90ms, 90ms !important;
+  html body .list-enter.aarish-v304-ready,
+  html body .list-enter.aarish-v304-in {
+    opacity: 1 !important;
+    transform: none !important;
+    transition-duration: 80ms, 80ms !important;
     transition-delay: 0ms, 0ms !important;
   }
-  html body .list-enter.aarish-reveal-item-v302.aarish-reveal-out-v302,
-  html body .list-enter.aarish-reveal-item-v302.aarish-reveal-in-v302 {
-    transform: none !important;
-  }
 }
-/* AARISH_SCROLL_REVEAL_V302_END */
+/* AARISH_SCROLL_REVEAL_V304_END */
 </style>
 
 
@@ -20414,16 +20406,16 @@ window.addEventListener("pageshow", function () { setTimeout(install, 120); }, {
 /* AARISH_GOD_TIER_MOTION_V300_JS_END */
 </script>
 
-<script id="aarish-scroll-reveal-v302-js">
-/* AARISH_SCROLL_REVEAL_V302_JS_START
-   Soft repeatable scroll reveal. No observer.unobserve. No data mutation.
+<script id="aarish-scroll-reveal-v304-js">
+/* AARISH_SCROLL_REVEAL_V304_JS_START
+   Smooth scroll reveal with active-screen root. No scroll math loop. No layout reflow.
 */
 (function () {
   "use strict";
-  if (window.__AARISH_SCROLL_REVEAL_V302__) return;
-  window.__AARISH_SCROLL_REVEAL_V302__ = true;
+  if (window.__AARISH_SCROLL_REVEAL_V304__) return;
+  window.__AARISH_SCROLL_REVEAL_V304__ = true;
 
-  var ITEM_SELECTOR = [
+  var LIST_SELECTOR = [
     "#milk-list .list-enter",
     "#udhar-list .list-enter",
     "#expense-list-container .list-enter",
@@ -20438,124 +20430,96 @@ window.addEventListener("pageshow", function () { setTimeout(install, 120); }, {
     "#project-detail-records .list-enter"
   ].join(",");
 
-  var observed = new WeakSet();
-  var state = new WeakMap();
+  var io = null;
+  var rootScreen = null;
+  var states = new WeakMap();
   var timers = new WeakMap();
+  var observed = new WeakSet();
   var queue = [];
   var queueRaf = 0;
   var scanRaf = 0;
-  var io = null;
 
-  var lastY = 0;
-  var lastT = Date.now();
-  var velocity = 0;
-  var direction = 1;
-
-  function now() {
-    return Date.now ? Date.now() : new Date().getTime();
+  function activeScreen() {
+    return document.querySelector(".screen.active") || null;
   }
 
-  function currentY() {
-    var sc = document.querySelector(".screen.active");
-    if (sc) return sc.scrollTop || 0;
-    return window.scrollY || document.documentElement.scrollTop || document.body.scrollTop || 0;
-  }
-
-  function updateScroll() {
-    var y = currentY();
-    var t = now();
-    var dt = Math.max(16, t - lastT);
-    var dy = y - lastY;
-    direction = dy >= 0 ? 1 : -1;
-    velocity = Math.abs(dy) / dt * 1000;
-    lastY = y;
-    lastT = t;
+  function clearTimer(el) {
+    var t = timers.get(el);
+    if (t) {
+      clearTimeout(t);
+      timers.delete(el);
+    }
   }
 
   function isSkip(el) {
-    if (!el || !el.classList) return true;
-    if (!el.closest || !el.closest(".screen")) return true;
+    if (!el || !el.classList || !el.closest) return true;
+    if (!el.closest(".screen")) return true;
 
     var txt = "";
     try { txt = String(el.textContent || "").trim().toLowerCase(); } catch(e) {}
 
     if (!txt || txt.indexOf("no ") === 0 || txt.indexOf("no entries") >= 0 || txt.indexOf("no record") >= 0 || txt.indexOf("no customers") >= 0) {
-      el.classList.add("aarish-reveal-skip-v302");
+      el.classList.add("aarish-v304-skip");
       return true;
     }
+
     return false;
   }
 
-  function clearTimer(el) {
-    var old = timers.get(el);
-    if (old) {
-      clearTimeout(old);
-      timers.delete(el);
-    }
+  function rectAgainstRoot(el) {
+    var r = el.getBoundingClientRect();
+    var root = rootScreen || activeScreen();
+    var rr = root ? root.getBoundingClientRect() : { top: 0, bottom: window.innerHeight || document.documentElement.clientHeight };
+    return { top: r.top, bottom: r.bottom, rootTop: rr.top, rootBottom: rr.bottom };
   }
 
-  function setPoseVars(el, rectTop) {
-    var comingFromTop = rectTop < 0;
-    var x = direction >= 0 ? "34px" : "-26px";
-    var y = comingFromTop ? "-14px" : "18px";
-
-    if (el.tagName && el.tagName.toLowerCase() === "tr") {
-      x = direction >= 0 ? "14px" : "-12px";
-      y = "0px";
-    }
-
-    el.style.setProperty("--aarish-v302-x", x);
-    el.style.setProperty("--aarish-v302-y", y);
+  function isVisibleNow(el) {
+    var m = rectAgainstRoot(el);
+    return m.bottom > m.rootTop + 8 && m.top < m.rootBottom - 8;
   }
 
-  function makeReady(el, rectTop) {
+  function setReady(el, fromTop) {
     if (isSkip(el)) return;
-
-    var st = state.get(el);
-    if (st === "out") return;
-
     clearTimer(el);
-    setPoseVars(el, rectTop || 0);
 
-    el.classList.add("aarish-reveal-item-v302");
-    el.classList.remove("aarish-reveal-in-v302");
-    el.classList.remove("aarish-reveal-moving-v302");
-    el.classList.add("aarish-reveal-out-v302");
-    el.style.setProperty("--aarish-v302-delay", "0ms");
+    el.style.setProperty("--aarish-v304-x", "0px");
+    el.style.setProperty("--aarish-v304-y", fromTop ? "-32px" : "42px");
+    el.style.setProperty("--aarish-v304-delay", "0ms");
 
-    state.set(el, "out");
+    el.classList.remove("aarish-v304-in");
+    el.classList.remove("aarish-v304-moving");
+    el.classList.add("aarish-v304-ready");
+    states.set(el, "ready");
   }
 
-  function finish(el, totalMs) {
+  function cleanupAfter(el, ms) {
     clearTimer(el);
     timers.set(el, setTimeout(function () {
       try {
-        el.classList.remove("aarish-reveal-moving-v302");
+        el.classList.remove("aarish-v304-moving");
         el.style.removeProperty("will-change");
+        el.style.removeProperty("--aarish-v304-delay");
         timers.delete(el);
       } catch(e) {}
-    }, totalMs || 650));
+    }, ms));
   }
 
-  function enter(el, delay, fast) {
+  function reveal(el, delay, fast) {
     if (isSkip(el)) return;
-    if (state.get(el) === "in") return;
+    if (states.get(el) === "in") return;
 
     clearTimer(el);
+    el.classList.add("aarish-v304-moving");
 
-    el.classList.add("aarish-reveal-item-v302");
-    el.classList.add("aarish-reveal-moving-v302");
-    el.classList.add("aarish-reveal-out-v302");
-
-    el.style.setProperty("--aarish-v302-delay", delay + "ms");
-    el.style.setProperty("--aarish-v302-duration", fast ? "340ms" : "560ms");
-    el.style.setProperty("--aarish-v302-opacity", fast ? "160ms" : "280ms");
+    el.style.setProperty("--aarish-v304-delay", delay + "ms");
+    el.style.setProperty("--aarish-v304-duration", fast ? "360ms" : "620ms");
+    el.style.setProperty("--aarish-v304-opacity", fast ? "150ms" : "280ms");
 
     requestAnimationFrame(function () {
-      el.classList.remove("aarish-reveal-out-v302");
-      el.classList.add("aarish-reveal-in-v302");
-      state.set(el, "in");
-      finish(el, delay + (fast ? 430 : 680));
+      el.classList.remove("aarish-v304-ready");
+      el.classList.add("aarish-v304-in");
+      states.set(el, "in");
+      cleanupAfter(el, delay + (fast ? 430 : 720));
     });
   }
 
@@ -20565,86 +20529,102 @@ window.addEventListener("pageshow", function () { setTimeout(install, 120); }, {
     var batch = queue.splice(0, queue.length);
     if (!batch.length) return;
 
-    batch.sort(function (a, b) {
-      return direction >= 0 ? a.top - b.top : b.top - a.top;
-    });
+    batch.sort(function (a, b) { return a.top - b.top; });
 
-    var fast = velocity > 1550 || batch.length > 8;
-    var step = fast ? 7 : 26;
-    var cap = fast ? 56 : 170;
+    var fast = batch.length > 7;
+    var step = fast ? 8 : 24;
+    var cap = fast ? 56 : 120;
 
     for (var i = 0; i < batch.length; i++) {
-      enter(batch[i].el, Math.min(i * step, cap), fast);
+      reveal(batch[i].el, Math.min(i * step, cap), fast);
     }
   }
 
-  function queueEnter(el, rectTop) {
-    if (isSkip(el)) return;
-    if (state.get(el) === "in") return;
-
-    setPoseVars(el, rectTop || 0);
-    queue.push({ el: el, top: rectTop || 0 });
-
-    if (!queueRaf) {
-      queueRaf = requestAnimationFrame(flushQueue);
-    }
+  function queueReveal(el, top) {
+    if (states.get(el) === "in") return;
+    queue.push({ el: el, top: top || 0 });
+    if (!queueRaf) queueRaf = requestAnimationFrame(flushQueue);
   }
 
   function onIO(entries) {
-    updateScroll();
-
     for (var i = 0; i < entries.length; i++) {
       var entry = entries[i];
       var el = entry.target;
-      var top = entry.boundingClientRect ? entry.boundingClientRect.top : 0;
 
       if (isSkip(el)) continue;
 
-      if (entry.isIntersecting && entry.intersectionRatio > 0.025) {
-        queueEnter(el, top);
+      if (entry.isIntersecting && entry.intersectionRatio > 0.01) {
+        if (states.get(el) === "ready") {
+          queueReveal(el, entry.boundingClientRect ? entry.boundingClientRect.top : 0);
+        } else if (!states.get(el)) {
+          states.set(el, "in");
+        }
       } else {
-        makeReady(el, top);
+        if (states.get(el) === "in") {
+          clearTimer(el);
+          timers.set(el, setTimeout(function (node) {
+            if (!node || isVisibleNow(node)) return;
+            var m = rectAgainstRoot(node);
+            setReady(node, m.bottom <= m.rootTop);
+          }, 180, el));
+        }
       }
     }
   }
 
-  function ensureIO() {
-    if (io || !("IntersectionObserver" in window)) return;
+  function makeObserver() {
+    var root = activeScreen();
+
+    if (io && root === rootScreen) return;
+
+    if (io) io.disconnect();
+    io = null;
+    rootScreen = root;
+
+    if (!("IntersectionObserver" in window)) return;
+
     io = new IntersectionObserver(onIO, {
-      root: null,
-      rootMargin: "28% 0px 28% 0px",
-      threshold: [0, 0.025, 0.08, 0.18]
+      root: rootScreen,
+      rootMargin: "0px 0px 12% 0px",
+      threshold: [0, 0.01, 0.08]
     });
+
+    observed = new WeakSet();
   }
 
-  function attachOne(el) {
-    if (!el || observed.has(el) || isSkip(el)) return;
+  function attach(el) {
+    if (!io || !el || observed.has(el) || isSkip(el)) return;
 
-    try { delete el.dataset.aarishMotionV300; } catch(e) {}
-
-    el.classList.add("aarish-reveal-item-v302");
     observed.add(el);
 
-    if (io) io.observe(el);
+    if (!states.get(el)) {
+      if (isVisibleNow(el)) {
+        states.set(el, "in");
+        el.classList.add("aarish-v304-in");
+      } else {
+        var m = rectAgainstRoot(el);
+        setReady(el, m.bottom <= m.rootTop);
+      }
+    }
+
+    io.observe(el);
   }
 
   function scan(root) {
-    ensureIO();
+    makeObserver();
 
     var scope = root && root.querySelectorAll ? root : document;
     var items = [];
 
     try {
-      if (scope.matches && scope.matches(ITEM_SELECTOR)) items.push(scope);
+      if (scope.matches && scope.matches(LIST_SELECTOR)) items.push(scope);
     } catch(e) {}
 
     try {
-      scope.querySelectorAll(ITEM_SELECTOR).forEach(function (el) { items.push(el); });
+      scope.querySelectorAll(LIST_SELECTOR).forEach(function (el) { items.push(el); });
     } catch(e) {}
 
-    for (var i = 0; i < items.length; i++) {
-      attachOne(items[i]);
-    }
+    for (var i = 0; i < items.length; i++) attach(items[i]);
   }
 
   function scheduleScan(root) {
@@ -20655,32 +20635,43 @@ window.addEventListener("pageshow", function () { setTimeout(install, 120); }, {
     });
   }
 
-  document.addEventListener("scroll", function () {
-    updateScroll();
-  }, { capture: true, passive: true });
-
   var mo = new MutationObserver(function (records) {
+    var need = false;
     var root = document;
+
     for (var i = 0; i < records.length; i++) {
-      if (records[i].addedNodes && records[i].addedNodes.length) {
+      if (records[i].type === "childList" && records[i].addedNodes && records[i].addedNodes.length) {
+        need = true;
         root = records[i].target || document;
         break;
       }
+
+      if (records[i].type === "attributes" && records[i].attributeName === "class" && records[i].target && records[i].target.classList && records[i].target.classList.contains("screen")) {
+        need = true;
+        root = document;
+        break;
+      }
     }
-    scheduleScan(root);
+
+    if (need) scheduleScan(root);
   });
 
   function boot() {
-    updateScroll();
-    ensureIO();
+    if (!document.body) return;
+
     scan(document);
 
     try {
-      mo.observe(document.body, { childList: true, subtree: true });
+      mo.observe(document.body, {
+        childList: true,
+        subtree: true,
+        attributes: true,
+        attributeFilter: ["class"]
+      });
     } catch(e) {}
 
-    setTimeout(function () { scheduleScan(document); }, 120);
-    setTimeout(function () { scheduleScan(document); }, 520);
+    setTimeout(function () { scheduleScan(document); }, 220);
+    setTimeout(function () { scheduleScan(document); }, 700);
   }
 
   if (document.readyState === "loading") {
@@ -20689,16 +20680,10 @@ window.addEventListener("pageshow", function () { setTimeout(install, 120); }, {
     boot();
   }
 
-  window.addEventListener("pageshow", function () {
-    updateScroll();
-    scheduleScan(document);
-  }, { passive: true });
-
-  window.__aarishRefreshScrollRevealV302 = function () {
-    scheduleScan(document);
-  };
+  window.addEventListener("pageshow", function () { scheduleScan(document); }, { passive: true });
+  window.__aarishRefreshScrollRevealV304 = function () { scheduleScan(document); };
 })();
-/* AARISH_SCROLL_REVEAL_V302_JS_END */
+/* AARISH_SCROLL_REVEAL_V304_JS_END */
 </script>
 
 
