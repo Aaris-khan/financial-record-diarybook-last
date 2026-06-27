@@ -5616,234 +5616,210 @@ html.dark body #diary-screen #diary-search::-webkit-input-placeholder,
 
 <style id="aarish-god-tier-motion-v300">
 /* AARISH_GOD_TIER_MOTION_V300_START
-   Fixed placement: CSS after real head styles; JS before real last body.
-   Motion only: transform + opacity. Data/render/Firebase untouched.
+   AARISH_UNIFIED_SLIDE_V306_START
+   Premium sliding-only unified engine.
+   Motion-only patch: Firebase/data/render/delete logic untouched.
 */
-:root {
-  --aarish-god-spring-v300: cubic-bezier(0.16, 1, 0.3, 1);
-  --aarish-god-snap-v300: cubic-bezier(0.2, 0.8, 0.2, 1);
-  --aarish-god-press-ms-v300: 88ms;
-  --aarish-god-release-ms-v300: 300ms;
-  --aarish-god-screen-ms-v300: 255ms;
-  --aarish-god-sheet-ms-v300: 335ms;
+:root{
+  --aarish-v306-spring:cubic-bezier(0.16,1,0.3,1);
+  --aarish-v306-snap:cubic-bezier(0.2,0.8,0.2,1);
+  --aarish-v306-screen-ms:245ms;
+  --aarish-v306-sheet-ms:335ms;
+  --aarish-v306-list-ms:620ms;
+  --aarish-v306-list-opacity-ms:260ms;
+  --aarish-v306-press-ms:88ms;
+  --aarish-v306-release-ms:285ms;
 }
 
-:is(button,.btn-primary,.btn-ios-share,.btn-ios-add,.btn-google,.action-btn,.nav-item,.glass-card,.diary-card,.squircle,[onclick]) {
-  transition-property: transform, opacity !important;
-  transition-duration: var(--aarish-god-release-ms-v300), 150ms !important;
-  transition-timing-function: var(--aarish-god-spring-v300), ease-out !important;
-  backface-visibility: hidden !important;
-  -webkit-backface-visibility: hidden !important;
-  transform-style: preserve-3d !important;
-  -webkit-tap-highlight-color: transparent !important;
-  touch-action: manipulation !important;
+:is(button,.btn-primary,.btn-ios-share,.btn-ios-add,.btn-google,.action-btn,.nav-item,.glass-card,.diary-card,.squircle,[onclick]){
+  transition-property:transform,opacity!important;
+  transition-duration:var(--aarish-v306-release-ms),150ms!important;
+  transition-timing-function:var(--aarish-v306-spring),ease-out!important;
+  backface-visibility:hidden!important;
+  -webkit-backface-visibility:hidden!important;
+  transform-style:preserve-3d!important;
+  -webkit-tap-highlight-color:transparent!important;
+  touch-action:manipulation!important;
 }
-
-:is(button,.btn-primary,.btn-ios-share,.btn-ios-add,.btn-google,.action-btn,.nav-item,.glass-card,.diary-card,.squircle,[onclick]).aarish-pressing-v300 {
-  transition-duration: var(--aarish-god-press-ms-v300), 80ms !important;
-  transform: translate3d(0,0,0) scale3d(0.958,0.958,1) !important;
-}
-
-:is(.btn-primary,.btn-ios-share,.btn-ios-add,.btn-google,button,[onclick]).aarish-pressing-v300 {
-  transform: translate3d(0,0,0) scale3d(0.944,0.944,1) !important;
-}
-
-.action-btn.aarish-pressing-v300,
-.squircle.aarish-pressing-v300 {
-  transform: translate3d(0,0,0) scale3d(0.90,0.90,1) !important;
-}
-
-.nav-item {
-  --aarish-nav-y-v300: 0px;
-  --aarish-nav-scale-v300: 1;
-  transform: translate3d(0,var(--aarish-nav-y-v300),0) scale3d(var(--aarish-nav-scale-v300),var(--aarish-nav-scale-v300),1) !important;
-}
-.nav-item.active { --aarish-nav-y-v300: -3px; }
-.nav-item.aarish-pressing-v300 { --aarish-nav-scale-v300: 0.90; }
 
 .aarish-will-v300,
-.aarish-will-v300 > .modal-content {
-  will-change: transform, opacity !important;
+.aarish-will-v300>.modal-content,
+.aarish-v306-moving{
+  will-change:transform,opacity!important;
 }
 
-.app-container {
-  transition-property: transform, opacity !important;
-  transition-duration: 330ms, 220ms !important;
-  transition-timing-function: var(--aarish-god-spring-v300), ease-out !important;
-  transform-origin: top center !important;
+.app-container{
+  transition-property:transform,opacity!important;
+  transition-duration:330ms,220ms!important;
+  transition-timing-function:var(--aarish-v306-spring),ease-out!important;
+  transform-origin:top center!important;
 }
-.app-container.app-scale-down {
-  transform: translate3d(0,8px,0) scale3d(0.965,0.965,1) !important;
-  opacity: 0.78 !important;
-  pointer-events: none !important;
-  border-radius: inherit !important;
-}
-
-.screen.active {
-  animation: aarishScreenGlideV300 var(--aarish-god-screen-ms-v300) var(--aarish-god-snap-v300) both !important;
-}
-.screen.aarish-will-v300 { will-change: transform, opacity !important; }
-
-@keyframes aarishScreenGlideV300 {
-  0% { opacity: 0.965; transform: translate3d(18px,0,0) scale3d(0.998,0.998,1); }
-  62% { opacity: 1; transform: translate3d(-1px,0,0) scale3d(1.001,1.001,1); }
-  100% { opacity: 1; transform: translate3d(0,0,0) scale3d(1,1,1); }
+.app-container.app-scale-down{
+  transform:translate3d(0,8px,0) scale3d(.965,.965,1)!important;
+  opacity:.78!important;
+  pointer-events:none!important;
+  border-radius:inherit!important;
 }
 
-.list-enter,
-#main-app .screen.active :is(.glass-card,.diary-card).list-enter,
-#main-app :is(#milk-list,#udhar-list,#salary-list,#expense-list-container,#diary-list,#project-list,#dash-balances-list) :is(.glass-card,.diary-card).list-enter {
-  animation: aarishListGlideV300 380ms var(--aarish-god-spring-v300) both !important;
-  animation-delay: var(--aarish-delay-v300,var(--aarish-stagger-v5,var(--aarish-stagger-v4,0ms))) !important;
-  opacity: 0;
-  transform-origin: center center !important;
+.screen.active{
+  animation:aarishScreenGlideV306 var(--aarish-v306-screen-ms) var(--aarish-v306-snap) both!important;
+}
+.screen.aarish-will-v300{
+  will-change:transform,opacity!important;
 }
 
-@keyframes aarishListGlideV300 {
-  0% { opacity: 0; transform: translate3d(30px,0,0) scale3d(0.988,0.988,1); }
-  56% { opacity: 1; transform: translate3d(-2px,0,0) scale3d(1.002,1.002,1); }
-  100% { opacity: 1; transform: translate3d(0,0,0) scale3d(1,1,1); }
+@keyframes aarishScreenGlideV306{
+  0%{opacity:.965;transform:translate3d(14px,0,0) scale3d(.998,.998,1)}
+  70%{opacity:1;transform:translate3d(-1px,0,0) scale3d(1.001,1.001,1)}
+  100%{opacity:1;transform:translate3d(0,0,0) scale3d(1,1,1)}
 }
 
-#main-app :is(#milk-detail-records,#udhar-detail-records,#salary-detail-records,#expense-detail-records,#project-detail-records) tr.list-enter {
-  animation: aarishRowGlideV300 250ms var(--aarish-god-snap-v300) both !important;
-  animation-delay: var(--aarish-delay-v300,var(--aarish-stagger-v5,var(--aarish-stagger-v4,0ms))) !important;
+/* Fail-safe: cards stay visible unless JS intentionally prepares reveal. */
+html body .list-enter,
+#main-app .list-enter{
+  animation:none!important;
+  opacity:1!important;
+  transform:translate3d(0,0,0) scale3d(1,1,1)!important;
+  backface-visibility:hidden!important;
+  -webkit-backface-visibility:hidden!important;
+  transform-origin:center center!important;
 }
 
-@keyframes aarishRowGlideV300 {
-  0% { opacity: 0; transform: translate3d(16px,0,0); }
-  100% { opacity: 1; transform: translate3d(0,0,0); }
+/* Prepared offscreen pose. Only V306 JS adds this class. */
+html body .list-enter.aarish-v306-ready,
+#main-app .list-enter.aarish-v306-ready{
+  animation:none!important;
+  opacity:0!important;
+  transform:translate3d(var(--aarish-v306-x,28px),var(--aarish-v306-y,22px),0) scale3d(.986,.986,1)!important;
+  transition:none!important;
 }
 
-.modal-overlay {
-  display: none !important;
-  opacity: 0 !important;
-  pointer-events: none !important;
-  visibility: hidden !important;
-  transition-property: opacity !important;
-  transition-duration: 230ms !important;
-  transition-timing-function: ease-out !important;
+/* Premium reveal pose. */
+html body .list-enter.aarish-v306-in,
+#main-app .list-enter.aarish-v306-in{
+  animation:none!important;
+  opacity:1!important;
+  transform:translate3d(0,0,0) scale3d(1,1,1)!important;
+  transition-property:transform,opacity!important;
+  transition-duration:var(--aarish-v306-list-ms),var(--aarish-v306-list-opacity-ms)!important;
+  transition-timing-function:var(--aarish-v306-spring),ease-out!important;
+  transition-delay:var(--aarish-v306-delay,0ms),var(--aarish-v306-delay,0ms)!important;
+}
+
+html body tr.list-enter.aarish-v306-ready,
+#main-app tr.list-enter.aarish-v306-ready{
+  transform:translate3d(var(--aarish-v306-x,12px),0,0) scale3d(.996,.996,1)!important;
+}
+
+html body .list-enter.aarish-v306-skip,
+#main-app .list-enter.aarish-v306-skip{
+  animation:none!important;
+  opacity:1!important;
+  transform:none!important;
+  transition:none!important;
+  will-change:auto!important;
+}
+
+/* Press feedback */
+:is(button,.btn-primary,.btn-ios-share,.btn-ios-add,.btn-google,.action-btn,.nav-item,.glass-card,.diary-card,.squircle,[onclick]).aarish-pressing-v300{
+  transition-duration:var(--aarish-v306-press-ms),80ms!important;
+  transform:translate3d(0,0,0) scale3d(.958,.958,1)!important;
+}
+:is(.btn-primary,.btn-ios-share,.btn-ios-add,.btn-google,button,[onclick]).aarish-pressing-v300{
+  transform:translate3d(0,0,0) scale3d(.944,.944,1)!important;
+}
+.action-btn.aarish-pressing-v300,
+.squircle.aarish-pressing-v300{
+  transform:translate3d(0,0,0) scale3d(.90,.90,1)!important;
+}
+
+.nav-item{
+  --aarish-nav-y-v300:0px;
+  --aarish-nav-scale-v300:1;
+  transform:translate3d(0,var(--aarish-nav-y-v300),0) scale3d(var(--aarish-nav-scale-v300),var(--aarish-nav-scale-v300),1)!important;
+}
+.nav-item.active{--aarish-nav-y-v300:-3px}
+.nav-item.aarish-pressing-v300{--aarish-nav-scale-v300:.90}
+
+/* Modal motion preserved */
+.modal-overlay{
+  display:none!important;
+  opacity:0!important;
+  pointer-events:none!important;
+  visibility:hidden!important;
+  transition-property:opacity!important;
+  transition-duration:230ms!important;
+  transition-timing-function:ease-out!important;
 }
 .modal-overlay.is-preopen,
 .modal-overlay.is-open,
-.modal-overlay.is-closing {
-  display: flex !important;
-  visibility: visible !important;
+.modal-overlay.is-closing{
+  display:flex!important;
+  visibility:visible!important;
 }
-.modal-overlay.is-open {
-  opacity: 1 !important;
-  pointer-events: auto !important;
+.modal-overlay.is-open{
+  opacity:1!important;
+  pointer-events:auto!important;
 }
 .modal-overlay.is-preopen,
-.modal-overlay.is-closing {
-  opacity: 0 !important;
-  pointer-events: none !important;
+.modal-overlay.is-closing{
+  opacity:0!important;
+  pointer-events:none!important;
 }
-
-.modal-content {
-  animation: none !important;
-  opacity: 0;
-  transform: translate3d(0,108%,0) scale3d(0.992,0.992,1);
-  transition-property: transform, opacity !important;
-  transition-duration: var(--aarish-god-sheet-ms-v300), 210ms !important;
-  transition-timing-function: var(--aarish-god-spring-v300), ease-out !important;
-  transform-origin: bottom center !important;
+.modal-content{
+  animation:none!important;
+  opacity:0;
+  transform:translate3d(0,108%,0) scale3d(.992,.992,1);
+  transition-property:transform,opacity!important;
+  transition-duration:var(--aarish-v306-sheet-ms),210ms!important;
+  transition-timing-function:var(--aarish-v306-spring),ease-out!important;
+  transform-origin:bottom center!important;
 }
-.modal-overlay.is-open .modal-content {
-  opacity: 1 !important;
-  transform: translate3d(0,0,0) scale3d(1,1,1) !important;
+.modal-overlay.is-open .modal-content{
+  opacity:1!important;
+  transform:translate3d(0,0,0) scale3d(1,1,1)!important;
 }
 .modal-overlay.is-closing .modal-content,
-.modal-overlay.is-preopen .modal-content {
-  opacity: 0 !important;
-  transform: translate3d(0,108%,0) scale3d(0.992,0.992,1) !important;
+.modal-overlay.is-preopen .modal-content{
+  opacity:0!important;
+  transform:translate3d(0,108%,0) scale3d(.992,.992,1)!important;
 }
 
 #toast,
 #gemini-chat-window,
-.hidden-chat {
-  transition-property: transform, opacity !important;
-  transition-duration: 280ms, 200ms !important;
-  transition-timing-function: var(--aarish-god-spring-v300), ease-out !important;
+.hidden-chat{
+  transition-property:transform,opacity!important;
+  transition-duration:280ms,200ms!important;
+  transition-timing-function:var(--aarish-v306-spring),ease-out!important;
 }
 
-@media (prefers-reduced-motion: reduce) {
-  .screen.active,
-  .list-enter,
-  #main-app .screen.active :is(.glass-card,.diary-card).list-enter,
-  #main-app tr.list-enter {
-    animation: aarishReducedFadeV300 80ms ease-out both !important;
-    transform: none !important;
+@media (prefers-reduced-motion:reduce){
+  .screen.active{
+    animation:aarishReducedFadeV306 80ms ease-out both!important;
+    transform:none!important;
   }
-  :is(button,.btn-primary,.btn-ios-share,.btn-ios-add,.btn-google,.action-btn,.nav-item,.glass-card,.diary-card,.squircle,[onclick]) {
-    transition-duration: 80ms,80ms !important;
+  html body .list-enter,
+  #main-app .list-enter,
+  html body .list-enter.aarish-v306-ready,
+  #main-app .list-enter.aarish-v306-ready,
+  html body .list-enter.aarish-v306-in,
+  #main-app .list-enter.aarish-v306-in{
+    opacity:1!important;
+    transform:none!important;
+    transition-duration:80ms,80ms!important;
+    transition-delay:0ms,0ms!important;
+  }
+  :is(button,.btn-primary,.btn-ios-share,.btn-ios-add,.btn-google,.action-btn,.nav-item,.glass-card,.diary-card,.squircle,[onclick]){
+    transition-duration:80ms,80ms!important;
   }
 }
-@keyframes aarishReducedFadeV300 { from { opacity: 0; } to { opacity: 1; } }
+@keyframes aarishReducedFadeV306{
+  from{opacity:0}
+  to{opacity:1}
+}
+/* AARISH_UNIFIED_SLIDE_V306_END */
 /* AARISH_GOD_TIER_MOTION_V300_END */
 </style>
-
-<style id="aarish-scroll-reveal-v304">
-/* AARISH_SCROLL_REVEAL_V304_START
-   Hybrid smooth scroll reveal:
-   - V300 initial motion stays alive.
-   - Offscreen list cards reveal when they enter the active scroll screen.
-   - Re-arms only after the card fully leaves viewport.
-   - No force reflow, no scroll velocity loop, no visible reset.
-*/
-:root {
-  --aarish-v304-spring: cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-html body .list-enter.aarish-v304-ready {
-  animation: none !important;
-  opacity: 0 !important;
-  transform: translate3d(var(--aarish-v304-x, 0px), var(--aarish-v304-y, 42px), 0) scale3d(0.985, 0.985, 1) !important;
-  transition: none !important;
-  backface-visibility: hidden !important;
-  -webkit-backface-visibility: hidden !important;
-  transform-origin: center center !important;
-}
-
-html body .list-enter.aarish-v304-moving {
-  will-change: transform, opacity !important;
-}
-
-html body .list-enter.aarish-v304-in {
-  animation: none !important;
-  opacity: 1 !important;
-  transform: translate3d(0,0,0) scale3d(1,1,1) !important;
-  transition-property: transform, opacity !important;
-  transition-duration: var(--aarish-v304-duration, 620ms), var(--aarish-v304-opacity, 280ms) !important;
-  transition-timing-function: var(--aarish-v304-spring), ease-out !important;
-  transition-delay: var(--aarish-v304-delay, 0ms), var(--aarish-v304-delay, 0ms) !important;
-}
-
-html body tr.list-enter.aarish-v304-ready {
-  transform: translate3d(var(--aarish-v304-x, 0px), 18px, 0) scale3d(0.995, 0.995, 1) !important;
-}
-
-html body .list-enter.aarish-v304-skip {
-  animation: none !important;
-  opacity: 1 !important;
-  transform: none !important;
-  transition: none !important;
-  will-change: auto !important;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  html body .list-enter.aarish-v304-ready,
-  html body .list-enter.aarish-v304-in {
-    opacity: 1 !important;
-    transform: none !important;
-    transition-duration: 80ms, 80ms !important;
-    transition-delay: 0ms, 0ms !important;
-  }
-}
-/* AARISH_SCROLL_REVEAL_V304_END */
-</style>
-
-
 </head>
 
 <body>
@@ -8097,40 +8073,41 @@ try {
 
 
     function renderMilkList() {
-        const q = (document.getElementById('milk-search').value || '').toLowerCase();
-        const html = Object.keys(milkDB).filter(n => n.toLowerCase().includes(q)).map((name, index) => {
-            const c = milkDB[name];
-            let kg = 0; (c.records || []).forEach(r => kg += ((Number(r.morning)||0) + (Number(r.evening)||0)));
+    const q = (document.getElementById('milk-search').value || '').toLowerCase();
+    const escV305 = window.aarishSafeHtmlV305 || function(v){ return String(v == null ? '' : v).replace(/[&<>"']/g, function(ch){ return ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[ch]; }); };
+    const jsV305 = window.aarishSafeJsArgV305 || function(v){ return JSON.stringify(String(v == null ? '' : v)).replace(/"/g, '&quot;'); };
+    const html = Object.keys(milkDB).filter(n => String(n).toLowerCase().includes(q)).map((name, index) => {
+        const c = milkDB[name] || {};
+        let kg = 0; (c.records || []).forEach(r => kg += ((Number(r.morning)||0) + (Number(r.evening)||0)));
+        const isDeneWala = c.type === 'lene_wala';
+        const colorClass = isDeneWala ? 'text-[#34C759]' : 'text-[#FF3B30]';
+        const bgClass = isDeneWala ? 'bg-[#34C759]/10' : 'bg-[#FF3B30]/10';
+        const borderClass = isDeneWala ? 'border-l-[#34C759]' : 'border-l-[#FF3B30]';
+        const sign = isDeneWala ? '+' : '-';
+        const safeName = escV305(name);
+        const argName = jsV305(name);
+        const initial = safeName ? safeName.charAt(0).toUpperCase() : 'M';
 
-            
-            const isDeneWala = c.type === 'lene_wala';
-            const colorClass = isDeneWala ? 'text-[#34C759]' : 'text-[#FF3B30]';
-            const bgClass = isDeneWala ? 'bg-[#34C759]/10' : 'bg-[#FF3B30]/10';
-            const borderClass = isDeneWala ? 'border-l-[#34C759]' : 'border-l-[#FF3B30]';
-            const sign = isDeneWala ? '+' : '-';
-            const typeLabel = isDeneWala ? 'Seller' : 'Buyer';
-
-            return `<div 
-                onclick="haptic(); openMilkDetail('${name}')"
-                class="glass-card aarish-premium-card-v183 bg-white/10 dark:bg-white/5 mb-3.5 flex items-center justify-between cursor-pointer border-l-[3px] ${borderClass} w-full ring-1 ring-white/40 dark:ring-white/5 list-enter" style="--aarish-stagger-v4:${Math.min(index * 0.014, 0.112)}s;">
-
-                <div class="flex items-center gap-4 w-full min-w-0">
-                    <div class="w-12 h-12 shrink-0 squircle ${bgClass} ${colorClass} font-extrabold flex items-center justify-center text-lg">${name[0].toUpperCase()}</div>
-                    <div class="flex-1 min-w-0">
-                        <h4 class="font-bold text-[17px] leading-tight truncate w-full flex items-center text-gray-900 dark:text-white">${name}</h4>
-                        <p class="text-[13px] text-gray-500 font-medium truncate w-full mt-0.5 tracking-tight">${kg.toFixed(2)} KG • <span class="${colorClass} font-extrabold text-[15px] ml-1">${sign}₹${Math.round(kg * c.rate)}</span></p>
-                    </div>
+        return `<div
+            onclick="haptic(); openMilkDetail(${argName})"
+            class="glass-card aarish-premium-card-v183 bg-white/10 dark:bg-white/5 mb-3.5 flex items-center justify-between cursor-pointer border-l-[3px] ${borderClass} w-full ring-1 ring-white/40 dark:ring-white/5 list-enter" style="--aarish-stagger-v4:${Math.min(index * 0.014, 0.112)}s;">
+            <div class="flex items-center gap-4 w-full min-w-0">
+                <div class="w-12 h-12 shrink-0 squircle ${bgClass} ${colorClass} font-extrabold flex items-center justify-center text-lg">${initial}</div>
+                <div class="flex-1 min-w-0">
+                    <h4 class="font-bold text-[17px] leading-tight truncate w-full flex items-center text-gray-900 dark:text-white">${safeName}</h4>
+                    <p class="text-[13px] text-gray-500 font-medium truncate w-full mt-0.5 tracking-tight">${kg.toFixed(2)} KG • <span class="${colorClass} font-extrabold text-[15px] ml-1">${sign}₹${Math.round(kg * (Number(c.rate)||0))}</span></p>
                 </div>
-                <i class="fa-solid fa-chevron-right text-gray-300 shrink-0 ml-3 text-[13px]"></i>
-            </div>`;
-        }).join('');
-        document.getElementById('milk-list').innerHTML = html || `<div class="flex flex-col items-center justify-center py-24 text-center select-none">
-  <div class="w-28 h-28 rounded-full bg-[#007AFF]/10 text-[#007AFF] flex items-center justify-center shadow-[0_0_24px_rgba(0,122,255,0.14)]">
-    <i class="fa-solid fa-jug-detergent text-5xl"></i>
-  </div>
-  <p class="mt-8 text-[#007AFF] font-extrabold text-[17px] tracking-tight drop-shadow-[0_0_10px_rgba(0,122,255,0.28)]">No customers found</p>
-</div>`;
-    }
+            </div>
+            <i class="fa-solid fa-chevron-right text-gray-300 shrink-0 ml-3 text-[13px]"></i>
+        </div>`;
+    }).join('');
+    document.getElementById('milk-list').innerHTML = html || `<div class="flex flex-col items-center justify-center py-24 text-center select-none">
+      <div class="w-28 h-28 rounded-full bg-[#007AFF]/10 text-[#007AFF] flex items-center justify-center shadow-[0_0_24px_rgba(0,122,255,0.14)]">
+        <i class="fa-solid fa-jug-detergent text-5xl"></i>
+      </div>
+      <p class="mt-8 text-[#007AFF] font-extrabold text-[17px] tracking-tight drop-shadow-[0_0_10px_rgba(0,122,255,0.28)]">No customers found</p>
+    </div>`;
+}
 
     let __milkFilterTimerV49 = null;
 function filterMilkList() {
@@ -9298,44 +9275,50 @@ try { window.renderExpenseRecords = renderExpenseRecords; } catch(e) {}
          // ========================== PREMIUM BUSINESS HUB LOGIC ==========================
 
 async function saveNewProject() {
-    let name = document.getElementById('new-project-name').value.trim().replace(/[.#$\[\]<>]/g, ''); 
+    const input = document.getElementById('new-project-name');
+    let name = (window.aarishSafeDbKeyV305 ? window.aarishSafeDbKeyV305(input && input.value) : String((input && input.value) || '').normalize('NFKC').replace(/[.#$\[\]<>\/\\'"`]/g, ' ').replace(/[\u0000-\u001F\u007F]/g, ' ').replace(/\s+/g, ' ').trim());
+    if (input) input.value = name;
     if (!name) return showToast('Enter Name!');
     if (projectDB[name]) return showToast('Account already exists!');
-    
-    projectDB[name] = { records: [], created: Date.now() }; 
-    
+
+    projectDB[name] = { records: [], created: Date.now(), safeKeyV305: true };
+
     if (currentUserUID) {
-        window.aarishFirebaseLaterV48(`projectDB/${name}`, "set", projectDB[name]) 
+        window.aarishFirebaseLaterV48(`projectDB/${name}`, "set", projectDB[name]);
     }
-    
-    closeModal('add-project-modal'); 
-    renderProjectsList(); 
+
+    closeModal('add-project-modal');
+    renderProjectsList();
     showToast('Account Created!');
 }
 
     
     function renderProjectsList() {
-        const q = (document.getElementById('project-search')?.value || '').toLowerCase();
-        const html = Object.keys(projectDB).filter(n => n.toLowerCase().includes(q)).map((name, index) => {
-            const p = projectDB[name];
-            const recCount = p.records ? p.records.length : 0;
+    const q = (document.getElementById('project-search')?.value || '').toLowerCase();
+    const escV305 = window.aarishSafeHtmlV305 || function(v){ return String(v == null ? '' : v).replace(/[&<>"']/g, function(ch){ return ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[ch]; }); };
+    const jsV305 = window.aarishSafeJsArgV305 || function(v){ return JSON.stringify(String(v == null ? '' : v)).replace(/"/g, '&quot;'); };
+    const html = Object.keys(projectDB).filter(n => String(n).toLowerCase().includes(q)).map((name, index) => {
+        const p = projectDB[name] || {};
+        const recCount = p.records ? p.records.length : 0;
+        const safeName = escV305(name);
+        const argName = jsV305(name);
 
-            return `<div onclick="haptic(); openProjectDetail('${name}')" class="glass-card mb-3.5 flex items-center justify-between cursor-pointer border-l-[3px] border-l-black dark:border-l-white w-full min-w-0 ring-1 ring-white/40 dark:ring-white/5 list-enter" style="--aarish-stagger-v4:${Math.min(index * 0.014, 0.112)}s;">
-                <div class="flex items-center gap-4 w-full min-w-0">
-                    <div class="w-12 h-12 shrink-0 squircle bg-black/5 dark:bg-white/10 text-gray-800 dark:text-white font-extrabold flex items-center justify-center text-xl shadow-inner"><i class="fa-solid fa-briefcase"></i></div>
-                    <div class="flex-1 min-w-0">
-                        <h4 class="font-bold text-[18px] leading-tight truncate w-full flex items-center text-gray-900 dark:text-white">${name}</h4>
-                        <p class="text-[13px] text-gray-500 font-semibold truncate w-full mt-0.5 tracking-tight">${recCount} Records Logged</p>
-                    </div>
+        return `<div onclick="haptic(); openProjectDetail(${argName})" class="glass-card mb-3.5 flex items-center justify-between cursor-pointer border-l-[3px] border-l-black dark:border-l-white w-full min-w-0 ring-1 ring-white/40 dark:ring-white/5 list-enter" style="--aarish-stagger-v4:${Math.min(index * 0.014, 0.112)}s;">
+            <div class="flex items-center gap-4 w-full min-w-0">
+                <div class="w-12 h-12 shrink-0 squircle bg-black/5 dark:bg-white/10 text-gray-800 dark:text-white font-extrabold flex items-center justify-center text-xl shadow-inner"><i class="fa-solid fa-briefcase"></i></div>
+                <div class="flex-1 min-w-0">
+                    <h4 class="font-bold text-[18px] leading-tight truncate w-full flex items-center text-gray-900 dark:text-white">${safeName}</h4>
+                    <p class="text-[13px] text-gray-500 font-semibold truncate w-full mt-0.5 tracking-tight">${recCount} Records Logged</p>
                 </div>
-                <div class="flex items-center gap-3 shrink-0 ml-2">
-                    <button onclick="event.stopPropagation(); haptic(); deleteProject('${name}')" class="action-btn !bg-red-500/10"><i class="fa-solid fa-trash text-[12px] text-red-500"></i></button>
-                    <i class="fa-solid fa-chevron-right text-gray-300 text-[14px]"></i>
-                </div>
-            </div>`;
-        }).join('');
-        document.getElementById('project-list').innerHTML = html || getEmptyState('fa-folder-open', 'No business khatas added yet');
-    }
+            </div>
+            <div class="flex items-center gap-3 shrink-0 ml-2">
+                <button onclick="event.stopPropagation(); haptic(); deleteProject(${argName})" class="action-btn !bg-red-500/10"><i class="fa-solid fa-trash text-[12px] text-red-500"></i></button>
+                <i class="fa-solid fa-chevron-right text-gray-300 text-[14px]"></i>
+            </div>
+        </div>`;
+    }).join('');
+    document.getElementById('project-list').innerHTML = html || getEmptyState('fa-folder-open', 'No business khatas added yet');
+}
 
     let __projectFilterTimerV49 = null;
 function filterProjectList() {
@@ -11578,9 +11561,10 @@ try { Function("fn", "renderMilkRecords = fn;")(window.aarishRenderMilkRecordsCo
   }
 
   function cleanMilkNameV18(v) {
+    if (window.aarishSafeDbKeyV305) return window.aarishSafeDbKeyV305(v);
     return String(v || "")
       .normalize("NFKC")
-      .replace(/[.#$\[\]<>\/\\]/g, " ")
+      .replace(/[.#$\[\]<>\/\\'"`]/g, " ")
       .replace(/[\u0000-\u001F\u007F]/g, " ")
       .replace(/\s+/g, " ")
       .trim();
@@ -20180,242 +20164,133 @@ window.addEventListener("pageshow", function () { setTimeout(install, 120); }, {
 })();
 </script>
 
-<script id="aarish-god-tier-motion-v300-js">
-/* AARISH_GOD_TIER_MOTION_V300_JS_START
-   Runtime placement fixed: real document body only, never report/template HTML.
+<script id="aarish-safe-key-v305">
+/* AARISH_SAFE_KEY_V305_START
+   Firebase key + onclick argument safety. UI layout/design untouched.
 */
 (function () {
   "use strict";
-  if (window.__AARISH_GOD_TIER_MOTION_V300__) return;
-  window.__AARISH_GOD_TIER_MOTION_V300__ = true;
+  if (window.__AARISH_SAFE_KEY_V305__) return;
+  window.__AARISH_SAFE_KEY_V305__ = true;
 
-  var PRESS_SELECTOR = [
+  function safeDbKey(v) {
+    return String(v == null ? "" : v)
+      .normalize("NFKC")
+      .replace(/[.#$\[\]<>\/\\'"`]/g, " ")
+      .replace(/[\u0000-\u001F\u007F]/g, " ")
+      .replace(/\s+/g, " ")
+      .trim()
+      .slice(0, 90);
+  }
+  function escHtml(v) {
+    return String(v == null ? "" : v).replace(/[&<>"']/g, function (ch) {
+      return ({ "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;", "'":"&#39;" })[ch];
+    });
+  }
+  function jsArg(v) {
+    return JSON.stringify(String(v == null ? "" : v)).replace(/"/g, "&quot;");
+  }
+  function dbObj(name) {
+    try { if (name === "milkDB" && typeof milkDB !== "undefined") return milkDB || {}; } catch(e) {}
+    try { if (name === "projectDB" && typeof projectDB !== "undefined") return projectDB || {}; } catch(e) {}
+    return window[name] || {};
+  }
+  function assignDb(name, db) {
+    try { if (name === "milkDB") milkDB = db; } catch(e) {}
+    try { if (name === "projectDB") projectDB = db; } catch(e) {}
+    window[name] = db;
+  }
+  function mergeRecordsInto(target, source) {
+    if (!target || !source) return target || source;
+    if (!Array.isArray(target.records)) target.records = [];
+    var seen = {};
+    target.records.forEach(function (r) { if (r && r.id) seen[r.id] = true; });
+    (Array.isArray(source.records) ? source.records : []).forEach(function (r) {
+      if (r && r.id && !seen[r.id]) { target.records.push(r); seen[r.id] = true; }
+    });
+    Object.keys(source).forEach(function (k) {
+      if (k !== "records" && target[k] == null) target[k] = source[k];
+    });
+    return target;
+  }
+  function ensureSafeKey(dbName, raw) {
+    var key = String(raw == null ? "" : raw);
+    var safe = safeDbKey(key);
+    if (!safe) return key;
+    var db = dbObj(dbName);
+    if (key === safe) return key;
+    if (db && db[key]) {
+      db[safe] = db[safe] ? mergeRecordsInto(db[safe], db[key]) : db[key];
+      delete db[key];
+      assignDb(dbName, db);
+      try {
+        if (typeof currentUserUID !== "undefined" && currentUserUID && window.aarishFirebaseLaterV48) {
+          window.aarishFirebaseLaterV48(dbName + "/" + safe, "set", db[safe]);
+          window.aarishFirebaseLaterV48(dbName + "/" + key, "remove");
+        }
+      } catch(e) {}
+      return safe;
+    }
+    if (db && db[safe]) return safe;
+    return safe;
+  }
+  function wrap(name, before) {
+    try {
+      var old = window[name];
+      if (typeof old !== "function" || old.__aarishSafeKeyV305) return;
+      var fn = function () {
+        var args = Array.prototype.slice.call(arguments);
+        try {
+          var changed = before && before.apply(this, args);
+          if (changed && typeof changed.length === "number") args = Array.prototype.slice.call(changed);
+        } catch(e) {}
+        return old.apply(this, args);
+      };
+      fn.__aarishSafeKeyV305 = true;
+      window[name] = fn;
+      try { Function("fn", name + " = fn;")(fn); } catch(e) {}
+    } catch(e) {}
+  }
+  function sanitizeInput(id) {
+    var el = document.getElementById(id);
+    if (el) el.value = safeDbKey(el.value);
+  }
+
+  window.aarishSafeDbKeyV305 = safeDbKey;
+  window.aarishSafeHtmlV305 = escHtml;
+  window.aarishSafeJsArgV305 = jsArg;
+  window.aarishEnsureSafeKeyV305 = ensureSafeKey;
+
+  wrap("addMilkCustomer", function () { sanitizeInput("new-milk-name"); });
+  wrap("saveNewProject", function () { sanitizeInput("new-project-name"); });
+  wrap("openMilkDetail", function (name) { return [ensureSafeKey("milkDB", name)]; });
+  wrap("openProjectDetail", function (name) { return [ensureSafeKey("projectDB", name)]; });
+  wrap("deleteProject", function (name) { return [ensureSafeKey("projectDB", name)]; });
+  wrap("saveMilkEntry", function () { try { if (typeof activeMilkCustomer !== "undefined") activeMilkCustomer = ensureSafeKey("milkDB", activeMilkCustomer); } catch(e) {} });
+  wrap("deleteMilkEntry", function () { try { if (typeof activeMilkCustomer !== "undefined") activeMilkCustomer = ensureSafeKey("milkDB", activeMilkCustomer); } catch(e) {} });
+  wrap("saveProjectEntry", function () { try { if (typeof activeProject !== "undefined") activeProject = ensureSafeKey("projectDB", activeProject); } catch(e) {} });
+  wrap("deleteProjectEntry", function () { try { if (typeof activeProject !== "undefined") activeProject = ensureSafeKey("projectDB", activeProject); } catch(e) {} });
+})();
+/* AARISH_SAFE_KEY_V305_END */
+</script>
+
+<script id="aarish-god-tier-motion-v300-js">
+/* AARISH_GOD_TIER_MOTION_V300_JS_START
+   AARISH_UNIFIED_SLIDE_V306_JS_START
+   One ultra-light sliding engine. No Firebase/data/render logic touched.
+*/
+(function(){
+  "use strict";
+  if(window.__AARISH_UNIFIED_SLIDE_V306__) return;
+  window.__AARISH_UNIFIED_SLIDE_V306__=true;
+  window.__AARISH_GOD_TIER_MOTION_V300__=true;
+
+  var PRESS_SELECTOR=[
     "button",".btn-primary",".btn-ios-share",".btn-ios-add",".btn-google",".action-btn",
     ".nav-item",".glass-card",".diary-card",".squircle","[onclick]"
   ].join(",");
-  var FORM_SELECTOR = "input, textarea, select, option, label, [contenteditable='true']";
-  var activePress = new Set();
-  var willTimers = new WeakMap();
-  var closeTimers = new WeakMap();
-  var listRaf = 0;
-
-  function closestMotionTarget(node) {
-    if (!node || !node.closest) return null;
-    var form = node.closest(FORM_SELECTOR);
-    var target = node.closest(PRESS_SELECTOR);
-    if (!target) return null;
-    if (form && target.classList && (target.classList.contains("glass-card") || target.classList.contains("diary-card"))) return null;
-    return target;
-  }
-
-  function addWill(el, ms) {
-    if (!el || !el.classList) return;
-    el.classList.add("aarish-will-v300");
-    var old = willTimers.get(el);
-    if (old) clearTimeout(old);
-    willTimers.set(el, setTimeout(function () {
-      el.classList.remove("aarish-will-v300");
-      willTimers.delete(el);
-    }, ms || 420));
-  }
-
-  function releaseTarget(el) {
-    if (!el || !el.classList) return;
-    el.classList.remove("aarish-pressing-v300");
-    addWill(el, 340);
-    setTimeout(function () {
-      if (!el.classList.contains("aarish-pressing-v300")) el.classList.remove("aarish-will-v300");
-    }, 350);
-  }
-
-  function releaseAll() {
-    activePress.forEach(releaseTarget);
-    activePress.clear();
-  }
-
-  document.addEventListener("pointerdown", function (ev) {
-    if (ev.button != null && ev.button !== 0) return;
-    var target = closestMotionTarget(ev.target);
-    if (!target) return;
-    addWill(target, 520);
-    target.classList.add("aarish-pressing-v300");
-    activePress.add(target);
-  }, { capture: true, passive: true });
-
-  ["pointerup","pointercancel","pointerleave","lostpointercapture","dragstart"].forEach(function (type) {
-    document.addEventListener(type, function (ev) {
-      var target = closestMotionTarget(ev.target);
-      if (target && activePress.has(target)) {
-        activePress.delete(target);
-        releaseTarget(target);
-      } else if (type === "pointercancel" || type === "lostpointercapture" || type === "dragstart") {
-        releaseAll();
-      }
-    }, { capture: true, passive: true });
-  });
-
-  window.addEventListener("blur", releaseAll, { passive: true });
-  document.addEventListener("scroll", releaseAll, { capture: true, passive: true });
-
-  function motionApp() {
-    return document.getElementById("main-app") || document.querySelector(".app-container");
-  }
-  function motionSheet(overlay) {
-    return overlay ? overlay.querySelector(".modal-content") : null;
-  }
-  function anyModalOpen(except) {
-    return Array.prototype.some.call(
-      document.querySelectorAll(".modal-overlay.is-open, .modal-overlay.is-preopen"),
-      function (x) { return x !== except; }
-    );
-  }
-  function clearCloseTimer(overlay) {
-    var old = closeTimers.get(overlay);
-    if (old) {
-      clearTimeout(old);
-      closeTimers.delete(overlay);
-    }
-  }
-
-  function openOverlay(overlay) {
-    if (!overlay) return;
-    clearCloseTimer(overlay);
-    var app = motionApp();
-    var sheet = motionSheet(overlay);
-    addWill(overlay, 540);
-    addWill(sheet, 560);
-    addWill(app, 560);
-    overlay.style.removeProperty("display");
-    overlay.style.removeProperty("opacity");
-    overlay.style.removeProperty("pointer-events");
-    overlay.style.removeProperty("visibility");
-    overlay.classList.remove("is-open", "is-closing");
-    overlay.classList.add("is-preopen");
-    overlay.setAttribute("aria-hidden", "false");
-    requestAnimationFrame(function () {
-      if (app) app.classList.add("app-scale-down");
-      overlay.classList.add("is-open");
-      overlay.classList.remove("is-preopen");
-      addWill(sheet, 460);
-      addWill(app, 460);
-    });
-  }
-
-  function closeOverlay(overlay) {
-    if (!overlay) return;
-    clearCloseTimer(overlay);
-    var app = motionApp();
-    var sheet = motionSheet(overlay);
-    addWill(overlay, 460);
-    addWill(sheet, 460);
-    addWill(app, 460);
-    overlay.classList.remove("is-open", "is-preopen");
-    overlay.classList.add("is-closing");
-    overlay.setAttribute("aria-hidden", "true");
-    overlay.style.pointerEvents = "none";
-    requestAnimationFrame(function () {
-      if (app && !anyModalOpen(overlay)) app.classList.remove("app-scale-down");
-    });
-    closeTimers.set(overlay, setTimeout(function () {
-      overlay.classList.remove("is-closing");
-      overlay.style.removeProperty("display");
-      overlay.style.removeProperty("opacity");
-      overlay.style.removeProperty("pointer-events");
-      overlay.style.removeProperty("visibility");
-      if (sheet) sheet.classList.remove("aarish-will-v300");
-      if (app) app.classList.remove("aarish-will-v300");
-      closeTimers.delete(overlay);
-    }, 360));
-  }
-
-  window.openModal = function (id) { openOverlay(document.getElementById(id)); };
-  window.closeModal = function (id) { closeOverlay(document.getElementById(id)); };
-  window.__aarishOpenCreatedModalV300 = openOverlay;
-  window.__aarishCloseCreatedModalV300 = closeOverlay;
-  window.__aarishOpenCreatedModalV203 = openOverlay;
-  window.__aarishCloseCreatedModalV203 = closeOverlay;
-
-  function primeScreens() {
-    document.querySelectorAll(".screen").forEach(function (screen) {
-      var isActive = screen.classList.contains("active");
-      if (isActive && !screen.__aarishActiveMotionV300) {
-        screen.__aarishActiveMotionV300 = true;
-        addWill(screen, 380);
-        screen.addEventListener("animationend", function onScreenEnd() {
-          screen.classList.remove("aarish-will-v300");
-          screen.removeEventListener("animationend", onScreenEnd);
-        }, { passive: true });
-      } else if (!isActive && screen.__aarishActiveMotionV300) {
-        screen.__aarishActiveMotionV300 = false;
-        screen.classList.remove("aarish-will-v300");
-      }
-    });
-  }
-
-  function primeListItems(root) {
-    var scope = root && root.querySelectorAll ? root : document;
-    var items = scope.querySelectorAll(".list-enter:not([data-aarish-motion-v300])");
-    if (!items.length) return;
-    var max = Math.min(items.length, 80);
-    for (var i = 0; i < max; i++) {
-      var el = items[i];
-      el.dataset.aarishMotionV300 = "1";
-      el.style.setProperty("--aarish-i-v300", String(Math.min(i, 14)));
-      el.style.setProperty("--aarish-delay-v300", String(Math.min(i, 14) * 16) + "ms");
-      addWill(el, 520);
-      el.addEventListener("animationend", function onEnd() {
-        this.classList.remove("aarish-will-v300");
-        this.removeEventListener("animationend", onEnd);
-      }, { passive: true });
-    }
-  }
-
-  function schedulePrime(root) {
-    if (listRaf) return;
-    listRaf = requestAnimationFrame(function () {
-      listRaf = 0;
-      primeScreens();
-      primeListItems(root || document);
-    });
-  }
-
-  var mo = new MutationObserver(function (records) {
-    var needs = false;
-    for (var i = 0; i < records.length; i++) {
-      if (records[i].type === "childList" || (records[i].type === "attributes" && records[i].attributeName === "class")) {
-        needs = true;
-        break;
-      }
-    }
-    if (needs) schedulePrime(document);
-  });
-
-  function startObserver() {
-    if (!document.body) return;
-    mo.observe(document.body, { childList: true, subtree: true, attributes: true, attributeFilter: ["class"] });
-    schedulePrime(document);
-  }
-
-  if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", startObserver, { once: true, passive: true });
-  } else {
-    startObserver();
-  }
-  window.addEventListener("pageshow", function () { schedulePrime(document); }, { passive: true });
-})();
-/* AARISH_GOD_TIER_MOTION_V300_JS_END */
-</script>
-
-<script id="aarish-scroll-reveal-v304-js">
-/* AARISH_SCROLL_REVEAL_V304_JS_START
-   Smooth scroll reveal with active-screen root. No scroll math loop. No layout reflow.
-*/
-(function () {
-  "use strict";
-  if (window.__AARISH_SCROLL_REVEAL_V304__) return;
-  window.__AARISH_SCROLL_REVEAL_V304__ = true;
-
-  var LIST_SELECTOR = [
+  var FORM_SELECTOR="input, textarea, select, option, label, [contenteditable='true']";
+  var LIST_SELECTOR=[
     "#milk-list .list-enter",
     "#udhar-list .list-enter",
     "#expense-list-container .list-enter",
@@ -20430,262 +20305,446 @@ window.addEventListener("pageshow", function () { setTimeout(install, 120); }, {
     "#project-detail-records .list-enter"
   ].join(",");
 
-  var io = null;
-  var rootScreen = null;
-  var states = new WeakMap();
-  var timers = new WeakMap();
-  var observed = new WeakSet();
-  var queue = [];
-  var queueRaf = 0;
-  var scanRaf = 0;
+  var pressed=new Set();
+  var willTimers=new WeakMap();
+  var closeTimers=new WeakMap();
 
-  function activeScreen() {
-    return document.querySelector(".screen.active") || null;
+  var io=null;
+  var ioRoot=null;
+  var observed=new WeakSet();
+  var state=new WeakMap();
+  var timers=new WeakMap();
+  var queue=[];
+  var queued=new WeakSet();
+  var queueRaf=0;
+  var scanRaf=0;
+  var mo=null;
+
+  function closestMotionTarget(node){
+    if(!node||!node.closest) return null;
+    var form=node.closest(FORM_SELECTOR);
+    var target=node.closest(PRESS_SELECTOR);
+    if(!target) return null;
+    if(form&&target.classList&&(target.classList.contains("glass-card")||target.classList.contains("diary-card"))) return null;
+    return target;
   }
 
-  function clearTimer(el) {
-    var t = timers.get(el);
-    if (t) {
+  function addWill(el,ms){
+    if(!el||!el.classList) return;
+    el.classList.add("aarish-will-v300");
+    var old=willTimers.get(el);
+    if(old) clearTimeout(old);
+    willTimers.set(el,setTimeout(function(){
+      try{el.classList.remove("aarish-will-v300")}catch(e){}
+      willTimers.delete(el);
+    },ms||420));
+  }
+
+  function releaseTarget(el){
+    if(!el||!el.classList) return;
+    el.classList.remove("aarish-pressing-v300");
+    addWill(el,330);
+  }
+
+  function releaseAll(){
+    pressed.forEach(releaseTarget);
+    pressed.clear();
+  }
+
+  document.addEventListener("pointerdown",function(ev){
+    if(ev.button!=null&&ev.button!==0) return;
+    var t=closestMotionTarget(ev.target);
+    if(!t) return;
+    addWill(t,520);
+    t.classList.add("aarish-pressing-v300");
+    pressed.add(t);
+  },{capture:true,passive:true});
+
+  ["pointerup","pointercancel","lostpointercapture","dragstart"].forEach(function(type){
+    document.addEventListener(type,function(ev){
+      var t=closestMotionTarget(ev.target);
+      if(t&&pressed.has(t)){
+        pressed.delete(t);
+        releaseTarget(t);
+      }else if(type!=="pointerup"){
+        releaseAll();
+      }
+    },{capture:true,passive:true});
+  });
+
+  window.addEventListener("blur",releaseAll,{passive:true});
+  document.addEventListener("scroll",releaseAll,{capture:true,passive:true});
+
+  function motionApp(){
+    return document.getElementById("main-app")||document.querySelector(".app-container");
+  }
+
+  function motionSheet(o){
+    return o?o.querySelector(".modal-content"):null;
+  }
+
+  function anyModalOpen(except){
+    return Array.prototype.some.call(document.querySelectorAll(".modal-overlay.is-open,.modal-overlay.is-preopen"),function(x){
+      return x!==except;
+    });
+  }
+
+  function clearCloseTimer(o){
+    var old=closeTimers.get(o);
+    if(old){
+      clearTimeout(old);
+      closeTimers.delete(o);
+    }
+  }
+
+  function openOverlay(o){
+    if(!o) return;
+    clearCloseTimer(o);
+    var app=motionApp();
+    var sheet=motionSheet(o);
+    addWill(o,540);
+    addWill(sheet,560);
+    addWill(app,560);
+
+    o.style.removeProperty("display");
+    o.style.removeProperty("opacity");
+    o.style.removeProperty("pointer-events");
+    o.style.removeProperty("visibility");
+    o.classList.remove("is-open","is-closing");
+    o.classList.add("is-preopen");
+    o.setAttribute("aria-hidden","false");
+
+    requestAnimationFrame(function(){
+      if(app) app.classList.add("app-scale-down");
+      o.classList.add("is-open");
+      o.classList.remove("is-preopen");
+      addWill(sheet,460);
+      addWill(app,460);
+    });
+  }
+
+  function closeOverlay(o){
+    if(!o) return;
+    clearCloseTimer(o);
+    var app=motionApp();
+    var sheet=motionSheet(o);
+    addWill(o,460);
+    addWill(sheet,460);
+    addWill(app,460);
+
+    o.classList.remove("is-open","is-preopen");
+    o.classList.add("is-closing");
+    o.setAttribute("aria-hidden","true");
+    o.style.pointerEvents="none";
+
+    requestAnimationFrame(function(){
+      if(app&&!anyModalOpen(o)) app.classList.remove("app-scale-down");
+    });
+
+    closeTimers.set(o,setTimeout(function(){
+      o.classList.remove("is-closing");
+      o.style.removeProperty("display");
+      o.style.removeProperty("opacity");
+      o.style.removeProperty("pointer-events");
+      o.style.removeProperty("visibility");
+      if(sheet) sheet.classList.remove("aarish-will-v300");
+      if(app) app.classList.remove("aarish-will-v300");
+      closeTimers.delete(o);
+    },360));
+  }
+
+  window.openModal=function(id){openOverlay(document.getElementById(id))};
+  window.closeModal=function(id){closeOverlay(document.getElementById(id))};
+  window.__aarishOpenCreatedModalV300=openOverlay;
+  window.__aarishCloseCreatedModalV300=closeOverlay;
+  window.__aarishOpenCreatedModalV203=openOverlay;
+  window.__aarishCloseCreatedModalV203=closeOverlay;
+
+  function activeScreen(){
+    return document.querySelector(".screen.active")||null;
+  }
+
+  function rootRect(){
+    var r=ioRoot||activeScreen();
+    if(r){
+      try{return r.getBoundingClientRect()}catch(e){}
+    }
+    return{top:0,bottom:window.innerHeight||document.documentElement.clientHeight||800};
+  }
+
+  function itemMeta(el){
+    var r=el.getBoundingClientRect();
+    var rr=rootRect();
+    var visible=r.bottom>rr.top+4&&r.top<rr.bottom-4;
+    var farOut=r.bottom<rr.top-80||r.top>rr.bottom+80;
+    return{
+      top:r.top,
+      bottom:r.bottom,
+      visible:visible,
+      farOut:farOut,
+      fromTop:r.bottom<rr.top
+    };
+  }
+
+  function isSkip(el){
+    if(!el||!el.classList||!el.closest) return true;
+    if(!el.closest(".screen")) return true;
+
+    var txt="";
+    try{txt=String(el.textContent||"").trim().toLowerCase()}catch(e){}
+
+    if(!txt||txt.indexOf("no ")===0||txt.indexOf("no entries")>=0||txt.indexOf("no record")>=0||txt.indexOf("no customers")>=0||txt.indexOf("not found")>=0){
+      el.classList.add("aarish-v306-skip");
+      return true;
+    }
+    return false;
+  }
+
+  function clearTimer(el){
+    var t=timers.get(el);
+    if(t){
       clearTimeout(t);
       timers.delete(el);
     }
   }
 
-  function isSkip(el) {
-    if (!el || !el.classList || !el.closest) return true;
-    if (!el.closest(".screen")) return true;
-
-    var txt = "";
-    try { txt = String(el.textContent || "").trim().toLowerCase(); } catch(e) {}
-
-    if (!txt || txt.indexOf("no ") === 0 || txt.indexOf("no entries") >= 0 || txt.indexOf("no record") >= 0 || txt.indexOf("no customers") >= 0) {
-      el.classList.add("aarish-v304-skip");
-      return true;
-    }
-
-    return false;
-  }
-
-  function rectAgainstRoot(el) {
-    var r = el.getBoundingClientRect();
-    var root = rootScreen || activeScreen();
-    var rr = root ? root.getBoundingClientRect() : { top: 0, bottom: window.innerHeight || document.documentElement.clientHeight };
-    return { top: r.top, bottom: r.bottom, rootTop: rr.top, rootBottom: rr.bottom };
-  }
-
-  function isVisibleNow(el) {
-    var m = rectAgainstRoot(el);
-    return m.bottom > m.rootTop + 8 && m.top < m.rootBottom - 8;
-  }
-
-  function setReady(el, fromTop) {
-    if (isSkip(el)) return;
+  function setReady(el,meta){
+    if(isSkip(el)) return;
     clearTimer(el);
+    meta=meta||itemMeta(el);
 
-    el.style.setProperty("--aarish-v304-x", "0px");
-    el.style.setProperty("--aarish-v304-y", fromTop ? "-32px" : "42px");
-    el.style.setProperty("--aarish-v304-delay", "0ms");
+    var row=String(el.tagName||"").toLowerCase()==="tr";
+    el.style.setProperty("--aarish-v306-x",row?(meta.fromTop?"-10px":"12px"):(meta.fromTop?"-22px":"28px"));
+    el.style.setProperty("--aarish-v306-y",row?"0px":(meta.fromTop?"-18px":"24px"));
+    el.style.setProperty("--aarish-v306-delay","0ms");
 
-    el.classList.remove("aarish-v304-in");
-    el.classList.remove("aarish-v304-moving");
-    el.classList.add("aarish-v304-ready");
-    states.set(el, "ready");
+    el.classList.remove("aarish-v306-in","aarish-v306-moving");
+    el.classList.add("aarish-v306-ready");
+    state.set(el,"ready");
   }
 
-  function cleanupAfter(el, ms) {
+  function finish(el,ms){
     clearTimer(el);
-    timers.set(el, setTimeout(function () {
-      try {
-        el.classList.remove("aarish-v304-moving");
+    timers.set(el,setTimeout(function(){
+      try{
+        el.classList.remove("aarish-v306-moving");
         el.style.removeProperty("will-change");
-        el.style.removeProperty("--aarish-v304-delay");
+        el.style.removeProperty("--aarish-v306-delay");
         timers.delete(el);
-      } catch(e) {}
-    }, ms));
+      }catch(e){}
+    },ms||720));
   }
 
-  function reveal(el, delay, fast) {
-    if (isSkip(el)) return;
-    if (states.get(el) === "in") return;
-
+  function reveal(el,delay,fast){
+    if(isSkip(el)||state.get(el)==="in") return;
     clearTimer(el);
-    el.classList.add("aarish-v304-moving");
 
-    el.style.setProperty("--aarish-v304-delay", delay + "ms");
-    el.style.setProperty("--aarish-v304-duration", fast ? "360ms" : "620ms");
-    el.style.setProperty("--aarish-v304-opacity", fast ? "150ms" : "280ms");
+    el.classList.add("aarish-v306-moving");
+    el.style.setProperty("--aarish-v306-delay",(delay||0)+"ms");
+    el.style.setProperty("--aarish-v306-list-ms",fast?"360ms":"620ms");
+    el.style.setProperty("--aarish-v306-list-opacity-ms",fast?"150ms":"260ms");
 
-    requestAnimationFrame(function () {
-      el.classList.remove("aarish-v304-ready");
-      el.classList.add("aarish-v304-in");
-      states.set(el, "in");
-      cleanupAfter(el, delay + (fast ? 430 : 720));
+    requestAnimationFrame(function(){
+      try{
+        el.classList.remove("aarish-v306-ready");
+        el.classList.add("aarish-v306-in");
+        state.set(el,"in");
+        finish(el,(delay||0)+(fast?440:740));
+      }catch(e){}
     });
   }
 
-  function flushQueue() {
-    queueRaf = 0;
+  function queueReveal(el,top){
+    if(!el||queued.has(el)||state.get(el)==="in") return;
+    queued.add(el);
+    queue.push({el:el,top:top||0});
+    if(!queueRaf) queueRaf=requestAnimationFrame(flushQueue);
+  }
 
-    var batch = queue.splice(0, queue.length);
-    if (!batch.length) return;
+  function flushQueue(){
+    queueRaf=0;
+    var batch=queue.splice(0,queue.length);
+    if(!batch.length) return;
 
-    batch.sort(function (a, b) { return a.top - b.top; });
+    batch.sort(function(a,b){return a.top-b.top});
 
-    var fast = batch.length > 7;
-    var step = fast ? 8 : 24;
-    var cap = fast ? 56 : 120;
+    var fast=batch.length>7;
+    var step=fast?8:26;
+    var cap=fast?56:130;
 
-    for (var i = 0; i < batch.length; i++) {
-      reveal(batch[i].el, Math.min(i * step, cap), fast);
+    for(var i=0;i<batch.length;i++){
+      queued.delete(batch[i].el);
+      reveal(batch[i].el,Math.min(i*step,cap),fast);
     }
   }
 
-  function queueReveal(el, top) {
-    if (states.get(el) === "in") return;
-    queue.push({ el: el, top: top || 0 });
-    if (!queueRaf) queueRaf = requestAnimationFrame(flushQueue);
-  }
+  function onIO(entries){
+    for(var i=0;i<entries.length;i++){
+      var entry=entries[i];
+      var el=entry.target;
+      if(isSkip(el)) continue;
 
-  function onIO(entries) {
-    for (var i = 0; i < entries.length; i++) {
-      var entry = entries[i];
-      var el = entry.target;
+      var m=itemMeta(el);
 
-      if (isSkip(el)) continue;
-
-      if (entry.isIntersecting && entry.intersectionRatio > 0.01) {
-        if (states.get(el) === "ready") {
-          queueReveal(el, entry.boundingClientRect ? entry.boundingClientRect.top : 0);
-        } else if (!states.get(el)) {
-          states.set(el, "in");
+      if(entry.isIntersecting&&entry.intersectionRatio>0.006){
+        if(!state.get(el)) setReady(el,m);
+        if(state.get(el)==="ready"){
+          queueReveal(el,entry.boundingClientRect?entry.boundingClientRect.top:m.top);
         }
-      } else {
-        if (states.get(el) === "in") {
-          clearTimer(el);
-          timers.set(el, setTimeout(function (node) {
-            if (!node || isVisibleNow(node)) return;
-            var m = rectAgainstRoot(node);
-            setReady(node, m.bottom <= m.rootTop);
-          }, 180, el));
-        }
+      }else if(state.get(el)==="in"){
+        clearTimer(el);
+        timers.set(el,setTimeout(function(node){
+          try{
+            if(!node||isSkip(node)) return;
+            var mm=itemMeta(node);
+            if(mm.farOut&&!mm.visible) setReady(node,mm);
+          }catch(e){}
+        },170,el));
       }
     }
   }
 
-  function makeObserver() {
-    var root = activeScreen();
+  function makeIO(){
+    var root=activeScreen();
 
-    if (io && root === rootScreen) return;
+    if(io&&root===ioRoot) return;
 
-    if (io) io.disconnect();
-    io = null;
-    rootScreen = root;
+    if(io){
+      try{io.disconnect()}catch(e){}
+    }
 
-    if (!("IntersectionObserver" in window)) return;
+    io=null;
+    ioRoot=root;
+    observed=new WeakSet();
 
-    io = new IntersectionObserver(onIO, {
-      root: rootScreen,
-      rootMargin: "0px 0px 12% 0px",
-      threshold: [0, 0.01, 0.08]
+    if(!("IntersectionObserver" in window)) return;
+
+    io=new IntersectionObserver(onIO,{
+      root:ioRoot,
+      rootMargin:"6% 0px 18% 0px",
+      threshold:[0,0.006,0.06,0.16]
     });
-
-    observed = new WeakSet();
   }
 
-  function attach(el) {
-    if (!io || !el || observed.has(el) || isSkip(el)) return;
+  function attach(el){
+    if(!el||observed.has(el)||isSkip(el)) return;
 
     observed.add(el);
 
-    if (!states.get(el)) {
-      if (isVisibleNow(el)) {
-        states.set(el, "in");
-        el.classList.add("aarish-v304-in");
-      } else {
-        var m = rectAgainstRoot(el);
-        setReady(el, m.bottom <= m.rootTop);
-      }
+    var m=itemMeta(el);
+
+    if(!state.get(el)){
+      setReady(el,m);
+      if(m.visible) queueReveal(el,m.top);
+    }else if(state.get(el)==="ready"&&m.visible){
+      queueReveal(el,m.top);
     }
 
-    io.observe(el);
+    if(io){
+      io.observe(el);
+    }else{
+      el.classList.remove("aarish-v306-ready");
+      el.classList.add("aarish-v306-in");
+      state.set(el,"in");
+    }
   }
 
-  function scan(root) {
-    makeObserver();
-
-    var scope = root && root.querySelectorAll ? root : document;
-    var items = [];
-
-    try {
-      if (scope.matches && scope.matches(LIST_SELECTOR)) items.push(scope);
-    } catch(e) {}
-
-    try {
-      scope.querySelectorAll(LIST_SELECTOR).forEach(function (el) { items.push(el); });
-    } catch(e) {}
-
-    for (var i = 0; i < items.length; i++) attach(items[i]);
-  }
-
-  function scheduleScan(root) {
-    if (scanRaf) return;
-    scanRaf = requestAnimationFrame(function () {
-      scanRaf = 0;
-      scan(root || document);
+  function primeScreens(){
+    document.querySelectorAll(".screen").forEach(function(screen){
+      var active=screen.classList.contains("active");
+      if(active&&!screen.__aarishActiveMotionV306){
+        screen.__aarishActiveMotionV306=true;
+        addWill(screen,360);
+      }else if(!active&&screen.__aarishActiveMotionV306){
+        screen.__aarishActiveMotionV306=false;
+        screen.classList.remove("aarish-will-v300");
+      }
     });
   }
 
-  var mo = new MutationObserver(function (records) {
-    var need = false;
-    var root = document;
+  function scan(root){
+    makeIO();
+    primeScreens();
 
-    for (var i = 0; i < records.length; i++) {
-      if (records[i].type === "childList" && records[i].addedNodes && records[i].addedNodes.length) {
-        need = true;
-        root = records[i].target || document;
-        break;
-      }
-
-      if (records[i].type === "attributes" && records[i].attributeName === "class" && records[i].target && records[i].target.classList && records[i].target.classList.contains("screen")) {
-        need = true;
-        root = document;
-        break;
-      }
+    var scope=activeScreen()||document;
+    if(root&&root.querySelectorAll&&root.closest&&root.closest(".screen.active")){
+      scope=root;
     }
 
-    if (need) scheduleScan(root);
-  });
+    var items=[];
 
-  function boot() {
-    if (!document.body) return;
+    try{
+      if(scope.matches&&scope.matches(LIST_SELECTOR)) items.push(scope);
+    }catch(e){}
 
-    scan(document);
+    try{
+      scope.querySelectorAll(LIST_SELECTOR).forEach(function(el){items.push(el)});
+    }catch(e){}
 
-    try {
-      mo.observe(document.body, {
-        childList: true,
-        subtree: true,
-        attributes: true,
-        attributeFilter: ["class"]
-      });
-    } catch(e) {}
-
-    setTimeout(function () { scheduleScan(document); }, 220);
-    setTimeout(function () { scheduleScan(document); }, 700);
+    for(var i=0;i<items.length;i++){
+      attach(items[i]);
+    }
   }
 
-  if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", boot, { once: true, passive: true });
-  } else {
+  function scheduleScan(root){
+    if(scanRaf) return;
+    scanRaf=requestAnimationFrame(function(){
+      scanRaf=0;
+      scan(root||document);
+    });
+  }
+
+  function boot(){
+    if(!document.body) return;
+
+    if(mo){
+      try{mo.disconnect()}catch(e){}
+    }
+
+    mo=new MutationObserver(function(records){
+      var need=false;
+      var root=document;
+
+      for(var i=0;i<records.length;i++){
+        var r=records[i];
+
+        if(r.type==="childList"&&r.addedNodes&&r.addedNodes.length){
+          need=true;
+          root=r.target||document;
+          break;
+        }
+
+        if(r.type==="attributes"&&r.attributeName==="class"&&r.target&&r.target.classList&&r.target.classList.contains("screen")){
+          need=true;
+          root=document;
+          break;
+        }
+      }
+
+      if(need) scheduleScan(root);
+    });
+
+    try{
+      mo.observe(document.body,{childList:true,subtree:true,attributes:true,attributeFilter:["class"]});
+    }catch(e){}
+
+    scheduleScan(document);
+    setTimeout(function(){scheduleScan(document)},180);
+    setTimeout(function(){scheduleScan(document)},700);
+  }
+
+  if(document.readyState==="loading"){
+    document.addEventListener("DOMContentLoaded",boot,{once:true,passive:true});
+  }else{
     boot();
   }
 
-  window.addEventListener("pageshow", function () { scheduleScan(document); }, { passive: true });
-  window.__aarishRefreshScrollRevealV304 = function () { scheduleScan(document); };
+  window.addEventListener("pageshow",function(){scheduleScan(document)},{passive:true});
+  window.__aarishRefreshMotionV300=function(){scheduleScan(document)};
+  window.__aarishRefreshScrollRevealV304=window.__aarishRefreshMotionV300;
 })();
-/* AARISH_SCROLL_REVEAL_V304_JS_END */
+/* AARISH_UNIFIED_SLIDE_V306_JS_END */
+/* AARISH_GOD_TIER_MOTION_V300_JS_END */
 </script>
-
-
 </body>
 </html>
