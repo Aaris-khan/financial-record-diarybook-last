@@ -12058,153 +12058,8 @@ try { Function("fn", "renderMilkRecords = fn;")(window.aarishRenderMilkRecordsCo
 })();
 </script>
 
-<script>
-// AARISH_MILK_HEADER_NET_COLOR_V24
-// Only changes Milk Record heading color by all-customer milk net.
-// Net = all given milk amount - all taken milk amount.
-// No badge, no amount text, no extra UI, no Firebase/data write.
-(function () {
-  if (window.__AARISH_MILK_HEADER_NET_COLOR_V24_READY) return;
-  window.__AARISH_MILK_HEADER_NET_COLOR_V24_READY = true;
 
-  function n(v) {
-    return Number(v) || 0;
-  }
 
-  function milkDbV24() {
-    try {
-      if (typeof milkDB !== "undefined" && milkDB && typeof milkDB === "object") return milkDB;
-    } catch(e) {}
-    return window.milkDB || {};
-  }
-
-  function recordsV24(v) {
-    if (Array.isArray(v)) return v.filter(Boolean);
-    if (v && typeof v === "object") return Object.keys(v).map(function (k) { return v[k]; }).filter(Boolean);
-    return [];
-  }
-
-  function qtyV24(record) {
-    return n(record && record.morning) + n(record && record.evening);
-  }
-
-  function rateV24(customer, record) {
-    var rr = n(record && record.rate);
-    if (rr > 0) return rr;
-
-    var cr = n(customer && customer.rate);
-    if (cr > 0) return cr;
-
-    try {
-      if (typeof DEFAULT_RATE !== "undefined") return n(DEFAULT_RATE);
-    } catch(e) {}
-
-    return 0;
-  }
-
-  function flowV24(record, customer) {
-    var raw = String((record && (record.flow || record.milkFlow || record.direction || record.entryType || record.type)) || "").toLowerCase();
-
-    if (["taken", "take", "minus", "debit", "pay", "dene_wala"].indexOf(raw) !== -1) return "taken";
-    if (["given", "give", "plus", "credit", "receive", "lene_wala"].indexOf(raw) !== -1) return "given";
-
-    return customer && customer.type === "dene_wala" ? "taken" : "given";
-  }
-
-  function allMilkNetV24() {
-    var db = milkDbV24();
-    var net = 0;
-
-    Object.keys(db || {}).forEach(function (name) {
-      var customer = db[name] || {};
-
-      recordsV24(customer.records).forEach(function (record) {
-        var amount = qtyV24(record) * rateV24(customer, record);
-        if (!amount) return;
-
-        net += flowV24(record, customer) === "taken" ? -amount : amount;
-      });
-    });
-
-    return net;
-  }
-
-  function milkTitleV24() {
-    return document.querySelector("#milk-screen .header-sticky h1");
-  }
-
-  window.updateMilkRecordHeaderColorV24 = function () {
-    var title = milkTitleV24();
-    if (!title) return;
-
-    var net = allMilkNetV24();
-    title.style.transition = "transform 80ms cubic-bezier(0.2,0.8,0.2,1), opacity 60ms ease";
-
-    if (net > 0.0001) {
-      title.style.color = "#34C759";
-      title.dataset.milkNetColorV24 = "green";
-    } else if (net < -0.0001) {
-      title.style.color = "#FF3B30";
-      title.dataset.milkNetColorV24 = "red";
-    } else {
-      title.style.removeProperty("color");
-      title.dataset.milkNetColorV24 = "neutral";
-    }
-  };
-
-  function scheduleV24() {
-    setTimeout(window.updateMilkRecordHeaderColorV24, 0);
-    setTimeout(window.updateMilkRecordHeaderColorV24, 250);
-    setTimeout(window.updateMilkRecordHeaderColorV24, 900);
-  }
-
-  function wrapAfterV24(name) {
-    var old = window[name];
-    if (typeof old !== "function" || old.__milkHeaderNetColorWrappedV24) return;
-
-    var wrapped = function () {
-      var out = old.apply(this, arguments);
-      scheduleV24();
-      return out;
-    };
-
-    wrapped.__milkHeaderNetColorWrappedV24 = true;
-    window[name] = wrapped;
-  }
-
-  [
-    "renderMilkList",
-    "filterMilkList",
-    "saveMilkEntry",
-    "addMilkCustomer",
-    "switchTab",
-    "openAllBalances",
-    "renderDashboardBalances"
-  ].forEach(wrapAfterV24);
-
-  // AARISH_COLD_START_DEDUPE_V49: V48 already refreshes on DOMContentLoaded/load.
-  document.addEventListener("visibilitychange", scheduleV24);
-
-  setTimeout(scheduleV24, 500);
-  setTimeout(scheduleV24, 1500);
-/* AARISH_V48_REMOVED_SETINTERVAL_POLLER */
-
-  window.__milkHeaderNetColorStatusV24 = function () {
-    var status = {
-      version: "V24",
-      netAmount: allMilkNetV24(),
-      headingOnly: true,
-      addsAmountText: false,
-      addsBadge: false,
-      firebaseWrite: false
-    };
-    console.log("AARISH MILK HEADER NET COLOR STATUS V24", status);
-    return status;
-  };
-
-  console.log("✅ AARISH_MILK_HEADER_NET_COLOR_V24 active");
-})();
-</script>
 
 <script>
 // AARISH_CREDIT_BOOK_PAGE_NET_V27
@@ -15248,301 +15103,11 @@ try { Function("fn", "renderMilkRecords = fn;")(window.aarishRenderMilkRecordsCo
 })();
 </script>
 
-<script>
-// AARISH_MILK_NEW_BUTTON_NET_COLOR_V50
-// Milk Record title ke net color ke saath +New button background bhi sync.
-// No Firebase write, no loop, no MutationObserver, no setInterval.
-(function () {
-  if (window.__AARISH_MILK_NEW_BUTTON_NET_COLOR_V50_READY) return;
-  window.__AARISH_MILK_NEW_BUTTON_NET_COLOR_V50_READY = true;
 
-  function nV50(v) {
-    return Number(v) || 0;
-  }
 
-  function milkDbV50() {
-    try {
-      if (typeof milkDB !== "undefined" && milkDB && typeof milkDB === "object") return milkDB;
-    } catch (e) {}
-    return window.milkDB || {};
-  }
 
-  function recordsV50(v) {
-    if (Array.isArray(v)) return v.filter(Boolean);
-    if (v && typeof v === "object") {
-      return Object.keys(v).map(function (k) { return v[k]; }).filter(Boolean);
-    }
-    return [];
-  }
 
-  function qtyV50(record) {
-    return nV50(record && record.morning) + nV50(record && record.evening);
-  }
 
-  function rateV50(customer, record) {
-    var rr = nV50(record && record.rate);
-    if (rr > 0) return rr;
-
-    var cr = nV50(customer && customer.rate);
-    if (cr > 0) return cr;
-
-    try {
-      if (typeof DEFAULT_RATE !== "undefined") return nV50(DEFAULT_RATE);
-    } catch (e) {}
-
-    return 0;
-  }
-
-  function flowV50(record, customer) {
-    var raw = String((record && (record.flow || record.milkFlow || record.direction || record.entryType || record.type)) || "").toLowerCase();
-
-    if (["taken", "take", "minus", "debit", "pay", "dene_wala"].indexOf(raw) !== -1) return "taken";
-    if (["given", "give", "plus", "credit", "receive", "lene_wala"].indexOf(raw) !== -1) return "given";
-
-    return customer && customer.type === "dene_wala" ? "taken" : "given";
-  }
-
-  function allMilkNetV50() {
-    var db = milkDbV50();
-    var net = 0;
-
-    Object.keys(db || {}).forEach(function (name) {
-      var customer = db[name] || {};
-      recordsV50(customer.records).forEach(function (record) {
-        var amount = qtyV50(record) * rateV50(customer, record);
-        if (!amount) return;
-        net += flowV50(record, customer) === "taken" ? -amount : amount;
-      });
-    });
-
-    return net;
-  }
-
-  function buttonV50() {
-    return document.getElementById("milk-new-btn-v50") || document.querySelector("#milk-screen .header-sticky button[onclick*=\"add-milk-customer-modal\"]");
-  }
-
-  window.updateMilkNewButtonColorV50 = function () {
-    var btn = buttonV50();
-    if (!btn) return;
-
-    var net = allMilkNetV50();
-
-    btn.style.transition = "transform 80ms cubic-bezier(0.2,0.8,0.2,1), opacity 60ms ease";
-    btn.style.color = "#FFFFFF";
-    btn.style.borderColor = "transparent";
-
-    if (net > 0.0001) {
-      btn.style.background = "#34C759";
-      btn.style.boxShadow = "0 8px 22px rgba(52,199,89,0.34)";
-      btn.dataset.aarishMilkNewV50 = "green";
-    } else if (net < -0.0001) {
-      btn.style.background = "#FF3B30";
-      btn.style.boxShadow = "0 8px 22px rgba(255,59,48,0.34)";
-      btn.dataset.aarishMilkNewV50 = "red";
-    } else {
-      btn.style.background = "#007AFF";
-      btn.style.boxShadow = "0 8px 22px rgba(0,122,255,0.30)";
-      btn.dataset.aarishMilkNewV50 = "blue";
-    }
-  };
-
-  function scheduleV50() {
-    setTimeout(window.updateMilkNewButtonColorV50, 0);
-    setTimeout(window.updateMilkNewButtonColorV50, 220);
-  }
-
-  function wrapOnceV50(name) {
-    try {
-      var old = window[name];
-      if (typeof old !== "function" || old.__aarishMilkNewV50Wrapped) return;
-      var wrapped = function () {
-        var result = old.apply(this, arguments);
-        scheduleV50();
-        return result;
-      };
-      wrapped.__aarishMilkNewV50Wrapped = true;
-      window[name] = wrapped;
-      try { Function("wrapped", name + " = wrapped;")(wrapped); } catch (e) {}
-    } catch (e) {}
-  }
-
-  [
-    "updateMilkRecordHeaderColorV24",
-    "updateActiveScreen",
-    "renderMilkList",
-    "saveMilkEntry",
-    "deleteMilkEntry",
-    "addMilkCustomer",
-    "deleteMilkCustomerProfile",
-    "switchTab"
-  ].forEach(wrapOnceV50);
-
-  document.addEventListener("DOMContentLoaded", scheduleV50, { passive: true, once: true });
-  window.addEventListener("load", scheduleV50, { passive: true, once: true });
-  document.addEventListener("visibilitychange", function () {
-    if (!document.hidden) scheduleV50();
-  }, { passive: true });
-
-  scheduleV50();
-  console.log("✅ AARISH_MILK_NEW_BUTTON_NET_COLOR_V50 active");
-})();
-</script>
-
-<script>
-// AARISH_MILK_BOTTOM_NAV_NET_COLOR_V51
-// Bottom Milk tab color sync with Milk net value.
-// Positive = green, Negative = red, Neutral = blue.
-// No Firebase write, no polling loop, no MutationObserver, no setInterval.
-(function () {
-  if (window.__AARISH_MILK_BOTTOM_NAV_NET_COLOR_V51_READY) return;
-  window.__AARISH_MILK_BOTTOM_NAV_NET_COLOR_V51_READY = true;
-
-  function nV51(v) {
-    return Number(v) || 0;
-  }
-
-  function milkDbV51() {
-    try {
-      if (typeof milkDB !== "undefined" && milkDB && typeof milkDB === "object") return milkDB;
-    } catch (e) {}
-    return window.milkDB || {};
-  }
-
-  function recordsV51(v) {
-    if (Array.isArray(v)) return v.filter(Boolean);
-    if (v && typeof v === "object") {
-      return Object.keys(v).map(function (k) { return v[k]; }).filter(Boolean);
-    }
-    return [];
-  }
-
-  function qtyV51(record) {
-    return nV51(record && record.morning) + nV51(record && record.evening);
-  }
-
-  function rateV51(customer, record) {
-    var rr = nV51(record && record.rate);
-    if (rr > 0) return rr;
-
-    var cr = nV51(customer && customer.rate);
-    if (cr > 0) return cr;
-
-    try {
-      if (typeof DEFAULT_RATE !== "undefined") return nV51(DEFAULT_RATE);
-    } catch (e) {}
-
-    return 0;
-  }
-
-  function flowV51(record, customer) {
-    var raw = String((record && (record.flow || record.milkFlow || record.direction || record.entryType || record.type)) || "").toLowerCase();
-
-    if (["taken", "take", "minus", "debit", "pay", "dene_wala"].indexOf(raw) !== -1) return "taken";
-    if (["given", "give", "plus", "credit", "receive", "lene_wala"].indexOf(raw) !== -1) return "given";
-
-    return customer && customer.type === "dene_wala" ? "taken" : "given";
-  }
-
-  function allMilkNetV51() {
-    var db = milkDbV51();
-    var net = 0;
-
-    Object.keys(db || {}).forEach(function (name) {
-      var customer = db[name] || {};
-      recordsV51(customer.records).forEach(function (record) {
-        var amount = qtyV51(record) * rateV51(customer, record);
-        if (!amount) return;
-        net += flowV51(record, customer) === "taken" ? -amount : amount;
-      });
-    });
-
-    return net;
-  }
-
-  window.updateMilkBottomNavColorV51 = function () {
-    var tab = document.getElementById("tab-milk");
-    if (!tab) return;
-
-    var icon = tab.querySelector("i");
-    var net = allMilkNetV51();
-
-    var color = "#007AFF";
-    var shadow = "0 0 12px rgba(0,122,255,0.40)";
-    var state = "blue";
-
-    if (net > 0.0001) {
-      color = "#34C759";
-      shadow = "0 0 12px rgba(52,199,89,0.42)";
-      state = "green";
-    } else if (net < -0.0001) {
-      color = "#FF3B30";
-      shadow = "0 0 12px rgba(255,59,48,0.42)";
-      state = "red";
-    }
-
-    tab.style.setProperty("color", color, "important");
-    tab.style.setProperty("text-shadow", shadow, "important");
-    tab.style.setProperty("transition", "transform 80ms cubic-bezier(0.2,0.8,0.2,1), opacity 60ms ease", "important");
-    tab.dataset.aarishMilkBottomV51 = state;
-
-    if (icon) {
-      icon.style.setProperty("color", color, "important");
-      icon.style.setProperty("text-shadow", shadow, "important");
-      icon.style.setProperty("transition", "transform 80ms cubic-bezier(0.2,0.8,0.2,1), opacity 60ms ease", "important");
-    }
-  };
-
-  function scheduleV51() {
-    requestAnimationFrame(function () {
-      try { window.updateMilkBottomNavColorV51(); } catch (e) {}
-    });
-  }
-
-  function wrapOnceV51(name) {
-    try {
-      var old = window[name];
-      if (typeof old !== "function" || old.__aarishMilkBottomNavV51Wrapped) return;
-
-      var wrapped = function () {
-        var result = old.apply(this, arguments);
-        scheduleV51();
-        return result;
-      };
-
-      wrapped.__aarishMilkBottomNavV51Wrapped = true;
-      window[name] = wrapped;
-
-      try { Function("wrapped", name + " = wrapped;")(wrapped); } catch (e) {}
-    } catch (e) {}
-  }
-
-  [
-    "updateMilkRecordHeaderColorV24",
-    "updateMilkNewButtonColorV50",
-    "updateActiveScreen",
-    "renderMilkList",
-    "renderMilkRecords",
-    "saveMilkEntry",
-    "deleteMilkEntry",
-    "addMilkCustomer",
-    "deleteMilkCustomerProfile",
-    "switchTab"
-  ].forEach(wrapOnceV51);
-
-  document.addEventListener("DOMContentLoaded", scheduleV51, { passive: true, once: true });
-  window.addEventListener("load", scheduleV51, { passive: true, once: true });
-  document.addEventListener("visibilitychange", function () {
-    if (!document.hidden) scheduleV51();
-  }, { passive: true });
-
-  var milkTab = document.getElementById("tab-milk");
-  if (milkTab) milkTab.addEventListener("click", scheduleV51, { passive: true });
-
-  scheduleV51();
-  console.log("✅ AARISH_MILK_BOTTOM_NAV_NET_COLOR_V51 active");
-})();
-</script>
 
 <script>
 // AARISH_FINANCE_ACTION_NAV_NET_COLOR_V52
@@ -18281,7 +17846,7 @@ scheduleV69();
     if (v && typeof v === "object") {
       return Object.keys(v).map(function(k) {
         var r = v[k];
-        if (r && typeof r === "object" && !r.id) r.id = k;
+        if (r && typeof r === "object") return r.id ? r : Object.assign({ id:k }, r);
         return r;
       }).filter(Boolean);
     }
@@ -18696,8 +18261,7 @@ scheduleV69();
 
   function install() {
     [
-      ["renderMilkList", renderMilkListV99],
-      ["filterMilkList", renderMilkListV99],
+      // Milk list handled by AARISH_MILK_MASTER_UI_V202.
       ["renderSalaryList", renderSalaryListV99],
       ["renderUdharList", renderUdharListV99],
       ["renderExpenseList", renderExpenseListV99],
@@ -18722,13 +18286,13 @@ scheduleV69();
       var active = document.querySelector(".screen.active");
       if (!active) return;
       var id = active.id;
-      if (id === "milk-screen") renderMilkListV99();
+      if (id === "milk-screen") { if (window.aarishMilkMasterRenderListV202) window.aarishMilkMasterRenderListV202(); else if (typeof renderMilkList === "function") renderMilkList(); }
       else if (id === "salary-screen") renderSalaryListV99();
       else if (id === "udhar-screen") renderUdharListV99();
       else if (id === "expenses-screen") renderExpenseListV99();
       else if (id === "projects-screen") renderProjectsListV99();
       else if (id === "diary-screen") renderDiaryListV99();
-      else if (id === "milk-detail-screen") renderMilkRecordsV99();
+      else if (id === "milk-detail-screen") { if (typeof renderMilkRecords === "function") renderMilkRecords(); }
       else if (id === "salary-detail-screen") renderSalaryRecordsV99();
       else if (id === "udhar-detail-screen") renderUdharRecordsV99();
       else if (id === "expense-detail-screen") renderExpenseRecordsV99();
@@ -19071,47 +18635,62 @@ window.addEventListener("pageshow", function () { setTimeout(markAll, 60); }, { 
   console.log("✅ AARISH_V100_ELITE_UX_POLISH_FINAL_PATCH active");
 })();
 </script>
-\n<script id="aarish-v113-milk-business-leak-ui-js">
-/* AARISH V113 Milk renderer
-   UI-only renderer authority. No DB/Firebase/save/delete mutation.
-*/
+\n<script id="aarish-milk-master-ui-v202">
+// AARISH_MILK_MASTER_UI_V202
+// Consolidates Milk List V113 renderer + Milk List net painters V24/V50/V51/V116.1.
+// Milk Records stays on V134 core renderer + V201 CSS markers.
+// UI-only: no Firebase/auth/database/cache/outbox/save/delete/data-structure mutation.
 (function () {
-  if (window.__AARISH_V113_MILK_UI_READY) return;
-  window.__AARISH_V113_MILK_UI_READY = true;
+  if (window.__AARISH_MILK_MASTER_UI_V202_READY) return;
+  window.__AARISH_MILK_MASTER_UI_V202_READY = true;
+
+  var GREEN = "#34C759";
+  var RED = "#FF3B30";
+  var BLUE = "#007AFF";
+  var raf = 0;
+  var lastNetAt = 0;
+  var lastNet = 0;
 
   function byId(id) { return document.getElementById(id); }
-  function num(v) { var x = Number(v); return isFinite(x) ? x : 0; }
+  function n(v) { var x = Number(v); return isFinite(x) ? x : 0; }
   function clean(v) { return String(v == null ? "" : v).replace(/[\u0000-\u001F\u007F]/g, " ").replace(/\s+/g, " ").trim(); }
   function esc(v) { return clean(v).replace(/[&<>"']/g, function (c) { return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]; }); }
   function js(v) { return JSON.stringify(String(v == null ? "" : v)); }
   function norm(v) { try { return clean(v).toLocaleLowerCase("en-IN"); } catch(e) { return clean(v).toLowerCase(); } }
-  function first(v) { var s = clean(v); return esc((s && s.charAt(0) ? s.charAt(0).toUpperCase() : "?")); }
-  function money(v) { return Math.round(Math.abs(num(v))).toLocaleString("en-IN"); }
-  function signedMoney(v) { return (num(v) >= 0 ? "+₹" : "-₹") + money(v); }
-  function signedKg(v) { return (num(v) >= 0 ? "+" : "-") + Math.abs(num(v)).toFixed(2) + " KG"; }
+  function first(v) { var st = clean(v); return esc((st && st.charAt(0) ? st.charAt(0).toUpperCase() : "?")); }
+  function money(v) { return Math.round(Math.abs(n(v))).toLocaleString("en-IN"); }
+  function signedMoney(v) { return (n(v) >= 0 ? "+₹" : "-₹") + money(v); }
+  function signedKg(v) { return (n(v) >= 0 ? "+" : "-") + Math.abs(n(v)).toFixed(2) + " KG"; }
 
   function arr(v) {
     if (Array.isArray(v)) return v.filter(Boolean);
     if (v && typeof v === "object") {
       return Object.keys(v).map(function (k) {
         var r = v[k];
-        if (r && typeof r === "object" && !r.id) r.id = k;
+        if (r && typeof r === "object") return r.id ? r : Object.assign({ id:k }, r);
         return r;
       }).filter(Boolean);
     }
     return [];
   }
 
-  function db() {
-    try { if (typeof milkDB !== "undefined" && milkDB) return milkDB; } catch(e) {}
-    try { if (window.milkDB) return window.milkDB; } catch(e) {}
-    return {};
+  function getGlobal(name, fallback) {
+    try {
+      var v = Function("return (typeof " + name + " !== 'undefined') ? " + name + " : undefined;")();
+      if (v !== undefined && v !== null) return v;
+    } catch(e) {}
+    try {
+      if (window[name] !== undefined && window[name] !== null) return window[name];
+    } catch(e) {}
+    return fallback;
   }
 
-  function flowOf(r, c, rawQty) {
+  function db() { return getGlobal("milkDB", {}) || {}; }
+
+  function flowOf(record, customer, rawQty) {
     try {
-      if (typeof milkFlow === "function") {
-        var mf = String(milkFlow(r, c) || "").toLowerCase();
+      if (typeof window.milkFlow === "function") {
+        var mf = String(window.milkFlow(record, customer) || "").toLowerCase();
         if (mf === "taken" || mf === "negative") return "taken";
         if (mf === "given" || mf === "positive") return "given";
       }
@@ -19120,79 +18699,88 @@ window.addEventListener("pageshow", function () { setTimeout(markAll, 60); }, { 
     if (rawQty < 0) return "taken";
 
     var raw = "";
-    try { raw = String((r && (r.flow || r.milkFlow || r.direction || r.entryType || r.type || r.mode)) || "").toLowerCase(); } catch(e) {}
+    try { raw = String((record && (record.flow || record.milkFlow || record.direction || record.entryType || record.type || record.mode)) || "").toLowerCase(); } catch(e) {}
 
     if (["taken","take","minus","debit","pay","paid","dene_wala","buyer","negative"].indexOf(raw) !== -1) return "taken";
     if (["given","give","plus","credit","receive","received","lene_wala","seller","positive"].indexOf(raw) !== -1) return "given";
 
     var ct = "";
-    try { ct = String((c && c.type) || "").toLowerCase(); } catch(e) {}
-
+    try { ct = String((customer && customer.type) || "").toLowerCase(); } catch(e) {}
     return (ct === "dene_wala" || ct === "buyer" || ct === "pay") ? "taken" : "given";
+  }
+
+  function rateFor(customer, record) {
+    return n(record && (record.rate || record.milkRate)) ||
+           n(customer && (customer.rate || customer.milkRate)) ||
+           n(getGlobal("DEFAULT_RATE", 55)) || 55;
   }
 
   function groups() {
     var out = {};
     var source = db();
-
+    var canGroup = false;
+    try { canGroup = typeof window.aarishV98OpenMilkGroup === "function"; } catch(e) {}
     try {
       Object.keys(source).forEach(function (key) {
-        var nk = norm(key);
-        if (!nk) return;
-        if (!out[nk]) out[nk] = { norm:nk, name:clean(key) || "Unknown", keys:[] };
-        out[nk].keys.push(key);
+        var displayNorm = norm(key);
+        if (!displayNorm) return;
+        var bucket = canGroup ? displayNorm : ("exact:" + key);
+        if (!out[bucket]) out[bucket] = { norm:displayNorm, name:clean(key) || "Unknown", keys:[] };
+        out[bucket].keys.push(key);
       });
     } catch(e) {}
-
     return out;
   }
 
-  function totals(g) {
+  function totalsForGroup(g) {
     var netKg = 0;
     var netAmt = 0;
     var source = db();
-
     try {
       (g.keys || []).forEach(function (key) {
-        var c = source[key] || {};
-        var rate = num(c.rate || c.milkRate || (typeof DEFAULT_RATE !== "undefined" ? DEFAULT_RATE : 55)) || 55;
-
-        arr(c.records).forEach(function (r) {
-          var rawQty = num(r && r.morning) + num(r && r.evening);
+        var customer = source[key] || {};
+        arr(customer.records).forEach(function (record) {
+          var rawQty = n(record && record.morning) + n(record && record.evening);
           if (!rawQty) return;
-
           var qty = Math.abs(rawQty);
-          var rr = num((r && (r.rate || r.milkRate)) || rate || 55) || 55;
-          var amt = qty * rr;
-
-          if (flowOf(r, c, rawQty) === "taken") {
-            netKg -= qty;
-            netAmt -= amt;
-          } else {
-            netKg += qty;
-            netAmt += amt;
-          }
+          var amt = qty * rateFor(customer, record);
+          if (!amt) return;
+          if (flowOf(record, customer, rawQty) === "taken") { netKg -= qty; netAmt -= amt; }
+          else { netKg += qty; netAmt += amt; }
         });
       });
     } catch(e) {}
-
     return { netKg:netKg, netAmt:netAmt };
   }
 
-  function tone(v) {
-    return num(v) > 0 ? "positive" : (num(v) < 0 ? "negative" : "neutral");
+  function allMilkNetV202(force) {
+    var now = Date.now();
+    if (!force && now - lastNetAt < 24) return lastNet;
+    var total = 0;
+    var map = groups();
+    try { Object.keys(map).forEach(function (k) { total += totalsForGroup(map[k]).netAmt; }); } catch(e) {}
+    lastNet = total;
+    lastNetAt = now;
+    return total;
   }
 
-  function toneVars(t) {
-    if (t === "positive") return "--milkTone:#34C759;--milkTint:rgba(52,199,89,0.13);--milkBorder:rgba(52,199,89,0.25);--milkGlow:rgba(52,199,89,0.34);--milkInset:rgba(52,199,89,0.52);--milkSoft:rgba(52,199,89,0.13);";
-    if (t === "negative") return "--milkTone:#FF3B30;--milkTint:rgba(255,59,48,0.13);--milkBorder:rgba(255,59,48,0.25);--milkGlow:rgba(255,59,48,0.34);--milkInset:rgba(255,59,48,0.52);--milkSoft:rgba(255,59,48,0.13);";
+  function toneFrom(v) { return n(v) > 0.0001 ? "positive" : (n(v) < -0.0001 ? "negative" : "neutral"); }
+  function colorFor(tone) { return tone === "positive" ? GREEN : (tone === "negative" ? RED : BLUE); }
+  function buttonTone(tone) { return tone === "positive" ? "green" : (tone === "negative" ? "red" : "blue"); }
+  function shadowFor(tone) {
+    if (tone === "positive") return "0 0 12px rgba(52,199,89,0.42)";
+    if (tone === "negative") return "0 0 12px rgba(255,59,48,0.42)";
+    return "0 0 12px rgba(0,122,255,0.40)";
+  }
+  function toneVars(tone) {
+    if (tone === "positive") return "--milkTone:#34C759;--milkTint:rgba(52,199,89,0.13);--milkBorder:rgba(52,199,89,0.25);--milkGlow:rgba(52,199,89,0.34);--milkInset:rgba(52,199,89,0.52);--milkSoft:rgba(52,199,89,0.13);";
+    if (tone === "negative") return "--milkTone:#FF3B30;--milkTint:rgba(255,59,48,0.13);--milkBorder:rgba(255,59,48,0.25);--milkGlow:rgba(255,59,48,0.34);--milkInset:rgba(255,59,48,0.52);--milkSoft:rgba(255,59,48,0.13);";
     return "--milkTone:#007AFF;--milkTint:rgba(0,122,255,0.13);--milkBorder:rgba(0,122,255,0.25);--milkGlow:rgba(0,122,255,0.30);--milkInset:rgba(0,122,255,0.48);--milkSoft:rgba(0,122,255,0.13);";
   }
 
   function emptyHtml() {
-    try { if (typeof empty === "function") return empty("fa-jug-detergent", "No customers found"); } catch(e) {}
-    try { if (typeof getEmptyState === "function") return getEmptyState("fa-jug-detergent", "No customers found"); } catch(e) {}
-    return '<div class="py-20 text-center text-[#007AFF] font-extrabold">No customers found</div>';
+    try { if (typeof window.getEmptyState === "function") return window.getEmptyState("fa-jug-detergent", "No customers found"); } catch(e) {}
+    return '<div class="flex flex-col items-center justify-center py-24 text-center select-none"><div class="w-28 h-28 rounded-full bg-[#007AFF]/10 text-[#007AFF] flex items-center justify-center shadow-[0_0_24px_rgba(0,122,255,0.14)]"><i class="fa-solid fa-jug-detergent text-5xl"></i></div><p class="mt-8 text-[#007AFF] font-extrabold text-[17px] tracking-tight drop-shadow-[0_0_10px_rgba(0,122,255,0.28)]">No customers found</p></div>';
   }
 
   function openAction(g) {
@@ -19200,10 +18788,9 @@ window.addEventListener("pageshow", function () { setTimeout(markAll, 60); }, { 
     return "try{haptic()}catch(e){}; if(window.aarishV98OpenMilkGroup){window.aarishV98OpenMilkGroup(" + js(g.norm) + ")}else{openMilkDetail(" + js(firstKey) + ")}";
   }
 
-  function renderMilkListV113() {
+  function renderMilkListMasterV202() {
     var box = byId("milk-list");
     if (!box) return;
-
     var q = norm((byId("milk-search") || {}).value || "");
     var map = groups();
     var list = [];
@@ -19213,19 +18800,20 @@ window.addEventListener("pageshow", function () { setTimeout(markAll, 60); }, { 
     });
 
     box.innerHTML = list.map(function (g, index) {
-      var tals = totals(g);
-      var t = tone(tals.netAmt);
+      var tals = totalsForGroup(g);
+      var tone = toneFrom(tals.netAmt);
       var firstKey = (g.keys && g.keys[0]) || g.name;
+      var delay = Math.min(index * 0.014, 0.112);
 
       return '<div ' +
-        'data-v99-tone="' + t + '" data-v100-tone="' + t + '" data-milk-tone="' + t + '" data-aarish-milk-v113-tone="' + t + '" ' +
+        'data-v99-tone="' + tone + '" data-v100-tone="' + tone + '" data-milk-tone="' + tone + '" data-aarish-milk-v113-tone="' + tone + '" data-aarish-milk-v202-tone="' + tone + '" ' +
         'onclick="' + openAction(g).replace(/"/g, "&quot;") + '" ' +
         'ontouchstart="try{startLongPress(' + js(firstKey).replace(/"/g, "&quot;") + ')}catch(e){}" ' +
         'ontouchend="try{cancelLongPress()}catch(e){}" ontouchmove="try{cancelLongPress()}catch(e){}" ' +
         'onmousedown="try{startLongPress(' + js(firstKey).replace(/"/g, "&quot;") + ')}catch(e){}" ' +
         'onmouseup="try{cancelLongPress()}catch(e){}" onmouseleave="try{cancelLongPress()}catch(e){}" ' +
         'class="aarish-milk-v113-card glass-card mb-4 flex items-center justify-between cursor-pointer w-full ring-1 ring-white/40 dark:ring-white/5 list-enter" ' +
-        'style="' + toneVars(t) + ' animation-delay:' + (index * 0.04) + 's;">' +
+        'style="' + toneVars(tone) + '--aarish-stagger-v4:' + delay + 's;animation-delay:' + delay + 's;">' +
           '<div class="flex items-center gap-4 w-full min-w-0">' +
             '<div class="aarish-milk-v113-avatar shrink-0 font-extrabold flex items-center justify-center text-[24px]">' + first(g.name) + '</div>' +
             '<div class="flex-1 min-w-0">' +
@@ -19238,39 +18826,159 @@ window.addEventListener("pageshow", function () { setTimeout(markAll, 60); }, { 
           '<i class="fa-solid fa-chevron-right shrink-0 ml-3 text-[22px]"></i>' +
       '</div>';
     }).join("") || emptyHtml();
+
+    applyMilkShellNetV202(true);
   }
 
-  function install() {
-    try {
-      window.renderMilkList = renderMilkListV113;
-      window.filterMilkList = function () { renderMilkListV113(); };
-      window.aarishRenderMilkListV113 = renderMilkListV113;
-      try { Function("fn", "renderMilkList = fn; filterMilkList = fn;")(renderMilkListV113); } catch(e) {}
+  function applyHeaderV202(tone) {
+    var title = document.querySelector("#milk-screen .header-sticky h1");
+    if (!title) return;
+    var state = buttonTone(tone);
+    title.style.setProperty("color", colorFor(tone), "important");
+    title.style.setProperty("text-shadow", shadowFor(tone), "important");
+    title.style.setProperty("transition", "transform 80ms cubic-bezier(0.2,0.8,0.2,1), opacity 60ms ease", "important");
+    title.dataset.milkNetColorV24 = state;
+    title.dataset.aarishMilkNetMasterV116 = tone;
+    title.dataset.aarishMilkMasterV202 = tone;
+    title.setAttribute("data-milk-net-color-v24", state);
+    title.setAttribute("data-aarish-milk-net-master-v116", tone);
+    title.setAttribute("data-aarish-milk-master-v202", tone);
+  }
 
+  function applyButtonV202(tone) {
+    var btn = byId("milk-new-btn-v50") || document.querySelector("#milk-screen .header-sticky button[onclick*='add-milk-customer-modal']");
+    if (!btn) return;
+    var state = buttonTone(tone);
+    ["v50","v114","v125","v116","v202"].forEach(function (v) {
+      btn.setAttribute("data-aarish-milk-new-" + v, state);
+    });
+    btn.dataset.aarishMilkNewV50 = state;
+    btn.dataset.aarishMilkNewV114 = state;
+    btn.dataset.aarishMilkNewV125 = state;
+    btn.dataset.aarishMilkNewV116 = state;
+    btn.dataset.aarishMilkNewV202 = state;
+    btn.style.setProperty("color", "#FFFFFF", "important");
+    btn.style.setProperty("border-color", "transparent", "important");
+    btn.style.setProperty("transition", "transform 80ms cubic-bezier(0.2,0.8,0.2,1), opacity 60ms ease", "important");
+    if (state === "green") {
+      btn.style.setProperty("background", "linear-gradient(135deg, #34C759, #22C55E)", "important");
+      btn.style.setProperty("box-shadow", "0 8px 22px rgba(52,199,89,0.34)", "important");
+    } else if (state === "red") {
+      btn.style.setProperty("background", "linear-gradient(135deg, #FF453A, #FF2D55)", "important");
+      btn.style.setProperty("box-shadow", "0 8px 22px rgba(255,59,48,0.34)", "important");
+    } else {
+      btn.style.setProperty("background", "linear-gradient(135deg, #007AFF, #0A84FF)", "important");
+      btn.style.setProperty("box-shadow", "0 8px 22px rgba(0,122,255,0.30)", "important");
+    }
+  }
+
+  function applyBottomNavV202(tone) {
+    var tab = byId("tab-milk");
+    if (!tab) return;
+    var icon = tab.querySelector("i");
+    var color = colorFor(tone);
+    var shadow = shadowFor(tone);
+    var state = buttonTone(tone);
+    tab.style.setProperty("color", color, "important");
+    tab.style.setProperty("text-shadow", shadow, "important");
+    tab.style.setProperty("transition", "transform 80ms cubic-bezier(0.2,0.8,0.2,1), opacity 60ms ease", "important");
+    tab.dataset.aarishMilkBottomV51 = state;
+    tab.dataset.aarishMilkBottomV116 = state;
+    tab.dataset.aarishMilkBottomV202 = state;
+    tab.setAttribute("data-aarish-milk-bottom-v51", state);
+    tab.setAttribute("data-aarish-milk-bottom-v116", state);
+    tab.setAttribute("data-aarish-milk-bottom-v202", state);
+    if (icon) {
+      icon.style.setProperty("color", color, "important");
+      icon.style.setProperty("text-shadow", shadow, "important");
+      icon.style.setProperty("transition", "transform 80ms cubic-bezier(0.2,0.8,0.2,1), opacity 60ms ease", "important");
+    }
+  }
+
+  function applyMilkShellNetV202(force) {
+    var net = allMilkNetV202(!!force);
+    var tone = toneFrom(net);
+    var screen = byId("milk-screen");
+    if (screen) {
+      screen.setAttribute("data-aarish-milk-net-v114", tone);
+      screen.setAttribute("data-aarish-milk-net-v116", tone);
+      screen.setAttribute("data-aarish-milk-net-v202", tone);
+    }
+    applyHeaderV202(tone);
+    applyButtonV202(tone);
+    applyBottomNavV202(tone);
+    return { net:net, tone:tone, buttonTone:buttonTone(tone) };
+  }
+
+  function scheduleMilkMasterV202(force, renderListToo) {
+    if (force) lastNetAt = 0;
+    if (raf) return;
+    raf = requestAnimationFrame(function () {
+      raf = 0;
+      try {
+        if (renderListToo) {
+          var active = document.querySelector(".screen.active");
+          if (active && active.id === "milk-screen") renderMilkListMasterV202();
+          else applyMilkShellNetV202(!!force);
+        } else {
+          applyMilkShellNetV202(!!force);
+        }
+      } catch(e) {}
+    });
+  }
+
+  function installMilkMasterV202() {
+    try {
+      window.renderMilkList = renderMilkListMasterV202;
+      window.filterMilkList = renderMilkListMasterV202;
+      window.aarishMilkMasterRenderListV202 = renderMilkListMasterV202;
+      window.aarishMilkMasterApplyShellV202 = applyMilkShellNetV202;
+      window.aarishMilkMasterAllNetV202 = function () { return allMilkNetV202(true); };
+      window.aarishMilkListNetMasterV116 = applyMilkShellNetV202;
+      window.aarishMilkListNetMasterV116_1 = applyMilkShellNetV202;
+      window.scheduleMilkListNetMasterV116 = function (force) { scheduleMilkMasterV202(!!force, false); };
+      window.allMilkNetMasterV116 = function () { return allMilkNetV202(true); };
+      window.updateMilkRecordHeaderColorV24 = function () { return applyMilkShellNetV202(false); };
+      window.updateMilkNewButtonColorV50 = function () { return applyMilkShellNetV202(false); };
+      window.updateMilkBottomNavColorV51 = function () { return applyMilkShellNetV202(false); };
+      try { Function("fn", "renderMilkList = fn; filterMilkList = fn;")(renderMilkListMasterV202); } catch(e) {}
+      try { Function("fn", "updateMilkRecordHeaderColorV24 = fn; updateMilkNewButtonColorV50 = fn; updateMilkBottomNavColorV51 = fn;")(window.updateMilkRecordHeaderColorV24); } catch(e) {}
       var active = document.querySelector(".screen.active");
-      if (active && active.id === "milk-screen") renderMilkListV113();
+      if (active && active.id === "milk-screen") renderMilkListMasterV202();
+      else applyMilkShellNetV202(true);
     } catch(e) {}
   }
 
-  install();
+  window.__milkMasterStatusV202 = function () {
+    var state = applyMilkShellNetV202(true);
+    var status = {
+      version: "V202",
+      replacedScripts: ["aarish-v113-milk-business-leak-ui-js", "aarish-milk-list-net-master-v116-1"],
+      keptRecordCore: "aarishRenderMilkRecordsCoreV134",
+      keptRecordCss: "aarish-milk-records-master-ui-v201",
+      netAmount: state.net,
+      tone: state.tone,
+      buttonTone: state.buttonTone,
+      firebaseWrite: false,
+      dataMutation: false
+    };
+    console.log("AARISH MILK MASTER STATUS V202", status);
+    return status;
+  };
 
-  [60, 180, 450, 900, 1500, 2600].forEach(function (ms) {
-    setTimeout(install, ms);
-  });
-
+  installMilkMasterV202();
+  [60, 180, 450, 900, 1500, 2600].forEach(function (ms) { setTimeout(installMilkMasterV202, ms); });
   document.addEventListener("input", function (e) {
-    if (e && e.target && e.target.id === "milk-search") {
-      setTimeout(renderMilkListV113, 0);
-      setTimeout(renderMilkListV113, 90);
-    }
+    if (e && e.target && e.target.id === "milk-search") setTimeout(renderMilkListMasterV202, 0);
   }, { passive:true });
-  /* V125 removed V113 app-wide click rerender. */
-window.addEventListener("pageshow", function () { setTimeout(install, 120); }, { passive:true });
-  document.addEventListener("visibilitychange", function () {
-    if (!document.hidden) setTimeout(install, 120);
-  }, { passive:true });
+  document.addEventListener("DOMContentLoaded", function () { installMilkMasterV202(); scheduleMilkMasterV202(true, true); }, { passive:true, once:true });
+  window.addEventListener("load", function () { installMilkMasterV202(); scheduleMilkMasterV202(true, true); }, { passive:true, once:true });
+  window.addEventListener("pageshow", function () { setTimeout(function () { installMilkMasterV202(); scheduleMilkMasterV202(true, true); }, 120); }, { passive:true });
+  document.addEventListener("visibilitychange", function () { if (!document.hidden) setTimeout(function () { installMilkMasterV202(); scheduleMilkMasterV202(true, true); }, 120); }, { passive:true });
+  var milkTab = byId("tab-milk");
+  if (milkTab) milkTab.addEventListener("click", function () { setTimeout(function () { installMilkMasterV202(); scheduleMilkMasterV202(false, true); }, 0); }, { passive:true });
 
-  console.log("✅ AARISH V113 Milk UI + Business leak fix active");
+  console.log("✅ AARISH_MILK_MASTER_UI_V202 active");
 })();
 </script>
 <script id="aarish-v125-master-refactor-js">
@@ -19297,7 +19005,7 @@ window.addEventListener("pageshow", function () { setTimeout(install, 120); }, {
     if (v && typeof v === "object") {
       return Object.keys(v).map(function (k) {
         var r = v[k];
-        if (r && typeof r === "object" && !r.id) r.id = k;
+        if (r && typeof r === "object") return r.id ? r : Object.assign({ id:k }, r);
         return r;
       }).filter(Boolean);
     }
@@ -19426,7 +19134,7 @@ window.addEventListener("pageshow", function () { setTimeout(install, 120); }, {
     PAINTERS.forEach(function (name) {
       try { if (typeof window[name] === "function") window[name](); } catch(e) {}
     });
-    applyMilkNetButtonV125();
+    /* Milk header/New/bottom handled by AARISH_MILK_MASTER_UI_V202 via compatibility painters. */
     patchInlineTransitionsV125(document);
   }
 
