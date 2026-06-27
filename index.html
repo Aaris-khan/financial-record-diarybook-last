@@ -40,7 +40,7 @@
             background-color: #F5F5F7; 
             color: #1C1C1E; 
             overflow-x: hidden; 
-            transition: background-color 0.5s ease, color 0.5s ease; 
+            transition: transform 180ms var(--aarish-god-snap-v300, cubic-bezier(0.2,0.8,0.2,1)), opacity 140ms ease-out !important; 
         }
         .dark body { background-color: #020617; color: rgba(248,250,252,0.96); }
 
@@ -49,13 +49,13 @@
             position: fixed; top: -10%; left: -10%; width: 60vw; height: 60vw;
             background: radial-gradient(circle, rgba(52, 199, 89, 0.08) 0%, transparent 70%);
             filter: blur(60px); z-index: 0; pointer-events: none;
-            transition: all 0.5s ease;
+            transition: transform 180ms var(--aarish-god-snap-v300, cubic-bezier(0.2,0.8,0.2,1)), opacity 140ms ease-out !important;
         }
         .ambient-glow-2 {
             position: fixed; bottom: -10%; right: -10%; width: 70vw; height: 70vw;
             background: radial-gradient(circle, rgba(10, 132, 255, 0.06) 0%, transparent 70%);
             filter: blur(60px); z-index: 0; pointer-events: none;
-            transition: all 0.5s ease;
+            transition: transform 180ms var(--aarish-god-snap-v300, cubic-bezier(0.2,0.8,0.2,1)), opacity 140ms ease-out !important;
         }
         .dark .ambient-glow { background: radial-gradient(circle, rgba(52, 199, 89, 0.15) 0%, transparent 70%); filter: blur(80px); }
         .dark .ambient-glow-2 { background: radial-gradient(circle, rgba(10, 132, 255, 0.12) 0%, transparent 70%); filter: blur(80px); }
@@ -73,7 +73,7 @@
             flex-direction: column; 
             position: relative; 
             z-index: 1;
-            transition: transform 0.4s cubic-bezier(0.32, 0.72, 0, 1), border-radius 0.4s ease, opacity 0.4s ease;
+            transition: transform 180ms var(--aarish-god-snap-v300, cubic-bezier(0.2,0.8,0.2,1)), opacity 140ms ease-out !important;
             transform-origin: top center;
         }
         .dark .app-container { box-shadow: 0 0 50px rgba(10,132,255,0.08); }
@@ -88,24 +88,15 @@
 
         /* Smooth Screen Transitions */
         .screen { display: none; flex-direction: column; height: 100vh; height: 100dvh; overflow-y: auto; padding-bottom: 120px; position: relative; z-index: 2; }
-        .screen.active { display: flex; animation: slideIn 0.4s cubic-bezier(0.32, 0.72, 0, 1); }
-        @keyframes slideIn { from { opacity: 0; transform: translateX(20px); } to { opacity: 1; transform: translateX(0); } }
-        
-                /* 2. PREMIUM SIDE-SLIDE ANIMATION */
+        .screen.active { display: flex; animation: none; }
+        /* 2. PREMIUM SIDE-SLIDE ANIMATION */
         .list-enter {
-            animation: aarishPremiumSideSlideV6 360ms cubic-bezier(0.16, 1, 0.3, 1) both;
+            animation: none;
             opacity: 0;
             transform: translate3d(28px, 0, 0) scale3d(0.992, 0.992, 1);
             backface-visibility: hidden;
             -webkit-backface-visibility: hidden;
         }
-        @keyframes slideInRight {
-            0%   { opacity: 0; transform: translate3d(28px, 0, 0) scale3d(0.992,0.992,1); }
-            58%  { opacity: 1; transform: translate3d(-2px, 0, 0) scale3d(1.001,1.001,1); }
-            100% { opacity: 1; transform: translate3d(0, 0, 0) scale3d(1,1,1); }
-        }
-
-
         /* Advanced Frosted Glass Cards + Premium Active Glow */
         .glass-card { 
             background: rgba(255, 255, 255, 0.65); 
@@ -113,7 +104,7 @@
             border-radius: 24px; padding: 22px; 
             box-shadow: 0 8px 32px rgba(0, 0, 0, 0.04), inset 0 1px 2px rgba(255, 255, 255, 0.6); 
             border: 1px solid rgba(255, 255, 255, 0.5); 
-            transition: transform 0.18s cubic-bezier(0.32, 0.72, 0, 1), box-shadow 0.18s ease, background-color 0.18s ease, border-color 0.18s ease !important; 
+            transition: transform 180ms var(--aarish-god-snap-v300, cubic-bezier(0.2,0.8,0.2,1)), opacity 140ms ease-out !important; 
             flex-shrink: 0 !important;
             contain: layout style paint;
         }
@@ -144,7 +135,7 @@
             color: #8E8E93; text-align: center; font-size: 10px; font-weight: 600; letter-spacing: 0.3px;
             cursor: pointer; padding: 6px 12px; border-radius: 14px; 
             display: flex; flex-direction: column; align-items: center; justify-content: center;
-            transition: all 0.3s cubic-bezier(0.32, 0.72, 0, 1) !important; min-width: 65px;
+            transition: transform 180ms var(--aarish-god-snap-v300, cubic-bezier(0.2,0.8,0.2,1)), opacity 140ms ease-out !important; min-width: 65px;
             flex-shrink: 0 !important;
         }
         .nav-item.active { 
@@ -165,12 +156,10 @@
         .modal-content { 
             background: #FFFFFF; width: 100%; max-width: 480px; margin: 0 auto; 
             border-radius: 36px 36px 0 0; padding: 24px 24px 48px; 
-            animation: slideUpSheet 0.4s cubic-bezier(0.32, 0.72, 0, 1); max-height: 90vh; max-height: 90dvh; overflow-y: auto; 
+            animation: none; max-height: 90vh; max-height: 90dvh; overflow-y: auto; 
             box-shadow: 0 -10px 40px rgba(0,0,0,0.1);
         }
         .dark .modal-content { background: #0F172A; color: rgba(248,250,252,0.96); border: 1px solid rgba(148,163,184,0.18); box-shadow: 0 -12px 38px rgba(0,0,0,0.54), inset 0 1px 0 rgba(255,255,255,0.07); }
-        @keyframes slideUpSheet { from { transform: translateY(100%); } to { transform: translateY(0); } }
-        
         /* Tables */
         .table-custom { width: 100%; border-collapse: collapse; margin-top: 8px; }
         .table-custom th { color: #8E8E93; font-size: 11px; font-weight: 700; text-align: left; padding: 12px 8px; border-bottom: 1px solid rgba(0,0,0,0.05); text-transform: uppercase; letter-spacing: 0.8px; }
@@ -183,7 +172,7 @@
             position: fixed; top: calc(40px + env(safe-area-inset-top)); left: 50%; transform: translateX(-50%) translateY(-150px) scale(0.9);
             background: rgba(0,0,0,0.85); backdrop-filter: blur(16px); color: #FFFFFF; 
             padding: 14px 28px; border-radius: 99px; z-index: 200; font-size: 14px; font-weight: 600;
-            display: flex; align-items: center; gap: 10px; opacity: 0; transition: all 0.4s cubic-bezier(0.32, 0.72, 0, 1);
+            display: flex; align-items: center; gap: 10px; opacity: 0; transition: transform 180ms var(--aarish-god-snap-v300, cubic-bezier(0.2,0.8,0.2,1)), opacity 140ms ease-out !important;
             box-shadow: 0 10px 30px rgba(0,0,0,0.15); letter-spacing: 0.3px;
         }
         .dark #toast { background: rgba(15,23,42,0.96); color: rgba(248,250,252,0.96); border: 1px solid rgba(148,163,184,0.20); box-shadow: 0 12px 34px rgba(0,0,0,0.55), 0 0 18px rgba(10,132,255,0.16); }
@@ -253,7 +242,7 @@
             padding: 16px 20px !important; 
             outline: none; 
             font-weight: 500; 
-            transition: all 0.3s ease;
+            transition: transform 180ms var(--aarish-god-snap-v300, cubic-bezier(0.2,0.8,0.2,1)), opacity 140ms ease-out !important;
             color: #1C1C1E;
             font-size: 16px !important;
             min-height: 52px !important;
@@ -298,7 +287,7 @@
             min-height: 38px !important;
             font-size: 14px !important;
             display: flex; align-items: center; gap: 6px;
-            transition: all 0.2s ease;
+            transition: transform 180ms var(--aarish-god-snap-v300, cubic-bezier(0.2,0.8,0.2,1)), opacity 140ms ease-out !important;
             backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
         }
         .dark .btn-ios-share { background: rgba(10, 132, 255, 0.15); color: #0A84FF; border-color: rgba(10, 132, 255, 0.25); text-shadow: 0 0 10px rgba(10,132,255,0.30); }
@@ -314,7 +303,7 @@
             min-height: 38px !important;
             font-size: 14px !important;
             display: flex; align-items: center; gap: 6px;
-            transition: all 0.2s ease;
+            transition: transform 180ms var(--aarish-god-snap-v300, cubic-bezier(0.2,0.8,0.2,1)), opacity 140ms ease-out !important;
         }
         .btn-ios-add:active { transform: scale(0.95); background: rgba(52, 199, 89, 0.2); }
         .dark .btn-ios-add { background: rgba(52, 199, 89, 0.16); border-color: rgba(52, 199, 89, 0.32); box-shadow: 0 6px 18px rgba(52,199,89,0.14); }
@@ -368,7 +357,7 @@
             border: none;
             outline: none;
         }
-        .diary-card { border-left: 4px solid #F5A623; transition: transform 0.2s, box-shadow 0.2s; }
+        .diary-card { border-left: 4px solid #F5A623; transition: transform 180ms var(--aarish-god-snap-v300, cubic-bezier(0.2,0.8,0.2,1)), opacity 140ms ease-out !important; }
         
         /* Squircle Icon Style for Lists */
         .squircle {
@@ -476,7 +465,7 @@
         .dark #gemini-draggable-logo { background: #1C1C1E; border-color: rgba(255,255,255,0.1); }
         .gemini-spinning { animation: geminiSpin 1.5s linear infinite; }
         @keyframes geminiSpin { 100% { transform: rotate(360deg); } }
-        #gemini-chat-window { position: fixed; bottom: 150px; right: 20px; width: 330px; height: 440px; background: #fff; border-radius: 24px; box-shadow: 0 10px 40px rgba(0,0,0,0.2); display: flex; flex-direction: column; overflow: hidden; z-index: 999998; border: 1px solid rgba(155, 114, 203, 0.2); transition: 0.3s; }
+        #gemini-chat-window { position: fixed; bottom: 150px; right: 20px; width: 330px; height: 440px; background: #fff; border-radius: 24px; box-shadow: 0 10px 40px rgba(0,0,0,0.2); display: flex; flex-direction: column; overflow: hidden; z-index: 999998; border: 1px solid rgba(155, 114, 203, 0.2); transition: transform 180ms var(--aarish-god-snap-v300, cubic-bezier(0.2,0.8,0.2,1)), opacity 140ms ease-out !important; }
         .dark #gemini-chat-window { background: #0F172A; border-color: rgba(148,163,184,0.16); box-shadow: 0 14px 42px rgba(0,0,0,0.50), 0 0 22px rgba(10,132,255,0.16); }
         .hidden-chat { display: none !important; opacity: 0; transform: translateY(20px); }
         .chat-msg { padding: 10px 14px; border-radius: 18px; font-size: 14px; max-width: 85%; line-height: 1.4; }
@@ -3574,7 +3563,7 @@
 
 /* 5. GHOST REDUCTION ON TABS (Smooth Springs) */
 .nav-item {
-    transition: transform 0.4s cubic-bezier(0.32, 1.5, 0.5, 1), background 0.3s ease, color 0.3s ease !important;
+    transition: transform 180ms var(--aarish-god-snap-v300, cubic-bezier(0.2,0.8,0.2,1)), opacity 140ms ease-out !important;
 }
 </style>
 
@@ -5665,174 +5654,127 @@ html.dark body #diary-screen #diary-search::-webkit-input-placeholder,
 }
 </style>
 
-<style id="aarish-bigtech-motion-v203">
-/* AARISH_BIGTECH_MOTION_V203_START
-   Big-Tech Motion Engine:
-   - modal display is layout-ready, not toggled on tap
-   - animations use transform + opacity only
-   - border-radius is not animated
-   - will-change is temporary, not permanent
-   - list/card/button/toast/screen motion is GPU-safe
+<style id="aarish-god-tier-motion-v300">
+/* AARISH_GOD_TIER_MOTION_V300_START
+   Fixed placement: CSS after real head styles; JS before real last body.
+   Motion only: transform + opacity. Data/render/Firebase untouched.
 */
 :root {
-  --aarish-ios-spring-v203: cubic-bezier(0.22, 0.82, 0.18, 1);
-  --aarish-ios-snap-v203: cubic-bezier(0.32, 0.72, 0, 1);
-  --aarish-ios-fast-v203: cubic-bezier(0.2, 0, 0, 1);
+  --aarish-god-spring-v300: cubic-bezier(0.16, 1, 0.3, 1);
+  --aarish-god-snap-v300: cubic-bezier(0.2, 0.8, 0.2, 1);
+  --aarish-god-press-ms-v300: 88ms;
+  --aarish-god-release-ms-v300: 300ms;
+  --aarish-god-screen-ms-v300: 255ms;
+  --aarish-god-sheet-ms-v300: 335ms;
 }
 
-/* Kill hidden repaint traps */
-.ambient-glow,
-.ambient-glow-2 {
-  transition: opacity 420ms ease !important;
-  will-change: opacity !important;
-  transform: translate3d(0,0,0) !important;
-  contain: paint !important;
+:is(button,.btn-primary,.btn-ios-share,.btn-ios-add,.btn-google,.action-btn,.nav-item,.glass-card,.diary-card,.squircle,[onclick]) {
+  transition-property: transform, opacity !important;
+  transition-duration: var(--aarish-god-release-ms-v300), 150ms !important;
+  transition-timing-function: var(--aarish-god-spring-v300), ease-out !important;
+  backface-visibility: hidden !important;
+  -webkit-backface-visibility: hidden !important;
+  transform-style: preserve-3d !important;
+  -webkit-tap-highlight-color: transparent !important;
+  touch-action: manipulation !important;
 }
 
-/* App shell: compositor-only pushback. Border-radius is instant, not animated. */
+:is(button,.btn-primary,.btn-ios-share,.btn-ios-add,.btn-google,.action-btn,.nav-item,.glass-card,.diary-card,.squircle,[onclick]).aarish-pressing-v300 {
+  transition-duration: var(--aarish-god-press-ms-v300), 80ms !important;
+  transform: translate3d(0,0,0) scale3d(0.958,0.958,1) !important;
+}
+
+:is(.btn-primary,.btn-ios-share,.btn-ios-add,.btn-google,button,[onclick]).aarish-pressing-v300 {
+  transform: translate3d(0,0,0) scale3d(0.944,0.944,1) !important;
+}
+
+.action-btn.aarish-pressing-v300,
+.squircle.aarish-pressing-v300 {
+  transform: translate3d(0,0,0) scale3d(0.90,0.90,1) !important;
+}
+
+.nav-item {
+  --aarish-nav-y-v300: 0px;
+  --aarish-nav-scale-v300: 1;
+  transform: translate3d(0,var(--aarish-nav-y-v300),0) scale3d(var(--aarish-nav-scale-v300),var(--aarish-nav-scale-v300),1) !important;
+}
+.nav-item.active { --aarish-nav-y-v300: -3px; }
+.nav-item.aarish-pressing-v300 { --aarish-nav-scale-v300: 0.90; }
+
+.aarish-will-v300,
+.aarish-will-v300 > .modal-content {
+  will-change: transform, opacity !important;
+}
+
 .app-container {
-  transform: translate3d(0,0,0) scale3d(1,1,1) !important;
+  transition-property: transform, opacity !important;
+  transition-duration: 330ms, 220ms !important;
+  transition-timing-function: var(--aarish-god-spring-v300), ease-out !important;
   transform-origin: top center !important;
-  transition:
-    transform 300ms var(--aarish-ios-spring-v203),
-    opacity 220ms ease-out !important;
-  backface-visibility: hidden !important;
-  -webkit-backface-visibility: hidden !important;
-  perspective: 1000px !important;
-  will-change: auto !important;
 }
-
-.app-container.aarish-motion-prepromote-v203 {
-  will-change: transform, opacity !important;
-}
-
-.app-scale-down {
-  transform: translate3d(14px, 0, 0) scale3d(0.965, 0.965, 1) !important;
-  border-radius: 28px !important;
-  opacity: 0.82 !important;
+.app-container.app-scale-down {
+  transform: translate3d(0,8px,0) scale3d(0.965,0.965,1) !important;
+  opacity: 0.78 !important;
   pointer-events: none !important;
+  border-radius: inherit !important;
 }
 
-/* Screens: small premium entrance, no heavy slide distance. */
 .screen.active {
-  animation: aarish-screen-in-v203 170ms var(--aarish-ios-fast-v203) both !important;
-  will-change: transform, opacity !important;
+  animation: aarishScreenGlideV300 var(--aarish-god-screen-ms-v300) var(--aarish-god-snap-v300) both !important;
+}
+.screen.aarish-will-v300 { will-change: transform, opacity !important; }
+
+@keyframes aarishScreenGlideV300 {
+  0% { opacity: 0.965; transform: translate3d(18px,0,0) scale3d(0.998,0.998,1); }
+  62% { opacity: 1; transform: translate3d(-1px,0,0) scale3d(1.001,1.001,1); }
+  100% { opacity: 1; transform: translate3d(0,0,0) scale3d(1,1,1); }
 }
 
-@keyframes aarish-screen-in-v203 {
-  from { opacity: 0.94; transform: translate3d(10px,0,0); }
-  to   { opacity: 1; transform: translate3d(0,0,0); }
-}
-
-/* Lists: bounded stagger. JS assigns --aarish-motion-i only to first visible batch. */
-.list-enter.aarish-motion-item-v203 {
+.list-enter,
+#main-app .screen.active :is(.glass-card,.diary-card).list-enter,
+#main-app :is(#milk-list,#udhar-list,#salary-list,#expense-list-container,#diary-list,#project-list,#dash-balances-list) :is(.glass-card,.diary-card).list-enter {
+  animation: aarishListGlideV300 380ms var(--aarish-god-spring-v300) both !important;
+  animation-delay: var(--aarish-delay-v300,var(--aarish-stagger-v5,var(--aarish-stagger-v4,0ms))) !important;
   opacity: 0;
-  transform: translate3d(0, 10px, 0) scale3d(0.992, 0.992, 1);
-  animation: aarish-card-in-v203 280ms var(--aarish-ios-spring-v203) both !important;
-  animation-delay: calc(var(--aarish-motion-i, 0) * 14ms) !important;
-  will-change: transform, opacity !important;
-  backface-visibility: hidden !important;
-  -webkit-backface-visibility: hidden !important;
+  transform-origin: center center !important;
 }
 
-.list-enter.aarish-motion-done-v203 {
-  animation: none !important;
-  opacity: 1 !important;
-  transform: translate3d(0,0,0) !important;
+@keyframes aarishListGlideV300 {
+  0% { opacity: 0; transform: translate3d(30px,0,0) scale3d(0.988,0.988,1); }
+  56% { opacity: 1; transform: translate3d(-2px,0,0) scale3d(1.002,1.002,1); }
+  100% { opacity: 1; transform: translate3d(0,0,0) scale3d(1,1,1); }
 }
 
-@keyframes aarish-card-in-v203 {
-  from { opacity: 0; transform: translate3d(0, 12px, 0) scale3d(0.99,0.99,1); }
-  to   { opacity: 1; transform: translate3d(0, 0, 0) scale3d(1,1,1); }
+#main-app :is(#milk-detail-records,#udhar-detail-records,#salary-detail-records,#expense-detail-records,#project-detail-records) tr.list-enter {
+  animation: aarishRowGlideV300 250ms var(--aarish-god-snap-v300) both !important;
+  animation-delay: var(--aarish-delay-v300,var(--aarish-stagger-v5,var(--aarish-stagger-v4,0ms))) !important;
 }
 
-/* Tactile elements: transform/opacity only. Avoid transition:all. */
-.glass-card {
-  transition: transform 160ms var(--aarish-ios-fast-v203), opacity 160ms ease-out !important;
-  transform: translate3d(0,0,0);
-  backface-visibility: hidden !important;
-  -webkit-backface-visibility: hidden !important;
+@keyframes aarishRowGlideV300 {
+  0% { opacity: 0; transform: translate3d(16px,0,0); }
+  100% { opacity: 1; transform: translate3d(0,0,0); }
 }
 
-.btn-primary,
-.btn-ios-share,
-.btn-ios-add,
-.btn-google,
-.action-btn,
-.nav-item,
-button[onclick] {
-  transition: transform 150ms var(--aarish-ios-fast-v203), opacity 150ms ease-out !important;
-  transform: translate3d(0,0,0);
-  backface-visibility: hidden !important;
-  -webkit-backface-visibility: hidden !important;
-}
-
-.aarish-pressing-v203 {
-  transform: translate3d(0,0,0) scale3d(0.965,0.965,1) !important;
-}
-
-.nav-item.aarish-pressing-v203,
-.action-btn.aarish-pressing-v203 {
-  transform: translate3d(0,0,0) scale3d(0.92,0.92,1) !important;
-}
-
-/* Toast/Gemini window: no transition:all. */
-#toast {
-  transition: transform 280ms var(--aarish-ios-spring-v203), opacity 220ms ease-out !important;
-  will-change: transform, opacity !important;
-}
-
-#gemini-chat-window {
-  transition: transform 240ms var(--aarish-ios-spring-v203), opacity 200ms ease-out !important;
-  will-change: transform, opacity !important;
-}
-
-/* Modal: always layout-ready, invisible when closed. */
 .modal-overlay {
-  position: fixed !important;
-  inset: 0 !important;
-  z-index: 100 !important;
-  display: flex !important;
-  align-items: flex-end !important;
-  justify-content: center !important;
-
-  visibility: hidden !important;
+  display: none !important;
   opacity: 0 !important;
   pointer-events: none !important;
-
-  background: rgba(0, 0, 0, 0.38) !important;
-  backdrop-filter: none !important;
-  -webkit-backdrop-filter: none !important;
-
-  transform: translate3d(0,0,0) !important;
-  backface-visibility: hidden !important;
-  -webkit-backface-visibility: hidden !important;
-  contain: layout style paint !important;
-  will-change: auto !important;
-
-  transition:
-    opacity 280ms var(--aarish-ios-snap-v203),
-    visibility 0s linear 310ms !important;
+  visibility: hidden !important;
+  transition-property: opacity !important;
+  transition-duration: 230ms !important;
+  transition-timing-function: ease-out !important;
 }
-
-.dark .modal-overlay {
-  background: rgba(0, 0, 0, 0.58) !important;
-}
-
 .modal-overlay.is-preopen,
 .modal-overlay.is-open,
 .modal-overlay.is-closing {
+  display: flex !important;
   visibility: visible !important;
 }
-
 .modal-overlay.is-open {
   opacity: 1 !important;
   pointer-events: auto !important;
-  transition:
-    opacity 280ms var(--aarish-ios-spring-v203),
-    visibility 0s linear 0s !important;
 }
-
+.modal-overlay.is-preopen,
 .modal-overlay.is-closing {
   opacity: 0 !important;
   pointer-events: none !important;
@@ -5840,171 +5782,45 @@ button[onclick] {
 
 .modal-content {
   animation: none !important;
-  transform: translate3d(0, 106%, 0) scale3d(0.992, 0.992, 1) !important;
-  opacity: 1 !important;
-
-  will-change: auto !important;
-  backface-visibility: hidden !important;
-  -webkit-backface-visibility: hidden !important;
-  transform-origin: bottom center !important;
-
-  contain: layout style paint !important;
-  overscroll-behavior: contain !important;
-  -webkit-overflow-scrolling: touch !important;
-
-  transition:
-    transform 320ms var(--aarish-ios-spring-v203),
-    opacity 220ms ease-out !important;
-}
-
-.modal-content.aarish-sheet-prepromote-v203 {
-  will-change: transform, opacity !important;
-}
-
-.modal-overlay.is-open .modal-content {
-  transform: translate3d(0,0,0) scale3d(1,1,1) !important;
-  opacity: 1 !important;
-}
-
-.modal-overlay.is-closing .modal-content {
-  transform: translate3d(0, 106%, 0) scale3d(0.992,0.992,1) !important;
-  opacity: 1 !important;
-}
-
-@keyframes slideUpSheet {
-  from { transform: translate3d(0,106%,0); }
-  to   { transform: translate3d(0,0,0); }
-}
-
-/* Low-end phones: keep premium feel but cap motion cost. */
-.aarish-motion-lite-v203 .list-enter.aarish-motion-item-v203 {
-  animation-duration: 180ms !important;
-  animation-delay: 0ms !important;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .app-container,
-  .modal-overlay,
-  .modal-content,
-  .screen.active,
-  .list-enter.aarish-motion-item-v203,
-  #toast,
-  #gemini-chat-window {
-    transition-duration: 1ms !important;
-    animation-duration: 1ms !important;
-    animation-delay: 0ms !important;
-  }
-}
-/* AARISH_BIGTECH_MOTION_V203_END */
-</style>
-
-<style id="aarish-premium-side-slide-v6">
-/* AARISH_PREMIUM_SIDE_SLIDE_V6
-   Final stable premium sliding:
-   - Real RIGHT -> LEFT side-slide.
-   - Transform + opacity only.
-   - No observer, no interval, no modal rewrite.
-   - Color/Firebase/data/render/stripe logic untouched.
-*/
-:root {
-  --aarish-slide-ease-v6: cubic-bezier(0.16, 1, 0.3, 1);
-  --aarish-screen-ease-v6: cubic-bezier(0.2, 0.8, 0.2, 1);
-}
-
-#main-app .screen.active {
-  animation: aarishScreenFadeV6 120ms var(--aarish-screen-ease-v6) both !important;
-}
-
-@keyframes aarishScreenFadeV6 {
-  0%   { opacity: 0.992; transform: translate3d(0, 0, 0); }
-  100% { opacity: 1; transform: translate3d(0, 0, 0); }
-}
-
-.list-enter,
-#main-app :is(
-  #milk-list,
-  #udhar-list,
-  #salary-list,
-  #expense-list-container,
-  #diary-list,
-  #project-list,
-  #dash-balances-list
-) :is(.glass-card, .diary-card).list-enter,
-#main-app .screen.active :is(.glass-card, .diary-card).list-enter {
-  animation-name: aarishPremiumSideSlideV6 !important;
-  animation-duration: 360ms !important;
-  animation-timing-function: var(--aarish-slide-ease-v6) !important;
-  animation-delay: var(--aarish-stagger-v5, var(--aarish-stagger-v4, 0ms)) !important;
-  animation-fill-mode: both !important;
   opacity: 0;
-  transform: translate3d(28px, 0, 0) scale3d(0.992,0.992,1);
-  transform-origin: center center !important;
-  backface-visibility: hidden !important;
-  -webkit-backface-visibility: hidden !important;
+  transform: translate3d(0,108%,0) scale3d(0.992,0.992,1);
+  transition-property: transform, opacity !important;
+  transition-duration: var(--aarish-god-sheet-ms-v300), 210ms !important;
+  transition-timing-function: var(--aarish-god-spring-v300), ease-out !important;
+  transform-origin: bottom center !important;
+}
+.modal-overlay.is-open .modal-content {
+  opacity: 1 !important;
+  transform: translate3d(0,0,0) scale3d(1,1,1) !important;
+}
+.modal-overlay.is-closing .modal-content,
+.modal-overlay.is-preopen .modal-content {
+  opacity: 0 !important;
+  transform: translate3d(0,108%,0) scale3d(0.992,0.992,1) !important;
 }
 
-@keyframes aarishPremiumSideSlideV6 {
-  0%   { opacity: 0; transform: translate3d(28px, 0, 0) scale3d(0.992,0.992,1); }
-  58%  { opacity: 1; transform: translate3d(-2px, 0, 0) scale3d(1.001,1.001,1); }
-  100% { opacity: 1; transform: translate3d(0, 0, 0) scale3d(1,1,1); }
-}
-
-@keyframes slideInRight {
-  0%   { opacity: 0; transform: translate3d(28px, 0, 0) scale3d(0.992,0.992,1); }
-  58%  { opacity: 1; transform: translate3d(-2px, 0, 0) scale3d(1.001,1.001,1); }
-  100% { opacity: 1; transform: translate3d(0, 0, 0) scale3d(1,1,1); }
-}
-
-#main-app :is(
-  #milk-detail-records,
-  #udhar-detail-records,
-  #salary-detail-records,
-  #expense-detail-records,
-  #project-detail-records
-) tr.list-enter {
-  animation: aarishDetailRowSlideV6 240ms var(--aarish-screen-ease-v6) both !important;
-  animation-delay: var(--aarish-stagger-v5, var(--aarish-stagger-v4, 0ms)) !important;
-}
-
-@keyframes aarishDetailRowSlideV6 {
-  0%   { opacity: 0; transform: translate3d(14px, 0, 0); }
-  100% { opacity: 1; transform: translate3d(0, 0, 0); }
-}
-
-#main-app :is(.glass-card, .diary-card):active {
-  transform: translate3d(0,0,0) scale3d(0.982,0.982,1) !important;
-  transition: transform 120ms var(--aarish-screen-ease-v6) !important;
-}
-
-@media (max-width: 430px) {
-  .list-enter,
-  #main-app :is(
-    #milk-list,
-    #udhar-list,
-    #salary-list,
-    #expense-list-container,
-    #diary-list,
-    #project-list,
-    #dash-balances-list
-  ) :is(.glass-card, .diary-card).list-enter {
-    animation-duration: 315ms !important;
-  }
+#toast,
+#gemini-chat-window,
+.hidden-chat {
+  transition-property: transform, opacity !important;
+  transition-duration: 280ms, 200ms !important;
+  transition-timing-function: var(--aarish-god-spring-v300), ease-out !important;
 }
 
 @media (prefers-reduced-motion: reduce) {
-  #main-app .screen.active,
+  .screen.active,
   .list-enter,
-  #main-app :is(.glass-card, .diary-card).list-enter,
+  #main-app .screen.active :is(.glass-card,.diary-card).list-enter,
   #main-app tr.list-enter {
-    animation: aarishReducedFadeV6 90ms ease-out both !important;
+    animation: aarishReducedFadeV300 80ms ease-out both !important;
     transform: none !important;
   }
+  :is(button,.btn-primary,.btn-ios-share,.btn-ios-add,.btn-google,.action-btn,.nav-item,.glass-card,.diary-card,.squircle,[onclick]) {
+    transition-duration: 80ms,80ms !important;
+  }
 }
-
-@keyframes aarishReducedFadeV6 {
-  0% { opacity: 0; }
-  100% { opacity: 1; }
-}
+@keyframes aarishReducedFadeV300 { from { opacity: 0; } to { opacity: 1; } }
+/* AARISH_GOD_TIER_MOTION_V300_END */
 </style>
 
 </head>
@@ -6795,167 +6611,6 @@ let selectedMonth = new Date().getMonth(), selectedYear = new Date().getFullYear
         clearTimeout(window.__aarishToastTimerV97);
         window.__aarishToastTimerV97 = setTimeout(() => t.classList.remove('show'), 2500);
     }
-    // AARISH_BIGTECH_MOTION_V203_START
-    // Big-Tech compositor-only motion runtime. Data/Firebase/render logic untouched.
-    const __aarishModalCloseTimersV48 = {};
-    const __aarishMotionAnimMsV203 = 340;
-
-    function __aarishMotionAppV203() {
-        return document.getElementById('main-app');
-    }
-
-    function __aarishMotionSheetV203(modal) {
-        return modal ? modal.querySelector('.modal-content') : null;
-    }
-
-    function __aarishAnyModalOpenV203(exceptModal) {
-        return Array.from(document.querySelectorAll('.modal-overlay.is-open, .modal-overlay.is-preopen'))
-            .some(x => x !== exceptModal);
-    }
-
-    function __aarishPrimeModalV203(modal) {
-        if (!modal) return;
-
-        const id = modal.id || '';
-        if (id && __aarishModalCloseTimersV48[id]) {
-            clearTimeout(__aarishModalCloseTimersV48[id]);
-            delete __aarishModalCloseTimersV48[id];
-        }
-
-        modal.style.removeProperty('display');
-        modal.style.removeProperty('opacity');
-        modal.style.removeProperty('pointer-events');
-        modal.style.removeProperty('visibility');
-
-        modal.classList.remove('is-open', 'is-closing');
-        modal.classList.add('is-preopen');
-        modal.setAttribute('aria-hidden', 'false');
-
-        const app = __aarishMotionAppV203();
-        const sheet = __aarishMotionSheetV203(modal);
-
-        if (app) app.classList.add('aarish-motion-prepromote-v203');
-        if (sheet) sheet.classList.add('aarish-sheet-prepromote-v203');
-    }
-
-    function openModal(id) {
-        const modal = document.getElementById(id);
-        if (!modal) return;
-
-        __aarishPrimeModalV203(modal);
-
-        // Hidden layout commit first; no display:flex jank during the tap frame.
-        void modal.offsetHeight;
-
-        const app = __aarishMotionAppV203();
-
-        requestAnimationFrame(() => {
-            if (app) app.classList.add('app-scale-down');
-
-            requestAnimationFrame(() => {
-                modal.classList.add('is-open');
-                modal.classList.remove('is-preopen');
-
-                setTimeout(() => {
-                    const sheet = __aarishMotionSheetV203(modal);
-                    if (sheet) sheet.classList.remove('aarish-sheet-prepromote-v203');
-                    if (app) app.classList.remove('aarish-motion-prepromote-v203');
-                }, __aarishMotionAnimMsV203 + 90);
-            });
-        });
-    }
-
-    function closeModal(id) {
-        const modal = document.getElementById(id);
-        if (!modal) return;
-
-        if (__aarishModalCloseTimersV48[id]) {
-            clearTimeout(__aarishModalCloseTimersV48[id]);
-            delete __aarishModalCloseTimersV48[id];
-        }
-
-        const app = __aarishMotionAppV203();
-        const sheet = __aarishMotionSheetV203(modal);
-
-        if (app) app.classList.add('aarish-motion-prepromote-v203');
-        if (sheet) sheet.classList.add('aarish-sheet-prepromote-v203');
-
-        modal.classList.remove('is-open', 'is-preopen');
-        modal.classList.add('is-closing');
-        modal.setAttribute('aria-hidden', 'true');
-        modal.style.pointerEvents = 'none';
-
-        requestAnimationFrame(() => {
-            if (app && !__aarishAnyModalOpenV203(modal)) {
-                app.classList.remove('app-scale-down');
-            }
-        });
-
-        __aarishModalCloseTimersV48[id] = setTimeout(() => {
-            modal.classList.remove('is-closing');
-            modal.style.removeProperty('display');
-            modal.style.removeProperty('opacity');
-            modal.style.removeProperty('pointer-events');
-            modal.style.removeProperty('visibility');
-
-            if (sheet) sheet.classList.remove('aarish-sheet-prepromote-v203');
-            if (app) app.classList.remove('aarish-motion-prepromote-v203');
-
-            delete __aarishModalCloseTimersV48[id];
-        }, __aarishMotionAnimMsV203);
-    }
-
-    window.__aarishOpenCreatedModalV203 = function(overlay) {
-        if (!overlay) return;
-        __aarishPrimeModalV203(overlay);
-        void overlay.offsetHeight;
-
-        const app = __aarishMotionAppV203();
-
-        requestAnimationFrame(() => {
-            if (app) app.classList.add('app-scale-down');
-
-            requestAnimationFrame(() => {
-                overlay.classList.add('is-open');
-                overlay.classList.remove('is-preopen');
-
-                setTimeout(() => {
-                    const sheet = __aarishMotionSheetV203(overlay);
-                    if (sheet) sheet.classList.remove('aarish-sheet-prepromote-v203');
-                    if (app) app.classList.remove('aarish-motion-prepromote-v203');
-                }, __aarishMotionAnimMsV203 + 90);
-            });
-        });
-    };
-
-    window.__aarishCloseCreatedModalV203 = function(overlay) {
-        if (!overlay) return;
-
-        const app = __aarishMotionAppV203();
-        const sheet = __aarishMotionSheetV203(overlay);
-
-        if (app) app.classList.add('aarish-motion-prepromote-v203');
-        if (sheet) sheet.classList.add('aarish-sheet-prepromote-v203');
-
-        overlay.classList.remove('is-open', 'is-preopen');
-        overlay.classList.add('is-closing');
-        overlay.style.pointerEvents = 'none';
-
-        requestAnimationFrame(() => {
-            if (app && !__aarishAnyModalOpenV203(overlay)) {
-                app.classList.remove('app-scale-down');
-            }
-        });
-
-        setTimeout(() => {
-            try { overlay.remove(); } catch(e) {}
-            if (app) app.classList.remove('aarish-motion-prepromote-v203');
-        }, __aarishMotionAnimMsV203);
-    };
-
-    /* AARISH_V203_LIST_OBSERVER_REMOVED: list animation now uses original .list-enter only. */
-    // AARISH_BIGTECH_MOTION_V203_END
-
 // Empty State Helper Function
     function getEmptyState(iconClass, message) {
         const isMilkEmpty = message === 'No customers found';
@@ -10982,7 +10637,7 @@ html, body {
   transform: translate3d(0,0,0);
   backface-visibility: hidden;
   -webkit-backface-visibility: hidden;
-  will-change: transform;
+  will-change: auto !important;
 }
 
 .glass-card:active {
@@ -11012,12 +10667,7 @@ html, body {
   transform: translate3d(0,0,0);
   backface-visibility: hidden;
   -webkit-backface-visibility: hidden;
-  transition:
-    transform 150ms var(--aarish-v33-ease),
-    opacity 150ms ease,
-    box-shadow 180ms ease,
-    background-color 180ms ease,
-    border-color 180ms ease !important;
+  transition: transform 180ms var(--aarish-god-snap-v300, cubic-bezier(0.2,0.8,0.2,1)), opacity 140ms ease-out !important;
 }
 
 .btn-primary:active,
@@ -11034,11 +10684,7 @@ html, body {
   box-shadow: var(--aarish-v33-input-shadow) !important;
   border-color: rgba(255,255,255,0.50) !important;
   transform: translate3d(0,0,0);
-  transition:
-    box-shadow 180ms ease,
-    border-color 180ms ease,
-    background-color 180ms ease,
-    transform 150ms var(--aarish-v33-ease) !important;
+  transition: transform 180ms var(--aarish-god-snap-v300, cubic-bezier(0.2,0.8,0.2,1)), opacity 140ms ease-out !important;
 }
 
 .dark .input-box {
@@ -11080,7 +10726,7 @@ html, body {
 }
 
 .table-custom tbody tr {
-  transition: background-color 150ms ease, transform 150ms var(--aarish-v33-ease);
+  transition: transform 180ms var(--aarish-god-snap-v300, cubic-bezier(0.2,0.8,0.2,1)), opacity 140ms ease-out !important;
 }
 
 .table-custom tbody tr:active {
@@ -20622,5 +20268,232 @@ window.addEventListener("pageshow", function () { setTimeout(install, 120); }, {
   console.log("✅ AARISH V128 Credit Book light Milk-safe paint active");
 })();
 </script>
+
+<script id="aarish-god-tier-motion-v300-js">
+/* AARISH_GOD_TIER_MOTION_V300_JS_START
+   Runtime placement fixed: real document body only, never report/template HTML.
+*/
+(function () {
+  "use strict";
+  if (window.__AARISH_GOD_TIER_MOTION_V300__) return;
+  window.__AARISH_GOD_TIER_MOTION_V300__ = true;
+
+  var PRESS_SELECTOR = [
+    "button",".btn-primary",".btn-ios-share",".btn-ios-add",".btn-google",".action-btn",
+    ".nav-item",".glass-card",".diary-card",".squircle","[onclick]"
+  ].join(",");
+  var FORM_SELECTOR = "input, textarea, select, option, label, [contenteditable='true']";
+  var activePress = new Set();
+  var willTimers = new WeakMap();
+  var closeTimers = new WeakMap();
+  var listRaf = 0;
+
+  function closestMotionTarget(node) {
+    if (!node || !node.closest) return null;
+    var form = node.closest(FORM_SELECTOR);
+    var target = node.closest(PRESS_SELECTOR);
+    if (!target) return null;
+    if (form && target.classList && (target.classList.contains("glass-card") || target.classList.contains("diary-card"))) return null;
+    return target;
+  }
+
+  function addWill(el, ms) {
+    if (!el || !el.classList) return;
+    el.classList.add("aarish-will-v300");
+    var old = willTimers.get(el);
+    if (old) clearTimeout(old);
+    willTimers.set(el, setTimeout(function () {
+      el.classList.remove("aarish-will-v300");
+      willTimers.delete(el);
+    }, ms || 420));
+  }
+
+  function releaseTarget(el) {
+    if (!el || !el.classList) return;
+    el.classList.remove("aarish-pressing-v300");
+    addWill(el, 340);
+    setTimeout(function () {
+      if (!el.classList.contains("aarish-pressing-v300")) el.classList.remove("aarish-will-v300");
+    }, 350);
+  }
+
+  function releaseAll() {
+    activePress.forEach(releaseTarget);
+    activePress.clear();
+  }
+
+  document.addEventListener("pointerdown", function (ev) {
+    if (ev.button != null && ev.button !== 0) return;
+    var target = closestMotionTarget(ev.target);
+    if (!target) return;
+    addWill(target, 520);
+    target.classList.add("aarish-pressing-v300");
+    activePress.add(target);
+  }, { capture: true, passive: true });
+
+  ["pointerup","pointercancel","pointerleave","lostpointercapture","dragstart"].forEach(function (type) {
+    document.addEventListener(type, function (ev) {
+      var target = closestMotionTarget(ev.target);
+      if (target && activePress.has(target)) {
+        activePress.delete(target);
+        releaseTarget(target);
+      } else if (type === "pointercancel" || type === "lostpointercapture" || type === "dragstart") {
+        releaseAll();
+      }
+    }, { capture: true, passive: true });
+  });
+
+  window.addEventListener("blur", releaseAll, { passive: true });
+  document.addEventListener("scroll", releaseAll, { capture: true, passive: true });
+
+  function motionApp() {
+    return document.getElementById("main-app") || document.querySelector(".app-container");
+  }
+  function motionSheet(overlay) {
+    return overlay ? overlay.querySelector(".modal-content") : null;
+  }
+  function anyModalOpen(except) {
+    return Array.prototype.some.call(
+      document.querySelectorAll(".modal-overlay.is-open, .modal-overlay.is-preopen"),
+      function (x) { return x !== except; }
+    );
+  }
+  function clearCloseTimer(overlay) {
+    var old = closeTimers.get(overlay);
+    if (old) {
+      clearTimeout(old);
+      closeTimers.delete(overlay);
+    }
+  }
+
+  function openOverlay(overlay) {
+    if (!overlay) return;
+    clearCloseTimer(overlay);
+    var app = motionApp();
+    var sheet = motionSheet(overlay);
+    addWill(overlay, 540);
+    addWill(sheet, 560);
+    addWill(app, 560);
+    overlay.style.removeProperty("display");
+    overlay.style.removeProperty("opacity");
+    overlay.style.removeProperty("pointer-events");
+    overlay.style.removeProperty("visibility");
+    overlay.classList.remove("is-open", "is-closing");
+    overlay.classList.add("is-preopen");
+    overlay.setAttribute("aria-hidden", "false");
+    requestAnimationFrame(function () {
+      if (app) app.classList.add("app-scale-down");
+      overlay.classList.add("is-open");
+      overlay.classList.remove("is-preopen");
+      addWill(sheet, 460);
+      addWill(app, 460);
+    });
+  }
+
+  function closeOverlay(overlay) {
+    if (!overlay) return;
+    clearCloseTimer(overlay);
+    var app = motionApp();
+    var sheet = motionSheet(overlay);
+    addWill(overlay, 460);
+    addWill(sheet, 460);
+    addWill(app, 460);
+    overlay.classList.remove("is-open", "is-preopen");
+    overlay.classList.add("is-closing");
+    overlay.setAttribute("aria-hidden", "true");
+    overlay.style.pointerEvents = "none";
+    requestAnimationFrame(function () {
+      if (app && !anyModalOpen(overlay)) app.classList.remove("app-scale-down");
+    });
+    closeTimers.set(overlay, setTimeout(function () {
+      overlay.classList.remove("is-closing");
+      overlay.style.removeProperty("display");
+      overlay.style.removeProperty("opacity");
+      overlay.style.removeProperty("pointer-events");
+      overlay.style.removeProperty("visibility");
+      if (sheet) sheet.classList.remove("aarish-will-v300");
+      if (app) app.classList.remove("aarish-will-v300");
+      closeTimers.delete(overlay);
+    }, 360));
+  }
+
+  window.openModal = function (id) { openOverlay(document.getElementById(id)); };
+  window.closeModal = function (id) { closeOverlay(document.getElementById(id)); };
+  window.__aarishOpenCreatedModalV300 = openOverlay;
+  window.__aarishCloseCreatedModalV300 = closeOverlay;
+  window.__aarishOpenCreatedModalV203 = openOverlay;
+  window.__aarishCloseCreatedModalV203 = closeOverlay;
+
+  function primeScreens() {
+    document.querySelectorAll(".screen").forEach(function (screen) {
+      var isActive = screen.classList.contains("active");
+      if (isActive && !screen.__aarishActiveMotionV300) {
+        screen.__aarishActiveMotionV300 = true;
+        addWill(screen, 380);
+        screen.addEventListener("animationend", function onScreenEnd() {
+          screen.classList.remove("aarish-will-v300");
+          screen.removeEventListener("animationend", onScreenEnd);
+        }, { passive: true });
+      } else if (!isActive && screen.__aarishActiveMotionV300) {
+        screen.__aarishActiveMotionV300 = false;
+        screen.classList.remove("aarish-will-v300");
+      }
+    });
+  }
+
+  function primeListItems(root) {
+    var scope = root && root.querySelectorAll ? root : document;
+    var items = scope.querySelectorAll(".list-enter:not([data-aarish-motion-v300])");
+    if (!items.length) return;
+    var max = Math.min(items.length, 80);
+    for (var i = 0; i < max; i++) {
+      var el = items[i];
+      el.dataset.aarishMotionV300 = "1";
+      el.style.setProperty("--aarish-i-v300", String(Math.min(i, 14)));
+      el.style.setProperty("--aarish-delay-v300", String(Math.min(i, 14) * 16) + "ms");
+      addWill(el, 520);
+      el.addEventListener("animationend", function onEnd() {
+        this.classList.remove("aarish-will-v300");
+        this.removeEventListener("animationend", onEnd);
+      }, { passive: true });
+    }
+  }
+
+  function schedulePrime(root) {
+    if (listRaf) return;
+    listRaf = requestAnimationFrame(function () {
+      listRaf = 0;
+      primeScreens();
+      primeListItems(root || document);
+    });
+  }
+
+  var mo = new MutationObserver(function (records) {
+    var needs = false;
+    for (var i = 0; i < records.length; i++) {
+      if (records[i].type === "childList" || (records[i].type === "attributes" && records[i].attributeName === "class")) {
+        needs = true;
+        break;
+      }
+    }
+    if (needs) schedulePrime(document);
+  });
+
+  function startObserver() {
+    if (!document.body) return;
+    mo.observe(document.body, { childList: true, subtree: true, attributes: true, attributeFilter: ["class"] });
+    schedulePrime(document);
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", startObserver, { once: true, passive: true });
+  } else {
+    startObserver();
+  }
+  window.addEventListener("pageshow", function () { schedulePrime(document); }, { passive: true });
+})();
+/* AARISH_GOD_TIER_MOTION_V300_JS_END */
+</script>
+
 </body>
 </html>
