@@ -8063,7 +8063,8 @@ function filterMilkList() {
     }
 
     function renderMilkRecords() {
-        if (window.aarishRenderMilkRecordsCoreV134) return window.aarishRenderMilkRecordsCoreV134();
+        if (// AARISH_V64_STANDALONE_REMOVED_CORE_ALREADY_SETS_DATA_MILK_NET
+window.aarishRenderMilkRecordsCoreV134) return window.aarishRenderMilkRecordsCoreV134();
         return;
     }
 
@@ -15921,105 +15922,6 @@ try { Function("fn", "renderMilkRecords = fn;")(window.aarishRenderMilkRecordsCo
   console.log("✅ AARISH_DIARY_PERMANENT_YELLOW_V54 active");
 })();
 </script>
-
-<script id="aarish-milk-detail-blue-total-v64-script">
-// AARISH_MILK_DETAIL_BLUE_TOTAL_CARD_V64_SCRIPT
-// Detects Milk detail TOTAL sign and marks card positive/negative/zero.
-// No Firebase write, no data mutation, no loop/observer.
-(function () {
-  if (window.__AARISH_MILK_DETAIL_BLUE_TOTAL_CARD_V64_READY) return;
-  window.__AARISH_MILK_DETAIL_BLUE_TOTAL_CARD_V64_READY = true;
-
-  function parseMilkMoneyV64(text) {
-    var raw = String(text || "").replace(/\s+/g, "");
-    var negative = /^[-−]/.test(raw) || raw.indexOf("-₹") >= 0 || raw.indexOf("−₹") >= 0;
-    var n = parseFloat(raw.replace(/[₹,+\s]/g, "").replace(/[−]/g, "-").replace(/[^0-9.\-]/g, ""));
-    if (!isFinite(n)) n = 0;
-    if (negative && n > 0) n = -n;
-    return n;
-  }
-
-  window.updateMilkDetailBlueTotalCardV64 = function () {
-    var bill = document.getElementById("milk-detail-bill");
-    var kg = document.getElementById("milk-detail-kg");
-    if (!bill) return;
-
-    var card = bill.closest(".glass-card");
-    if (!card) return;
-
-    card.classList.add("milk-detail-total-card-v64");
-
-    var amount = parseMilkMoneyV64(bill.textContent || bill.innerText || "");
-    var state = amount > 0 ? "positive" : (amount < 0 ? "negative" : "zero");
-
-    card.setAttribute("data-milk-net-v64", state);
-
-    if (kg) {
-      kg.setAttribute("data-milk-net-v64", state);
-    }
-  };
-
-  function scheduleV64() {
-    requestAnimationFrame(function () {
-      try { window.updateMilkDetailBlueTotalCardV64(); } catch (e) {}
-      requestAnimationFrame(function () {
-        try { window.updateMilkDetailBlueTotalCardV64(); } catch (e) {}
-      });
-    });
-  }
-
-  function wrapOnceV64(name) {
-    try {
-      var old = window[name];
-      if (typeof old !== "function" || old.__aarishMilkDetailV64Wrapped) return;
-      var wrapped = function () {
-        var result = old.apply(this, arguments);
-        scheduleV64();
-        return result;
-      };
-      wrapped.__aarishMilkDetailV64Wrapped = true;
-      window[name] = wrapped;
-      try { Function("wrapped", name + " = wrapped;")(wrapped); } catch (e) {}
-    } catch (e) {}
-  }
-
-  [
-    "switchTab",
-    "updateMonthFilter",
-    "renderMilkDetail",
-    "renderMilkDetails",
-    "renderMilkDetailRecords",
-    "renderMilkRecords",
-    "renderMilkCustomerDetail",
-    "openMilkCustomerDetail",
-    "openMilkDetail",
-    "saveMilkEntry",
-    "deleteMilkEntry",
-    "openMilkEntryModal"
-  ].forEach(wrapOnceV64);
-
-  document.addEventListener("DOMContentLoaded", scheduleV64, { passive: true, once: true });
-  window.addEventListener("load", scheduleV64, { passive: true, once: true });
-  document.addEventListener("visibilitychange", function () {
-    if (!document.hidden) scheduleV64();
-  }, { passive: true });
-
-  document.addEventListener("click", function (e) {
-    var t = e.target;
-    if (t && t.closest && (t.closest("#milk-screen") || t.closest("#milk-detail-screen"))) {
-      scheduleV64();
-    }
-  }, { passive: true });
-
-  document.addEventListener("change", function (e) {
-    var id = e.target && e.target.id;
-    if (id === "filter-month-milk" || id === "filter-year-milk") scheduleV64();
-  }, { passive: true });
-
-  scheduleV64();
-})();
-</script>
-
 <script id="aarish-party-ledger-true-stripe-v65-js">
 // AARISH_PARTY_LEDGER_TRUE_STRIPE_V65_JS
 // one-shot DOM styling only; no Firebase write, no data logic change, no observer, no interval.
@@ -19653,7 +19555,6 @@ window.addEventListener("pageshow", function () { setTimeout(install, 120); }, {
     "updateExpenseSalaryDynamicColorV68",
     "updateCreditTopBgV69",
     "updateUniformStripeWidthV66",
-    "updateMilkDetailBlueTotalCardV64"
   ];
 
   function runPaintersV125() {
@@ -20611,5 +20512,294 @@ window.addEventListener("pageshow", function () { setTimeout(install, 120); }, {
 /* AARISH_CSS_ONLY_PREMIUM_SLIDE_V307_FIXED_JS_END */
 /* AARISH_GOD_TIER_MOTION_V300_JS_END */
 </script>
+
+<!-- AARISH_AUTOPSY_MASTER_FIX_V2_START -->
+
+<script id="aarish-autopsy-master-fix-v2">
+(function () {
+  if (window.__AARISH_AUTOPSY_MASTER_FIX_V2__) return;
+  window.__AARISH_AUTOPSY_MASTER_FIX_V2__ = true;
+
+  function escV2(v) {
+    return String(v == null ? "" : v).replace(/[&<>"']/g, function (ch) {
+      return ({ "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;", "'":"&#39;" })[ch];
+    });
+  }
+
+  function nV2(v) {
+    var x = Number(v);
+    return Number.isFinite(x) ? x : 0;
+  }
+
+  function arrV2(v) {
+    if (Array.isArray(v)) return v.filter(Boolean);
+    if (v && typeof v === "object") return Object.keys(v).map(function (k) { return v[k]; }).filter(Boolean);
+    return [];
+  }
+
+  function cleanNameV2(v) {
+    var s = String(v == null ? "" : v).normalize("NFKC").replace(/\s+/g, " ").trim();
+    return s || "Unknown";
+  }
+
+  function moneyV2(v) {
+    return Math.round(Math.abs(nV2(v))).toLocaleString("en-IN");
+  }
+
+  function getFnV2(name) {
+    try {
+      if (typeof window[name] === "function") return window[name];
+      return Function("return (typeof " + name + " === 'function') ? " + name + " : null;")();
+    } catch(e) {
+      return null;
+    }
+  }
+
+  function setFnV2(name, fn) {
+    window[name] = fn;
+    try { Function("fn", name + " = fn;")(fn); } catch(e) {}
+  }
+
+  function toastV2(msg) {
+    try {
+      if (typeof showToast === "function") showToast(msg);
+      else if (window.showToast) window.showToast(msg);
+    } catch(e) {}
+  }
+
+  function switchV2(tab) {
+    try {
+      if (typeof switchTab === "function") switchTab(tab);
+      else if (window.switchTab) window.switchTab(tab);
+    } catch(e) {}
+  }
+
+  function milkFlowV2(record, customer) {
+    var raw = String((record && (record.flow || record.milkFlow || record.direction || record.entryType || record.type)) || "").toLowerCase();
+    if (/taken|take|minus|debit|pay|paid|dene_wala|negative/.test(raw)) return "taken";
+    if (/given|give|plus|credit|receive|received|lene_wala|positive/.test(raw)) return "given";
+    return customer && customer.type === "dene_wala" ? "taken" : "given";
+  }
+
+  function rateV2(customer, record) {
+    var rr = nV2(record && record.rate);
+    if (rr > 0) return rr;
+    var cr = nV2(customer && customer.rate);
+    if (cr > 0) return cr;
+    try { return nV2(DEFAULT_RATE); } catch(e) { return 55; }
+  }
+
+  function addBalanceV2(map, name, amount) {
+    var display = cleanNameV2(name);
+    var key = display.toLocaleLowerCase("en-IN");
+    if (!map[key]) map[key] = { name: display, balance: 0 };
+    map[key].balance += nV2(amount);
+  }
+
+  function patchPartyLedgerV2() {
+    window.renderDashboardBalances = function () {
+      var box = document.getElementById("dash-balances-list");
+      if (!box) return;
+
+      var search = cleanNameV2((document.getElementById("balance-search") || {}).value || "").toLocaleLowerCase("en-IN");
+      if (search === "unknown") search = "";
+      var balances = {};
+
+      var milk = {};
+      try { milk = (typeof milkDB !== "undefined" && milkDB) ? milkDB : (window.milkDB || {}); } catch(e) { milk = window.milkDB || {}; }
+      Object.keys(milk || {}).forEach(function (name) {
+        var customer = milk[name] || {};
+        arrV2(customer.records).forEach(function (r) {
+          var kg = nV2(r && r.morning) + nV2(r && r.evening);
+          var amount = kg * rateV2(customer, r);
+          if (!amount) return;
+          addBalanceV2(balances, name, milkFlowV2(r, customer) === "taken" ? -amount : amount);
+        });
+      });
+
+      var udhar = [];
+      try { udhar = (typeof udharDB !== "undefined" && udharDB) ? udharDB : (window.udharDB || []); } catch(e) { udhar = window.udharDB || []; }
+      arrV2(udhar).forEach(function (u) {
+        var amt = nV2(u && u.amount);
+        if (!amt) return;
+        var type = String((u && u.type) || "").toLowerCase();
+        var signed = (type === "credit" || type.indexOf("lena") !== -1 || type.indexOf("receive") !== -1) ? amt : -amt;
+        addBalanceV2(balances, u && u.name, signed);
+      });
+
+      var rows = Object.keys(balances).map(function (k) { return balances[k]; })
+        .filter(function (row) { return row.name.toLocaleLowerCase("en-IN").indexOf(search) !== -1; })
+        .filter(function (row) { return Math.round(row.balance) !== 0; })
+        .sort(function (a, b) { return Math.abs(b.balance) - Math.abs(a.balance); });
+
+      if (!rows.length) {
+        box.innerHTML = '<div class="text-center py-10 text-gray-400 font-semibold text-sm">No active balances!</div>';
+        return;
+      }
+
+      box.innerHTML = rows.map(function (row, i) {
+        var net = nV2(row.balance);
+        var plus = net > 0;
+        var color = plus ? "text-[#34C759]" : "text-[#FF3B30]";
+        var bg = plus ? "bg-[#34C759]/10" : "bg-[#FF3B30]/10";
+        var border = plus ? "border-l-[#34C759]" : "border-l-[#FF3B30]";
+        var sign = plus ? "+" : "-";
+        var label = plus ? "To Receive" : "To Pay";
+        var safeName = escV2(row.name);
+        var first = escV2((row.name && row.name.charAt(0)) ? row.name.charAt(0).toUpperCase() : "?");
+
+        return '<div class="glass-card list-enter flex items-center justify-between border-l-[4px] ' + border + ' w-full cursor-pointer" data-aarish-party-safe-v2="1" style="--aarish-stagger-v4:' + Math.min(i * 0.014, 0.112) + 's;">' +
+          '<div class="flex items-center gap-4 min-w-0 flex-1">' +
+            '<div class="w-12 h-12 shrink-0 squircle ' + bg + ' ' + color + ' font-extrabold flex items-center justify-center text-lg">' + first + '</div>' +
+            '<div class="flex-1 min-w-0">' +
+              '<h4 class="font-bold text-[16px] truncate w-full text-gray-900 dark:text-white leading-tight">' + safeName + '</h4>' +
+              '<p class="text-[10px] text-gray-500 font-bold uppercase tracking-wider truncate w-full mt-0.5">' + label + '</p>' +
+            '</div>' +
+          '</div>' +
+          '<div class="text-right shrink-0"><span class="font-extrabold ' + color + ' text-[17px]">' + sign + '₹' + moneyV2(net) + '</span></div>' +
+        '</div>';
+      }).join("");
+    };
+    setFnV2("renderDashboardBalances", window.renderDashboardBalances);
+  }
+
+  function guardEntityV2(fnName, check, tab, msg) {
+    var old = getFnV2(fnName);
+    if (typeof old !== "function" || old.__aarishAutopsyGuardV2) return;
+    var wrapped = function () {
+      try {
+        if (!check()) {
+          toastV2(msg);
+          switchV2(tab);
+          return false;
+        }
+      } catch(e) {
+        toastV2(msg);
+        switchV2(tab);
+        return false;
+      }
+      return old.apply(this, arguments);
+    };
+    wrapped.__aarishAutopsyGuardV2 = true;
+    wrapped.__aarishOriginal = old;
+    setFnV2(fnName, wrapped);
+  }
+
+  function installEntityGuardsV2() {
+    guardEntityV2("openMilkEntryModal", function () { return activeMilkCustomer && milkDB && milkDB[activeMilkCustomer]; }, "milk", "Customer missing. List refreshed.");
+    guardEntityV2("saveMilkEntry", function () { return activeMilkCustomer && milkDB && milkDB[activeMilkCustomer]; }, "milk", "Customer missing. Entry not saved.");
+    guardEntityV2("deleteMilkEntry", function () { return activeMilkCustomer && milkDB && milkDB[activeMilkCustomer]; }, "milk", "Customer missing. Delete skipped.");
+
+    guardEntityV2("openSalaryEntryModal", function () { return activeSalaryPerson && salaryDB && salaryDB[activeSalaryPerson]; }, "salary", "Employee missing. List refreshed.");
+    guardEntityV2("saveSalaryEntry", function () { return activeSalaryPerson && salaryDB && salaryDB[activeSalaryPerson]; }, "salary", "Employee missing. Entry not saved.");
+    guardEntityV2("deleteSalarySingleEntry", function () { return activeSalaryPerson && salaryDB && salaryDB[activeSalaryPerson]; }, "salary", "Employee missing. Delete skipped.");
+
+    guardEntityV2("openProjectEntryModal", function () { return activeProject && projectDB && projectDB[activeProject]; }, "projects", "Account missing. List refreshed.");
+    guardEntityV2("saveProjectEntry", function () { return activeProject && projectDB && projectDB[activeProject]; }, "projects", "Account missing. Entry not saved.");
+    guardEntityV2("deleteProjectEntry", function () { return activeProject && projectDB && projectDB[activeProject]; }, "projects", "Account missing. Delete skipped.");
+  }
+
+  function stripHasRulesV2() {
+    function strip(container) {
+      var rules;
+      try { rules = container.cssRules; } catch(e) { return; }
+      if (!rules) return;
+
+      for (var i = rules.length - 1; i >= 0; i--) {
+        var rule = rules[i];
+        try {
+          if (rule.selectorText && rule.selectorText.indexOf(":has(") !== -1) {
+            container.deleteRule(i);
+          } else if (rule.cssRules) {
+            strip(rule);
+          }
+        } catch(e) {}
+      }
+    }
+
+    try {
+      Array.prototype.forEach.call(document.styleSheets || [], strip);
+      document.documentElement.classList.add("aarish-no-has-v2");
+    } catch(e) {}
+  }
+
+  function injectPerfCssV2() {
+    if (document.getElementById("aarish-autopsy-master-fix-v2-css")) return;
+    var st = document.createElement("style");
+    st.id = "aarish-autopsy-master-fix-v2-css";
+    st.textContent =
+      "html.aarish-large-dom-mode .list-enter{animation:none!important;transition:none!important;transform:none!important;opacity:1!important}" +
+      "html.aarish-large-dom-mode .glass-card,html.aarish-large-dom-mode tr{transition:none!important;box-shadow:none!important}" +
+      "html.aarish-large-dom-mode .screen.active{animation:none!important}";
+    document.head.appendChild(st);
+  }
+
+  function optimizeLargeDomV2() {
+    try {
+      var selectors = [
+        "#milk-list", "#salary-list", "#udhar-list", "#expense-list-container",
+        "#dash-balances-list", "#diary-list", "#project-list",
+        "#milk-detail-records", "#salary-detail-records", "#udhar-detail-records",
+        "#expense-detail-records", "#project-detail-records"
+      ];
+      var maxChildren = 0;
+      selectors.forEach(function (sel) {
+        var el = document.querySelector(sel);
+        if (!el) return;
+        var count = el.children ? el.children.length : 0;
+        if (count > maxChildren) maxChildren = count;
+        if (count > 350) {
+          Array.prototype.forEach.call(el.querySelectorAll(".list-enter"), function (node) {
+            node.classList.remove("list-enter");
+            node.style.animation = "none";
+            node.style.opacity = "1";
+            node.style.transform = "none";
+          });
+        }
+      });
+      document.documentElement.classList.toggle("aarish-large-dom-mode", maxChildren > 350);
+    } catch(e) {}
+  }
+
+  function wrapAfterRenderV2(name) {
+    var old = getFnV2(name);
+    if (typeof old !== "function" || old.__aarishAutopsyAfterRenderV2) return;
+    var wrapped = function () {
+      var result = old.apply(this, arguments);
+      setTimeout(optimizeLargeDomV2, 0);
+      return result;
+    };
+    wrapped.__aarishAutopsyAfterRenderV2 = true;
+    wrapped.__aarishOriginal = old;
+    setFnV2(name, wrapped);
+  }
+
+  function bootV2() {
+    patchPartyLedgerV2();
+    installEntityGuardsV2();
+    injectPerfCssV2();
+    stripHasRulesV2();
+
+    [
+      "renderMilkList", "renderSalaryList", "renderUdharList", "renderExpenseList",
+      "renderDashboardBalances", "renderMilkRecords", "renderSalaryRecords",
+      "renderUdharRecords", "renderExpenseRecords", "renderDiaryList",
+      "renderProjectsList", "renderProjectRecords", "updateActiveScreen", "switchTab"
+    ].forEach(wrapAfterRenderV2);
+
+    optimizeLargeDomV2();
+  }
+
+  bootV2();
+  setTimeout(bootV2, 400);
+  setTimeout(bootV2, 1500);
+  document.addEventListener("input", function () { setTimeout(optimizeLargeDomV2, 0); }, { passive: true });
+  window.addEventListener("pageshow", function () { setTimeout(bootV2, 0); }, { passive: true });
+
+  console.log("✅ AARISH_AUTOPSY_MASTER_FIX_V2 active");
+})();
+</script>
+
+<!-- AARISH_AUTOPSY_MASTER_FIX_V2_END -->
 </body>
 </html>
