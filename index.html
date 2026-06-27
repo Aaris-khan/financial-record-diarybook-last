@@ -10770,6 +10770,64 @@ ${sections}
 window.onload = function(){ setTimeout(function(){ window.focus(); window.print(); }, 500); };
 <\/script>
 
+</body>
+</html>`;
+  }
+
+  window.executeDownload = function(type) {
+    const modal = document.getElementById("dynamic-download-modal");
+    if (modal) modal.remove();
+
+    const main = document.getElementById("main-app");
+    if (main) main.classList.remove("app-scale-down");
+
+    const reportType = String(type || "all").toLowerCase();
+    const names = {
+      all:"All Data",
+      milk:"Milk Records",
+      expenses:"Expenses",
+      udhar:"Credit Ledger",
+      salary:"Salary",
+      diary:"Personal Diary",
+      projects:"Business Hub"
+    };
+    const title = names[reportType] || reportType.toUpperCase();
+
+    let sections = "";
+    if (reportType === "all" || reportType === "milk") sections += buildMilk();
+    if (reportType === "all" || reportType === "expenses") sections += buildExpenses();
+    if (reportType === "all" || reportType === "udhar") sections += buildUdhar();
+    if (reportType === "all" || reportType === "salary") sections += buildSalary();
+    if (reportType === "all" || reportType === "diary") sections += buildDiary();
+    if (reportType === "all" || reportType === "projects") sections += buildProjects();
+
+    const doc = fullHtml(title, sections, reportType);
+
+    const w = window.open("", "_blank");
+    if (!w) {
+      const blob = new Blob([doc], { type:"text/html" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `Aarish_${reportType.toUpperCase()}_COMPACT_FLOW_V12_${todayISO()}.html`;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      setTimeout(() => URL.revokeObjectURL(url), 3000);
+      try { showToast("COMPACT FLOW V12 HTML downloaded. Open it and Save as PDF."); } catch(e) {}
+      return;
+    }
+
+    w.document.open();
+    w.document.write(doc);
+    w.document.close();
+
+    try { showToast("COMPACT FLOW V12 opened — choose Save as PDF."); } catch(e) {}
+  };
+})();
+</script>
+
+<!-- AARISH_AUTOPSY_SCRIPT_BOUNDARY_FIX_20260627_START -->
 <script id="aarish-v92-core-security-patch">
 // AARISH_V92_CORE_SECURITY_PATCH
 // 1. Offline UID Amnesia Fix
@@ -10830,7 +10888,7 @@ window.onload = function(){ setTimeout(function(){ window.focus(); window.print(
     
     console.log("✅ AARISH_V92_CORE_SECURITY_PATCH active");
 })();
-<\/script>
+</script>
 
 <script id="aarish-v95-array-guard">
 // AARISH_V95_SPARSE_ARRAY_SHIELD
@@ -10886,7 +10944,7 @@ window.onload = function(){ setTimeout(function(){ window.focus(); window.print(
         sanitizeArrays();
     console.log("✅ AARISH_V95_SPARSE_ARRAY_SHIELD active");
 })();
-<\/script>
+</script>
 
 <script id="aarish-v106-milk-dark-salary-style-js">
 /* AARISH_V106_MILK_DARK_SALARY_STYLE_BULLETPROOF_FIXED
@@ -10961,63 +11019,190 @@ window.onload = function(){ setTimeout(function(){ window.focus(); window.print(
   document.addEventListener("input", function(){ setTimeout(applyMilkV106, 0); }, { passive: true });
   window.addEventListener("pageshow", function(){ setTimeout(applyMilkV106, 80); }, { passive: true });
 })();
-<\/script>
-</body>
-</html>`;
+</script>
+
+<!-- AARISH_FORENSIC_MASTER_FIX_V1_START -->
+<script id="aarish-forensic-master-fix-v1">
+(function () {
+  if (window.__AARISH_FORENSIC_MASTER_FIX_V1__) return;
+  window.__AARISH_FORENSIC_MASTER_FIX_V1__ = true;
+
+  function esc(v) {
+    return String(v == null ? "" : v).replace(/[&<>"']/g, function (ch) {
+      return ({ "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;", "'":"&#39;" })[ch];
+    });
   }
 
-  window.executeDownload = function(type) {
-    const modal = document.getElementById("dynamic-download-modal");
-    if (modal) modal.remove();
+  function safeKey(v, fallback) {
+    var s = String(v == null ? "" : v)
+      .normalize("NFKC")
+      .replace(/[.#$/\[\]\\'"`<>]/g, " ")
+      .replace(/[\u0000-\u001F\u007F]/g, " ")
+      .replace(/\s+/g, " ")
+      .trim()
+      .slice(0, 120);
+    return s || fallback || ("item_" + Date.now());
+  }
 
-    const main = document.getElementById("main-app");
-    if (main) main.classList.remove("app-scale-down");
+  function recordsArray(v) {
+    if (Array.isArray(v)) return v.filter(Boolean);
+    if (v && typeof v === "object") return Object.keys(v).map(function(k){ return v[k]; }).filter(Boolean);
+    return [];
+  }
 
-    const reportType = String(type || "all").toLowerCase();
-    const names = {
-      all:"All Data",
-      milk:"Milk Records",
-      expenses:"Expenses",
-      udhar:"Credit Ledger",
-      salary:"Salary",
-      diary:"Personal Diary",
-      projects:"Business Hub"
-    };
-    const title = names[reportType] || reportType.toUpperCase();
+  function money(v) {
+    var n = Math.round(Math.abs(Number(v) || 0));
+    return "₹" + n.toLocaleString("en-IN");
+  }
 
-    let sections = "";
-    if (reportType === "all" || reportType === "milk") sections += buildMilk();
-    if (reportType === "all" || reportType === "expenses") sections += buildExpenses();
-    if (reportType === "all" || reportType === "udhar") sections += buildUdhar();
-    if (reportType === "all" || reportType === "salary") sections += buildSalary();
-    if (reportType === "all" || reportType === "diary") sections += buildDiary();
-    if (reportType === "all" || reportType === "projects") sections += buildProjects();
+  function milkFlow(record, customer) {
+    var raw = String((record && (record.flow || record.type || record.direction || record.mode)) || "").toLowerCase();
+    if (/taken|minus|debit|pay|paid|dene_wala|negative/.test(raw)) return "taken";
+    if (/given|plus|credit|receive|received|lene_wala|positive/.test(raw)) return "given";
+    return customer && customer.type === "dene_wala" ? "taken" : "given";
+  }
 
-    const doc = fullHtml(title, sections, reportType);
+  function milkTotals(customer) {
+    var out = { givenKg:0, takenKg:0, netAmt:0 };
+    var rate = Number(customer && customer.rate) || (typeof DEFAULT_RATE !== "undefined" ? DEFAULT_RATE : 55);
 
-    const w = window.open("", "_blank");
-    if (!w) {
-      const blob = new Blob([doc], { type:"text/html" });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = `Aarish_${reportType.toUpperCase()}_COMPACT_FLOW_V12_${todayISO()}.html`;
-      document.body.appendChild(a);
-      a.click();
-      a.remove();
-      setTimeout(() => URL.revokeObjectURL(url), 3000);
-      try { showToast("COMPACT FLOW V12 HTML downloaded. Open it and Save as PDF."); } catch(e) {}
+    recordsArray(customer && customer.records).forEach(function(r) {
+      var kg = (Number(r.morning) || 0) + (Number(r.evening) || 0);
+      if (milkFlow(r, customer) === "taken") out.takenKg += kg;
+      else out.givenKg += kg;
+    });
+
+    out.netKg = out.givenKg - out.takenKg;
+    out.netAmt = out.netKg * rate;
+    return out;
+  }
+
+  window.renderMilkList = function () {
+    var box = document.getElementById("milk-list");
+    if (!box) return;
+
+    var db = (typeof milkDB !== "undefined" && milkDB) ? milkDB : (window.milkDB || {});
+    var q = String((document.getElementById("milk-search") || {}).value || "").toLowerCase();
+
+    var keys = Object.keys(db).filter(function (name) {
+      return String(name).toLowerCase().includes(q);
+    });
+
+    if (!keys.length) {
+      box.innerHTML =
+        '<div class="flex flex-col items-center justify-center py-24 text-center select-none">' +
+          '<div class="w-28 h-28 rounded-full bg-[#007AFF]/10 text-[#007AFF] flex items-center justify-center shadow-[0_0_24px_rgba(0,122,255,0.14)]">' +
+            '<i class="fa-solid fa-jug-detergent text-5xl"></i>' +
+          '</div>' +
+          '<p class="mt-8 text-[#007AFF] font-extrabold text-[17px] tracking-tight">No customers found</p>' +
+        '</div>';
       return;
     }
 
-    w.document.open();
-    w.document.write(doc);
-    w.document.close();
+    box.innerHTML = keys.map(function(name, index) {
+      var c = db[name] || {};
+      var t = milkTotals(c);
+      var plus = t.netAmt >= 0;
+      var color = plus ? "text-[#34C759]" : "text-[#FF3B30]";
+      var bg = plus ? "bg-[#34C759]/10" : "bg-[#FF3B30]/10";
+      var br = plus ? "border-l-[#34C759]" : "border-l-[#FF3B30]";
+      var label = plus ? "Net To Receive" : "Net To Pay";
+      var sign = plus ? "+" : "-";
+      var first = String(name || "?").charAt(0).toUpperCase() || "?";
 
-    try { showToast("COMPACT FLOW V12 opened — choose Save as PDF."); } catch(e) {}
+      return '<div data-milk-key="' + esc(name) + '" class="glass-card mb-3.5 flex items-center justify-between cursor-pointer border-l-[3px] ' + br + ' w-full ring-1 ring-white/40 dark:ring-white/5 list-enter" style="--aarish-stagger-v4:' + Math.min(index * 0.014, 0.112) + 's;">' +
+        '<div class="flex items-center gap-4 w-full min-w-0">' +
+          '<div class="w-12 h-12 shrink-0 squircle ' + bg + ' ' + color + ' font-extrabold flex items-center justify-center text-lg">' + esc(first) + '</div>' +
+          '<div class="flex-1 min-w-0">' +
+            '<h4 class="font-bold text-[17px] leading-tight truncate w-full flex items-center text-gray-900 dark:text-white">' + esc(name) + '</h4>' +
+            '<p class="text-[12px] text-gray-500 font-bold truncate w-full mt-0.5 tracking-tight">Given ' + t.givenKg.toFixed(2) + ' KG • Taken ' + t.takenKg.toFixed(2) + ' KG</p>' +
+            '<p class="text-[13px] text-gray-500 font-medium truncate w-full mt-0.5 tracking-tight">' + label + ': <span class="' + color + ' font-extrabold text-[15px] ml-1">' + sign + money(t.netAmt) + '</span></p>' +
+          '</div>' +
+        '</div>' +
+        '<i class="fa-solid fa-chevron-right text-gray-300 shrink-0 ml-3 text-[13px]"></i>' +
+      '</div>';
+    }).join("");
   };
+
+  function bindMilkDelegation() {
+    var box = document.getElementById("milk-list");
+    if (!box || box.__forensicMilkClickBound) return;
+
+    box.__forensicMilkClickBound = true;
+    box.addEventListener("click", function (e) {
+      var card = e.target && e.target.closest ? e.target.closest("[data-milk-key]") : null;
+      if (!card) return;
+
+      try { if (typeof haptic === "function") haptic(); } catch(e) {}
+      if (typeof openMilkDetail === "function") {
+        openMilkDetail(card.getAttribute("data-milk-key"));
+      }
+    }, false);
+  }
+
+  var oldUpdate = window.updateActiveScreen || (typeof updateActiveScreen === "function" ? updateActiveScreen : null);
+  window.updateActiveScreen = function () {
+    var r = oldUpdate ? oldUpdate.apply(this, arguments) : undefined;
+    bindMilkDelegation();
+    return r;
+  };
+  try { updateActiveScreen = window.updateActiveScreen; } catch(e) {}
+
+  window.addSalaryPerson = async function () {
+    var nameEl = document.getElementById("new-salary-name");
+    var companyEl = document.getElementById("new-salary-company");
+    var typeEl = document.getElementById("new-salary-type");
+
+    var name = safeKey(nameEl && nameEl.value, "");
+    var company = safeKey(companyEl && companyEl.value, "—");
+    var type = typeEl ? typeEl.value : "dene_wala";
+
+    if (!name) return showToast("Enter Name!");
+
+    if (typeof salaryDB === "undefined" || !salaryDB) window.salaryDB = salaryDB = {};
+    if (salaryDB[name]) return showToast("Person already exists!");
+
+    salaryDB[name] = { company: company, type: type, records: [], safeKeyV1: true };
+
+    if (currentUserUID && window.aarishFirebaseLaterV48) {
+      window.aarishFirebaseLaterV48("salaryDB/" + name, "set", salaryDB[name]);
+    }
+
+    try { closeModal("add-salary-person-modal"); } catch(e) {}
+    try { renderSalaryList(); updateDashboard(); } catch(e) {}
+    showToast("Profile Added!");
+  };
+  try { addSalaryPerson = window.addSalaryPerson; } catch(e) {}
+
+  var oldLogout = window.logout || (typeof logout === "function" ? logout : null);
+  window.logout = async function () {
+    try {
+      var st = window.aarishOutboxStatusV84 ? await window.aarishOutboxStatusV84() : null;
+      if (st && (Number(st.pending || 0) > 0 || Number(st.dead || 0) > 0)) {
+        showToast("Pending sync exists. Internet ON karke sync complete hone ke baad logout karein.");
+        return;
+      }
+    } catch(e) {}
+
+    return oldLogout ? oldLogout.apply(this, arguments) : undefined;
+  };
+  try { logout = window.logout; } catch(e) {}
+
+  window.aarishForensicStatusV1 = async function () {
+    var st = {};
+    try { st.outbox = window.aarishOutboxStatusV84 ? await window.aarishOutboxStatusV84() : null; } catch(e) { st.outboxError = String(e); }
+    try { st.milkCustomers = Object.keys(milkDB || {}).length; } catch(e) {}
+    try { st.salaryProfiles = Object.keys(salaryDB || {}).length; } catch(e) {}
+    return st;
+  };
+
+  bindMilkDelegation();
+  console.log("✅ AARISH_FORENSIC_MASTER_FIX_V1 active");
 })();
 </script>
+<!-- AARISH_FORENSIC_MASTER_FIX_V1_END -->
+<!-- AARISH_AUTOPSY_SCRIPT_BOUNDARY_FIX_20260627_END -->
+
 
 <script>
 // AARISH_MILK_NET_GIVEN_TAKEN_V14
