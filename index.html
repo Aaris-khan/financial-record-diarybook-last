@@ -5782,6 +5782,76 @@ html.dark body #diary-screen #diary-search::-webkit-input-placeholder,
 @keyframes aarishReducedFadeV300 { from { opacity: 0; } to { opacity: 1; } }
 /* AARISH_GOD_TIER_MOTION_V300_END */
 </style>
+
+<style id="aarish-scroll-reveal-v302">
+/* AARISH_SCROLL_REVEAL_V302_START
+   Video-style scroll reveal:
+   - cards glide in while scrolling
+   - repeatable after leaving viewport
+   - no long backlog on fast scroll
+   - compositor only: transform + opacity
+*/
+:root {
+  --aarish-v302-spring: cubic-bezier(0.16, 1, 0.3, 1);
+  --aarish-v302-snap: cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+html body .list-enter.aarish-reveal-item-v302 {
+  animation: none !important;
+  transition-property: transform, opacity !important;
+  transition-duration: var(--aarish-v302-duration, 520ms), var(--aarish-v302-opacity, 280ms) !important;
+  transition-timing-function: var(--aarish-v302-spring), ease-out !important;
+  transition-delay: var(--aarish-v302-delay, 0ms), var(--aarish-v302-delay, 0ms) !important;
+  backface-visibility: hidden !important;
+  -webkit-backface-visibility: hidden !important;
+  transform-origin: center center !important;
+}
+
+/* Rest pose: hidden just outside viewport, ready to slide. */
+html body .list-enter.aarish-reveal-item-v302.aarish-reveal-out-v302 {
+  opacity: 0 !important;
+  transform: translate3d(var(--aarish-v302-x, 34px), var(--aarish-v302-y, 16px), 0) scale3d(0.986, 0.986, 1) !important;
+}
+
+/* Enter pose: visible final position. */
+html body .list-enter.aarish-reveal-item-v302.aarish-reveal-in-v302 {
+  opacity: 1 !important;
+  transform: translate3d(0, 0, 0) scale3d(1, 1, 1) !important;
+}
+
+/* RAM safe GPU promotion: only while moving. */
+html body .list-enter.aarish-reveal-item-v302.aarish-reveal-moving-v302 {
+  will-change: transform, opacity !important;
+}
+
+/* Detail table rows get smaller movement. */
+html body tr.list-enter.aarish-reveal-item-v302.aarish-reveal-out-v302 {
+  transform: translate3d(var(--aarish-v302-x, 14px), 0, 0) scale3d(0.996, 0.996, 1) !important;
+}
+
+/* Empty/no-data blocks must never disappear. */
+html body .list-enter.aarish-reveal-skip-v302 {
+  animation: none !important;
+  transition: none !important;
+  opacity: 1 !important;
+  transform: none !important;
+  will-change: auto !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html body .list-enter.aarish-reveal-item-v302 {
+    transition-duration: 90ms, 90ms !important;
+    transition-delay: 0ms, 0ms !important;
+  }
+  html body .list-enter.aarish-reveal-item-v302.aarish-reveal-out-v302,
+  html body .list-enter.aarish-reveal-item-v302.aarish-reveal-in-v302 {
+    transform: none !important;
+  }
+}
+/* AARISH_SCROLL_REVEAL_V302_END */
+</style>
+
+
 </head>
 
 <body>
@@ -20343,5 +20413,294 @@ window.addEventListener("pageshow", function () { setTimeout(install, 120); }, {
 })();
 /* AARISH_GOD_TIER_MOTION_V300_JS_END */
 </script>
+
+<script id="aarish-scroll-reveal-v302-js">
+/* AARISH_SCROLL_REVEAL_V302_JS_START
+   Soft repeatable scroll reveal. No observer.unobserve. No data mutation.
+*/
+(function () {
+  "use strict";
+  if (window.__AARISH_SCROLL_REVEAL_V302__) return;
+  window.__AARISH_SCROLL_REVEAL_V302__ = true;
+
+  var ITEM_SELECTOR = [
+    "#milk-list .list-enter",
+    "#udhar-list .list-enter",
+    "#expense-list-container .list-enter",
+    "#salary-list .list-enter",
+    "#diary-list .list-enter",
+    "#project-list .list-enter",
+    "#dash-balances-list .list-enter",
+    "#milk-detail-records .list-enter",
+    "#udhar-detail-records .list-enter",
+    "#expense-detail-records .list-enter",
+    "#salary-detail-records .list-enter",
+    "#project-detail-records .list-enter"
+  ].join(",");
+
+  var observed = new WeakSet();
+  var state = new WeakMap();
+  var timers = new WeakMap();
+  var queue = [];
+  var queueRaf = 0;
+  var scanRaf = 0;
+  var io = null;
+
+  var lastY = 0;
+  var lastT = Date.now();
+  var velocity = 0;
+  var direction = 1;
+
+  function now() {
+    return Date.now ? Date.now() : new Date().getTime();
+  }
+
+  function currentY() {
+    var sc = document.querySelector(".screen.active");
+    if (sc) return sc.scrollTop || 0;
+    return window.scrollY || document.documentElement.scrollTop || document.body.scrollTop || 0;
+  }
+
+  function updateScroll() {
+    var y = currentY();
+    var t = now();
+    var dt = Math.max(16, t - lastT);
+    var dy = y - lastY;
+    direction = dy >= 0 ? 1 : -1;
+    velocity = Math.abs(dy) / dt * 1000;
+    lastY = y;
+    lastT = t;
+  }
+
+  function isSkip(el) {
+    if (!el || !el.classList) return true;
+    if (!el.closest || !el.closest(".screen")) return true;
+
+    var txt = "";
+    try { txt = String(el.textContent || "").trim().toLowerCase(); } catch(e) {}
+
+    if (!txt || txt.indexOf("no ") === 0 || txt.indexOf("no entries") >= 0 || txt.indexOf("no record") >= 0 || txt.indexOf("no customers") >= 0) {
+      el.classList.add("aarish-reveal-skip-v302");
+      return true;
+    }
+    return false;
+  }
+
+  function clearTimer(el) {
+    var old = timers.get(el);
+    if (old) {
+      clearTimeout(old);
+      timers.delete(el);
+    }
+  }
+
+  function setPoseVars(el, rectTop) {
+    var comingFromTop = rectTop < 0;
+    var x = direction >= 0 ? "34px" : "-26px";
+    var y = comingFromTop ? "-14px" : "18px";
+
+    if (el.tagName && el.tagName.toLowerCase() === "tr") {
+      x = direction >= 0 ? "14px" : "-12px";
+      y = "0px";
+    }
+
+    el.style.setProperty("--aarish-v302-x", x);
+    el.style.setProperty("--aarish-v302-y", y);
+  }
+
+  function makeReady(el, rectTop) {
+    if (isSkip(el)) return;
+
+    var st = state.get(el);
+    if (st === "out") return;
+
+    clearTimer(el);
+    setPoseVars(el, rectTop || 0);
+
+    el.classList.add("aarish-reveal-item-v302");
+    el.classList.remove("aarish-reveal-in-v302");
+    el.classList.remove("aarish-reveal-moving-v302");
+    el.classList.add("aarish-reveal-out-v302");
+    el.style.setProperty("--aarish-v302-delay", "0ms");
+
+    state.set(el, "out");
+  }
+
+  function finish(el, totalMs) {
+    clearTimer(el);
+    timers.set(el, setTimeout(function () {
+      try {
+        el.classList.remove("aarish-reveal-moving-v302");
+        el.style.removeProperty("will-change");
+        timers.delete(el);
+      } catch(e) {}
+    }, totalMs || 650));
+  }
+
+  function enter(el, delay, fast) {
+    if (isSkip(el)) return;
+    if (state.get(el) === "in") return;
+
+    clearTimer(el);
+
+    el.classList.add("aarish-reveal-item-v302");
+    el.classList.add("aarish-reveal-moving-v302");
+    el.classList.add("aarish-reveal-out-v302");
+
+    el.style.setProperty("--aarish-v302-delay", delay + "ms");
+    el.style.setProperty("--aarish-v302-duration", fast ? "340ms" : "560ms");
+    el.style.setProperty("--aarish-v302-opacity", fast ? "160ms" : "280ms");
+
+    requestAnimationFrame(function () {
+      el.classList.remove("aarish-reveal-out-v302");
+      el.classList.add("aarish-reveal-in-v302");
+      state.set(el, "in");
+      finish(el, delay + (fast ? 430 : 680));
+    });
+  }
+
+  function flushQueue() {
+    queueRaf = 0;
+
+    var batch = queue.splice(0, queue.length);
+    if (!batch.length) return;
+
+    batch.sort(function (a, b) {
+      return direction >= 0 ? a.top - b.top : b.top - a.top;
+    });
+
+    var fast = velocity > 1550 || batch.length > 8;
+    var step = fast ? 7 : 26;
+    var cap = fast ? 56 : 170;
+
+    for (var i = 0; i < batch.length; i++) {
+      enter(batch[i].el, Math.min(i * step, cap), fast);
+    }
+  }
+
+  function queueEnter(el, rectTop) {
+    if (isSkip(el)) return;
+    if (state.get(el) === "in") return;
+
+    setPoseVars(el, rectTop || 0);
+    queue.push({ el: el, top: rectTop || 0 });
+
+    if (!queueRaf) {
+      queueRaf = requestAnimationFrame(flushQueue);
+    }
+  }
+
+  function onIO(entries) {
+    updateScroll();
+
+    for (var i = 0; i < entries.length; i++) {
+      var entry = entries[i];
+      var el = entry.target;
+      var top = entry.boundingClientRect ? entry.boundingClientRect.top : 0;
+
+      if (isSkip(el)) continue;
+
+      if (entry.isIntersecting && entry.intersectionRatio > 0.025) {
+        queueEnter(el, top);
+      } else {
+        makeReady(el, top);
+      }
+    }
+  }
+
+  function ensureIO() {
+    if (io || !("IntersectionObserver" in window)) return;
+    io = new IntersectionObserver(onIO, {
+      root: null,
+      rootMargin: "28% 0px 28% 0px",
+      threshold: [0, 0.025, 0.08, 0.18]
+    });
+  }
+
+  function attachOne(el) {
+    if (!el || observed.has(el) || isSkip(el)) return;
+
+    try { delete el.dataset.aarishMotionV300; } catch(e) {}
+
+    el.classList.add("aarish-reveal-item-v302");
+    observed.add(el);
+
+    if (io) io.observe(el);
+  }
+
+  function scan(root) {
+    ensureIO();
+
+    var scope = root && root.querySelectorAll ? root : document;
+    var items = [];
+
+    try {
+      if (scope.matches && scope.matches(ITEM_SELECTOR)) items.push(scope);
+    } catch(e) {}
+
+    try {
+      scope.querySelectorAll(ITEM_SELECTOR).forEach(function (el) { items.push(el); });
+    } catch(e) {}
+
+    for (var i = 0; i < items.length; i++) {
+      attachOne(items[i]);
+    }
+  }
+
+  function scheduleScan(root) {
+    if (scanRaf) return;
+    scanRaf = requestAnimationFrame(function () {
+      scanRaf = 0;
+      scan(root || document);
+    });
+  }
+
+  document.addEventListener("scroll", function () {
+    updateScroll();
+  }, { capture: true, passive: true });
+
+  var mo = new MutationObserver(function (records) {
+    var root = document;
+    for (var i = 0; i < records.length; i++) {
+      if (records[i].addedNodes && records[i].addedNodes.length) {
+        root = records[i].target || document;
+        break;
+      }
+    }
+    scheduleScan(root);
+  });
+
+  function boot() {
+    updateScroll();
+    ensureIO();
+    scan(document);
+
+    try {
+      mo.observe(document.body, { childList: true, subtree: true });
+    } catch(e) {}
+
+    setTimeout(function () { scheduleScan(document); }, 120);
+    setTimeout(function () { scheduleScan(document); }, 520);
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", boot, { once: true, passive: true });
+  } else {
+    boot();
+  }
+
+  window.addEventListener("pageshow", function () {
+    updateScroll();
+    scheduleScan(document);
+  }, { passive: true });
+
+  window.__aarishRefreshScrollRevealV302 = function () {
+    scheduleScan(document);
+  };
+})();
+/* AARISH_SCROLL_REVEAL_V302_JS_END */
+</script>
+
+
 </body>
 </html>
