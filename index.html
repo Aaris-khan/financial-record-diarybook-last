@@ -609,7 +609,6 @@
 </style>
 
 
-
 <style id="aarish-party-ledger-blue-text-stripe-v61">
 /* AARISH_PARTY_LEDGER_BLUE_TEXT_STRIPE_V61
    Party Ledger only:
@@ -760,7 +759,6 @@
 </style>
 
 
-
 <style id="aarish-milk-detail-blue-total-v64">
 /* AARISH_MILK_DETAIL_BLUE_TOTAL_CARD_V64
    Milk detail screen only:
@@ -813,22 +811,6 @@
   background-color: rgba(0,122,255,0.04) !important;
   transition-property: transform, opacity !important;
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 /* Daily table headings + normal white values -> blue */
@@ -927,7 +909,6 @@
 /* AARISH_V136_MILK_DETAIL_DARK_LIGHT_PARITY_END */
 
 </style>
-
 
 
 <style id="aarish-scoped-dark-uiux-v64">
@@ -1496,7 +1477,6 @@
 </style>
 
 
-
 <style id="aarish-party-ledger-true-stripe-v65">
 /* AARISH_PARTY_LEDGER_TRUE_STRIPE_V65
    Party Ledger left curved stripe final fix:
@@ -1553,7 +1533,6 @@
   border-left-color: transparent !important;
 }
 </style>
-
 
 
 <style id="aarish-uniform-stripe-width-v66">
@@ -1630,7 +1609,6 @@
   border-left-color: transparent !important;
 }
 </style>
-
 
 
 <style id="aarish-credit-book-dynamic-color-v67">
@@ -1794,7 +1772,6 @@
   color: var(--aarish-credit-red-v67) !important;
 }
 </style>
-
 
 
 <style id="aarish-expense-salary-dynamic-v68">
@@ -2416,7 +2393,6 @@
 </style>
 
 
-
 <style id="aarish-credit-top-bg-v69">
 /* AARISH_CREDIT_TOP_BG_V69
    Credit Book top Net Balance card:
@@ -2580,7 +2556,6 @@
 </style>
 
 
-
 <style id="aarish-alpha-micro-tuning-v73">
 /* AARISH_ALPHA_MICRO_TUNING_V73
    Kilode-AI alpha notes refined with Big-Tech dark-mode balance.
@@ -2608,7 +2583,6 @@
   box-shadow: 0 14px 42px rgba(0,0,0,0.50), 0 0 22px rgba(10,132,255,0.16) !important;
 }
 </style>
-
 
 
 <style id="aarish-milk-neutral-title-blue-v74">
@@ -2645,7 +2619,6 @@
   text-shadow: 0 0 12px rgba(255,59,48,0.30) !important;
 }
 </style>
-
 
 
 <style id="aarish-v99-ui-consistency-premium-dark-mode-css">
@@ -3939,19 +3912,6 @@
   --milkInset: rgba(0,122,255,0.48);
   --milkSoft: rgba(0,122,255,0.13);
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 @media (max-width: 380px) {
@@ -5822,69 +5782,6 @@ html.dark body #diary-screen #diary-search::-webkit-input-placeholder,
 @keyframes aarishReducedFadeV300 { from { opacity: 0; } to { opacity: 1; } }
 /* AARISH_GOD_TIER_MOTION_V300_END */
 </style>
-
-<style id="aarish-continuous-scroll-motion-v301">
-/* AARISH_CONTINUOUS_SCROLL_MOTION_V301_START
-   Repeatable scroll-enter motion.
-   No Firebase/data/render logic touched.
-   GPU only: transform + opacity.
-*/
-:root {
-  --aarish-scroll-spring-v301: cubic-bezier(0.16, 1, 0.3, 1);
-  --aarish-scroll-snap-v301: cubic-bezier(0.2, 0.8, 0.2, 1);
-}
-
-/* V301 takes control only for JS-managed list items. */
-html body .list-enter.aarish-scroll-managed-v301 {
-  animation: none !important;
-  transition-property: transform, opacity !important;
-  transition-duration: var(--aarish-scroll-duration-v301, 430ms), var(--aarish-scroll-opacity-v301, 260ms) !important;
-  transition-timing-function: var(--aarish-scroll-spring-v301), ease-out !important;
-  transition-delay: var(--aarish-scroll-delay-v301, 0ms), var(--aarish-scroll-delay-v301, 0ms) !important;
-  transform: translate3d(var(--aarish-scroll-x-v301, 22px), var(--aarish-scroll-y-v301, 18px), 0) scale3d(0.988, 0.988, 1) !important;
-  opacity: 0 !important;
-  backface-visibility: hidden !important;
-  -webkit-backface-visibility: hidden !important;
-  transform-origin: center center !important;
-}
-
-html body .list-enter.aarish-scroll-managed-v301.aarish-scroll-in-v301 {
-  transform: translate3d(0, 0, 0) scale3d(1, 1, 1) !important;
-  opacity: 1 !important;
-}
-
-/* Dynamic RAM safe promotion only while animating. */
-html body .list-enter.aarish-scroll-managed-v301.aarish-scroll-animating-v301 {
-  will-change: transform, opacity !important;
-}
-
-/* Detail table rows: lighter movement so table does not feel jumpy. */
-html body tr.list-enter.aarish-scroll-managed-v301 {
-  --aarish-scroll-x-v301: 12px;
-  --aarish-scroll-y-v301: 0px;
-  --aarish-scroll-duration-v301: 310ms;
-  --aarish-scroll-opacity-v301: 180ms;
-}
-
-/* Empty states should not stay invisible if observer is delayed. */
-html body .list-enter.aarish-scroll-empty-v301 {
-  opacity: 1 !important;
-  transform: none !important;
-}
-
-/* Keep reduced-motion users safe. */
-@media (prefers-reduced-motion: reduce) {
-  html body .list-enter.aarish-scroll-managed-v301 {
-    transition-duration: 80ms, 80ms !important;
-    transition-delay: 0ms, 0ms !important;
-    transform: none !important;
-  }
-}
-/* AARISH_CONTINUOUS_SCROLL_MOTION_V301_END */
-</style>
-
-
-
 </head>
 
 <body>
@@ -7313,7 +7210,6 @@ async function logout() {
     
 
 
-
          function loadUserData() {
     showLoader("OPENING LOW-COST CACHE...");
 
@@ -7782,7 +7678,6 @@ function filterSalaryList() {
     }
 
 
-
     async function saveSalaryEntry() {
         const date = document.getElementById('salary-entry-date').value;
         const amt = parseFloat(document.getElementById('salary-entry-amount').value);
@@ -7807,7 +7702,6 @@ function filterSalaryList() {
         updateDashboard();
         showToast('Saved Safely!');
     }
-
 
 
     
@@ -7967,10 +7861,6 @@ const sign = isLeneWala ? '+' : '-';
 }
 
 
-
-
-
-
     async function deleteSalarySingleEntry(id) {
         if(confirm('Are you sure you want to delete this specific entry?')) { 
             salaryDB[activeSalaryPerson].records = salaryDB[activeSalaryPerson].records.filter(r => r.id !== id);
@@ -7984,9 +7874,6 @@ const sign = isLeneWala ? '+' : '-';
             showToast('Entry Deleted!'); 
         }
     }
-
-
-
 
 
     
@@ -8009,7 +7896,6 @@ async function addMilkCustomer() {
     renderMilkList(); 
     showToast('Customer Added!');
 }
-
 
 
     
@@ -8148,7 +8034,6 @@ try {
 /* AARISH_V135_MILK_DETAIL_DELETE_TOP_END */
 
 
-
     function renderMilkList() {
         const q = (document.getElementById('milk-search').value || '').toLowerCase();
         const html = Object.keys(milkDB).filter(n => n.toLowerCase().includes(q)).map((name, index) => {
@@ -8216,8 +8101,6 @@ function filterMilkList() {
     }
 
 
-
-
         async function saveMilkEntry() {
         const date = document.getElementById('milk-entry-date').value;
         const m = parseFloat(document.getElementById('milk-morning-kg').value) || 0;
@@ -8254,7 +8137,6 @@ function filterMilkList() {
     }
 
 
-
     
 
 
@@ -8271,7 +8153,6 @@ function filterMilkList() {
             showToast('Deleted!'); 
         }
     }
-
 
 
     
@@ -8548,9 +8429,6 @@ async function shareDiaryBill(id) {
         
         showToast("Report Downloaded Successfully! 📊");
     }
-
-
-
 
 
     
@@ -9321,7 +9199,6 @@ try { window.renderExpenseRecords = renderExpenseRecords; } catch(e) {}
 /* AARISH_V147_EXPENSE_SYNTAX_SAFE_CORE_END */
 
 
-
         async function deleteExpense(id) { 
         if(confirm('Delete expense?')) { 
             expenseDB = expenseDB.filter(e => e.id !== id); // Local se hataya
@@ -9939,32 +9816,6 @@ function filterProjectList() {
         } catch(e) {}
     };
 </script>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 <script>
@@ -10881,7 +10732,6 @@ window.onload = function(){ setTimeout(function(){ window.focus(); window.print(
 <\/script>
 
 
-
 <script id="aarish-v92-core-security-patch">
 // AARISH_V92_CORE_SECURITY_PATCH
 // 1. Offline UID Amnesia Fix
@@ -11131,7 +10981,6 @@ window.onload = function(){ setTimeout(function(){ window.focus(); window.print(
   };
 })();
 </script>
-
 
 
 <script>
@@ -11645,16 +11494,6 @@ try { Function("fn", "renderMilkRecords = fn;")(window.aarishRenderMilkRecordsCo
 </script>
 
 
-
-
-
-
-
-
-
-
-
-
 <script>
 // AARISH_MILK_DUPLICATE_BLOCK_ONLY_V18
 // Final policy:
@@ -11835,25 +11674,6 @@ try { Function("fn", "renderMilkRecords = fn;")(window.aarishRenderMilkRecordsCo
   console.log("✅ AARISH_MILK_DUPLICATE_BLOCK_ONLY_V18 active: duplicate create blocked, merge disabled.");
 })();
 </script>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 <script>
@@ -12054,7 +11874,6 @@ try { Function("fn", "renderMilkRecords = fn;")(window.aarishRenderMilkRecordsCo
 </script>
 
 
-
 <script>
 // AARISH_MILK_HEADER_NET_COLOR_V24
 // Only changes Milk Record heading color by all-customer milk net.
@@ -12202,12 +12021,6 @@ try { Function("fn", "renderMilkRecords = fn;")(window.aarishRenderMilkRecordsCo
   console.log("✅ AARISH_MILK_HEADER_NET_COLOR_V24 active");
 })();
 </script>
-
-
-
-
-
-
 
 
 <script>
@@ -12392,7 +12205,6 @@ try { Function("fn", "renderMilkRecords = fn;")(window.aarishRenderMilkRecordsCo
 </script>
 
 
-
 <script>
 // AARISH_SALARY_HEADING_NET_COLOR_V28
 // Only Salary Record heading color.
@@ -12523,7 +12335,6 @@ try { Function("fn", "renderMilkRecords = fn;")(window.aarishRenderMilkRecordsCo
   console.log("✅ AARISH_SALARY_HEADING_NET_COLOR_V28 active");
 })();
 </script>
-
 
 
 <script>
@@ -12809,7 +12620,6 @@ try { Function("fn", "renderMilkRecords = fn;")(window.aarishRenderMilkRecordsCo
 </script>
 
 
-
 <script>
 // AARISH_EXPENSE_DETAIL_TOP_DELETE_V30
 // Adds Milk/Credit-style top-right delete button inside Expense category detail screen.
@@ -13090,7 +12900,6 @@ try { Function("fn", "renderMilkRecords = fn;")(window.aarishRenderMilkRecordsCo
   console.log("✅ AARISH_EXPENSE_DETAIL_TOP_DELETE_V30 active");
 })();
 </script>
-
 
 
 <script>
@@ -13378,12 +13187,6 @@ try { Function("fn", "renderMilkRecords = fn;")(window.aarishRenderMilkRecordsCo
   console.log("✅ AARISH_SALARY_DETAIL_TOP_DELETE_V31 active");
 })();
 </script>
-
-
-
-
-
-
 
 
 <script>
@@ -15269,11 +15072,6 @@ try { Function("fn", "renderMilkRecords = fn;")(window.aarishRenderMilkRecordsCo
 </script>
 
 
-
-
-
-
-
 <script>
 // AARISH_MILK_NEW_BUTTON_NET_COLOR_V50
 // Milk Record title ke net color ke saath +New button background bhi sync.
@@ -15414,7 +15212,6 @@ try { Function("fn", "renderMilkRecords = fn;")(window.aarishRenderMilkRecordsCo
   console.log("✅ AARISH_MILK_NEW_BUTTON_NET_COLOR_V50 active");
 })();
 </script>
-
 
 
 <script>
@@ -15571,7 +15368,6 @@ try { Function("fn", "renderMilkRecords = fn;")(window.aarishRenderMilkRecordsCo
   console.log("✅ AARISH_MILK_BOTTOM_NAV_NET_COLOR_V51 active");
 })();
 </script>
-
 
 
 <script>
@@ -15805,7 +15601,6 @@ try { Function("fn", "renderMilkRecords = fn;")(window.aarishRenderMilkRecordsCo
 </script>
 
 
-
 <script>
 // AARISH_DIARY_PERMANENT_YELLOW_V54
 // Personal Diary heading + New button + bottom Diary tab permanently yellow.
@@ -15905,7 +15700,6 @@ try { Function("fn", "renderMilkRecords = fn;")(window.aarishRenderMilkRecordsCo
 </script>
 
 
-
 <script id="aarish-milk-detail-blue-total-v64-script">
 // AARISH_MILK_DETAIL_BLUE_TOTAL_CARD_V64_SCRIPT
 // Detects Milk detail TOTAL sign and marks card positive/negative/zero.
@@ -16003,7 +15797,6 @@ try { Function("fn", "renderMilkRecords = fn;")(window.aarishRenderMilkRecordsCo
   scheduleV64();
 })();
 </script>
-
 
 
 <script id="aarish-party-ledger-true-stripe-v65-js">
@@ -16113,7 +15906,6 @@ scheduleV65();
 </script>
 
 
-
 <script id="aarish-uniform-stripe-width-v66-js">
 // AARISH_UNIFORM_STRIPE_WIDTH_V66_JS
 // Final tiny one-shot width normalizer. No Firebase write, no observer, no interval.
@@ -16183,7 +15975,6 @@ scheduleV65();
 schedule();
 })();
 </script>
-
 
 
 <script id="aarish-credit-book-dynamic-color-v67-js">
@@ -16365,7 +16156,6 @@ schedule();
 scheduleV67();
 })();
 </script>
-
 
 
 <script id="aarish-expense-salary-dynamic-v68-js">
@@ -16658,7 +16448,6 @@ scheduleV68();
 </script>
 
 
-
 <script id="aarish-credit-top-bg-v69-js">
 // AARISH_CREDIT_TOP_BG_V69_JS
 // Fix only Credit Book top summary card background.
@@ -16795,7 +16584,6 @@ scheduleV68();
 scheduleV69();
 })();
 </script>
-
 
 
 <script id="aarish-final-sync-optimizer-v87">
@@ -17596,7 +17384,6 @@ scheduleV69();
   console.log("✅ AARISH_FINAL_SYNC_OPTIMIZER_V87 active");
 })();
 </script>
-
 
 
 <script id="aarish-gemini-ai-accuracy-v88">
@@ -20556,297 +20343,5 @@ window.addEventListener("pageshow", function () { setTimeout(install, 120); }, {
 })();
 /* AARISH_GOD_TIER_MOTION_V300_JS_END */
 </script>
-
-<script id="aarish-continuous-scroll-motion-v301-js">
-/* AARISH_CONTINUOUS_SCROLL_MOTION_V301_JS_START
-   Repeatable viewport animation. No unobserve. No data mutation.
-*/
-(function () {
-  "use strict";
-  if (window.__AARISH_CONTINUOUS_SCROLL_MOTION_V301__) return;
-  window.__AARISH_CONTINUOUS_SCROLL_MOTION_V301__ = true;
-
-  var ITEM_SELECTOR = [
-    "#milk-list .list-enter",
-    "#udhar-list .list-enter",
-    "#expense-list-container .list-enter",
-    "#salary-list .list-enter",
-    "#diary-list .list-enter",
-    "#project-list .list-enter",
-    "#dash-balances-list .list-enter",
-    "#milk-detail-records .list-enter",
-    "#udhar-detail-records .list-enter",
-    "#expense-detail-records .list-enter",
-    "#salary-detail-records .list-enter",
-    "#project-detail-records .list-enter"
-  ].join(",");
-
-  var observed = new WeakSet();
-  var animTimers = new WeakMap();
-  var enterQueue = [];
-  var queueRaf = 0;
-  var scanRaf = 0;
-  var lastScrollTop = 0;
-  var lastScrollTime = Date.now();
-  var scrollVelocity = 0;
-  var scrollDirection = 1;
-  var io = null;
-
-  function now() {
-    return Date.now ? Date.now() : new Date().getTime();
-  }
-
-  function activeScroller() {
-    try {
-      var active = document.querySelector(".screen.active");
-      if (active) return active;
-    } catch(e) {}
-    return document.scrollingElement || document.documentElement || document.body;
-  }
-
-  function updateScrollMetrics() {
-    var sc = activeScroller();
-    var y = 0;
-    try {
-      y = sc === document.documentElement || sc === document.body ? (window.scrollY || sc.scrollTop || 0) : (sc.scrollTop || 0);
-    } catch(e) {}
-    var t = now();
-    var dt = Math.max(16, t - lastScrollTime);
-    var dy = y - lastScrollTop;
-    scrollDirection = dy >= 0 ? 1 : -1;
-    scrollVelocity = Math.abs(dy) / dt * 1000;
-    lastScrollTop = y;
-    lastScrollTime = t;
-  }
-
-  function isRealListItem(el) {
-    if (!el || !el.classList) return false;
-    if (!el.closest) return false;
-    if (!el.closest(".screen")) return false;
-    if (el.closest("#login-screen")) return false;
-
-    var text = "";
-    try { text = String(el.textContent || "").trim().toLowerCase(); } catch(e) {}
-
-    if (!text || text.indexOf("no ") === 0 || text.indexOf("no entries") !== -1 || text.indexOf("no customers") !== -1 || text.indexOf("no expenses") !== -1) {
-      el.classList.add("aarish-scroll-empty-v301");
-      return false;
-    }
-
-    return true;
-  }
-
-  function clearAnimTimer(el) {
-    var old = animTimers.get(el);
-    if (old) {
-      clearTimeout(old);
-      animTimers.delete(el);
-    }
-  }
-
-  function setOutPose(el, top) {
-    if (!el || !el.classList) return;
-    clearAnimTimer(el);
-
-    var y = top < 0 ? "-20px" : "22px";
-    var x = scrollDirection < 0 ? "-14px" : "22px";
-
-    el.style.setProperty("--aarish-scroll-x-v301", x);
-    el.style.setProperty("--aarish-scroll-y-v301", y);
-    el.style.setProperty("--aarish-scroll-delay-v301", "0ms");
-
-    el.classList.add("aarish-scroll-managed-v301");
-    el.classList.remove("aarish-scroll-in-v301");
-    el.classList.remove("aarish-scroll-animating-v301");
-    el.removeAttribute("data-aarish-scroll-state-v301");
-  }
-
-  function finishAnimating(el, ms) {
-    clearAnimTimer(el);
-    animTimers.set(el, setTimeout(function () {
-      try {
-        el.classList.remove("aarish-scroll-animating-v301");
-        el.style.removeProperty("will-change");
-        animTimers.delete(el);
-      } catch(e) {}
-    }, ms || 560));
-  }
-
-  function enterNow(el, delay, fastMode) {
-    if (!el || !el.classList) return;
-
-    el.classList.add("aarish-scroll-managed-v301");
-    el.classList.add("aarish-scroll-animating-v301");
-    el.style.setProperty("--aarish-scroll-delay-v301", String(delay || 0) + "ms");
-
-    if (fastMode) {
-      el.style.setProperty("--aarish-scroll-duration-v301", "285ms");
-      el.style.setProperty("--aarish-scroll-opacity-v301", "150ms");
-    } else {
-      el.style.setProperty("--aarish-scroll-duration-v301", "430ms");
-      el.style.setProperty("--aarish-scroll-opacity-v301", "260ms");
-    }
-
-    requestAnimationFrame(function () {
-      el.classList.add("aarish-scroll-in-v301");
-      el.setAttribute("data-aarish-scroll-state-v301", "in");
-      finishAnimating(el, (delay || 0) + (fastMode ? 360 : 540));
-    });
-  }
-
-  function queueEnter(el, top) {
-    if (!el || !el.classList) return;
-    if (el.getAttribute("data-aarish-scroll-state-v301") === "in") return;
-
-    var y = top < 0 ? "-20px" : "22px";
-    var x = scrollDirection < 0 ? "-14px" : "22px";
-
-    el.style.setProperty("--aarish-scroll-x-v301", x);
-    el.style.setProperty("--aarish-scroll-y-v301", y);
-    el.classList.add("aarish-scroll-managed-v301");
-
-    enterQueue.push({ el: el, top: top });
-
-    if (queueRaf) return;
-    queueRaf = requestAnimationFrame(flushEnterQueue);
-  }
-
-  function flushEnterQueue() {
-    queueRaf = 0;
-
-    var batch = enterQueue.splice(0, enterQueue.length);
-    if (!batch.length) return;
-
-    batch.sort(function (a, b) {
-      return scrollDirection >= 0 ? a.top - b.top : b.top - a.top;
-    });
-
-    var fastMode = scrollVelocity > 1700 || batch.length > 10;
-    var step = fastMode ? 6 : 22;
-    var cap = fastMode ? 42 : 154;
-
-    for (var i = 0; i < batch.length; i++) {
-      var delay = Math.min(i * step, cap);
-      enterNow(batch[i].el, delay, fastMode);
-    }
-  }
-
-  function onIntersect(entries) {
-    updateScrollMetrics();
-
-    for (var i = 0; i < entries.length; i++) {
-      var entry = entries[i];
-      var el = entry.target;
-      var top = entry.boundingClientRect ? entry.boundingClientRect.top : 0;
-
-      if (!isRealListItem(el)) continue;
-
-      if (entry.isIntersecting && entry.intersectionRatio > 0.035) {
-        queueEnter(el, top);
-      } else {
-        setOutPose(el, top);
-      }
-    }
-  }
-
-  function ensureObserver() {
-    if (io || !("IntersectionObserver" in window)) return;
-    io = new IntersectionObserver(onIntersect, {
-      root: null,
-      rootMargin: "18% 0px 18% 0px",
-      threshold: [0, 0.035, 0.12, 0.32]
-    });
-  }
-
-  function scan(root) {
-    if (!document.body) return;
-    ensureObserver();
-
-    var scope = root && root.querySelectorAll ? root : document;
-    var items = [];
-
-    try {
-      if (scope.matches && scope.matches(ITEM_SELECTOR)) items.push(scope);
-    } catch(e) {}
-
-    try {
-      scope.querySelectorAll(ITEM_SELECTOR).forEach(function (el) { items.push(el); });
-    } catch(e) {}
-
-    for (var i = 0; i < items.length; i++) {
-      var el = items[i];
-      if (!isRealListItem(el)) continue;
-
-      try { delete el.dataset.aarishMotionV300; } catch(e) {}
-      el.classList.add("aarish-scroll-managed-v301");
-
-      if (!observed.has(el)) {
-        observed.add(el);
-        if (io) io.observe(el);
-      }
-    }
-  }
-
-  function scheduleScan(root) {
-    if (scanRaf) return;
-    scanRaf = requestAnimationFrame(function () {
-      scanRaf = 0;
-      scan(root || document);
-    });
-  }
-
-  document.addEventListener("scroll", function () {
-    updateScrollMetrics();
-  }, { capture: true, passive: true });
-
-  document.addEventListener("visibilitychange", function () {
-    if (!document.hidden) scheduleScan(document);
-  }, { passive: true });
-
-  window.addEventListener("pageshow", function () {
-    updateScrollMetrics();
-    scheduleScan(document);
-  }, { passive: true });
-
-  var mo = new MutationObserver(function (records) {
-    var root = document;
-    for (var i = 0; i < records.length; i++) {
-      if (records[i].addedNodes && records[i].addedNodes.length) {
-        root = records[i].target || document;
-        break;
-      }
-    }
-    scheduleScan(root);
-  });
-
-  function boot() {
-    if (!document.body) return;
-    updateScrollMetrics();
-    ensureObserver();
-    scan(document);
-
-    try {
-      mo.observe(document.body, { childList: true, subtree: true });
-    } catch(e) {}
-
-    setTimeout(function () { scheduleScan(document); }, 80);
-    setTimeout(function () { scheduleScan(document); }, 350);
-  }
-
-  if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", boot, { once: true, passive: true });
-  } else {
-    boot();
-  }
-
-  window.__aarishRefreshContinuousScrollMotionV301 = function () {
-    scheduleScan(document);
-  };
-})();
-/* AARISH_CONTINUOUS_SCROLL_MOTION_V301_JS_END */
-</script>
-
-
-
 </body>
 </html>
