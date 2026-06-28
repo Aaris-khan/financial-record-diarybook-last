@@ -2177,7 +2177,7 @@ body {
     inset 0 1px 0 var(--aariDarkSpecular) !important;
 }
 
-/* Hero / total card uniform formula — no currentColor glow */
+/* Hero / total card uniform formula — Glowing Smoky Glass Net Cards V12 */
 #milk-detail-screen .milk-core-total-card { --aariTotalTone: var(--moduleTone); --aariTotalTone2: var(--moduleTone2); --aariTotalGlow: var(--moduleGlow); }
 #udhar-screen .glass-card[data-credit-core-top-tone],
 #udhar-detail-screen #udhar-detail-card[data-credit-core-tone] { --aariTotalTone: var(--creditTone); --aariTotalTone2: var(--creditTone2); --aariTotalGlow: var(--creditGlow); }
@@ -2185,46 +2185,140 @@ body {
 #expense-detail-screen #expense-detail-card[data-expense-core-tone] { --aariTotalTone: var(--expenseTone); --aariTotalTone2: var(--expenseTone2); --aariTotalGlow: var(--expenseGlow); }
 #salary-detail-screen #salary-detail-card[data-salary-core-tone] { --aariTotalTone: var(--salaryTone); --aariTotalTone2: var(--salaryTone2); --aariTotalGlow: var(--salaryGlow); }
 
+/* Net Cards ONLY: smoky glass + tone-on-tone + heavy glowing aura */
 #milk-detail-screen .milk-core-total-card,
 #udhar-screen .glass-card[data-credit-core-top-tone],
 #udhar-detail-screen #udhar-detail-card[data-credit-core-tone],
 #expenses-screen [data-expense-total-card-core],
 #expense-detail-screen #expense-detail-card[data-expense-core-tone],
 #salary-detail-screen #salary-detail-card[data-salary-core-tone] {
-  border-radius: 26px !important;
-  background: linear-gradient(135deg, var(--aariTotalTone), var(--aariTotalTone2)) !important;
-  border-color: rgba(255,255,255,0.180) !important;
-  color: #FFFFFF !important;
-  -webkit-text-fill-color: #FFFFFF !important;
+  position: relative !important;
+  overflow: visible !important;
+  isolation: isolate !important;
+  border-radius: 28px !important;
+
+  background: rgba(255,255,255,0.800) !important;
+  background:
+    linear-gradient(
+      148deg,
+      color-mix(in srgb, var(--aariTotalTone) 14%, rgba(255,255,255,0.840)) 0%,
+      color-mix(in srgb, var(--aariTotalTone2) 10%, rgba(255,255,255,0.700)) 52%,
+      color-mix(in srgb, var(--aariTotalTone) 17%, rgba(255,255,255,0.560)) 100%
+    ) !important;
+
+  backdrop-filter: blur(52px) saturate(220%) !important;
+  -webkit-backdrop-filter: blur(52px) saturate(220%) !important;
+
+  border: 1px solid rgba(255,255,255,0.480) !important;
+  background-clip: padding-box !important;
+
+  color: var(--aariTotalTone) !important;
+  -webkit-text-fill-color: var(--aariTotalTone) !important;
+  color: color-mix(in srgb, var(--aariTotalTone) 62%, #06111F) !important;
+  -webkit-text-fill-color: color-mix(in srgb, var(--aariTotalTone) 62%, #06111F) !important;
+
   box-shadow:
-    0 8px 22px var(--aariTotalGlow),
-    0 24px 68px var(--aariTotalGlow),
-    inset 0 1px 0 rgba(255,255,255,0.340),
-    inset 0 -1px 0 rgba(0,0,0,0.080) !important;
+    0 0 0 1px rgba(255,255,255,0.360),
+    0 2px 8px rgba(15,23,42,0.060),
+    0 16px 46px rgba(15,23,42,0.108),
+    0 8px 24px var(--aariTotalGlow),
+    0 28px 82px var(--aariTotalGlow),
+    0 46px 132px var(--aariTotalGlow),
+    inset 0 1px 0 rgba(255,255,255,0.780),
+    inset 0 -1px 0 rgba(0,0,0,0.055) !important;
+
+  transform: translateZ(0) !important;
+  will-change: transform, box-shadow, backdrop-filter !important;
 }
+
 .dark #milk-detail-screen .milk-core-total-card,
 .dark #udhar-screen .glass-card[data-credit-core-top-tone],
 .dark #udhar-detail-screen #udhar-detail-card[data-credit-core-tone],
 .dark #expenses-screen [data-expense-total-card-core],
 .dark #expense-detail-screen #expense-detail-card[data-expense-core-tone],
 .dark #salary-detail-screen #salary-detail-card[data-salary-core-tone] {
+  background: rgba(10,14,28,0.840) !important;
+  background:
+    linear-gradient(
+      148deg,
+      color-mix(in srgb, var(--aariTotalTone) 23%, rgba(10,14,28,0.850)) 0%,
+      color-mix(in srgb, var(--aariTotalTone2) 18%, rgba(8,12,24,0.780)) 54%,
+      color-mix(in srgb, var(--aariTotalTone) 21%, rgba(0,0,0,0.640)) 100%
+    ) !important;
+
+  border-color: rgba(255,255,255,0.150) !important;
+
+  color: var(--aariTotalTone2) !important;
+  -webkit-text-fill-color: var(--aariTotalTone2) !important;
+  color: color-mix(in srgb, var(--aariTotalTone) 74%, #FFFFFF) !important;
+  -webkit-text-fill-color: color-mix(in srgb, var(--aariTotalTone) 74%, #FFFFFF) !important;
+
   box-shadow:
-    0 10px 30px var(--aariTotalGlow),
-    0 30px 86px var(--aariTotalGlow),
-    inset 0 1px 0 rgba(255,255,255,0.180),
-    inset 0 -1px 0 rgba(0,0,0,0.220) !important;
+    0 0 0 1px rgba(255,255,255,0.090),
+    0 4px 16px rgba(0,0,0,0.430),
+    0 24px 72px rgba(0,0,0,0.720),
+    0 10px 34px var(--aariTotalGlow),
+    0 34px 110px var(--aariTotalGlow),
+    0 58px 170px var(--aariTotalGlow),
+    inset 0 1px 0 rgba(255,255,255,0.160),
+    inset 0 -1px 0 rgba(0,0,0,0.290) !important;
 }
+
+/* Children inherit same-family color */
 #milk-detail-screen .milk-core-total-card *,
 #udhar-screen .glass-card[data-credit-core-top-tone] *,
 #udhar-detail-screen #udhar-detail-card[data-credit-core-tone] *,
 #expenses-screen [data-expense-total-card-core] *,
 #expense-detail-screen #expense-detail-card[data-expense-core-tone] *,
 #salary-detail-screen #salary-detail-card[data-salary-core-tone] * {
-  color: #FFFFFF !important;
-  -webkit-text-fill-color: #FFFFFF !important;
-  text-shadow: 0 1px 6px rgba(0,0,0,0.300), 0 4px 22px rgba(0,0,0,0.180) !important;
+  color: var(--aariTotalTone) !important;
+  -webkit-text-fill-color: var(--aariTotalTone) !important;
+  color: color-mix(in srgb, var(--aariTotalTone) 62%, #06111F) !important;
+  -webkit-text-fill-color: color-mix(in srgb, var(--aariTotalTone) 62%, #06111F) !important;
+  text-shadow:
+    0 1px 0 rgba(255,255,255,0.280),
+    0 0 14px var(--aariTotalGlow) !important;
 }
 
+.dark #milk-detail-screen .milk-core-total-card *,
+.dark #udhar-screen .glass-card[data-credit-core-top-tone] *,
+.dark #udhar-detail-screen #udhar-detail-card[data-credit-core-tone] *,
+.dark #expenses-screen [data-expense-total-card-core] *,
+.dark #expense-detail-screen #expense-detail-card[data-expense-core-tone] *,
+.dark #salary-detail-screen #salary-detail-card[data-salary-core-tone] * {
+  color: var(--aariTotalTone2) !important;
+  -webkit-text-fill-color: var(--aariTotalTone2) !important;
+  color: color-mix(in srgb, var(--aariTotalTone) 74%, #FFFFFF) !important;
+  -webkit-text-fill-color: color-mix(in srgb, var(--aariTotalTone) 74%, #FFFFFF) !important;
+  text-shadow:
+    0 1px 8px rgba(0,0,0,0.260),
+    0 0 18px var(--aariTotalGlow) !important;
+}
+
+/* Android WebView fallback if color-mix is missing */
+@supports not (background: color-mix(in srgb, red 10%, white)) {
+  #milk-detail-screen .milk-core-total-card,
+  #udhar-screen .glass-card[data-credit-core-top-tone],
+  #udhar-detail-screen #udhar-detail-card[data-credit-core-tone],
+  #expenses-screen [data-expense-total-card-core],
+  #expense-detail-screen #expense-detail-card[data-expense-core-tone],
+  #salary-detail-screen #salary-detail-card[data-salary-core-tone] {
+    background: rgba(255,255,255,0.820) !important;
+    color: var(--aariTotalTone) !important;
+    -webkit-text-fill-color: var(--aariTotalTone) !important;
+  }
+
+  .dark #milk-detail-screen .milk-core-total-card,
+  .dark #udhar-screen .glass-card[data-credit-core-top-tone],
+  .dark #udhar-detail-screen #udhar-detail-card[data-credit-core-tone],
+  .dark #expenses-screen [data-expense-total-card-core],
+  .dark #expense-detail-screen #expense-detail-card[data-expense-core-tone],
+  .dark #salary-detail-screen #salary-detail-card[data-salary-core-tone] {
+    background: rgba(10,14,28,0.860) !important;
+    color: var(--aariTotalTone2) !important;
+    -webkit-text-fill-color: var(--aariTotalTone2) !important;
+  }
+}
 /* Avatar/icon jewel formula — split semantic glow, no currentColor box-shadow dependency */
 #milk-list .milk-avatar-core { --aariAvatarGlow: var(--moduleGlow); }
 #udhar-list .credit-avatar-core { --aariAvatarGlow: var(--creditGlow); }
