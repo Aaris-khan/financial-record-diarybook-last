@@ -948,6 +948,585 @@
 }
 /* AARISH_EXPENSE_CORE_CONTRACT_V1_END */
 
+
+
+
+/* AARISH_SALARY_CORE_CONTRACT_V1_START
+   Salary core-only UI/UX contract.
+   JS computes tone once: positive=salary receivable/green, negative=salary payable/red, zero=blue.
+   CSS consumes --salaryTone variables. No repaint loop, no wrapper chain, no extra script/style tag.
+*/
+#salary-screen,
+#salary-detail-screen,
+#tab-salary {
+  --salaryTone: #007AFF;
+  --salaryTone2: #0A84FF;
+  --salaryTint: rgba(0,122,255,0.13);
+  --salaryBorder: rgba(0,122,255,0.25);
+  --salaryGlow: rgba(0,122,255,0.28);
+  --salaryInset: rgba(0,122,255,0.45);
+  --salaryStaticBlue: #007AFF;
+  --salaryStaticBlueGlow: rgba(0,122,255,0.28);
+}
+#salary-screen[data-salary-core-tone="positive"],
+#salary-detail-screen[data-salary-core-tone="positive"],
+#tab-salary[data-salary-core-tone="positive"],
+[data-salary-core-tone="positive"] {
+  --salaryTone: #34C759;
+  --salaryTone2: #28A745;
+  --salaryTint: rgba(52,199,89,0.13);
+  --salaryBorder: rgba(52,199,89,0.25);
+  --salaryGlow: rgba(52,199,89,0.30);
+  --salaryInset: rgba(52,199,89,0.48);
+}
+#salary-screen[data-salary-core-tone="negative"],
+#salary-detail-screen[data-salary-core-tone="negative"],
+#tab-salary[data-salary-core-tone="negative"],
+[data-salary-core-tone="negative"] {
+  --salaryTone: #FF3B30;
+  --salaryTone2: #C92A2A;
+  --salaryTint: rgba(255,59,48,0.13);
+  --salaryBorder: rgba(255,59,48,0.25);
+  --salaryGlow: rgba(255,59,48,0.30);
+  --salaryInset: rgba(255,59,48,0.48);
+}
+
+#salary-screen .header-sticky h1[data-salary-core-tone],
+#salary-detail-screen #salary-detail-title[data-salary-core-tone],
+#tab-salary[data-salary-core-tone],
+#tab-salary[data-salary-core-tone] i {
+  color: var(--salaryTone) !important;
+  -webkit-text-fill-color: var(--salaryTone) !important;
+  text-shadow: 0 0 12px var(--salaryGlow) !important;
+}
+#salary-screen button[data-salary-new-core] {
+  background: linear-gradient(135deg, var(--salaryTone), var(--salaryTone2)) !important;
+  color: #FFFFFF !important;
+  -webkit-text-fill-color: #FFFFFF !important;
+  border-color: transparent !important;
+  box-shadow: 0 8px 22px var(--salaryGlow) !important;
+}
+#salary-screen button[data-salary-new-core] *,
+#salary-detail-screen button[data-salary-add-core] *,
+#salary-screen button[data-salary-new-core] i {
+  color: #FFFFFF !important;
+  -webkit-text-fill-color: #FFFFFF !important;
+}
+#salary-screen .relative .fa-search,
+#salary-screen #salary-search,
+#salary-screen #salary-search::placeholder,
+#salary-screen #salary-search::-webkit-input-placeholder,
+#salary-detail-screen #filter-month-salary,
+#salary-detail-screen #filter-year-salary,
+#salary-detail-screen [data-salary-daily-title-core],
+#salary-detail-screen .table-custom th,
+#salary-detail-screen button[data-salary-share-core],
+#salary-detail-screen button[data-salary-share-core] i {
+  color: var(--salaryStaticBlue) !important;
+  -webkit-text-fill-color: var(--salaryStaticBlue) !important;
+  caret-color: var(--salaryStaticBlue) !important;
+  text-shadow: 0 0 10px var(--salaryStaticBlueGlow) !important;
+  opacity: 1 !important;
+}
+#salary-screen #salary-search,
+#salary-detail-screen #filter-month-salary,
+#salary-detail-screen #filter-year-salary {
+  border-color: rgba(0,122,255,0.22) !important;
+  font-weight: 800 !important;
+}
+#salary-detail-screen .table-custom th {
+  font-weight: 900 !important;
+  letter-spacing: 1px !important;
+}
+#salary-detail-screen button[data-salary-share-core] {
+  background: rgba(0,122,255,0.08) !important;
+  border-color: rgba(0,122,255,0.22) !important;
+  box-shadow: 0 8px 18px rgba(0,122,255,0.14) !important;
+}
+#salary-detail-screen button[data-salary-add-core] {
+  background: linear-gradient(135deg, var(--salaryTone), var(--salaryTone2)) !important;
+  color: #FFFFFF !important;
+  -webkit-text-fill-color: #FFFFFF !important;
+  border-color: transparent !important;
+  box-shadow: 0 8px 22px var(--salaryGlow) !important;
+}
+#salary-detail-screen #salary-detail-card[data-salary-core-tone] {
+  background: linear-gradient(135deg, var(--salaryTone), var(--salaryTone2)) !important;
+  color: #FFFFFF !important;
+  border-color: transparent !important;
+  box-shadow: 0 10px 28px var(--salaryGlow), inset 0 1px 0 rgba(255,255,255,0.24) !important;
+}
+#salary-detail-screen #salary-detail-card[data-salary-core-tone] * {
+  color: #FFFFFF !important;
+  -webkit-text-fill-color: #FFFFFF !important;
+  text-shadow: 0 2px 10px rgba(0,0,0,0.18) !important;
+}
+
+#salary-list .salary-core-card {
+  border-left: 4px solid var(--salaryTone) !important;
+  background: rgba(255,255,255,0.72) !important;
+  color: var(--salaryTone) !important;
+  -webkit-text-fill-color: var(--salaryTone) !important;
+  box-shadow: -4px 0 14px var(--salaryGlow), 0 10px 26px rgba(15,23,42,0.07), inset 1px 0 0 var(--salaryInset), inset 0 1px 0 rgba(255,255,255,0.62) !important;
+  transition-property: transform, opacity !important;
+  transition-duration: 100ms !important;
+}
+.dark #salary-list .salary-core-card {
+  background: rgba(12,18,36,0.84) !important;
+  box-shadow: -4px 0 18px var(--salaryGlow), 0 12px 34px rgba(0,0,0,0.42), inset 1px 0 0 var(--salaryInset), inset 0 1px 0 rgba(255,255,255,0.10) !important;
+}
+#salary-list .salary-core-card :is(h4,p,span,i,.font-bold,.font-extrabold),
+#salary-list .salary-avatar-core,
+#salary-detail-screen #salary-detail-records tr[data-salary-row-tone-core] :is(td,span,.font-bold,.font-extrabold) {
+  color: var(--salaryTone) !important;
+  -webkit-text-fill-color: var(--salaryTone) !important;
+  text-shadow: 0 0 9px var(--salaryGlow) !important;
+}
+#salary-list .salary-avatar-core {
+  background: var(--salaryTint) !important;
+  border: 1px solid var(--salaryBorder) !important;
+  box-shadow: 0 7px 18px var(--salaryGlow), inset 0 1px 0 rgba(255,255,255,0.18) !important;
+}
+
+#salary-detail-records .salary-date-core,
+#salary-detail-records .salary-amount-core {
+  color: var(--salaryTone) !important;
+  -webkit-text-fill-color: var(--salaryTone) !important;
+  text-shadow: 0 0 9px var(--salaryGlow) !important;
+}
+#salary-detail-records tr[data-salary-empty-core="true"] td {
+  color: #007AFF !important;
+  -webkit-text-fill-color: #007AFF !important;
+  text-shadow: 0 0 10px rgba(0,122,255,0.24) !important;
+}
+#salary-detail-screen [data-salary-delete-core],
+#salary-detail-screen [data-salary-delete-core] *,
+#salary-detail-records .salary-delete-btn-core,
+#salary-detail-records .salary-delete-btn-core *,
+#salary-profile-delete-btn-core,
+#salary-profile-delete-btn-core * {
+  color: #FF3B30 !important;
+  -webkit-text-fill-color: #FF3B30 !important;
+  text-shadow: 0 0 12px rgba(255,59,48,0.28) !important;
+}
+#salary-detail-screen [data-salary-delete-core],
+#salary-detail-records .salary-delete-btn-core,
+#salary-profile-delete-btn-core {
+  background: rgba(255,59,48,0.10) !important;
+  border: 1px solid rgba(255,59,48,0.18) !important;
+  box-shadow: 0 10px 26px rgba(255,59,48,0.14), inset 0 1px 0 rgba(255,255,255,0.36) !important;
+}
+#salary-profile-delete-btn-core {
+  width: 52px !important;
+  height: 52px !important;
+  min-width: 52px !important;
+  min-height: 52px !important;
+  border-radius: 18px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  flex-shrink: 0 !important;
+  margin-left: 12px !important;
+  padding: 0 !important;
+}
+#salary-detail-records .salary-delete-btn-core {
+  min-width: 46px !important;
+  min-height: 46px !important;
+  width: 46px !important;
+  height: 46px !important;
+  border-radius: 16px !important;
+}
+.dark #salary-detail-screen [data-salary-delete-core],
+.dark #salary-detail-records .salary-delete-btn-core,
+.dark #salary-profile-delete-btn-core {
+  background: rgba(255,59,48,0.14) !important;
+  border-color: rgba(255,59,48,0.24) !important;
+  box-shadow: 0 12px 30px rgba(255,59,48,0.18), inset 0 1px 0 rgba(255,255,255,0.05) !important;
+}
+/* AARISH_SALARY_CORE_CONTRACT_V1_END */
+
+
+
+
+/* AARISH_DIARY_CORE_CONTRACT_V1_START
+   Diary core-only UI/UX contract.
+   Permanent diary yellow: #F5A623.
+   No overlay script, no wrapper chain, no repaint loop.
+*/
+#diary-screen,
+#diary-detail-screen,
+#tab-diary {
+  --diaryTone: #F5A623;
+  --diaryTone2: #E59A1F;
+  --diaryTint: rgba(245,166,35,0.12);
+  --diaryBorder: rgba(245,166,35,0.28);
+  --diaryGlow: rgba(245,166,35,0.30);
+  --diaryGlowStrong: rgba(245,166,35,0.45);
+}
+
+#diary-screen #diary-title-v54,
+#diary-screen .header-sticky h1[data-diary-core-tone],
+#diary-detail-screen .header-sticky h1[data-diary-core-tone],
+#tab-diary[data-diary-core-tone],
+#tab-diary[data-diary-core-tone] i,
+#diary-screen #diary-list .diary-core-card h4,
+#diary-screen #diary-list .diary-core-card p,
+#diary-screen #diary-list .diary-core-card i.fa-chevron-right,
+#diary-detail-screen #diary-view-title,
+#diary-detail-screen #diary-view-date,
+#diary-detail-screen #diary-view-content {
+  color: var(--diaryTone) !important;
+  -webkit-text-fill-color: var(--diaryTone) !important;
+  text-shadow: 0 0 10px rgba(245,166,35,0.18) !important;
+}
+
+#diary-screen #diary-new-btn-v54,
+#diary-screen button[data-diary-new-core],
+#diary-entry-modal button[data-diary-save-core] {
+  background: linear-gradient(135deg, var(--diaryTone), var(--diaryTone2)) !important;
+  background-color: var(--diaryTone) !important;
+  color: #FFFFFF !important;
+  -webkit-text-fill-color: #FFFFFF !important;
+  border-color: transparent !important;
+  box-shadow: 0 8px 22px var(--diaryGlowStrong) !important;
+}
+#diary-screen #diary-new-btn-v54 *,
+#diary-screen button[data-diary-new-core] *,
+#diary-entry-modal button[data-diary-save-core] * {
+  color: #FFFFFF !important;
+  -webkit-text-fill-color: #FFFFFF !important;
+}
+
+/* Diary search icon/input: permanent yellow, not blue. */
+#diary-screen .relative > i.fa-search,
+#diary-screen [data-diary-search-icon-core],
+#diary-screen #diary-search,
+#diary-screen #diary-search::placeholder,
+#diary-screen #diary-search::-webkit-input-placeholder {
+  color: var(--diaryTone) !important;
+  -webkit-text-fill-color: var(--diaryTone) !important;
+  caret-color: var(--diaryTone) !important;
+  text-shadow: 0 0 10px rgba(245,166,35,0.22) !important;
+  opacity: 1 !important;
+}
+#diary-screen #diary-search {
+  border-color: var(--diaryBorder) !important;
+  font-weight: 800 !important;
+}
+#diary-screen #diary-search::placeholder,
+#diary-screen #diary-search::-webkit-input-placeholder {
+  font-weight: 800 !important;
+}
+
+#diary-screen #diary-list .diary-core-card {
+  border-left: 4px solid var(--diaryTone) !important;
+  background: rgba(255,255,255,0.72) !important;
+  box-shadow: -4px 0 14px var(--diaryGlow), 0 10px 26px rgba(15,23,42,0.07), inset 1px 0 0 var(--diaryBorder), inset 0 1px 0 rgba(255,255,255,0.62) !important;
+  transition-property: transform, opacity !important;
+  transition-duration: 100ms !important;
+}
+.dark #diary-screen #diary-list .diary-core-card {
+  background: rgba(12,18,36,0.84) !important;
+  box-shadow: -4px 0 18px var(--diaryGlow), 0 12px 34px rgba(0,0,0,0.42), inset 1px 0 0 var(--diaryBorder), inset 0 1px 0 rgba(255,255,255,0.10) !important;
+}
+#diary-screen #diary-list .diary-core-card .diary-preview-core {
+  opacity: .78 !important;
+}
+#diary-screen #diary-list .diary-core-card .diary-date-core {
+  opacity: .70 !important;
+}
+
+#diary-detail-screen .diary-paper {
+  border-color: var(--diaryBorder) !important;
+  box-shadow: 0 10px 34px rgba(0,0,0,0.06), inset 0 2px 15px rgba(245,166,35,0.04), 0 0 20px rgba(245,166,35,0.08) !important;
+}
+.dark #diary-detail-screen .diary-paper {
+  background: rgba(15,23,42,0.88) !important;
+  border-color: rgba(245,166,35,0.18) !important;
+  box-shadow: 0 12px 36px rgba(0,0,0,0.44), inset 0 1px 0 rgba(255,255,255,0.06), 0 0 24px rgba(245,166,35,0.14) !important;
+}
+
+#diary-detail-screen button[data-diary-share-core],
+#diary-detail-screen button[data-diary-share-core] i {
+  color: #007AFF !important;
+  -webkit-text-fill-color: #007AFF !important;
+  text-shadow: 0 0 10px rgba(0,122,255,0.26) !important;
+}
+#diary-detail-screen button[data-diary-share-core] {
+  background: rgba(0,122,255,0.08) !important;
+  border-color: rgba(0,122,255,0.20) !important;
+}
+
+#diary-detail-screen button[data-diary-edit-core],
+#diary-detail-screen button[data-diary-edit-core] i {
+  color: var(--diaryTone) !important;
+  -webkit-text-fill-color: var(--diaryTone) !important;
+  text-shadow: 0 0 10px rgba(245,166,35,0.26) !important;
+}
+#diary-detail-screen button[data-diary-edit-core] {
+  background: var(--diaryTint) !important;
+  border-color: var(--diaryBorder) !important;
+}
+
+#diary-detail-screen button[data-diary-delete-core],
+#diary-detail-screen button[data-diary-delete-core] *,
+#diary-detail-screen .diary-delete-btn-core,
+#diary-detail-screen .diary-delete-btn-core * {
+  color: #FF3B30 !important;
+  -webkit-text-fill-color: #FF3B30 !important;
+  text-shadow: 0 0 12px rgba(255,59,48,0.28) !important;
+}
+#diary-detail-screen button[data-diary-delete-core],
+#diary-detail-screen .diary-delete-btn-core {
+  background: rgba(255,59,48,0.10) !important;
+  border-color: rgba(255,59,48,0.18) !important;
+  box-shadow: 0 8px 22px rgba(255,59,48,0.14) !important;
+}
+
+.dark #diary-screen #diary-search {
+  border-color: rgba(245,166,35,0.30) !important;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.04), 0 0 18px rgba(245,166,35,0.08) !important;
+}
+/* AARISH_DIARY_CORE_CONTRACT_V1_END */
+
+
+
+
+/* AARISH_BUSINESS_CORE_CONTRACT_V1_START
+   Business Kit core-only UI/UX contract.
+   Permanent business blue on list/detail/static UI.
+   Row and summary totals keep semantic colors: green income, red expense, blue bank/other, orange pending/udhar.
+   No overlay script, no wrapper chain, no repaint loop.
+*/
+#projects-screen,
+#project-detail-screen,
+#add-project-modal,
+#add-project-entry-modal,
+#tab-projects {
+  --businessBlue:#007AFF;
+  --businessBlue2:#0A84FF;
+  --businessBlueSoft:#58A6FF;
+  --businessBlueTint:rgba(0,122,255,0.10);
+  --businessBlueTint2:rgba(0,122,255,0.055);
+  --businessBlueBorder:rgba(0,122,255,0.18);
+  --businessBlueGlow:rgba(0,122,255,0.28);
+  --businessBlueGlowStrong:rgba(0,122,255,0.42);
+  --businessRed:#FF3B30;
+  --businessGreen:#34C759;
+  --businessOrange:#FF9500;
+}
+
+#projects-screen .header-sticky h1[data-business-core],
+#projects-screen .header-sticky h1,
+#tab-projects[data-business-core],
+#tab-projects[data-business-core] i {
+  color:var(--businessBlue)!important;
+  -webkit-text-fill-color:var(--businessBlue)!important;
+  text-shadow:0 0 12px var(--businessBlueGlow)!important;
+}
+
+#projects-screen .header-sticky button[data-business-new-core] {
+  color:var(--businessBlue)!important;
+  -webkit-text-fill-color:var(--businessBlue)!important;
+  background:rgba(0,122,255,0.10)!important;
+  border:1px solid rgba(0,122,255,0.18)!important;
+  box-shadow:0 10px 26px rgba(0,122,255,0.16), inset 0 1px 0 rgba(255,255,255,0.34)!important;
+  text-shadow:0 0 10px rgba(0,122,255,0.22)!important;
+}
+#projects-screen .header-sticky button[data-business-new-core] * {
+  color:var(--businessBlue)!important;
+  -webkit-text-fill-color:var(--businessBlue)!important;
+}
+
+#projects-screen .relative > i.fa-search,
+#projects-screen [data-business-search-icon-core],
+#projects-screen #project-search,
+#projects-screen #project-search::placeholder,
+#projects-screen #project-search::-webkit-input-placeholder {
+  color:var(--businessBlue)!important;
+  -webkit-text-fill-color:var(--businessBlue)!important;
+  caret-color:var(--businessBlue)!important;
+  text-shadow:0 0 10px var(--businessBlueGlow)!important;
+  opacity:1!important;
+}
+#projects-screen #project-search {
+  background:rgba(0,122,255,0.055)!important;
+  border-color:rgba(0,122,255,0.18)!important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,0.30), 0 0 18px rgba(0,122,255,0.08)!important;
+  font-weight:800!important;
+}
+
+#projects-screen #project-list .business-core-card {
+  border-left:5px solid var(--businessBlue)!important;
+  background:linear-gradient(145deg, rgba(255,255,255,0.72), rgba(255,255,255,0.46))!important;
+  border-top-color:rgba(255,255,255,0.62)!important;
+  border-right-color:rgba(255,255,255,0.34)!important;
+  border-bottom-color:rgba(255,255,255,0.22)!important;
+  box-shadow:-5px 0 18px rgba(0,122,255,0.18), 0 14px 34px rgba(15,23,42,0.08), inset 1px 0 0 rgba(0,122,255,0.34), inset 0 1px 0 rgba(255,255,255,0.52)!important;
+  transition-property:transform,opacity!important;
+  transition-duration:100ms!important;
+}
+.dark #projects-screen #project-list .business-core-card {
+  background:linear-gradient(145deg, rgba(15,23,42,0.78), rgba(2,6,23,0.64))!important;
+  border-top-color:rgba(255,255,255,0.10)!important;
+  border-right-color:rgba(10,132,255,0.16)!important;
+  border-bottom-color:rgba(0,0,0,0.34)!important;
+  box-shadow:-5px 0 22px rgba(0,122,255,0.28), 0 18px 42px rgba(0,0,0,0.42), inset 1px 0 0 rgba(0,122,255,0.44), inset 0 1px 0 rgba(255,255,255,0.08)!important;
+}
+#projects-screen #project-list .business-core-card :is(h4,p,i.fa-chevron-right,.business-count-core),
+#projects-screen #project-list .business-avatar-core {
+  color:var(--businessBlue)!important;
+  -webkit-text-fill-color:var(--businessBlue)!important;
+  text-shadow:0 0 10px var(--businessBlueGlow)!important;
+  opacity:1!important;
+}
+#projects-screen #project-list .business-avatar-core {
+  background:rgba(0,122,255,0.10)!important;
+  border:1px solid rgba(0,122,255,0.18)!important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,0.26), 0 8px 22px rgba(0,122,255,0.16)!important;
+}
+.dark #projects-screen #project-list .business-avatar-core {
+  background:rgba(10,132,255,0.15)!important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,0.09), 0 8px 22px rgba(0,122,255,0.22)!important;
+}
+
+#projects-screen #project-list .business-delete-btn-core,
+#projects-screen #project-list .business-delete-btn-core *,
+#project-detail-screen .business-delete-btn-core,
+#project-detail-screen .business-delete-btn-core * {
+  color:var(--businessRed)!important;
+  -webkit-text-fill-color:var(--businessRed)!important;
+  text-shadow:0 0 8px rgba(255,59,48,0.24)!important;
+}
+#projects-screen #project-list .business-delete-btn-core,
+#project-detail-screen .business-delete-btn-core {
+  background:rgba(255,59,48,0.10)!important;
+  border:1px solid rgba(255,59,48,0.18)!important;
+  box-shadow:0 8px 18px rgba(255,59,48,0.13)!important;
+}
+
+/* Detail page static blue */
+#project-detail-screen #project-detail-title,
+#project-detail-screen .header-sticky h1#project-detail-title,
+#project-detail-screen [data-business-all-entries-core],
+#project-detail-screen .table-custom thead th {
+  color:var(--businessBlue)!important;
+  -webkit-text-fill-color:var(--businessBlue)!important;
+  text-shadow:0 0 12px var(--businessBlueGlow)!important;
+  opacity:1!important;
+}
+#project-detail-screen .header-sticky button[data-business-entry-core] {
+  color:var(--businessBlue)!important;
+  -webkit-text-fill-color:var(--businessBlue)!important;
+  background:rgba(0,122,255,0.10)!important;
+  border:1px solid var(--businessBlueBorder)!important;
+  box-shadow:0 10px 26px rgba(0,122,255,0.16), inset 0 1px 0 rgba(255,255,255,0.34)!important;
+  text-shadow:0 0 10px rgba(0,122,255,0.24)!important;
+}
+#project-detail-screen .header-sticky button[data-business-entry-core] * {
+  color:var(--businessBlue)!important;
+  -webkit-text-fill-color:var(--businessBlue)!important;
+}
+#project-detail-screen .table-custom thead {
+  background:rgba(0,122,255,0.055)!important;
+}
+#project-detail-screen .glass-card:has(#project-detail-records) {
+  border-color:rgba(0,122,255,0.12)!important;
+}
+.dark #project-detail-screen .header-sticky button[data-business-entry-core] {
+  background:rgba(10,132,255,0.16)!important;
+  border-color:rgba(10,132,255,0.30)!important;
+  box-shadow:0 10px 28px rgba(0,122,255,0.20), inset 0 1px 0 rgba(255,255,255,0.08)!important;
+}
+.dark #project-detail-screen .table-custom thead {
+  background:rgba(10,132,255,0.10)!important;
+}
+
+/* Semantic rows and totals */
+#project-detail-records tr[data-business-row-tone] :is(td,span,.font-bold,.font-extrabold) {
+  color:var(--businessRowTone)!important;
+  -webkit-text-fill-color:var(--businessRowTone)!important;
+  text-shadow:0 0 9px var(--businessRowGlow)!important;
+}
+#project-detail-records .business-badge-core {
+  background:var(--businessRowTint)!important;
+  color:var(--businessRowTone)!important;
+  -webkit-text-fill-color:var(--businessRowTone)!important;
+  border:1px solid var(--businessRowBorder)!important;
+}
+
+#project-detail-screen #project-dynamic-totals .business-total-card-core {
+  background:radial-gradient(circle at 18% 8%, var(--businessTotalBg1), transparent 58%), linear-gradient(145deg, rgba(255,255,255,0.90), rgba(255,255,255,0.62))!important;
+  border:1px solid var(--businessTotalBorder)!important;
+  box-shadow:0 14px 34px rgba(15,23,42,0.08), 0 0 22px var(--businessTotalGlow), inset 0 1px 0 rgba(255,255,255,0.54)!important;
+}
+.dark #project-detail-screen #project-dynamic-totals .business-total-card-core {
+  background:radial-gradient(circle at 18% 8%, var(--businessTotalBg1), transparent 58%), linear-gradient(145deg, rgba(2,6,23,0.80), rgba(2,6,23,0.58))!important;
+  box-shadow:0 0 0 1px rgba(255,255,255,0.035), 0 16px 38px rgba(0,0,0,0.36), 0 0 24px var(--businessTotalGlow), inset 0 1px 0 rgba(255,255,255,0.08)!important;
+}
+#project-detail-screen #project-dynamic-totals .business-total-card-core :is(p,h3,span,div,i) {
+  color:var(--businessTotalTone)!important;
+  -webkit-text-fill-color:var(--businessTotalTone)!important;
+  text-shadow:0 0 10px var(--businessTotalGlow), 0 2px 10px rgba(0,0,0,0.10)!important;
+}
+
+/* Modals permanent blue */
+#add-project-modal h2,
+#add-project-entry-modal h2,
+#add-project-entry-modal p,
+#add-project-modal input,
+#add-project-entry-modal input,
+#add-project-entry-modal span.text-\[10px\],
+#add-project-entry-modal .font-bold.text-gray-600,
+#add-project-entry-modal .dark\:text-gray-300 {
+  color:var(--businessBlue)!important;
+  -webkit-text-fill-color:var(--businessBlue)!important;
+  text-shadow:0 0 10px rgba(0,122,255,0.18)!important;
+}
+#add-project-modal input,
+#add-project-entry-modal input {
+  caret-color:var(--businessBlue)!important;
+  border-color:rgba(0,122,255,0.12)!important;
+  background:linear-gradient(145deg, rgba(0,122,255,0.060), rgba(0,122,255,0.035))!important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,0.36), 0 10px 24px rgba(0,122,255,0.055)!important;
+}
+#add-project-modal input::placeholder,
+#add-project-entry-modal input::placeholder,
+#add-project-modal input::-webkit-input-placeholder,
+#add-project-entry-modal input::-webkit-input-placeholder {
+  color:var(--businessBlue)!important;
+  -webkit-text-fill-color:var(--businessBlue)!important;
+  opacity:0.58!important;
+}
+#add-project-modal button[onclick*="saveNewProject"],
+#add-project-entry-modal button[onclick*="saveProjectEntry"] {
+  color:var(--businessBlue)!important;
+  -webkit-text-fill-color:var(--businessBlue)!important;
+  background:radial-gradient(circle at 50% -40%, rgba(0,122,255,0.28), transparent 58%), linear-gradient(180deg, rgba(0,122,255,0.155), rgba(0,122,255,0.090))!important;
+  border:1px solid rgba(0,122,255,0.20)!important;
+  box-shadow:0 18px 42px rgba(0,122,255,0.18), 0 8px 20px rgba(15,23,42,0.055), inset 0 1px 0 rgba(255,255,255,0.42), inset 0 -1px 0 rgba(0,122,255,0.10)!important;
+  text-shadow:0 0 12px rgba(0,122,255,0.30), 0 2px 8px rgba(0,122,255,0.10)!important;
+}
+#add-project-modal button[onclick*="saveNewProject"] *,
+#add-project-entry-modal button[onclick*="saveProjectEntry"] * {
+  color:var(--businessBlue)!important;
+  -webkit-text-fill-color:var(--businessBlue)!important;
+}
+.dark #add-project-modal h2,
+.dark #add-project-entry-modal h2,
+.dark #add-project-entry-modal p,
+.dark #add-project-modal input,
+.dark #add-project-entry-modal input,
+.dark #add-project-entry-modal span.text-\[10px\],
+.dark #add-project-entry-modal .font-bold.text-gray-600,
+.dark #add-project-entry-modal .dark\:text-gray-300,
+.dark #add-project-modal button[onclick*="saveNewProject"],
+.dark #add-project-entry-modal button[onclick*="saveProjectEntry"] {
+  color:#58A6FF!important;
+  -webkit-text-fill-color:#58A6FF!important;
+}
+/* AARISH_BUSINESS_CORE_CONTRACT_V1_END */
+
 </style>
 
      
@@ -1063,7 +1642,7 @@
         </div>
         <div class="p-5">
             <div class="relative w-full mb-6">
-                <i class="fa-solid fa-search absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+                <i data-diary-search-icon-core="true" class="fa-solid fa-search absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
                 <input id="balance-search" type="text" placeholder="Search party name..." class="input-box w-full pl-11" onkeyup="renderDashboardBalances()">
             </div>
             <div id="dash-balances-list" class="space-y-3.5 w-full"></div>
@@ -1077,7 +1656,7 @@
 
         <div class="p-5">
             <div class="relative w-full mb-6">
-                <i class="fa-solid fa-search absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+                <i data-business-search-icon-core="true" class="fa-solid fa-search absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
                 <input id="milk-search" type="text" placeholder="Search customer..." class="input-box w-full pl-11" onkeyup="filterMilkList()">
             </div>
             <div id="milk-list" class="space-y-3.5 w-full"></div>
@@ -1131,7 +1710,7 @@
     <div id="salary-screen" class="screen">
         <div class="header-sticky">
             <h1 class="text-2xl font-extrabold truncate flex-1 min-w-0">Salary Record</h1>
-            <button onclick="haptic(); openModal('add-salary-person-modal')" class="btn-primary w-auto px-5 py-2 !min-h-[38px] text-sm !rounded-[14px] !bg-[#10B981] !shadow-[0_4px_14px_rgba(16,185,129,0.25)]"><i class="fa-solid fa-plus"></i> New</button>
+            <button id="salary-new-btn-core" data-salary-new-core="true" onclick="haptic(); openModal('add-salary-person-modal')" class="btn-primary w-auto px-5 py-2 !min-h-[38px] text-sm !rounded-[14px] !bg-[#10B981] !shadow-[0_4px_14px_rgba(16,185,129,0.25)]"><i class="fa-solid fa-plus"></i> New</button>
         </div>
         <div class="p-5">
             <div class="relative w-full mb-6">
@@ -1299,8 +1878,8 @@
 
     <div id="diary-screen" class="screen">
         <div class="header-sticky">
-            <h1 class="text-2xl font-extrabold truncate flex-1 min-w-0">Personal Diary</h1>
-            <button onclick="haptic(); openDiaryModal()" class="btn-primary w-auto px-5 py-2 !min-h-[38px] text-sm !rounded-[14px] !bg-[#F5A623] !shadow-[0_4px_14px_rgba(245,166,35,0.25)] !text-white">
+            <h1 id="diary-title-v54" data-diary-core-tone="yellow" class="text-2xl font-extrabold truncate flex-1 min-w-0">Personal Diary</h1>
+            <button id="diary-new-btn-v54" data-diary-new-core="true" onclick="haptic(); openDiaryModal()" class="btn-primary w-auto px-5 py-2 !min-h-[38px] text-sm !rounded-[14px] !bg-[#F5A623] !shadow-[0_4px_14px_rgba(245,166,35,0.25)] !text-white">
                 <i class="fa-solid fa-pen-nib"></i> New
             </button>
         </div>
@@ -1338,7 +1917,7 @@
         <div id="projects-screen" class="screen">
         <div class="header-sticky">
             <h1 class="text-2xl font-extrabold truncate flex-1 min-w-0">Business Hub</h1>
-            <button onclick="haptic(); openModal('add-project-modal')" class="btn-primary w-auto px-5 py-2 !min-h-[38px] text-sm !rounded-[14px] !bg-[#000] dark:!bg-[#FFF] dark:!text-[#000] !shadow-[0_4px_14px_rgba(0,0,0,0.25)] dark:!shadow-[0_4px_14px_rgba(255,255,255,0.25)]"><i class="fa-solid fa-folder-plus"></i> New</button>
+            <button id="business-new-btn-core" data-business-new-core="true" onclick="haptic(); openModal('add-project-modal')" class="btn-primary w-auto px-5 py-2 !min-h-[38px] text-sm !rounded-[14px] !bg-[#000] dark:!bg-[#FFF] dark:!text-[#000] !shadow-[0_4px_14px_rgba(0,0,0,0.25)] dark:!shadow-[0_4px_14px_rgba(255,255,255,0.25)]"><i class="fa-solid fa-folder-plus"></i> New</button>
         </div>
         <div class="p-5">
             <div class="relative w-full mb-6">
@@ -1825,6 +2404,8 @@
         updateDashboard();
     
         try { if (typeof updateExpenseCoreUi === 'function') updateExpenseCoreUi(); } catch(e) {}
+
+    try { if (typeof updateSalaryCoreUi === 'function') updateSalaryCoreUi(); } catch(e) {}
 }
 
     function filterByMonth(records) {
@@ -2111,6 +2692,12 @@ function aarishCostShowAppV1() {
     try { if (typeof updateCreditBookCoreUi === 'function') updateCreditBookCoreUi(); } catch(e) {}
 
     try { if (typeof updateExpenseCoreUi === 'function') updateExpenseCoreUi(); } catch(e) {}
+
+    try { if (typeof updateSalaryCoreUi === 'function') updateSalaryCoreUi(); } catch(e) {}
+
+    try { if (typeof updateDiaryCoreUi === 'function') updateDiaryCoreUi(); } catch(e) {}
+
+    try { if (typeof updateBusinessCoreUi === 'function') updateBusinessCoreUi(); } catch(e) {}
 }
 
 async function saveCacheNowCostV81(reason) {
@@ -2714,7 +3301,11 @@ async function loadUserData() {
         if(document.getElementById('project-detail-screen').classList.contains('active')) renderProjectRecords();
         
         updateDashboard(); 
-    }
+    
+    try { if (typeof updateDiaryCoreUi === 'function') updateDiaryCoreUi(); } catch(e) {}
+
+    try { if (typeof updateBusinessCoreUi === 'function') updateBusinessCoreUi(); } catch(e) {}
+}
 
 
     function updateDashboard() {
@@ -2768,6 +3359,12 @@ async function loadUserData() {
     try { if (typeof updateCreditBookCoreUi === 'function') updateCreditBookCoreUi(); } catch(e) {}
 
     try { if (typeof updateExpenseCoreUi === 'function') updateExpenseCoreUi(); } catch(e) {}
+
+    try { if (typeof updateSalaryCoreUi === 'function') updateSalaryCoreUi(); } catch(e) {}
+
+    try { if (typeof updateDiaryCoreUi === 'function') updateDiaryCoreUi(); } catch(e) {}
+
+    try { if (typeof updateBusinessCoreUi === 'function') updateBusinessCoreUi(); } catch(e) {}
 }
 
     // ===== PARTY LEDGER LOGIC (MILK + CREDIT MERGER) =====
@@ -2838,280 +3435,820 @@ async function loadUserData() {
     }
     // =============================================================
 
+    
+/* AARISH_DIARY_CORE_ENGINE_V1_START */
+function diaryEntriesCoreV1() {
+    try {
+        if (Array.isArray(diaryDB)) return diaryDB.filter(Boolean);
+        if (diaryDB && typeof diaryDB === 'object') return Object.keys(diaryDB).map(k => diaryDB[k]).filter(Boolean);
+    } catch (e) {}
+    try {
+        if (Array.isArray(window.diaryDB)) return window.diaryDB.filter(Boolean);
+        if (window.diaryDB && typeof window.diaryDB === 'object') return Object.keys(window.diaryDB).map(k => window.diaryDB[k]).filter(Boolean);
+    } catch (e) {}
+    return [];
+}
+function setDiaryDBCoreV1(next) {
+    const safe = Array.isArray(next) ? next.filter(Boolean) : [];
+    try { diaryDB = safe; } catch (e) { window.diaryDB = safe; }
+}
+function diaryEscCoreV1(v) {
+    return String(v == null ? '' : v).replace(/[&<>"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
+}
+function diaryJsArgCoreV1(v) {
+    return JSON.stringify(String(v == null ? '' : v)).replace(/"/g, '&quot;');
+}
+function diaryCleanTextCoreV1(v) {
+    return String(v == null ? '' : v).replace(/[\u0000-\u0008\u000B\u000C\u000E-\u001F\u007F]/g, '').trim();
+}
+function diarySanitizeCoreV1(v) {
+    const raw = diaryCleanTextCoreV1(v);
+    try { if (typeof sanitizeHTML === 'function') return sanitizeHTML(raw); } catch (e) {}
+    return raw.replace(/[<>]/g, '');
+}
+function diaryFormatDateCoreV1(v) {
+    try { if (typeof formatDisplayDate === 'function') return formatDisplayDate(v); } catch (e) {}
+    return String(v || '-');
+}
+function diaryFindEntryCoreV1(id) {
+    const arr = diaryEntriesCoreV1();
+    const sid = String(id == null ? '' : id);
+    let entry = arr.find(d => String(d && d.id) === sid);
+    if (!entry && (typeof id === 'number' || /^\d+$/.test(sid))) entry = arr[Number(id)] || null;
+    return entry || null;
+}
+async function diaryFirebaseCoreV1(path, action, value, opts) {
+    try {
+        if (typeof currentUserUID === 'undefined' || !currentUserUID) return;
+        if (window.aarishFirebaseLaterV48) return await window.aarishFirebaseLaterV48(path, action, value, opts || { fast: true });
+        if (typeof aarishFirebaseLaterV48 === 'function') return await aarishFirebaseLaterV48(path, action, value, opts || { fast: true });
+        if (typeof appDataRef !== 'undefined' && appDataRef) {
+            const ref = appDataRef.child(path);
+            if (action === 'remove') return await ref.remove();
+            return await ref.set(value);
+        }
+    } catch (e) {
+        console.error('Diary Firebase core op failed:', e);
+        try { showToast('Saved locally. Cloud sync pending.'); } catch (_) {}
+    }
+}
+function diaryPaintYellowCoreV1(el, solid) {
+    if (!el) return;
+    el.setAttribute('data-diary-core-tone', 'yellow');
+    el.setAttribute('data-module-tone', 'diary');
+    el.style.setProperty('--diaryTone', '#F5A623');
+    el.style.setProperty('--diaryTone2', '#E59A1F');
+    el.style.setProperty('--diaryTint', 'rgba(245,166,35,0.12)');
+    el.style.setProperty('--diaryBorder', 'rgba(245,166,35,0.28)');
+    el.style.setProperty('--diaryGlow', 'rgba(245,166,35,0.30)');
+
+    if (solid) {
+        el.style.setProperty('background', 'linear-gradient(135deg, #F5A623, #E59A1F)', 'important');
+        el.style.setProperty('background-color', '#F5A623', 'important');
+        el.style.setProperty('color', '#FFFFFF', 'important');
+        el.style.setProperty('-webkit-text-fill-color', '#FFFFFF', 'important');
+        el.style.setProperty('border-color', 'transparent', 'important');
+        el.style.setProperty('box-shadow', '0 8px 22px rgba(245,166,35,0.45)', 'important');
+        try {
+            el.querySelectorAll('*').forEach(x => {
+                x.style.setProperty('color', '#FFFFFF', 'important');
+                x.style.setProperty('-webkit-text-fill-color', '#FFFFFF', 'important');
+            });
+        } catch (e) {}
+    } else {
+        el.style.setProperty('color', '#F5A623', 'important');
+        el.style.setProperty('-webkit-text-fill-color', '#F5A623', 'important');
+        el.style.setProperty('text-shadow', '0 0 12px rgba(245,166,35,0.35)', 'important');
+        try {
+            el.querySelectorAll('i,span').forEach(x => {
+                x.style.setProperty('color', '#F5A623', 'important');
+                x.style.setProperty('-webkit-text-fill-color', '#F5A623', 'important');
+            });
+        } catch (e) {}
+    }
+}
+function diaryMarkStaticUiCoreV1() {
+    try {
+        const title = document.getElementById('diary-title-v54') || document.querySelector('#diary-screen .header-sticky h1');
+        if (title && !title.id) title.id = 'diary-title-v54';
+        diaryPaintYellowCoreV1(title, false);
+
+        const newBtn = document.getElementById('diary-new-btn-v54') || document.querySelector('#diary-screen .header-sticky button[onclick*="openDiaryModal"]');
+        if (newBtn) {
+            if (!newBtn.id) newBtn.id = 'diary-new-btn-v54';
+            newBtn.setAttribute('data-diary-new-core', 'true');
+            diaryPaintYellowCoreV1(newBtn, true);
+        }
+
+        const tab = document.getElementById('tab-diary');
+        diaryPaintYellowCoreV1(tab, false);
+
+        const searchIcon = document.querySelector('#diary-screen .relative > i.fa-search');
+        if (searchIcon) {
+            searchIcon.setAttribute('data-diary-search-icon-core', 'true');
+            diaryPaintYellowCoreV1(searchIcon, false);
+        }
+
+        const search = document.getElementById('diary-search');
+        if (search) {
+            search.setAttribute('data-diary-search-core', 'true');
+            diaryPaintYellowCoreV1(search, false);
+        }
+
+        document.querySelectorAll('#diary-detail-screen button[onclick*="shareDiaryBill"]').forEach(btn => btn.setAttribute('data-diary-share-core', 'true'));
+        document.querySelectorAll('#diary-detail-screen button[onclick*="openDiaryModal"]').forEach(btn => btn.setAttribute('data-diary-edit-core', 'true'));
+        document.querySelectorAll('#diary-detail-screen button[onclick*="deleteDiary"]').forEach(btn => btn.setAttribute('data-diary-delete-core', 'true'));
+        document.querySelectorAll('#diary-entry-modal button[onclick*="saveDiaryEntry"]').forEach(btn => btn.setAttribute('data-diary-save-core', 'true'));
+
+        const detailTitle = document.querySelector('#diary-detail-screen .header-sticky h1');
+        diaryPaintYellowCoreV1(detailTitle, false);
+    } catch (e) {}
+}
+function updateDiaryCoreUi() {
+    diaryMarkStaticUiCoreV1();
+}
+/* AARISH_DIARY_CORE_ENGINE_V1_END */
+
+
     // ========================== DIARY ==========================
     function openDiaryModal(idx = null) {
+    const titleEl = document.getElementById('diary-modal-title');
+    const dateEl = document.getElementById('diary-entry-date');
+    const entryTitleEl = document.getElementById('diary-entry-title');
+    const contentEl = document.getElementById('diary-entry-content');
 
-        activeDiaryIndex = idx;
-        if (idx !== null) {
-            document.getElementById('diary-modal-title').textContent = 'Edit Page';
-            document.getElementById('diary-entry-date').value = diaryDB[idx].date;
-            document.getElementById('diary-entry-title').value = diaryDB[idx].title;
-            document.getElementById('diary-entry-content').value = diaryDB[idx].content;
-        } else {
-            document.getElementById('diary-modal-title').textContent = 'New Diary Page';
-            document.getElementById('diary-entry-date').value = getTodayISO();
-            document.getElementById('diary-entry-title').value = '';
-            document.getElementById('diary-entry-content').value = '';
+    if (idx !== null && idx !== undefined) {
+        const entry = diaryFindEntryCoreV1(idx);
+        if (!entry) {
+            try { showToast('Diary page not found!'); } catch (e) {}
+            return;
         }
-        openModal('diary-entry-modal');
+
+        activeDiaryIndex = entry.id;
+        if (titleEl) titleEl.textContent = 'Edit Page';
+        if (dateEl) dateEl.value = entry.date || getTodayISO();
+        if (entryTitleEl) entryTitleEl.value = entry.title || '';
+        if (contentEl) contentEl.value = entry.content || '';
+    } else {
+        activeDiaryIndex = null;
+        if (titleEl) titleEl.textContent = 'New Diary Page';
+        if (dateEl) dateEl.value = getTodayISO();
+        if (entryTitleEl) entryTitleEl.value = '';
+        if (contentEl) contentEl.value = '';
     }
+
+    openModal('diary-entry-modal');
+    updateDiaryCoreUi();
+}
 
    
 async function saveDiaryEntry() {
-    const date = document.getElementById('diary-entry-date').value;
-        let title = document.getElementById('diary-entry-title').value.trim() || 'Untitled';
-    title = sanitizeHTML(title); // 🔥 Hacking Proof
-    let content = document.getElementById('diary-entry-content').value.trim();
-    content = sanitizeHTML(content); // 🔥 Hacking Proof
+    const date = (document.getElementById('diary-entry-date') || {}).value;
+    let title = diarySanitizeCoreV1((document.getElementById('diary-entry-title') || {}).value) || 'Untitled';
+    let content = diarySanitizeCoreV1((document.getElementById('diary-entry-content') || {}).value);
 
-    
-    if(!date || !content) return showToast('Please write something!');
-    
-    if (activeDiaryIndex !== null) {
-        const entry = diaryDB.find(d => d.id === activeDiaryIndex);
-        if(entry) {
-            entry.date = date; entry.title = title; entry.content = content; entry.updated = Date.now();
-            if (currentUserUID) await aarishFirebaseLaterV48(`diaryDB/${activeDiaryIndex}`, 'set', entry);
-        }
+    if (!date || !content) return showToast('Please write something!');
+
+    const arr = diaryEntriesCoreV1();
+
+    if (activeDiaryIndex !== null && activeDiaryIndex !== undefined) {
+        const sid = String(activeDiaryIndex);
+        const entry = arr.find(d => String(d && d.id) === sid);
+        if (!entry) return showToast('Diary page not found!');
+
+        entry.date = date;
+        entry.title = title;
+        entry.content = content;
+        entry.updated = Date.now();
+
+        await diaryFirebaseCoreV1(`diaryDB/${entry.id}`, 'set', entry, { fast: true });
+        activeDiaryIndex = entry.id;
     } else {
-        const uniqueId = "dia_" + Date.now();
+        const uniqueId = (window.aarishV98Id ? window.aarishV98Id('dia') : ('dia_' + Date.now() + '_' + Math.random().toString(36).slice(2, 10)));
         const entry = { id: uniqueId, date, title, content, updated: Date.now() };
-        diaryDB.unshift(entry);
-        if (currentUserUID) await aarishFirebaseLaterV48(`diaryDB/${uniqueId}`, 'set', entry);
+        arr.unshift(entry);
+        setDiaryDBCoreV1(arr);
+
+        await diaryFirebaseCoreV1(`diaryDB/${uniqueId}`, 'set', entry, { fast: true });
         activeDiaryIndex = uniqueId;
     }
-    
-    closeModal('diary-entry-modal'); 
+
+    closeModal('diary-entry-modal');
     renderDiaryList();
-    if(document.getElementById('diary-detail-screen').classList.contains('active')) openDiaryDetail(activeDiaryIndex);
+
+    const detailScreen = document.getElementById('diary-detail-screen');
+    if (detailScreen && detailScreen.classList.contains('active')) openDiaryDetail(activeDiaryIndex);
+
+    updateDiaryCoreUi();
     showToast('Diary Saved!');
 }
 
     
 function renderDiaryList() {
-    const queryText = (document.getElementById('diary-search').value || '').toLowerCase().trim();
-    const searchWords = queryText.split(' ').filter(w => w !== ''); 
+    const searchEl = document.getElementById('diary-search');
+    const queryText = String((searchEl && searchEl.value) || '').toLowerCase().trim();
+    const searchWords = queryText.split(/\s+/).filter(Boolean);
 
-    const records = (diaryDB || [])
-                    .filter(d => {
-                        const fullText = (d.title + " " + d.content + " " + formatDisplayDate(d.date)).toLowerCase();
-                        return searchWords.every(word => fullText.includes(word));
-                    })
-                    .sort((a,b) => new Date(b.date) - new Date(a.date));
-    
+    const records = diaryEntriesCoreV1()
+        .filter(d => {
+            const fullText = String((d && d.title) || '') + ' ' + String((d && d.content) || '') + ' ' + diaryFormatDateCoreV1(d && d.date);
+            const lower = fullText.toLowerCase();
+            return searchWords.every(word => lower.includes(word));
+        })
+        .sort((a, b) => String((b && b.date) || '').localeCompare(String((a && a.date) || '')) || Number((b && b.updated) || 0) - Number((a && a.updated) || 0));
+
     const html = records.map((d, index) => {
-        const previewText = d.content.length > 60 ? d.content.substring(0, 60) + '...' : d.content;
-        return `<div onclick="haptic(); openDiaryDetail('${d.id}')" class="glass-card diary-card mb-4 cursor-pointer w-full ring-1 ring-white/40 dark:ring-white/5 list-enter" style="animation-delay: ${index * 0.05}s;">
+        const title = diaryEscCoreV1((d && d.title) || 'Untitled');
+        const content = String((d && d.content) || '');
+        const previewText = content.length > 60 ? content.slice(0, 60) + '...' : content;
+        const idArg = diaryJsArgCoreV1(d && d.id);
+
+        return `<div
+            data-diary-core-tone="yellow"
+            data-module-tone="diary"
+            data-v99-tone="diary"
+            onclick="try{haptic()}catch(e){}; openDiaryDetail(${idArg})"
+            class="glass-card diary-card diary-core-card mb-4 cursor-pointer w-full border-l-[4px] border-l-[#F5A623] ring-1 ring-white/40 dark:ring-white/5 list-enter"
+            style="--diaryTone:#F5A623;--diaryTone2:#E59A1F;--diaryTint:rgba(245,166,35,0.12);--diaryBorder:rgba(245,166,35,0.28);--diaryGlow:rgba(245,166,35,0.30);animation-delay:${index * 0.05}s;">
             <div class="flex justify-between items-center mb-2 w-full min-w-0 gap-2">
-                <h4 class="font-bold text-xl text-[#F5A623] truncate flex-1 min-w-0 tracking-tight">${d.title}</h4>
-                <i class="fa-solid fa-chevron-right text-gray-300 shrink-0 text-[13px]"></i>
+                <h4 class="font-bold text-xl truncate flex-1 min-w-0 tracking-tight">${title}</h4>
+                <i class="fa-solid fa-chevron-right shrink-0 text-[13px]"></i>
             </div>
-            ${d.content ? `<p class="text-[15px] font-serif text-gray-600 dark:text-gray-300 italic mb-3 truncate w-full min-w-0 opacity-80">"${previewText}"</p>` : ''}
-            <p class="text-[10px] text-gray-400 font-bold uppercase tracking-widest mt-2 truncate w-full min-w-0">${formatDisplayDate(d.date)}</p>
+            ${content ? `<p class="diary-preview-core text-[15px] font-serif italic mb-3 truncate w-full min-w-0">"${diaryEscCoreV1(previewText)}"</p>` : ''}
+            <p class="diary-date-core text-[10px] font-bold uppercase tracking-widest mt-2 truncate w-full min-w-0">${diaryEscCoreV1(diaryFormatDateCoreV1(d && d.date))}</p>
         </div>`;
     }).join('');
-    
-    document.getElementById('diary-list').innerHTML = html || getEmptyState('fa-book-open', 'No diary pages found');
+
+    const box = document.getElementById('diary-list');
+    if (box) box.innerHTML = html || getEmptyState('fa-book-open', 'No diary pages found');
+
+    updateDiaryCoreUi();
 }
 
 
     
     
-    function filterDiaryList() { renderDiaryList(); }
+    function filterDiaryList() {
+    clearTimeout(window.__diaryFilterTimerCoreV1);
+    window.__diaryFilterTimerCoreV1 = setTimeout(renderDiaryList, 180);
+}
 
     function openDiaryDetail(id) {
-    activeDiaryIndex = id; 
-    const d = diaryDB.find(x => x.id === id);
-    if(!d) return;
-    
-    document.getElementById('diary-view-title').textContent = d.title;
-    document.getElementById('diary-view-date').textContent = formatDisplayDate(d.date);
-    document.getElementById('diary-view-content').textContent = d.content;
-    
+    const d = diaryFindEntryCoreV1(id);
+    if (!d) return showToast('Diary page not found!');
+
+    activeDiaryIndex = d.id;
+
+    const title = document.getElementById('diary-view-title');
+    const date = document.getElementById('diary-view-date');
+    const content = document.getElementById('diary-view-content');
+
+    if (title) title.textContent = d.title || 'Untitled';
+    if (date) date.textContent = diaryFormatDateCoreV1(d.date);
+    if (content) content.textContent = d.content || '';
+
     document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-    document.getElementById('diary-detail-screen').classList.add('active');
+    const screen = document.getElementById('diary-detail-screen');
+    if (screen) screen.classList.add('active');
+
+    updateDiaryCoreUi();
 }
 
 
-  async function deleteDiary(id, goBack = false) { 
-    if(confirm('Delete this page permanently?')) { 
-        diaryDB = diaryDB.filter(d => d.id !== id); 
-        if (currentUserUID) await aarishFirebaseLaterV48(`diaryDB/${id}`, 'remove', null, { fast: true });
-        
-        if(goBack) switchTab('diary');
+  async function deleteDiary(id, goBack = false) {
+    const entry = diaryFindEntryCoreV1(id);
+    const realId = entry ? entry.id : id;
+    if (!realId) return showToast('Diary page not found!');
+
+    if (confirm('Delete this page permanently?')) {
+        setDiaryDBCoreV1(diaryEntriesCoreV1().filter(d => String(d && d.id) !== String(realId)));
+
+        await diaryFirebaseCoreV1(`diaryDB/${realId}`, 'remove', null, { fast: true });
+
+        if (String(activeDiaryIndex) === String(realId)) activeDiaryIndex = null;
+
+        if (goBack) switchTab('diary');
         else renderDiaryList();
-        showToast('Deleted!'); 
-    } 
+
+        updateDiaryCoreUi();
+        showToast('Deleted!');
+    }
 }
 
 
     // Global Long Press State handler
     let isLongPress = false;
     
+    
+/* AARISH_SALARY_CORE_ENGINE_V1_START */
+function salaryNumCoreV1(v) {
+    const x = Number(v);
+    return Number.isFinite(x) ? x : 0;
+}
+function salaryCleanZeroCoreV1(v) {
+    const x = salaryNumCoreV1(v);
+    return Math.abs(x) < 0.0001 ? 0 : x;
+}
+function salaryDBCoreV1() {
+    try {
+        if (salaryDB && typeof salaryDB === 'object') return salaryDB;
+    } catch (e) {}
+    if (window.salaryDB && typeof window.salaryDB === 'object') return window.salaryDB;
+    return {};
+}
+function salaryRecordsCoreV1(person) {
+    if (!person) return [];
+    const rec = person.records;
+    if (Array.isArray(rec)) return rec.filter(Boolean);
+    if (rec && typeof rec === 'object') return Object.keys(rec).map(k => rec[k]).filter(Boolean);
+    return [];
+}
+function salarySetRecordsCoreV1(person, records) {
+    if (person) person.records = Array.isArray(records) ? records.filter(Boolean) : [];
+}
+function salaryMonthRecordsCoreV1(records) {
+    const arr = Array.isArray(records) ? records.filter(Boolean) : [];
+    try { if (typeof filterByMonth === 'function') return filterByMonth(arr) || []; } catch (e) {}
+    return arr;
+}
+function salaryEscCoreV1(v) {
+    return String(v == null ? '' : v).replace(/[&<>"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
+}
+function salaryJsCoreV1(v) {
+    return JSON.stringify(String(v == null ? '' : v)).replace(/"/g, '&quot;');
+}
+function salaryCleanNameCoreV1(v) {
+    return String(v == null ? '' : v)
+        .normalize('NFKC')
+        .replace(/[.#$\[\]<>]/g, ' ')
+        .replace(/[\u0000-\u001F\u007F]/g, ' ')
+        .replace(/\s+/g, ' ')
+        .trim();
+}
+function salaryCleanCompanyCoreV1(v) {
+    return String(v == null ? '' : v)
+        .normalize('NFKC')
+        .replace(/[<>]/g, ' ')
+        .replace(/[\u0000-\u001F\u007F]/g, ' ')
+        .replace(/\s+/g, ' ')
+        .trim() || '—';
+}
+function salaryToneCoreV1(net) {
+    net = salaryCleanZeroCoreV1(net);
+    if (net > 0) return 'positive';
+    if (net < 0) return 'negative';
+    return 'neutral';
+}
+function salaryPackCoreV1(tone) {
+    if (tone === 'positive') return { color:'#34C759', color2:'#28A745', tint:'rgba(52,199,89,0.13)', border:'rgba(52,199,89,0.25)', glow:'rgba(52,199,89,0.30)', inset:'rgba(52,199,89,0.48)', label:'To Receive', sign:'+' };
+    if (tone === 'negative') return { color:'#FF3B30', color2:'#C92A2A', tint:'rgba(255,59,48,0.13)', border:'rgba(255,59,48,0.25)', glow:'rgba(255,59,48,0.30)', inset:'rgba(255,59,48,0.48)', label:'To Pay', sign:'-' };
+    return { color:'#007AFF', color2:'#0A84FF', tint:'rgba(0,122,255,0.13)', border:'rgba(0,122,255,0.25)', glow:'rgba(0,122,255,0.28)', inset:'rgba(0,122,255,0.45)', label:'Settled', sign:'' };
+}
+function salaryVarsCoreV1(tone) {
+    const p = salaryPackCoreV1(tone);
+    return `--salaryTone:${p.color};--salaryTone2:${p.color2};--salaryTint:${p.tint};--salaryBorder:${p.border};--salaryGlow:${p.glow};--salaryInset:${p.inset};--premiumTone:${p.color};--premiumTint:${p.tint};--premiumGlow:${p.glow};`;
+}
+function salaryApplyVarsCoreV1(el, tone) {
+    if (!el) return;
+    const p = salaryPackCoreV1(tone);
+    el.setAttribute('data-salary-core-tone', tone);
+    el.setAttribute('data-module-tone', tone);
+    el.style.setProperty('--salaryTone', p.color);
+    el.style.setProperty('--salaryTone2', p.color2);
+    el.style.setProperty('--salaryTint', p.tint);
+    el.style.setProperty('--salaryBorder', p.border);
+    el.style.setProperty('--salaryGlow', p.glow);
+    el.style.setProperty('--salaryInset', p.inset);
+}
+function salaryPaintCoreV1(el, tone, solid) {
+    if (!el) return;
+    const p = salaryPackCoreV1(tone);
+    salaryApplyVarsCoreV1(el, tone);
+    if (solid) {
+        el.style.setProperty('background', `linear-gradient(135deg, ${p.color}, ${p.color2})`, 'important');
+        el.style.setProperty('background-color', p.color, 'important');
+        el.style.setProperty('color', '#FFFFFF', 'important');
+        el.style.setProperty('-webkit-text-fill-color', '#FFFFFF', 'important');
+        el.style.setProperty('border-color', 'transparent', 'important');
+        el.style.setProperty('box-shadow', '0 8px 22px ' + p.glow, 'important');
+        try { el.querySelectorAll('*').forEach(x => { x.style.setProperty('color', '#FFFFFF', 'important'); x.style.setProperty('-webkit-text-fill-color', '#FFFFFF', 'important'); }); } catch (e) {}
+    } else {
+        el.style.setProperty('color', p.color, 'important');
+        el.style.setProperty('-webkit-text-fill-color', p.color, 'important');
+        el.style.setProperty('text-shadow', '0 0 12px ' + p.glow, 'important');
+        try { el.querySelectorAll('i,span').forEach(x => { x.style.setProperty('color', p.color, 'important'); x.style.setProperty('-webkit-text-fill-color', p.color, 'important'); }); } catch (e) {}
+    }
+}
+function salaryMoneyCoreV1(v) {
+    return Math.abs(Math.round(salaryNumCoreV1(v))).toLocaleString('en-IN');
+}
+function salarySignedMoneyCoreV1(net) {
+    net = salaryCleanZeroCoreV1(net);
+    if (net > 0) return '+₹' + salaryMoneyCoreV1(net);
+    if (net < 0) return '-₹' + salaryMoneyCoreV1(net);
+    return '₹0';
+}
+function salaryPersonTotalCoreV1(person) {
+    let total = 0;
+    salaryMonthRecordsCoreV1(salaryRecordsCoreV1(person)).forEach(r => total += salaryNumCoreV1(r && r.amount));
+    return Math.max(0, total);
+}
+function salaryPersonNetCoreV1(person) {
+    if (!person) return 0;
+    const total = salaryPersonTotalCoreV1(person);
+    return person.type === 'lene_wala' ? total : -total;
+}
+function salaryGlobalNetCoreV1() {
+    let net = 0;
+    const db = salaryDBCoreV1();
+    Object.keys(db).forEach(name => { net += salaryPersonNetCoreV1(db[name]); });
+    return salaryCleanZeroCoreV1(net);
+}
+function salaryFormatDateCoreV1(v) {
+    try { if (typeof formatDisplayDate === 'function') return formatDisplayDate(v); } catch (e) {}
+    return String(v || '-');
+}
+async function salaryFirebaseCoreV1(path, action, value, opts) {
+    try {
+        if (typeof currentUserUID === 'undefined' || !currentUserUID) return;
+        if (window.aarishFirebaseBatchLaterV87 && action === 'batch' && value && typeof value === 'object') {
+            return await window.aarishFirebaseBatchLaterV87(value, opts || 'salary-batch');
+        }
+        if (window.aarishFirebaseLaterV48) return await window.aarishFirebaseLaterV48(path, action, value, opts || { fast: true });
+        if (typeof appDataRef !== 'undefined' && appDataRef) {
+            const ref = appDataRef.child(path);
+            if (action === 'remove') return await ref.remove();
+            return await ref.set(value);
+        }
+    } catch (e) {
+        console.error('Salary Firebase core op failed:', e);
+        try { showToast('Saved locally. Cloud sync pending.'); } catch (_) {}
+    }
+}
+function salaryPaintDeleteCoreV1(el) {
+    if (!el) return;
+    el.setAttribute('data-salary-delete-core', 'true');
+    el.style.setProperty('color', '#FF3B30', 'important');
+    el.style.setProperty('-webkit-text-fill-color', '#FF3B30', 'important');
+    el.style.setProperty('background', 'rgba(255,59,48,0.10)', 'important');
+    el.style.setProperty('border-color', 'rgba(255,59,48,0.18)', 'important');
+    el.style.setProperty('box-shadow', '0 10px 26px rgba(255,59,48,0.16)', 'important');
+    try { el.querySelectorAll('*').forEach(x => { x.style.setProperty('color', '#FF3B30', 'important'); x.style.setProperty('-webkit-text-fill-color', '#FF3B30', 'important'); }); } catch (e) {}
+}
+function ensureSalaryDetailDeleteButtonCoreV1() {
+    const screen = document.getElementById('salary-detail-screen');
+    if (!screen) return;
+    const header = screen.querySelector('.header-sticky');
+    if (!header) return;
+
+    const leftGroup = header.querySelector('.flex.items-center');
+    if (leftGroup) {
+        leftGroup.style.flex = '1 1 auto';
+        leftGroup.style.minWidth = '0';
+        leftGroup.classList.remove('w-full');
+    }
+    header.style.gap = '12px';
+
+    let btn = document.getElementById('salary-profile-delete-btn-core');
+    if (!btn) {
+        btn = document.createElement('button');
+        btn.id = 'salary-profile-delete-btn-core';
+        btn.type = 'button';
+        btn.innerHTML = '<i class="fa-solid fa-trash"></i>';
+        header.appendChild(btn);
+    }
+    btn.className = 'salary-profile-delete-btn-core shrink-0';
+    btn.setAttribute('aria-label', 'Delete salary profile');
+    btn.setAttribute('title', 'Delete salary profile');
+    salaryPaintDeleteCoreV1(btn);
+    btn.style.display = activeSalaryPerson ? 'inline-flex' : 'none';
+    btn.onclick = function(event) {
+        if (event) { event.preventDefault(); event.stopPropagation(); }
+        try { haptic(); } catch (e) {}
+        deleteSalaryPersonProfile(activeSalaryPerson);
+    };
+}
+function salaryMarkStaticUiCoreV1() {
+    try {
+        document.querySelectorAll('#salary-detail-screen .flex.justify-between.items-center.mb-4 > h3').forEach(el => el.setAttribute('data-salary-daily-title-core', 'true'));
+        document.querySelectorAll('#salary-detail-screen button[onclick*="shareSalaryBill"]').forEach(btn => btn.setAttribute('data-salary-share-core', 'true'));
+        document.querySelectorAll('#salary-detail-screen button[onclick*="openSalaryEntryModal"]').forEach(btn => {
+            btn.setAttribute('data-salary-add-core', 'true');
+            btn.classList.remove('!bg-[#10B981]/10', '!text-[#10B981]', '!border-[#10B981]/20');
+        });
+        document.querySelectorAll('#salary-screen button[onclick*="add-salary-person-modal"]').forEach(btn => {
+            btn.setAttribute('data-salary-new-core', 'true');
+            if (!btn.id) btn.id = 'salary-new-btn-core';
+        });
+    } catch (e) {}
+}
+function updateSalaryCoreUi() {
+    const globalNet = salaryGlobalNetCoreV1();
+    const globalTone = salaryToneCoreV1(globalNet);
+    const screen = document.getElementById('salary-screen');
+    const detail = document.getElementById('salary-detail-screen');
+    const title = document.querySelector('#salary-screen .header-sticky h1');
+    const newBtn = document.getElementById('salary-new-btn-core') || document.querySelector('#salary-screen button[onclick*="add-salary-person-modal"]');
+    const tab = document.getElementById('tab-salary');
+
+    if (screen) salaryApplyVarsCoreV1(screen, globalTone);
+    salaryPaintCoreV1(title, globalTone, false);
+    salaryPaintCoreV1(tab, globalTone, false);
+    if (newBtn) {
+        if (!newBtn.id) newBtn.id = 'salary-new-btn-core';
+        newBtn.setAttribute('data-salary-new-core', 'true');
+        salaryPaintCoreV1(newBtn, globalTone, true);
+    }
+
+    if (detail) {
+        let detailTone = globalTone;
+        const db = salaryDBCoreV1();
+        if (activeSalaryPerson && db[activeSalaryPerson]) detailTone = salaryToneCoreV1(salaryPersonNetCoreV1(db[activeSalaryPerson]));
+        salaryApplyVarsCoreV1(detail, detailTone);
+        salaryPaintCoreV1(document.getElementById('salary-detail-title'), detailTone, false);
+        const addBtn = document.querySelector('#salary-detail-screen button[onclick*="openSalaryEntryModal"]');
+        if (addBtn) {
+            addBtn.setAttribute('data-salary-add-core', 'true');
+            addBtn.classList.remove('!bg-[#10B981]/10', '!text-[#10B981]', '!border-[#10B981]/20');
+            salaryPaintCoreV1(addBtn, detailTone, true);
+        }
+    }
+
+    salaryMarkStaticUiCoreV1();
+}
+/* AARISH_SALARY_CORE_ENGINE_V1_END */
+
+
     // ========================== SALARY ==========================
     async function addSalaryPerson() {
-    let name = document.getElementById('new-salary-name').value.trim().replace(/[.#$\[\]<>]/g, ''); 
-    let company = document.getElementById('new-salary-company').value.trim().replace(/[<>]/g, '') || '—';
-    const type = document.getElementById('new-salary-type').value;
-    
+    const nameEl = document.getElementById('new-salary-name');
+    const companyEl = document.getElementById('new-salary-company');
+    const typeEl = document.getElementById('new-salary-type');
+
+    const name = salaryCleanNameCoreV1(nameEl && nameEl.value);
+    const company = salaryCleanCompanyCoreV1(companyEl && companyEl.value);
+    const type = (typeEl && typeEl.value) === 'lene_wala' ? 'lene_wala' : 'dene_wala';
+
     if (!name) return showToast('Enter Name!');
-    if (salaryDB[name]) return showToast('Person already exists!');
-    
-    salaryDB[name] = { company: company, type: type, records: [] }; 
-    
-    if (currentUserUID) {
-        await aarishFirebaseLaterV48(`salaryDB/${name}`, 'set', salaryDB[name]); 
-    }
-    
-    closeModal('add-salary-person-modal'); 
-    renderSalaryList(); 
+    if (salaryDBCoreV1()[name]) return showToast('Person already exists!');
+
+    salaryDB[name] = { company: company, type: type, records: [] };
+
+    await salaryFirebaseCoreV1(`salaryDB/${name}`, 'set', salaryDB[name], { fast: true });
+
+    if (nameEl) nameEl.value = '';
+    if (companyEl) companyEl.value = '';
+    closeModal('add-salary-person-modal');
+    renderSalaryList();
+    updateDashboard();
+    updateSalaryCoreUi();
     showToast('Profile Added!');
 }
 
     let salaryPressTimer;
     function startSalaryLongPress(name) {
-        isLongPress = false;
-        salaryPressTimer = setTimeout(() => { 
-            isLongPress = true;
-            haptic(); 
-            deleteSalaryPersonProfile(name); 
-        }, 800); 
-    }
-    function cancelSalaryLongPress() { clearTimeout(salaryPressTimer); }
+    isLongPress = false;
+    clearTimeout(salaryPressTimer);
+    salaryPressTimer = setTimeout(() => {
+        isLongPress = true;
+        try { haptic(); } catch (e) {}
+        try { showToast('Open employee and use top-right delete button.'); } catch (e) {}
+    }, 800);
+}
+    function cancelSalaryLongPress() {
+    clearTimeout(salaryPressTimer);
+}
 
 async function deleteSalaryPersonProfile(name) {
-    if (confirm(`Are you sure you want to permanently delete the employee "${name}" and all their records?`)) {
-        delete salaryDB[name]; 
-        
-        if (currentUserUID) {
-            await aarishFirebaseLaterV48(`salaryDB/${name}`, 'remove', null, { fast: true });      
-        }
-        
-        if(activeSalaryPerson === name) activeSalaryPerson = null; 
-        renderSalaryList();    
-        updateDashboard();   
-        showToast('Profile Deleted!');
+    name = salaryCleanNameCoreV1(name || activeSalaryPerson || '');
+    const db = salaryDBCoreV1();
+
+    if (!name || !db[name]) return showToast('Salary profile not found!');
+    if (!confirm(`Delete salary profile "${name}" and all records?`)) return;
+    if (!confirm(`Final confirmation: delete "${name}" permanently?`)) return;
+
+    const profileBackup = (() => {
+        try { return JSON.parse(JSON.stringify(db[name])); } catch (e) { return db[name]; }
+    })();
+
+    try {
+        const backup = { version: 'SALARY_CORE_V1', type: 'salary-profile-delete-backup', name, deletedAt: new Date().toISOString(), profile: profileBackup };
+        try { localStorage.setItem('AARISH_SALARY_DELETE_BACKUP_CORE_' + Date.now(), JSON.stringify(backup)); } catch (e) {}
+        await salaryFirebaseCoreV1('salaryDB_DELETE_BACKUP_CORE/' + Date.now(), 'set', backup, { fast: true });
+    } catch (e) {}
+
+    delete salaryDB[name];
+
+    const payload = {};
+    payload[`salaryDB/${name}`] = null;
+    if (window.aarishFirebaseBatchLaterV87) {
+        await salaryFirebaseCoreV1('', 'batch', payload, 'delete-salary-profile-core');
+    } else {
+        await salaryFirebaseCoreV1(`salaryDB/${name}`, 'remove', null, { fast: true });
     }
+
+    if (activeSalaryPerson === name) activeSalaryPerson = null;
+
+    renderSalaryList();
+    updateDashboard();
+    updateSalaryCoreUi();
+
+    try { switchTab('salary'); } catch (e) {}
+    showToast('Salary profile deleted!');
 }
 
 
     function renderSalaryList() {
-        const q = (document.getElementById('salary-search').value || '').toLowerCase();
-        const html = Object.keys(salaryDB).filter(n => n.toLowerCase().includes(q)).map((name, index) => {
-            const s = salaryDB[name];
-            let totalAmt = 0;
-            filterByMonth(s.records || []).forEach(r => totalAmt += Number(r.amount||0));
-            
-            const isLeneWala = s.type === 'lene_wala';
-            const colorClass = isLeneWala ? 'text-[#34C759]' : 'text-[#FF3B30]';
-            const bgClass = isLeneWala ? 'bg-[#34C759]/10' : 'bg-[#FF3B30]/10';
-            const borderClass = isLeneWala ? 'border-l-[#34C759]' : 'border-l-[#FF3B30]';
-            const sign = isLeneWala ? '+' : '-';
-            const typeLabel = isLeneWala ? 'Receives' : 'Pays';
+    const box = document.getElementById('salary-list');
+    if (!box) return;
 
-            return `<div 
-                onclick="haptic(); openSalaryDetail('${name}')" 
-                ontouchstart="startSalaryLongPress('${name}')" 
-                ontouchend="cancelSalaryLongPress()" 
-                ontouchmove="cancelSalaryLongPress()" 
-                onmousedown="startSalaryLongPress('${name}')" 
-                onmouseup="cancelSalaryLongPress()" 
+    const q = String((document.getElementById('salary-search') || {}).value || '').toLowerCase();
+    const db = salaryDBCoreV1();
+
+    const html = Object.keys(db)
+        .filter(name => String(name || '').toLowerCase().includes(q))
+        .map((name, index) => {
+            const person = db[name] || {};
+            const net = salaryPersonNetCoreV1(person);
+            const tone = salaryToneCoreV1(net);
+            const pack = salaryPackCoreV1(tone);
+            const arg = salaryJsCoreV1(name);
+            const label = net >= 0 ? 'To Receive' : 'To Pay';
+            const signed = salarySignedMoneyCoreV1(net);
+
+            const noColorTransition = 'transition-property:transform,opacity!important;transition-duration:80ms!important;transition-timing-function:cubic-bezier(0.2,0.8,0.2,1)!important;';
+            const textStyle = `color:${pack.color}!important;-webkit-text-fill-color:${pack.color}!important;text-shadow:0 1px 0 rgba(255,255,255,0.14),0 0 10px ${pack.glow}!important;font-variant-numeric:tabular-nums!important;${noColorTransition}`;
+            const subTextStyle = textStyle + 'opacity:.74!important;';
+            const amountTextStyle = textStyle + 'font-weight:900!important;letter-spacing:-0.025em!important;';
+            const iconStyle = textStyle + 'opacity:.62!important;';
+            const cardStyle = salaryVarsCoreV1(tone) + `--premiumText:${pack.color};--premiumGlow:${pack.glow};border-left-color:${pack.color}!important;color:${pack.color}!important;-webkit-text-fill-color:${pack.color}!important;box-shadow:-4px 0 14px ${pack.glow},inset 1px 0 0 ${pack.glow}!important;${noColorTransition}`;
+            const iconBoxStyle = `color:${pack.color}!important;-webkit-text-fill-color:${pack.color}!important;background:${pack.tint}!important;box-shadow:inset 0 1px 0 rgba(255,255,255,0.28),0 7px 18px ${pack.glow}!important;${noColorTransition}`;
+
+            return `<div
+                data-salary-core-tone="${tone}"
+                data-module-tone="${tone}"
+                data-v99-tone="${tone}"
+                data-v100-tone="${tone}"
+                data-salary-tone-v127="${tone}"
+                onclick="try{haptic()}catch(e){}; openSalaryDetail(${arg})"
+                ontouchstart="startSalaryLongPress(${arg})"
+                ontouchend="cancelSalaryLongPress()"
+                ontouchmove="cancelSalaryLongPress()"
+                onmousedown="startSalaryLongPress(${arg})"
+                onmouseup="cancelSalaryLongPress()"
                 onmouseleave="cancelSalaryLongPress()"
-                class="glass-card mb-3.5 flex items-center justify-between cursor-pointer border-l-[3px] ${borderClass} w-full ring-1 ring-white/40 dark:ring-white/5 list-enter" style="animation-delay: ${index * 0.05}s;">
-
-                <div class="flex items-center gap-4 w-full min-w-0">
-                    <div class="w-12 h-12 shrink-0 squircle ${bgClass} ${colorClass} font-bold flex items-center justify-center text-lg"><i class="fa-solid fa-indian-rupee-sign"></i></div>
-                    <div class="flex-1 min-w-0">
-                        <h4 class="font-bold text-[17px] leading-tight truncate w-full flex items-center text-gray-900 dark:text-white">${name}</h4>
-                        <p class="text-[13px] text-gray-500 font-medium truncate w-full mt-0.5 tracking-tight">${s.company} • <span class="${colorClass} font-extrabold text-[15px] ml-1">${sign}₹${Math.round(totalAmt).toLocaleString('en-IN')}</span></p>
+                class="glass-card salary-core-card mb-3.5 flex items-center justify-between cursor-pointer border-l-[4px] w-full ring-1 ring-white/40 dark:ring-white/5 list-enter"
+                style="${cardStyle}animation-delay:${index * 0.05}s;">
+                <div class="flex items-center gap-4 w-full min-w-0" style="${noColorTransition}">
+                    <div class="salary-avatar-core w-12 h-12 shrink-0 squircle font-extrabold flex items-center justify-center text-lg" style="${iconBoxStyle}">
+                        <i class="fa-solid fa-indian-rupee-sign" style="${textStyle}"></i>
+                    </div>
+                    <div class="flex-1 min-w-0" style="${noColorTransition}">
+                        <h4 class="font-bold text-[17px] leading-tight truncate w-full flex items-center" style="${textStyle}">${salaryEscCoreV1(name)}</h4>
+                        <p class="text-[13px] font-semibold truncate w-full mt-0.5 tracking-tight opacity-90" style="${subTextStyle}">
+                            ${salaryEscCoreV1(person.company || '—')} • <span class="font-extrabold text-[15px]" style="${amountTextStyle}">${label} ${signed}</span>
+                        </p>
                     </div>
                 </div>
-                <i class="fa-solid fa-chevron-right text-gray-300 shrink-0 ml-3 text-[13px]"></i>
+                <i class="fa-solid fa-chevron-right shrink-0 ml-3 text-[13px]" style="${iconStyle}"></i>
             </div>`;
         }).join('');
-        document.getElementById('salary-list').innerHTML = html || getEmptyState('fa-users', 'No employees found');
-    }
 
-    function filterSalaryList() { renderSalaryList(); }
+    box.innerHTML = html || getEmptyState('fa-users', 'No employees found');
+    updateSalaryCoreUi();
+}
+
+    function filterSalaryList() {
+    clearTimeout(window.__salaryFilterTimerCoreV1);
+    window.__salaryFilterTimerCoreV1 = setTimeout(renderSalaryList, 120);
+}
 
     function openSalaryDetail(name) {
-        if(isLongPress) { isLongPress = false; return; } // Touch conflict fix
-        activeSalaryPerson = name;
-        document.getElementById('salary-detail-title').textContent = name;
-        document.getElementById('filter-month-salary').value = selectedMonth;
-        document.getElementById('filter-year-salary').value = selectedYear;
-        document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-        document.getElementById('salary-detail-screen').classList.add('active');
-        renderSalaryRecords();
-    }
+    if (isLongPress) { isLongPress = false; return; }
+
+    activeSalaryPerson = salaryCleanNameCoreV1(name || '');
+
+    const title = document.getElementById('salary-detail-title');
+    if (title) title.textContent = activeSalaryPerson || 'Employee';
+
+    const monthEl = document.getElementById('filter-month-salary');
+    const yearEl = document.getElementById('filter-year-salary');
+    if (monthEl) monthEl.value = selectedMonth;
+    if (yearEl) yearEl.value = selectedYear;
+
+    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+
+    const screen = document.getElementById('salary-detail-screen');
+    if (screen) screen.classList.add('active');
+
+    ensureSalaryDetailDeleteButtonCoreV1();
+    updateSalaryCoreUi();
+    renderSalaryRecords();
+}
 
     function openSalaryEntryModal(name) {
-        activeSalaryPerson = name;
-        document.getElementById('salary-entry-date').value = getTodayISO();
-        document.getElementById('salary-entry-amount').value = '';
-        openModal('add-salary-entry-modal');
-    }
+    activeSalaryPerson = salaryCleanNameCoreV1(name || activeSalaryPerson || '');
+
+    const dateEl = document.getElementById('salary-entry-date');
+    const amountEl = document.getElementById('salary-entry-amount');
+    if (dateEl) dateEl.value = getTodayISO();
+    if (amountEl) amountEl.value = '';
+
+    openModal('add-salary-entry-modal');
+    updateSalaryCoreUi();
+}
 
 
 
     async function saveSalaryEntry() {
-        const date = document.getElementById('salary-entry-date').value;
-        const amt = parseFloat(document.getElementById('salary-entry-amount').value);
-        if (!date || !amt) return showToast('Enter amount and date');
-        
-        if (!salaryDB[activeSalaryPerson].records) salaryDB[activeSalaryPerson].records = [];
-        const existingIndex = salaryDB[activeSalaryPerson].records.findIndex(r => r.date === date);
-        if (existingIndex !== -1) return showToast('Salary for this date is already added!');
+    const db = salaryDBCoreV1();
+    const person = db[activeSalaryPerson];
+    if (!activeSalaryPerson || !person) return showToast('Salary profile not selected!');
 
-        const uniqueId = "sal_" + Date.now();
-        const newEntry = { id: uniqueId, date, amount: amt };
+    const date = (document.getElementById('salary-entry-date') || {}).value;
+    const amt = parseFloat((document.getElementById('salary-entry-amount') || {}).value);
+    if (!date || !Number.isFinite(amt) || amt <= 0) return showToast('Enter valid positive amount and date');
 
-        salaryDB[activeSalaryPerson].records.push(newEntry);
-        
-        if (currentUserUID) {
-            await aarishFirebaseLaterV48(`salaryDB/${activeSalaryPerson}/records/${uniqueId}`, 'set', newEntry);
-        }
-        
-        closeModal('add-salary-entry-modal'); 
-        renderSalaryList();
-        if(document.getElementById('salary-detail-screen').classList.contains('active')) renderSalaryRecords();
-        updateDashboard();
-        showToast('Saved Safely!');
-    }
+    const records = salaryRecordsCoreV1(person);
+    const existingIndex = records.findIndex(r => String(r && r.date) === String(date));
+    if (existingIndex !== -1) return showToast('Salary for this date is already added!');
+
+    const uniqueId = (window.aarishV98Id ? window.aarishV98Id('sal') : ('sal_' + Date.now() + '_' + Math.random().toString(36).slice(2, 10)));
+    const newEntry = { id: uniqueId, date, amount: amt };
+
+    records.push(newEntry);
+    salarySetRecordsCoreV1(person, records);
+
+    await salaryFirebaseCoreV1(`salaryDB/${activeSalaryPerson}/records/${uniqueId}`, 'set', newEntry, { fast: true });
+
+    closeModal('add-salary-entry-modal');
+    renderSalaryList();
+    if (document.getElementById('salary-detail-screen') && document.getElementById('salary-detail-screen').classList.contains('active')) renderSalaryRecords();
+    updateDashboard();
+    updateSalaryCoreUi();
+    showToast('Saved Safely!');
+}
 
 
 
     
 
     function renderSalaryRecords() {
-        if (!activeSalaryPerson || !salaryDB[activeSalaryPerson]) return;
-        const s = salaryDB[activeSalaryPerson];
-        let totalAmt = 0;
-        
-        const records = filterByMonth((s.records || []).map((r, i) => ({...r, originalIndex: i})))
-                        .sort((a,b) => new Date(b.date) - new Date(a.date));
+    const db = salaryDBCoreV1();
+    if (!activeSalaryPerson || !db[activeSalaryPerson]) return;
 
-        const html = records.map((r, index) => {
-            totalAmt += Number(r.amount||0);
-            return `<tr class="list-enter" style="animation-delay: ${index * 0.05}s;">
-                <td>${formatDisplayDate(r.date)}</td>
-                <td class="font-bold text-[#10B981]">₹${Number(r.amount).toLocaleString('en-IN')}</td>
-                <td class="text-right"><button onclick="haptic(); deleteSalarySingleEntry('${r.id}')"     class="action-btn shrink-0"><i class="fa-solid fa-trash text-xs"></i></button></td>
-            </tr>`;
-        }).join('');
-        
-        document.getElementById('salary-detail-records').innerHTML = html || `<tr><td colspan="3" class="text-center py-8 text-gray-400 font-semibold">No entries found</td></tr>`;
-        
-        const isLeneWala = s.type === 'lene_wala';
-        const sign = isLeneWala ? '+' : '-';
-        
-        const detailCard = document.querySelector('#salary-detail-screen .glass-card');
-        detailCard.className = isLeneWala 
-            ? "glass-card mb-6 flex justify-between items-center bg-gradient-to-br from-[#10B981] to-[#059669] text-white border-none shadow-[0_8px_24px_rgba(16,185,129,0.3)] ring-1 ring-white/30 w-full min-w-0 gap-3"
-            : "glass-card mb-6 flex justify-between items-center bg-gradient-to-br from-[#FF3B30] to-[#c92a2a] text-white border-none shadow-[0_8px_24px_rgba(255,59,48,0.3)] ring-1 ring-white/30 w-full min-w-0 gap-3";
+    const person = db[activeSalaryPerson];
+    const tone = salaryToneCoreV1(salaryPersonNetCoreV1(person));
+    let totalAmt = 0;
 
-        document.getElementById('salary-detail-total').textContent = `${sign}₹${totalAmt.toLocaleString('en-IN')}`;
+    ensureSalaryDetailDeleteButtonCoreV1();
+
+    const records = salaryMonthRecordsCoreV1(salaryRecordsCoreV1(person))
+        .map((r, i) => ({ ...(r || {}), originalIndex: i }))
+        .sort((a, b) => String((b && b.date) || '').localeCompare(String((a && a.date) || '')));
+
+    const html = records.map((r, index) => {
+        const amount = salaryNumCoreV1(r && r.amount);
+        totalAmt += amount;
+        const idArg = salaryJsCoreV1((r && r.id) || '');
+
+        return `<tr class="list-enter salary-row-core" data-salary-row-tone-core="${tone}" data-salary-core-tone="${tone}" data-module-tone="${tone}" style="${salaryVarsCoreV1(tone)}animation-delay:${index * 0.05}s;">
+            <td class="font-bold salary-date-core">${salaryEscCoreV1(salaryFormatDateCoreV1(r && r.date))}</td>
+            <td class="font-bold salary-amount-core">${salaryPersonNetCoreV1(person) >= 0 ? '+' : '-'}₹${salaryMoneyCoreV1(amount)}</td>
+            <td class="text-right">
+                <button
+                    type="button"
+                    data-salary-delete-core="true"
+                    onclick="event.stopPropagation(); try{haptic()}catch(e){}; deleteSalarySingleEntry(${idArg})"
+                    class="action-btn salary-delete-btn-core shrink-0"
+                    aria-label="Delete salary entry">
+                    <i class="fa-solid fa-trash"></i>
+                </button>
+            </td>
+        </tr>`;
+    }).join('');
+
+    const body = document.getElementById('salary-detail-records');
+    if (body) {
+        body.innerHTML = html || `<tr data-salary-empty-core="true"><td colspan="3" class="text-center py-8 font-semibold">No entries found</td></tr>`;
+        try { body.querySelectorAll('.salary-delete-btn-core').forEach(salaryPaintDeleteCoreV1); } catch (e) {}
     }
+
+    const detailCard = document.getElementById('salary-detail-card') || document.querySelector('#salary-detail-screen .glass-card');
+    if (detailCard) {
+        detailCard.id = 'salary-detail-card';
+        detailCard.className = 'glass-card mb-6 flex justify-between items-center text-white border-none ring-1 ring-white/30 w-full min-w-0 gap-3';
+        salaryApplyVarsCoreV1(detailCard, tone);
+    }
+
+    const totalEl = document.getElementById('salary-detail-total');
+    if (totalEl) {
+        const sign = person.type === 'lene_wala' ? '+' : '-';
+        totalEl.textContent = `${sign}₹${salaryMoneyCoreV1(totalAmt)}`;
+    }
+
+    updateSalaryCoreUi();
+}
 
 
 
@@ -3119,18 +4256,23 @@ async function deleteSalaryPersonProfile(name) {
 
 
     async function deleteSalarySingleEntry(id) {
-        if(confirm('Are you sure you want to delete this specific entry?')) { 
-            salaryDB[activeSalaryPerson].records = salaryDB[activeSalaryPerson].records.filter(r => r.id !== id);
-            
-            if (currentUserUID) {
-                await aarishFirebaseLaterV48(`salaryDB/${activeSalaryPerson}/records/${id}`, 'remove', null, { fast: true });
-            }
-            
-            renderSalaryRecords();
-            updateDashboard();
-            showToast('Entry Deleted!'); 
-        }
+    if (!id) return;
+    if (confirm('Delete this salary entry?')) {
+        const db = salaryDBCoreV1();
+        const person = db[activeSalaryPerson];
+        if (!person) return showToast('Salary profile not found!');
+
+        salarySetRecordsCoreV1(person, salaryRecordsCoreV1(person).filter(r => String(r && r.id) !== String(id)));
+
+        await salaryFirebaseCoreV1(`salaryDB/${activeSalaryPerson}/records/${id}`, 'remove', null, { fast: true });
+
+        renderSalaryList();
+        if (document.getElementById('salary-detail-screen') && document.getElementById('salary-detail-screen').classList.contains('active')) renderSalaryRecords();
+        updateDashboard();
+        updateSalaryCoreUi();
+        showToast('Entry Deleted!');
     }
+}
 
 
 
@@ -3879,21 +5021,25 @@ function renderMilkList() {
 
 
 async function shareDiaryBill(id) {
-    showLoader("Generating Diary Page...");
-    const d = diaryDB.find(x => x.id === id);
-    
+    showLoader('Generating Diary Page...');
+
+    const d = diaryFindEntryCoreV1(id);
     if (!d) {
         hideLoader();
-        return showToast("Error: Diary not found!");
+        return showToast('Error: Diary not found!');
     }
-    
-    document.getElementById('diary-rcpt-date').textContent = formatDisplayDate(d.date);
-    document.getElementById('diary-rcpt-title').textContent = d.title;
-    document.getElementById('diary-rcpt-content').textContent = d.content;
-    
-    let msg = `Diary Page: ${d.title}\nDate: ${formatDisplayDate(d.date)}`;
 
-    await exportAndShareCanvas('diary-receipt-card', `Diary_${d.date}.png`, msg);
+    const dateEl = document.getElementById('diary-rcpt-date');
+    const titleEl = document.getElementById('diary-rcpt-title');
+    const contentEl = document.getElementById('diary-rcpt-content');
+
+    if (dateEl) dateEl.textContent = diaryFormatDateCoreV1(d.date);
+    if (titleEl) titleEl.textContent = d.title || 'Untitled';
+    if (contentEl) contentEl.textContent = d.content || '';
+
+    let msg = `Diary Page: ${d.title || 'Untitled'}\nDate: ${diaryFormatDateCoreV1(d.date)}`;
+
+    await exportAndShareCanvas('diary-receipt-card', `Diary_${d.date || 'page'}.png`, msg);
 }
 
 
@@ -5151,194 +6297,399 @@ async function deleteExpenseCategoryProfile(category) {
         updateActiveScreen();
     }
 
-         // ========================== PREMIUM BUSINESS HUB LOGIC ==========================
+         
+/* AARISH_BUSINESS_CORE_ENGINE_V1_START */
+function businessEscCoreV1(v) {
+    return String(v == null ? '' : v).replace(/[&<>"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
+}
+function businessJsArgCoreV1(v) {
+    return JSON.stringify(String(v == null ? '' : v)).replace(/"/g, '&quot;');
+}
+function businessCleanNameCoreV1(v) {
+    return String(v == null ? '' : v)
+        .normalize('NFKC')
+        .replace(/[.#$\[\]<>\/\\'"`]/g, ' ')
+        .replace(/[\u0000-\u001F\u007F]/g, ' ')
+        .replace(/\s+/g, ' ')
+        .trim();
+}
+function businessCleanTitleCoreV1(v) {
+    const raw = String(v == null ? '' : v).normalize('NFKC').replace(/[\u0000-\u0008\u000B\u000C\u000E-\u001F\u007F]/g, ' ').trim();
+    try { if (typeof sanitizeHTML === 'function') return sanitizeHTML(raw) || 'Record'; } catch (e) {}
+    return raw.replace(/[&<>"']/g, '').trim() || 'Record';
+}
+function businessProjectDBCoreV1() {
+    try { if (projectDB && typeof projectDB === 'object') return projectDB; } catch (e) {}
+    if (window.projectDB && typeof window.projectDB === 'object') return window.projectDB;
+    return {};
+}
+function businessRecordsCoreV1(project) {
+    if (!project) return [];
+    const rec = project.records;
+    if (Array.isArray(rec)) return rec.filter(Boolean);
+    if (rec && typeof rec === 'object') {
+        return Object.keys(rec).map(k => {
+            const r = rec[k];
+            if (r && typeof r === 'object' && !r.id) r.id = k;
+            return r;
+        }).filter(Boolean);
+    }
+    return [];
+}
+function businessSetRecordsCoreV1(project, records) {
+    if (project) project.records = Array.isArray(records) ? records.filter(Boolean) : [];
+}
+function businessNumCoreV1(v) {
+    const x = Number(v);
+    return Number.isFinite(x) ? x : 0;
+}
+function businessMoneyCoreV1(v) {
+    return '₹' + Math.abs(Math.round(businessNumCoreV1(v))).toLocaleString('en-IN');
+}
+function businessFormatDateCoreV1(v) {
+    try { if (typeof formatDisplayDate === 'function') return formatDisplayDate(v); } catch (e) {}
+    return String(v || '-');
+}
+function businessSafeColorCoreV1(v) {
+    v = String(v || '').toLowerCase();
+    return ({green:1, red:1, blue:1, orange:1})[v] ? v : 'blue';
+}
+function businessColorPackCoreV1(color) {
+    color = businessSafeColorCoreV1(color);
+    const packs = {
+        green: { tone:'#34C759', tone2:'#28A745', tint:'rgba(52,199,89,0.13)', border:'rgba(52,199,89,0.30)', glow:'rgba(52,199,89,0.32)', bg1:'rgba(52,199,89,0.18)', label:'INCOME (RECEIVED)', badge:'INCOME' },
+        red: { tone:'#FF3B30', tone2:'#C92A2A', tint:'rgba(255,59,48,0.13)', border:'rgba(255,59,48,0.30)', glow:'rgba(255,59,48,0.32)', bg1:'rgba(255,59,48,0.17)', label:'EXPENSE (SENT)', badge:'EXPENSE' },
+        blue: { tone:'#007AFF', tone2:'#0056B3', tint:'rgba(0,122,255,0.13)', border:'rgba(0,122,255,0.30)', glow:'rgba(0,122,255,0.32)', bg1:'rgba(0,122,255,0.18)', label:'BANK / OTHER', badge:'BANK / OTHER' },
+        orange: { tone:'#FF9500', tone2:'#D67A00', tint:'rgba(255,149,0,0.13)', border:'rgba(255,149,0,0.30)', glow:'rgba(255,149,0,0.32)', bg1:'rgba(255,149,0,0.18)', label:'PENDING / UDHAR', badge:'PENDING' }
+    };
+    return packs[color];
+}
+function businessVarsCoreV1(color, prefix) {
+    const p = businessColorPackCoreV1(color);
+    prefix = prefix || 'businessRow';
+    return `--${prefix}Tone:${p.tone};--${prefix}Tone2:${p.tone2};--${prefix}Tint:${p.tint};--${prefix}Border:${p.border};--${prefix}Glow:${p.glow};--${prefix}Bg1:${p.bg1};`;
+}
+async function businessFirebaseCoreV1(path, action, value, opts) {
+    try {
+        if (typeof currentUserUID === 'undefined' || !currentUserUID) return;
+        if (window.aarishFirebaseBatchLaterV87 && action === 'batch' && value && typeof value === 'object') {
+            return await window.aarishFirebaseBatchLaterV87(value, opts || 'business-batch');
+        }
+        if (window.aarishFirebaseLaterV48) return await window.aarishFirebaseLaterV48(path, action, value, opts || { fast: true });
+        if (typeof aarishFirebaseLaterV48 === 'function') return await aarishFirebaseLaterV48(path, action, value, opts || { fast: true });
+        if (typeof appDataRef !== 'undefined' && appDataRef) {
+            const ref = appDataRef.child(path);
+            if (action === 'remove') return await ref.remove();
+            return await ref.set(value);
+        }
+    } catch (e) {
+        console.error('Business Firebase core op failed:', e);
+        try { showToast('Saved locally. Cloud sync pending.'); } catch (_) {}
+    }
+}
+function businessPaintDeleteCoreV1(el) {
+    if (!el) return;
+    el.classList.add('business-delete-btn-core');
+    el.setAttribute('data-business-delete-core', 'true');
+    el.style.setProperty('color', '#FF3B30', 'important');
+    el.style.setProperty('-webkit-text-fill-color', '#FF3B30', 'important');
+    try { el.querySelectorAll('*').forEach(x => { x.style.setProperty('color', '#FF3B30', 'important'); x.style.setProperty('-webkit-text-fill-color', '#FF3B30', 'important'); }); } catch(e) {}
+}
+function businessMarkStaticUiCoreV1() {
+    try {
+        const screen = document.getElementById('projects-screen');
+        if (screen) screen.setAttribute('data-business-core', 'true');
+
+        const detail = document.getElementById('project-detail-screen');
+        if (detail) detail.setAttribute('data-business-core', 'true');
+
+        const title = document.querySelector('#projects-screen .header-sticky h1');
+        if (title) title.setAttribute('data-business-core', 'true');
+
+        const newBtn = document.getElementById('business-new-btn-core') || document.querySelector('#projects-screen .header-sticky button[onclick*="add-project-modal"]');
+        if (newBtn) { if (!newBtn.id) newBtn.id = 'business-new-btn-core'; newBtn.setAttribute('data-business-new-core', 'true'); }
+
+        const tab = document.getElementById('tab-projects');
+        if (tab) tab.setAttribute('data-business-core', 'true');
+
+        const searchIcon = document.querySelector('#projects-screen .relative > i.fa-search');
+        if (searchIcon) searchIcon.setAttribute('data-business-search-icon-core', 'true');
+
+        const entryBtn = document.querySelector('#project-detail-screen .header-sticky button[onclick*="openProjectEntryModal"]');
+        if (entryBtn) entryBtn.setAttribute('data-business-entry-core', 'true');
+
+        const allEntries = document.querySelector('#project-detail-screen .p-5 > .flex.justify-between.items-center.mb-4 h3');
+        if (allEntries) allEntries.setAttribute('data-business-all-entries-core', 'true');
+
+        document.querySelectorAll('#project-detail-screen .business-delete-btn-core, #projects-screen .business-delete-btn-core').forEach(businessPaintDeleteCoreV1);
+    } catch (e) {}
+}
+function updateBusinessCoreUi() {
+    businessMarkStaticUiCoreV1();
+}
+/* AARISH_BUSINESS_CORE_ENGINE_V1_END */
+
+
+    // ========================== PREMIUM BUSINESS HUB LOGIC ==========================
 
 async function saveNewProject() {
-    let name = document.getElementById('new-project-name').value.trim().replace(/[.#$\[\]<>]/g, ''); 
+    const input = document.getElementById('new-project-name');
+    const name = businessCleanNameCoreV1(input && input.value);
+    if (input) input.value = name;
+
     if (!name) return showToast('Enter Name!');
-    if (projectDB[name]) return showToast('Account already exists!');
-    
-    projectDB[name] = { records: [], created: Date.now() }; 
-    
-    if (currentUserUID) {
-        await aarishFirebaseLaterV48(`projectDB/${name}`, 'set', projectDB[name]); 
-    }
-    
-    closeModal('add-project-modal'); 
-    renderProjectsList(); 
+    if (businessProjectDBCoreV1()[name]) return showToast('Account already exists!');
+
+    projectDB[name] = { records: [], created: Date.now(), safeKeyCore: true };
+
+    await businessFirebaseCoreV1(`projectDB/${name}`, 'set', projectDB[name], { fast: true });
+
+    closeModal('add-project-modal');
+    renderProjectsList();
+    updateBusinessCoreUi();
     showToast('Account Created!');
 }
 
     
     function renderProjectsList() {
-        const q = (document.getElementById('project-search')?.value || '').toLowerCase();
-        const html = Object.keys(projectDB).filter(n => n.toLowerCase().includes(q)).map((name, index) => {
-            const p = projectDB[name];
-            const recCount = p.records ? p.records.length : 0;
+    const q = String((document.getElementById('project-search') || {}).value || '').toLowerCase().trim();
+    const db = businessProjectDBCoreV1();
 
-            return `<div onclick="haptic(); openProjectDetail('${name}')" class="glass-card mb-3.5 flex items-center justify-between cursor-pointer border-l-[3px] border-l-black dark:border-l-white w-full min-w-0 ring-1 ring-white/40 dark:ring-white/5 list-enter" style="animation-delay: ${index * 0.05}s;">
+    const html = Object.keys(db)
+        .filter(n => String(n || '').toLowerCase().includes(q))
+        .sort((a, b) => String(a || '').localeCompare(String(b || '')))
+        .map((name, index) => {
+            const p = db[name] || {};
+            const recCount = businessRecordsCoreV1(p).length;
+            const safeName = businessEscCoreV1(name);
+            const argName = businessJsArgCoreV1(name);
+
+            return `<div
+                data-business-core-card="true"
+                data-module-tone="business"
+                onclick="try{haptic()}catch(e){}; openProjectDetail(${argName})"
+                class="glass-card business-core-card mb-3.5 flex items-center justify-between cursor-pointer w-full min-w-0 ring-1 ring-white/40 dark:ring-white/5 list-enter"
+                style="--businessBlue:#007AFF;--businessBlueGlow:rgba(0,122,255,0.28);animation-delay:${index * 0.035}s;">
                 <div class="flex items-center gap-4 w-full min-w-0">
-                    <div class="w-12 h-12 shrink-0 squircle bg-black/5 dark:bg-white/10 text-gray-800 dark:text-white font-extrabold flex items-center justify-center text-xl shadow-inner"><i class="fa-solid fa-briefcase"></i></div>
+                    <div class="business-avatar-core w-12 h-12 shrink-0 squircle font-extrabold flex items-center justify-center text-xl">
+                        <i class="fa-solid fa-briefcase"></i>
+                    </div>
                     <div class="flex-1 min-w-0">
-                        <h4 class="font-bold text-[18px] leading-tight truncate w-full flex items-center text-gray-900 dark:text-white">${name}</h4>
-                        <p class="text-[13px] text-gray-500 font-semibold truncate w-full mt-0.5 tracking-tight">${recCount} Records Logged</p>
+                        <h4 class="font-bold text-[18px] leading-tight truncate w-full flex items-center">${safeName}</h4>
+                        <p class="business-count-core text-[13px] font-semibold truncate w-full mt-0.5 tracking-tight">${recCount} Records Logged</p>
                     </div>
                 </div>
                 <div class="flex items-center gap-3 shrink-0 ml-2">
-                    <button onclick="event.stopPropagation(); haptic(); deleteProject('${name}')" class="action-btn !w-9 !h-9 !bg-red-500/10"><i class="fa-solid fa-trash text-[12px] text-red-500"></i></button>
-                    <i class="fa-solid fa-chevron-right text-gray-300 text-[14px]"></i>
+                    <button type="button" onclick="event.stopPropagation(); try{haptic()}catch(e){}; deleteProject(${argName})" class="action-btn business-delete-btn-core !w-9 !h-9"><i class="fa-solid fa-trash text-[12px]"></i></button>
+                    <i class="fa-solid fa-chevron-right text-[14px]"></i>
                 </div>
             </div>`;
         }).join('');
-        document.getElementById('project-list').innerHTML = html || getEmptyState('fa-folder-open', 'No business khatas added yet');
-    }
 
-    function filterProjectList() { renderProjectsList(); }
+    const box = document.getElementById('project-list');
+    if (box) box.innerHTML = html || getEmptyState('fa-folder-open', 'No business khatas added yet');
+
+    updateBusinessCoreUi();
+}
+
+    function filterProjectList() {
+    clearTimeout(window.__projectFilterTimerCoreV1);
+    window.__projectFilterTimerCoreV1 = setTimeout(renderProjectsList, 180);
+}
 
     async function deleteProject(name) {
-    if (confirm(`Delete account "${name}" permanently?`)) {
-        delete projectDB[name]; 
-        
-        if (currentUserUID) {
-            await aarishFirebaseLaterV48(`projectDB/${name}`, 'remove', null, { fast: true }); 
-        }
-        
-        renderProjectsList(); 
-        showToast('Account Deleted!');
+    name = businessCleanNameCoreV1(name || '');
+    const db = businessProjectDBCoreV1();
+
+    if (!name || !db[name]) return showToast('Business khata not found!');
+    if (!confirm(`Delete account "${name}" permanently?`)) return;
+
+    try {
+        const backup = { version: 'BUSINESS_CORE_V1', type: 'business-khata-delete-backup', name, deletedAt: new Date().toISOString(), profile: db[name] };
+        try { localStorage.setItem('AARISH_BUSINESS_DELETE_BACKUP_CORE_' + Date.now(), JSON.stringify(backup)); } catch (e) {}
+        await businessFirebaseCoreV1('projectDB_DELETE_BACKUP_CORE/' + Date.now(), 'set', backup, { fast: true });
+    } catch (e) {}
+
+    delete projectDB[name];
+
+    const payload = {};
+    payload[`projectDB/${name}`] = null;
+    if (window.aarishFirebaseBatchLaterV87) {
+        await businessFirebaseCoreV1('', 'batch', payload, 'delete-project-profile-core');
+    } else {
+        await businessFirebaseCoreV1(`projectDB/${name}`, 'remove', null, { fast: true });
     }
+
+    if (activeProject === name) activeProject = null;
+
+    renderProjectsList();
+    updateBusinessCoreUi();
+    try { switchTab('projects'); } catch (e) {}
+    showToast('Account Deleted!');
 }
 
     function openProjectDetail(name) {
-        activeProject = name;
-        document.getElementById('project-detail-title').textContent = name;
-        document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-        document.getElementById('project-detail-screen').classList.add('active');
-        renderProjectRecords();
-    }
+    activeProject = businessCleanNameCoreV1(name || '');
+
+    const title = document.getElementById('project-detail-title');
+    if (title) title.textContent = activeProject || 'Khata';
+
+    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+    const screen = document.getElementById('project-detail-screen');
+    if (screen) screen.classList.add('active');
+
+    updateBusinessCoreUi();
+    renderProjectRecords();
+}
 
     function selectProjColor(col) {
-        document.getElementById('proj-entry-color').value = col;
-        ['green', 'red', 'blue', 'orange'].forEach(c => {
-            const el = document.getElementById('p-color-' + c);
-            if(c === col) { 
-                el.classList.remove('opacity-50', 'scale-95'); 
-                el.classList.add('opacity-100', 'scale-105'); 
-            } else { 
-                el.classList.add('opacity-50', 'scale-95'); 
-                el.classList.remove('opacity-100', 'scale-105'); 
-            }
-        });
-        haptic();
-    }
+    col = businessSafeColorCoreV1(col);
+    const input = document.getElementById('proj-entry-color');
+    if (input) input.value = col;
+
+    ['green', 'red', 'blue', 'orange'].forEach(c => {
+        const el = document.getElementById('p-color-' + c);
+        if (!el) return;
+        if (c === col) {
+            el.classList.remove('opacity-50', 'scale-95');
+            el.classList.add('opacity-100', 'scale-105');
+            el.setAttribute('data-business-selected-color-core', c);
+        } else {
+            el.classList.add('opacity-50', 'scale-95');
+            el.classList.remove('opacity-100', 'scale-105');
+            el.removeAttribute('data-business-selected-color-core');
+        }
+    });
+
+    try { haptic(); } catch (e) {}
+    updateBusinessCoreUi();
+}
 
     function openProjectEntryModal() {
-        document.getElementById('proj-entry-date').value = getTodayISO();
-        document.getElementById('proj-entry-title').value = '';
-        document.getElementById('proj-entry-amount').value = '';
-        selectProjColor('green'); 
-        openModal('add-project-entry-modal');
-    }
+    const dateEl = document.getElementById('proj-entry-date');
+    const titleEl = document.getElementById('proj-entry-title');
+    const amountEl = document.getElementById('proj-entry-amount');
+
+    if (dateEl) dateEl.value = getTodayISO();
+    if (titleEl) titleEl.value = '';
+    if (amountEl) amountEl.value = '';
+
+    selectProjColor('green');
+    openModal('add-project-entry-modal');
+    updateBusinessCoreUi();
+}
 
     async function saveProjectEntry() {
-    const date = document.getElementById('proj-entry-date').value;
-    let title = document.getElementById('proj-entry-title').value.trim() || 'Record';
-    title = title.replace(/[<>]/g, ''); 
-    const amt = parseFloat(document.getElementById('proj-entry-amount').value);
-    const col = document.getElementById('proj-entry-color').value;
+    const db = businessProjectDBCoreV1();
+    if (!activeProject || !db[activeProject]) return showToast('Business khata not selected!');
 
-    if(!date || isNaN(amt)) return showToast('Enter details & valid amount!');
-    
-    // Agar records nahi hain, toh khali list banao
-    if(!projectDB[activeProject].records) projectDB[activeProject].records = [];
-    
-    // 🔥 1. Nayi Unique ID banayi
-    const uniqueId = "prj_" + Date.now();
+    const date = (document.getElementById('proj-entry-date') || {}).value;
+    const title = businessCleanTitleCoreV1((document.getElementById('proj-entry-title') || {}).value) || 'Record';
+    const amt = parseFloat((document.getElementById('proj-entry-amount') || {}).value);
+    const col = businessSafeColorCoreV1((document.getElementById('proj-entry-color') || {}).value);
+
+    if (!date || !Number.isFinite(amt) || amt <= 0) return showToast('Enter details & valid positive amount!');
+
+    const project = db[activeProject];
+    const records = businessRecordsCoreV1(project);
+    const uniqueId = (window.aarishV98Id ? window.aarishV98Id('prj') : ('prj_' + Date.now() + '_' + Math.random().toString(36).slice(2, 10)));
     const newEntry = { id: uniqueId, date, title, amount: amt, color: col };
-    
-    // 2. Local app mein sabse upar jod diya (unshift)
-    projectDB[activeProject].records.unshift(newEntry); 
-    
-    // 3. 🔥 SIRF NAYI ENTRY FIREBASE BHEJI (saveDB() hata diya)
-    if (currentUserUID) {
-        await aarishFirebaseLaterV48(`projectDB/${activeProject}/records/${uniqueId}`, 'set', newEntry);
-    }
-    
-    closeModal('add-project-entry-modal'); 
+
+    records.unshift(newEntry);
+    businessSetRecordsCoreV1(project, records);
+
+    await businessFirebaseCoreV1(`projectDB/${activeProject}/records/${uniqueId}`, 'set', newEntry, { fast: true });
+
+    closeModal('add-project-entry-modal');
     renderProjectRecords();
+    renderProjectsList();
+    updateBusinessCoreUi();
     showToast('Saved Successfully!');
 }
 
 
     function renderProjectRecords() {
-        if (!activeProject || !projectDB[activeProject]) return;
-        const records = projectDB[activeProject].records || [];
-        
-        let colorTotals = { 'green': 0, 'red': 0, 'blue': 0, 'orange': 0 };
-        const colorHex = { 'green': '#34C759', 'red': '#FF3B30', 'blue': '#007AFF', 'orange': '#FF9500' };
-        
-        // Premium Apple-like Gradients for dynamic cards
-        const bgGradients = {
-            'green': 'bg-gradient-to-br from-[#34C759] to-[#28a745]',
-            'red': 'bg-gradient-to-br from-[#FF3B30] to-[#c92a2a]',
-            'blue': 'bg-gradient-to-br from-[#007AFF] to-[#0056b3]',
-            'orange': 'bg-gradient-to-br from-[#FF9500] to-[#d67a00]'
-        };
-        const colorLabels = { 'green': 'INCOME (RECIEVED)', 'red': 'EXPENSE (SENT)', 'blue': 'BANK / OTHER', 'orange': 'PENDING / UDHAR' };
+    const db = businessProjectDBCoreV1();
+    if (!activeProject || !db[activeProject]) return;
 
-        const html = records.map((r, index) => {
-            if(colorTotals[r.color] !== undefined) colorTotals[r.color] += Number(r.amount);
-            
-            // YAHAN FIX HAI: 100% Bug-Free Premium Badge using Inline Styles
-            const badgeStyle = `background-color: ${colorHex[r.color]}1A; color: ${colorHex[r.color]};`;
-            const badgeClass = `px-2 py-0.5 rounded-md text-[9px] font-extrabold uppercase tracking-wider w-fit mt-1`;
-            
-            return `<tr class="list-enter" style="animation-delay: ${index * 0.05}s;">
-                <td class="text-gray-500 font-medium text-[13px] shrink-0">${formatDisplayDate(r.date)}</td>
-                <td class="w-full max-w-[120px]">
-                    <div class="flex flex-col min-w-0">
-                        <span class="font-bold text-[15px] truncate w-full text-gray-900 dark:text-white">${r.title}</span>
-                        <span class="${badgeClass}" style="${badgeStyle}">${r.color}</span>
-                    </div>
-                </td>
-                <td class="font-extrabold text-[17px] tracking-tight text-right shrink-0" style="color: ${colorHex[r.color]};">₹${Number(r.amount).toLocaleString('en-IN')}</td>
+    const project = db[activeProject];
+    const records = businessRecordsCoreV1(project);
 
-            <td class="text-right shrink-0 pl-2"><button onclick="haptic(); deleteProjectEntry('${r.id}')" class="action-btn shrink-0 ml-auto"><i class="fa-solid fa-trash text-xs"></i></button></td>
+    let colorTotals = { green: 0, red: 0, blue: 0, orange: 0 };
 
-                
-            </tr>`;
-        }).join('');
+    const html = records.map((r, index) => {
+        const safeColor = businessSafeColorCoreV1(r && r.color);
+        const pack = businessColorPackCoreV1(safeColor);
+        const amount = Math.abs(businessNumCoreV1(r && r.amount));
+        const safeTitle = businessEscCoreV1((r && r.title) || 'Record');
+        const idArg = businessJsArgCoreV1((r && r.id) || '');
+        colorTotals[safeColor] += amount;
 
-        document.getElementById('project-detail-records').innerHTML = html || `<tr><td colspan="4" class="text-center py-10 text-gray-400 font-semibold text-sm">No records logged yet. Tap + Entry to start.</td></tr>`;
+        return `<tr
+            class="list-enter business-row-core"
+            data-business-row-tone="${safeColor}"
+            data-module-tone="${safeColor}"
+            style="${businessVarsCoreV1(safeColor, 'businessRow')}animation-delay:${index * 0.025}s;">
+            <td class="font-bold text-[13px] shrink-0">${businessEscCoreV1(businessFormatDateCoreV1(r && r.date))}</td>
+            <td class="w-full max-w-[120px]">
+                <div class="flex flex-col min-w-0">
+                    <span class="font-bold text-[15px] truncate w-full">${safeTitle}</span>
+                    <span class="business-badge-core px-2 py-0.5 rounded-md text-[9px] font-extrabold uppercase tracking-wider w-fit mt-1">${pack.badge}</span>
+                </div>
+            </td>
+            <td class="font-extrabold text-[17px] tracking-tight text-right shrink-0">${businessMoneyCoreV1(amount)}</td>
+            <td class="text-right shrink-0 pl-2">
+                <button type="button" data-business-delete-core="true" onclick="event.stopPropagation(); try{haptic()}catch(e){}; deleteProjectEntry(${idArg})" class="action-btn business-delete-btn-core shrink-0 ml-auto" aria-label="Delete business record"><i class="fa-solid fa-trash text-xs"></i></button>
+            </td>
+        </tr>`;
+    }).join('');
 
-        // Render the premium Apple-like dynamic total cards
-        let cardsHtml = '';
-        Object.keys(colorTotals).forEach(col => {
-            if(colorTotals[col] > 0) {
-                cardsHtml += `<div class="glass-card flex flex-col justify-center min-w-0 w-full border-none ring-1 ring-white/30 shadow-[0_8px_24px_rgba(0,0,0,0.12)] ${bgGradients[col]} text-white transition-transform">
-                    <p class="text-[10px] font-bold uppercase tracking-wider truncate w-full opacity-90 drop-shadow-sm">${colorLabels[col]}</p>
-                    <h3 class="text-[22px] font-extrabold mt-1 tracking-tight truncate w-full drop-shadow-md">₹${colorTotals[col].toLocaleString('en-IN')}</h3>
-                </div>`;
-            }
-        });
-        document.getElementById('project-dynamic-totals').innerHTML = cardsHtml;
+    const body = document.getElementById('project-detail-records');
+    if (body) {
+        body.innerHTML = html || `<tr data-business-empty-core="true"><td colspan="4" class="text-center py-10 font-semibold text-sm" style="color:#007AFF;-webkit-text-fill-color:#007AFF;text-shadow:0 0 10px rgba(0,122,255,0.22);">No records logged yet. Tap + Entry to start.</td></tr>`;
+        try { body.querySelectorAll('.business-delete-btn-core').forEach(businessPaintDeleteCoreV1); } catch (e) {}
     }
+
+    let cardsHtml = '';
+    ['green', 'red', 'blue', 'orange'].forEach(col => {
+        const total = colorTotals[col];
+        if (total > 0) {
+            const pack = businessColorPackCoreV1(col);
+            cardsHtml += `<div
+                class="glass-card business-total-card-core flex flex-col justify-center min-w-0 w-full border-none ring-1 ring-white/30"
+                data-business-total-color="${col}"
+                data-module-tone="${col}"
+                style="${businessVarsCoreV1(col, 'businessTotal')}--businessTotalBorder:${pack.border};--businessTotalGlow:${pack.glow};--businessTotalBg1:${pack.bg1};">
+                <p class="text-[10px] font-bold uppercase tracking-wider truncate w-full opacity-90">${pack.label}</p>
+                <h3 class="text-[22px] font-extrabold mt-1 tracking-tight truncate w-full">${businessMoneyCoreV1(total)}</h3>
+            </div>`;
+        }
+    });
+
+    const totals = document.getElementById('project-dynamic-totals');
+    if (totals) totals.innerHTML = cardsHtml;
+
+    updateBusinessCoreUi();
+}
 
     
             async function deleteProjectEntry(id) {
-        if(confirm('Delete this record permanently?')) { 
-            // 🔥 FIX: String lagaya taaki ID perfect match ho aur crash na ho
-            projectDB[activeProject].records = projectDB[activeProject].records.filter(r => String(r.id) !== String(id));
-            
-            // FIREBASE SE SIRF WOHI ENTRY HATAYI
-            if (currentUserUID) {
-                await aarishFirebaseLaterV48(`projectDB/${activeProject}/records/${id}`, 'remove', null, { fast: true });
-            }
-            
-            renderProjectRecords(); 
-            renderProjectsList(); // 🔥 FIX: Delete hone ke baad bahar wala count update karega
-            showToast('Record Deleted!'); 
-        }
+    if (!id) return showToast('Record not found!');
+    if (confirm('Delete this record permanently?')) {
+        const db = businessProjectDBCoreV1();
+        const project = db[activeProject];
+        if (!project) return showToast('Business khata not found!');
+
+        businessSetRecordsCoreV1(project, businessRecordsCoreV1(project).filter(r => String(r && r.id) !== String(id)));
+
+        await businessFirebaseCoreV1(`projectDB/${activeProject}/records/${id}`, 'remove', null, { fast: true });
+
+        renderProjectRecords();
+        renderProjectsList();
+        updateBusinessCoreUi();
+        showToast('Record Deleted!');
     }
+}
 
 
         
