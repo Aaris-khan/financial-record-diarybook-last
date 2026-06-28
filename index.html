@@ -409,7 +409,86 @@
         .dark .chat-ai { background: rgba(255,255,255,0.08); color: #fff; }
         .chat-user { background: #007AFF; color: #fff; align-self: flex-end; border-bottom-right-radius: 4px; }
 
-    </style>
+    
+
+/* AARISH_MILK_CORE_CONTRACT_V1_START
+   Milk core-only semantic contract.
+   JS computes positive/negative/neutral once; CSS consumes --moduleTone variables.
+   Dark mode changes only surface/glow strength, not meaning colors.
+*/
+#milk-screen[data-module-tone],
+#milk-detail-screen[data-module-tone],
+#tab-milk[data-module-tone] {
+  --moduleTone: #007AFF;
+  --moduleTone2: #0A84FF;
+  --moduleTint: rgba(0,122,255,0.10);
+  --moduleGlow: rgba(0,122,255,0.28);
+  --moduleBorder: rgba(0,122,255,0.34);
+}
+#milk-screen[data-module-tone="positive"],
+#milk-detail-screen[data-module-tone="positive"],
+#tab-milk[data-module-tone="positive"] {
+  --moduleTone: #34C759;
+  --moduleTone2: #28A745;
+  --moduleTint: rgba(52,199,89,0.11);
+  --moduleGlow: rgba(52,199,89,0.30);
+  --moduleBorder: rgba(52,199,89,0.40);
+}
+#milk-screen[data-module-tone="negative"],
+#milk-detail-screen[data-module-tone="negative"],
+#tab-milk[data-module-tone="negative"] {
+  --moduleTone: #FF3B30;
+  --moduleTone2: #C92A2A;
+  --moduleTint: rgba(255,59,48,0.11);
+  --moduleGlow: rgba(255,59,48,0.30);
+  --moduleBorder: rgba(255,59,48,0.40);
+}
+#milk-screen .header-sticky h1,
+#milk-detail-screen .header-sticky h1,
+#tab-milk[data-module-tone],
+#tab-milk[data-module-tone] i {
+  color: var(--moduleTone) !important;
+  text-shadow: 0 0 12px var(--moduleGlow) !important;
+}
+#milk-screen #milk-new-btn-v50 {
+  background: linear-gradient(135deg, var(--moduleTone), var(--moduleTone2)) !important;
+  color: #FFFFFF !important;
+  border-color: transparent !important;
+  box-shadow: 0 8px 22px var(--moduleGlow) !important;
+}
+#milk-list .milk-core-card {
+  border-left-width: 4px !important;
+  border-left-style: solid !important;
+  border-left-color: var(--moduleTone) !important;
+  background: rgba(255,255,255,0.72) !important;
+  box-shadow: 0 8px 26px rgba(0,0,0,0.05), -3px 0 16px var(--moduleGlow) !important;
+}
+.dark #milk-list .milk-core-card {
+  background: rgba(12,18,36,0.84) !important;
+  box-shadow: 0 12px 34px rgba(0,0,0,0.48), -3px 0 20px var(--moduleGlow) !important;
+}
+#milk-detail-screen .milk-core-total-card {
+  background: linear-gradient(135deg, var(--moduleTone), var(--moduleTone2)) !important;
+  border-color: var(--moduleTone) !important;
+  box-shadow: 0 8px 24px var(--moduleGlow) !important;
+  color: #FFFFFF !important;
+}
+#milk-detail-screen .milk-core-total-card *,
+#milk-detail-screen .milk-core-total-card #milk-detail-bill,
+#milk-detail-screen .milk-core-total-card #milk-detail-kg {
+  color: #FFFFFF !important;
+  text-shadow: 0 2px 10px rgba(0,0,0,0.18) !important;
+}
+#milk-detail-records tr[data-module-tone] td {
+  color: var(--moduleTone) !important;
+  text-shadow: 0 0 9px var(--moduleGlow) !important;
+}
+.dark #milk-detail-screen .glass-card:not(.milk-core-total-card) {
+  background: rgba(12,18,36,0.84) !important;
+  border-color: rgba(148,163,184,0.14) !important;
+}
+/* AARISH_MILK_CORE_CONTRACT_V1_END */
+</style>
 
      
     <link rel="stylesheet" href="style.css">
@@ -1456,63 +1535,53 @@
 
 
     function updateDashboard() {
-        let rev = 0, exp = 0, lenaHai = 0, denaHai = 0;
+    let rev = 0, exp = 0, lenaHai = 0, denaHai = 0;
+    let udharOnlyLena = 0, udharOnlyDena = 0;
 
-       let udharOnlyLena = 0, udharOnlyDena = 0;
+    Object.values(milkDB || {}).forEach(c => {
+        const month = aarishMilkTotalsCore(c, true);
+        const life = aarishMilkTotalsCore(c, false);
 
-                Object.values(milkDB).forEach(c => {
-            let monthTotal = 0;
-            let lifetimeTotal = 0; // 🔥 Naya variable: Shuru se aaj tak ka hisaab
+        if (month.netAmount >= 0) rev += month.netAmount;
+        else exp += Math.abs(month.netAmount);
 
-            // 1. Sirf is mahine ka total (Month Profit/Expense ke liye)
-            filterByMonth(c.records || []).forEach(r => monthTotal += ((Number(r.morning)||0) + (Number(r.evening)||0)) * (c.rate || DEFAULT_RATE));
-            
-            // 2. Shuru se aaj tak ka total (Lena/Dena ke liye)
-            (c.records || []).forEach(r => lifetimeTotal += ((Number(r.morning)||0) + (Number(r.evening)||0)) * (c.rate || DEFAULT_RATE));
+        if (life.netAmount >= 0) lenaHai += life.netAmount;
+        else denaHai += Math.abs(life.netAmount);
+    });
 
-            if (c.type === 'dene_wala') {
-                exp += monthTotal;           // Mahine ka Kharcha
-                denaHai += lifetimeTotal;    // 🔥 Total Dena Hai (Lifetime)
-            } else {
-                rev += monthTotal;           // Mahine ka Profit
-                lenaHai += lifetimeTotal;    // 🔥 Total Lena Hai (Lifetime)
-            }
-        });
+    filterByMonth(expenseDB).forEach(e => exp += Number(e.amount || 0));
 
-                
-        
-        filterByMonth(expenseDB).forEach(e => exp += Number(e.amount||0));
-        
-                (udharDB || []).forEach(u => {
-            if(u.type === 'credit') {
-                lenaHai += Number(u.amount);
-                udharOnlyLena += Number(u.amount);
-            } else {
-                denaHai += Number(u.amount);
-                udharOnlyDena += Number(u.amount);
-            }
-        });
+    (udharDB || []).forEach(u => {
+        if (u.type === 'credit') {
+            lenaHai += Number(u.amount);
+            udharOnlyLena += Number(u.amount);
+        } else {
+            denaHai += Number(u.amount);
+            udharOnlyDena += Number(u.amount);
+        }
+    });
 
+    Object.values(salaryDB).forEach(s => {
+        let monthTotal = 0;
+        filterByMonth(s.records || []).forEach(r => monthTotal += Number(r.amount || 0));
+        if (s.type === 'lene_wala') rev += monthTotal;
+        else exp += monthTotal;
+    });
 
-        Object.values(salaryDB).forEach(s => {
-            let monthTotal = 0;
-            filterByMonth(s.records || []).forEach(r => monthTotal += Number(r.amount||0));
-            if (s.type === 'lene_wala') rev += monthTotal; 
-            else exp += monthTotal; 
-        });
+    document.getElementById('dash-lena').textContent = `₹${Math.round(lenaHai).toLocaleString('en-IN')}`;
+    document.getElementById('dash-dena').textContent = `₹${Math.round(denaHai).toLocaleString('en-IN')}`;
+    document.getElementById('dash-expenses').textContent = `₹${Math.round(exp).toLocaleString('en-IN')}`;
+    document.getElementById('dash-profit').textContent = `₹${Math.round(rev - exp).toLocaleString('en-IN')}`;
+    document.getElementById('dash-profit').style.color = (rev - exp) < 0 ? '#FF3B30' : '#34C759';
 
-        document.getElementById('dash-lena').textContent = `₹${Math.round(lenaHai).toLocaleString('en-IN')}`;
-        document.getElementById('dash-dena').textContent = `₹${Math.round(denaHai).toLocaleString('en-IN')}`;
-        document.getElementById('dash-expenses').textContent = `₹${Math.round(exp).toLocaleString('en-IN')}`;
-        document.getElementById('dash-profit').textContent = `₹${Math.round(rev - exp).toLocaleString('en-IN')}`;
-        document.getElementById('dash-profit').style.color = (rev - exp) < 0 ? '#FF3B30' : '#34C759';
+    const udharLenaEl = document.getElementById('udhar-total-lena');
+    const udharDenaEl = document.getElementById('udhar-total-dena');
 
-        const udharLenaEl = document.getElementById('udhar-total-lena');
-        const udharDenaEl = document.getElementById('udhar-total-dena');
-                        if(udharLenaEl) udharLenaEl.textContent = `₹${Math.round(udharOnlyLena).toLocaleString('en-IN')}`;
-        if(udharDenaEl) udharDenaEl.textContent = `₹${Math.round(udharOnlyDena).toLocaleString('en-IN')}`;
+    if (udharLenaEl) udharLenaEl.textContent = `₹${Math.round(udharOnlyLena).toLocaleString('en-IN')}`;
+    if (udharDenaEl) udharDenaEl.textContent = `₹${Math.round(udharOnlyDena).toLocaleString('en-IN')}`;
 
-    }
+    try { aarishMilkApplyChromeCore(); } catch(e) {}
+}
 
     // ===== PARTY LEDGER LOGIC (MILK + CREDIT MERGER) =====
     function openAllBalances() {
@@ -1883,21 +1952,41 @@ async function deleteSalaryPersonProfile(name) {
     
     // ========================== MILK ==========================
 async function addMilkCustomer() {
-    let name = document.getElementById('new-milk-name').value.trim().replace(/[.#$\[\]<>]/g, ''); 
-    const rate = parseFloat(document.getElementById('new-milk-rate').value) || DEFAULT_RATE;
-    const type = document.getElementById('new-milk-type').value; 
-    
+    const nameEl = document.getElementById('new-milk-name');
+    const rateEl = document.getElementById('new-milk-rate');
+    const typeEl = document.getElementById('new-milk-type');
+    const name = aarishMilkNormalizeNameCore(nameEl && nameEl.value);
+    const rate = parseFloat(rateEl && rateEl.value) || DEFAULT_RATE;
+    const type = (typeEl && typeEl.value) || 'lene_wala';
+
     if (!name) return showToast('Enter Name!');
-    if (milkDB[name]) return showToast('Customer already exists!');
-    
-    milkDB[name] = { rate: rate, type: type, records: [] }; 
-    
-    if (currentUserUID) {
-        await appDataRef.child(`milkDB/${name}`).set(milkDB[name]); 
+
+    const existingKey = aarishMilkFindExistingKeyCore(name);
+    if (existingKey && milkDB[existingKey]) {
+        activeMilkCustomer = existingKey;
+        if (nameEl) nameEl.value = '';
+        if (rateEl) rateEl.value = '';
+        closeModal('add-milk-customer-modal');
+        renderMilkList();
+        updateDashboard();
+        return showToast('Customer already exists!');
     }
-    
-    closeModal('add-milk-customer-modal'); 
-    renderMilkList(); 
+
+    milkDB[name] = { rate: rate, type: type, records: [], canonicalNameV18: aarishMilkNameKeyCore(name) };
+
+    if (currentUserUID) {
+        if (typeof window.aarishFirebaseLaterV48 === 'function') {
+            window.aarishFirebaseLaterV48(`milkDB/${name}`, 'set', milkDB[name]);
+        } else if (typeof appDataRef !== 'undefined' && appDataRef) {
+            await appDataRef.child(`milkDB/${name}`).set(milkDB[name]);
+        }
+    }
+
+    if (nameEl) nameEl.value = '';
+    if (rateEl) rateEl.value = '';
+    closeModal('add-milk-customer-modal');
+    renderMilkList();
+    updateDashboard();
     showToast('Customer Added!');
 }
 
@@ -1931,42 +2020,263 @@ async function addMilkCustomer() {
 }
 
 
-    function renderMilkList() {
-        const q = (document.getElementById('milk-search').value || '').toLowerCase();
-        const html = Object.keys(milkDB).filter(n => n.toLowerCase().includes(q)).map((name, index) => {
-            const c = milkDB[name];
-            let kg = 0; (c.records || []).forEach(r => kg += ((Number(r.morning)||0) + (Number(r.evening)||0)));
+    /* AARISH_MILK_CORE_HELPERS_V1_START */
+function aarishMilkNumCore(v) {
+    const n = Number(v);
+    return Number.isFinite(n) ? n : 0;
+}
 
-            
-            const isDeneWala = c.type === 'lene_wala';
-            const colorClass = isDeneWala ? 'text-[#34C759]' : 'text-[#FF3B30]';
-            const bgClass = isDeneWala ? 'bg-[#34C759]/10' : 'bg-[#FF3B30]/10';
-            const borderClass = isDeneWala ? 'border-l-[#34C759]' : 'border-l-[#FF3B30]';
-            const sign = isDeneWala ? '+' : '-';
-            const typeLabel = isDeneWala ? 'Seller' : 'Buyer';
+function aarishMilkRecordsCore(v) {
+    if (Array.isArray(v)) return v.filter(Boolean);
+    if (v && typeof v === 'object') return Object.keys(v).map(k => v[k]).filter(Boolean);
+    return [];
+}
 
-            return `<div 
-                onclick="haptic(); openMilkDetail('${name}')" 
-                ontouchstart="startLongPress('${name}')" 
-                ontouchend="cancelLongPress()" 
-                ontouchmove="cancelLongPress()" 
-                onmousedown="startLongPress('${name}')" 
-                onmouseup="cancelLongPress()" 
-                onmouseleave="cancelLongPress()"
-                class="glass-card mb-3.5 flex items-center justify-between cursor-pointer border-l-[3px] ${borderClass} w-full ring-1 ring-white/40 dark:ring-white/5 list-enter" style="animation-delay: ${index * 0.05}s;">
+function aarishMilkCleanZeroCore(v) {
+    const n = aarishMilkNumCore(v);
+    return Math.abs(n) < 0.000001 ? 0 : n;
+}
 
-                <div class="flex items-center gap-4 w-full min-w-0">
-                    <div class="w-12 h-12 shrink-0 squircle ${bgClass} ${colorClass} font-extrabold flex items-center justify-center text-lg">${name[0].toUpperCase()}</div>
-                    <div class="flex-1 min-w-0">
-                        <h4 class="font-bold text-[17px] leading-tight truncate w-full flex items-center text-gray-900 dark:text-white">${name}</h4>
-                        <p class="text-[13px] text-gray-500 font-medium truncate w-full mt-0.5 tracking-tight">${kg.toFixed(2)} KG • <span class="${colorClass} font-extrabold text-[15px] ml-1">${sign}₹${Math.round(kg * c.rate)}</span></p>
-                    </div>
-                </div>
-                <i class="fa-solid fa-chevron-right text-gray-300 shrink-0 ml-3 text-[13px]"></i>
-            </div>`;
-        }).join('');
-        document.getElementById('milk-list').innerHTML = html || getEmptyState('fa-jug-detergent', 'No customers found');
+function aarishMilkEscapeCore(v) {
+    return String(v == null ? '' : v).replace(/[&<>"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
+}
+
+function aarishMilkJsArgCore(v) {
+    return JSON.stringify(String(v == null ? '' : v)).replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+}
+
+function aarishMilkNormalizeNameCore(v) {
+    return String(v == null ? '' : v).normalize('NFKC').replace(/[.#$\[\]<>\/\\'"`]/g, ' ').replace(/[\u0000-\u001F\u007F]/g, ' ').replace(/\s+/g, ' ').trim();
+}
+
+function aarishMilkNameKeyCore(v) {
+    return aarishMilkNormalizeNameCore(v).toLowerCase();
+}
+
+function aarishMilkFindExistingKeyCore(name) {
+    const wanted = aarishMilkNameKeyCore(name);
+    if (!wanted) return '';
+    const db = milkDB || {};
+    return Object.keys(db).find(k => aarishMilkNameKeyCore(k) === wanted || aarishMilkNameKeyCore(db[k] && db[k].canonicalNameV18) === wanted) || '';
+}
+
+function aarishMilkFlowCore(record, customer) {
+    const raw = String((record && (record.flow || record.milkFlow || record.direction || record.entryType || record.type || record.mode)) || '').toLowerCase();
+    if (['taken','take','minus','debit','pay','paid','dene_wala','buyer','negative','out'].includes(raw)) return 'taken';
+    if (['given','give','plus','credit','receive','received','lene_wala','seller','positive','in'].includes(raw)) return 'given';
+    return customer && customer.type === 'dene_wala' ? 'taken' : 'given';
+}
+
+function aarishMilkQtyCore(record) {
+    const morning = aarishMilkNumCore(record && record.morning);
+    const evening = aarishMilkNumCore(record && record.evening);
+    if (morning || evening) return Math.abs(morning + evening);
+    return Math.abs(aarishMilkNumCore(record && (record.kg || record.qty || record.quantity || record.totalKg || record.total)));
+}
+
+function aarishMilkRateCore(customer, record) {
+    const rr = aarishMilkNumCore(record && record.rate);
+    if (rr > 0) return rr;
+    const cr = aarishMilkNumCore(customer && customer.rate);
+    if (cr > 0) return cr;
+    try { return aarishMilkNumCore(DEFAULT_RATE); } catch(e) { return 0; }
+}
+
+function aarishMilkToneCore(value) {
+    const n = aarishMilkCleanZeroCore(value);
+    if (n > 0) return 'positive';
+    if (n < 0) return 'negative';
+    return 'neutral';
+}
+
+function aarishMilkToneVarsCore(tone) {
+    if (tone === 'positive') return { tone:'#34C759', tone2:'#28A745', tint:'rgba(52,199,89,0.11)', glow:'rgba(52,199,89,0.30)', border:'rgba(52,199,89,0.40)' };
+    if (tone === 'negative') return { tone:'#FF3B30', tone2:'#C92A2A', tint:'rgba(255,59,48,0.11)', glow:'rgba(255,59,48,0.30)', border:'rgba(255,59,48,0.40)' };
+    return { tone:'#007AFF', tone2:'#0A84FF', tint:'rgba(0,122,255,0.10)', glow:'rgba(0,122,255,0.28)', border:'rgba(0,122,255,0.34)' };
+}
+
+function aarishMilkVarsStyleCore(tone) {
+    const v = aarishMilkToneVarsCore(tone);
+    return `--moduleTone:${v.tone};--moduleTone2:${v.tone2};--moduleTint:${v.tint};--moduleGlow:${v.glow};--moduleBorder:${v.border};`;
+}
+
+function aarishMilkApplyVarsCore(el, tone) {
+    if (!el) return;
+    const v = aarishMilkToneVarsCore(tone);
+    el.setAttribute('data-module-tone', tone);
+    el.style.setProperty('--moduleTone', v.tone);
+    el.style.setProperty('--moduleTone2', v.tone2);
+    el.style.setProperty('--moduleTint', v.tint);
+    el.style.setProperty('--moduleGlow', v.glow);
+    el.style.setProperty('--moduleBorder', v.border);
+}
+
+function aarishMilkTotalsCore(customer, monthOnly) {
+    const list = monthOnly ? filterByMonth(aarishMilkRecordsCore(customer && customer.records)) : aarishMilkRecordsCore(customer && customer.records);
+    let givenKg = 0, takenKg = 0, givenAmount = 0, takenAmount = 0;
+    list.forEach(record => {
+        const qty = aarishMilkQtyCore(record);
+        if (!qty) return;
+        const amount = qty * aarishMilkRateCore(customer, record);
+        if (aarishMilkFlowCore(record, customer) === 'taken') {
+            takenKg += qty;
+            takenAmount += amount;
+        } else {
+            givenKg += qty;
+            givenAmount += amount;
+        }
+    });
+    const netKg = aarishMilkCleanZeroCore(givenKg - takenKg);
+    const netAmount = aarishMilkCleanZeroCore(givenAmount - takenAmount);
+    return { givenKg, takenKg, givenAmount, takenAmount, netKg, netAmount, tone: aarishMilkToneCore(netAmount || netKg) };
+}
+
+function aarishMilkAllTotalsCore() {
+    let givenKg = 0, takenKg = 0, givenAmount = 0, takenAmount = 0;
+    Object.keys(milkDB || {}).forEach(name => {
+        const t = aarishMilkTotalsCore(milkDB[name], false);
+        givenKg += t.givenKg;
+        takenKg += t.takenKg;
+        givenAmount += t.givenAmount;
+        takenAmount += t.takenAmount;
+    });
+    const netKg = aarishMilkCleanZeroCore(givenKg - takenKg);
+    const netAmount = aarishMilkCleanZeroCore(givenAmount - takenAmount);
+    return { givenKg, takenKg, givenAmount, takenAmount, netKg, netAmount, tone: aarishMilkToneCore(netAmount || netKg) };
+}
+
+function aarishMilkSignedKgCore(v) {
+    const n = aarishMilkCleanZeroCore(v);
+    if (!n) return '0.00 KG';
+    return (n < 0 ? '-' : '+') + Math.abs(n).toFixed(2) + ' KG';
+}
+
+function aarishMilkSignedMoneyCore(v) {
+    const n = Math.round(aarishMilkCleanZeroCore(v));
+    if (!n) return '₹0';
+    return (n < 0 ? '-₹' : '+₹') + Math.abs(n).toLocaleString('en-IN');
+}
+
+function aarishMilkApplyChromeCore() {
+    const all = aarishMilkAllTotalsCore();
+    const tone = all.tone;
+    const v = aarishMilkToneVarsCore(tone);
+    const milkScreen = document.getElementById('milk-screen');
+    const detailScreen = document.getElementById('milk-detail-screen');
+    const tab = document.getElementById('tab-milk');
+    [milkScreen, detailScreen, tab].forEach(el => aarishMilkApplyVarsCore(el, tone));
+
+    const title = document.querySelector('#milk-screen .header-sticky h1');
+    if (title) {
+        title.style.setProperty('color', v.tone, 'important');
+        title.style.setProperty('text-shadow', `0 0 12px ${v.glow}`, 'important');
     }
+
+    const newBtn = document.getElementById('milk-new-btn-v50') || document.querySelector('#milk-screen .header-sticky button[onclick*="add-milk-customer-modal"]');
+    if (newBtn) {
+        newBtn.style.setProperty('background', `linear-gradient(135deg, ${v.tone}, ${v.tone2})`, 'important');
+        newBtn.style.setProperty('color', '#FFFFFF', 'important');
+        newBtn.style.setProperty('box-shadow', `0 8px 22px ${v.glow}`, 'important');
+        newBtn.dataset.moduleTone = tone;
+    }
+
+    if (tab) {
+        tab.style.setProperty('color', v.tone, 'important');
+        tab.style.setProperty('text-shadow', `0 0 12px ${v.glow}`, 'important');
+        const icon = tab.querySelector('i');
+        if (icon) {
+            icon.style.setProperty('color', v.tone, 'important');
+            icon.style.setProperty('text-shadow', `0 0 12px ${v.glow}`, 'important');
+        }
+    }
+    return all;
+}
+
+function aarishMilkEnsureEntryButtonsCore() {
+    const modal = document.getElementById('add-milk-entry-modal');
+    if (!modal) return;
+    const content = modal.querySelector('.modal-content') || modal;
+
+    let hidden = document.getElementById('milk-entry-flow');
+    if (!hidden) {
+        hidden = document.createElement('input');
+        hidden.type = 'hidden';
+        hidden.id = 'milk-entry-flow';
+        hidden.value = 'given';
+        content.appendChild(hidden);
+    }
+
+    let holder = document.getElementById('milk-given-taken-actions');
+    if (!holder) {
+        const oldBtn = content.querySelector('button[onclick*="saveMilkEntry"]');
+        holder = document.createElement('div');
+        holder.id = 'milk-given-taken-actions';
+        holder.className = 'grid grid-cols-2 gap-4 w-full';
+        holder.innerHTML = `
+            <button onclick="document.getElementById('milk-entry-flow').value='given'; haptic(); saveMilkEntry('given')" class="btn-primary flex-1 min-w-0 !bg-[#34C759] !text-white !shadow-[0_4px_14px_rgba(52,199,89,0.25)]"><i class="fa-solid fa-plus text-lg"></i> Given</button>
+            <button onclick="document.getElementById('milk-entry-flow').value='taken'; haptic(); saveMilkEntry('taken')" class="btn-primary flex-1 min-w-0 !bg-[#FF3B30] !text-white !shadow-[0_4px_14px_rgba(255,59,48,0.25)]"><i class="fa-solid fa-minus text-lg"></i> Taken</button>
+        `;
+        if (oldBtn) oldBtn.replaceWith(holder);
+        else content.appendChild(holder);
+    }
+}
+/* AARISH_MILK_CORE_HELPERS_V1_END */
+
+function renderMilkList() {
+    const searchEl = document.getElementById('milk-search');
+    const listEl = document.getElementById('milk-list');
+    if (!listEl) return;
+
+    const q = String((searchEl && searchEl.value) || '').toLowerCase();
+    const names = Object.keys(milkDB || {}).filter(name => String(name).toLowerCase().includes(q));
+
+    const html = names.map((name, index) => {
+        const c = milkDB[name] || {};
+        const total = aarishMilkTotalsCore(c, false);
+        const tone = total.tone;
+        const v = aarishMilkToneVarsCore(tone);
+        const safeName = aarishMilkEscapeCore(name);
+        const argName = aarishMilkJsArgCore(name);
+        const initial = safeName ? safeName.charAt(0).toUpperCase() : 'M';
+        const label = tone === 'positive' ? 'Net To Receive' : (tone === 'negative' ? 'Net To Pay' : 'Settled');
+        const delay = Math.min(index * 0.014, 0.112).toFixed(3);
+
+        return `<div
+            data-module="milk" data-module-tone="${tone}"
+            onclick="haptic(); openMilkDetail(${argName})"
+            ontouchstart="startLongPress(${argName})"
+            ontouchend="cancelLongPress()"
+            ontouchmove="cancelLongPress()"
+            onmousedown="startLongPress(${argName})"
+            onmouseup="cancelLongPress()"
+            onmouseleave="cancelLongPress()"
+            class="glass-card milk-core-card mb-3.5 flex items-center justify-between cursor-pointer w-full ring-1 ring-white/40 dark:ring-white/5 list-enter"
+            style="${aarishMilkVarsStyleCore(tone)} --aarish-stagger-v4:${delay}s; animation-delay:${delay}s; border-left-color:${v.tone}!important;">
+            <div class="flex items-center gap-4 w-full min-w-0">
+                <div class="w-12 h-12 shrink-0 squircle font-extrabold flex items-center justify-center text-lg" style="background:${v.tint}; color:${v.tone}; box-shadow:inset 0 1px 1px rgba(255,255,255,0.22);">${initial}</div>
+                <div class="flex-1 min-w-0">
+                    <h4 class="font-bold text-[17px] leading-tight truncate w-full flex items-center" style="color:${v.tone}; text-shadow:0 0 10px ${v.glow};">${safeName}</h4>
+                    <p class="text-[12px] font-extrabold uppercase tracking-wide truncate w-full mt-0.5" style="color:${v.tone}; opacity:.92;">${label}</p>
+                    <p class="text-[13px] font-medium truncate w-full mt-0.5 tracking-tight text-gray-500 dark:text-gray-300">
+                        <span style="color:${v.tone}; font-weight:800;">${aarishMilkSignedKgCore(total.netKg)}</span>
+                        <span class="mx-1">•</span>
+                        <span style="color:${v.tone}; font-weight:900;">${aarishMilkSignedMoneyCore(total.netAmount)}</span>
+                    </p>
+                </div>
+            </div>
+            <i class="fa-solid fa-chevron-right shrink-0 ml-3 text-[13px]" style="color:${v.tone}; opacity:.75;"></i>
+        </div>`;
+    }).join('');
+
+    listEl.innerHTML = html || `<div class="flex flex-col items-center justify-center py-24 text-center select-none">
+        <div class="w-28 h-28 rounded-full bg-[#007AFF]/10 text-[#007AFF] flex items-center justify-center shadow-[0_0_24px_rgba(0,122,255,0.14)]">
+            <i class="fa-solid fa-jug-detergent text-5xl"></i>
+        </div>
+        <p class="mt-8 text-[#007AFF] font-extrabold text-[17px] tracking-tight drop-shadow-[0_0_10px_rgba(0,122,255,0.28)]">No customers found</p>
+    </div>`;
+
+    aarishMilkApplyChromeCore();
+}
 
     function filterMilkList() { renderMilkList(); }
 
@@ -1982,82 +2292,155 @@ async function addMilkCustomer() {
     }
 
     function renderMilkRecords() {
-        if (!activeMilkCustomer || !milkDB[activeMilkCustomer]) return;
-        const c = milkDB[activeMilkCustomer];
-        let totalKg = 0;
-        
-        const records = filterByMonth((c.records || []).map((r, i) => ({...r, originalIndex: i})))
-                        .sort((a,b) => new Date(b.date) - new Date(a.date));
+    if (!activeMilkCustomer || !milkDB || !milkDB[activeMilkCustomer]) return;
 
-        const html = records.map((r, index) => {
-            const t = (Number(r.morning)||0) + (Number(r.evening)||0); totalKg += t;
-            return `<tr class="list-enter" style="animation-delay: ${index * 0.05}s;">
-                <td>${formatDisplayDate(r.date)}</td>
-                <td>${r.morning||'-'}</td>
-                <td>${r.evening||'-'}</td>
-                <td class="font-bold text-[#34C759]">${t.toFixed(2)}</td>
-                <td class="text-right"><button onclick="haptic();   deleteMilkEntry('${r.id}')"    class="action-btn shrink-0"><i class="fa-solid fa-trash text-xs"></i></button></td>
-            </tr>`;
-        }).join('');
-        
-        document.getElementById('milk-detail-records').innerHTML = html || `<tr><td colspan="5" class="text-center py-8 text-gray-400 font-semibold">No entries for ${MONTHS[selectedMonth]}</td></tr>`;
-        
-        const isDeneWala = c.type === 'lene_wala';
-        const sign = isDeneWala ? '+' : '-';
-        
-        const detailCard = document.querySelector('#milk-detail-screen .glass-card');
-        if(isDeneWala) {
-            detailCard.className = "glass-card mb-6 flex justify-between items-center bg-gradient-to-br from-[#34C759] to-[#28a745] text-white border-none shadow-[0_8px_24px_rgba(52,199,89,0.3)] ring-1 ring-white/30 w-full min-w-0 gap-3";
-        } else {
-            detailCard.className = "glass-card mb-6 flex justify-between items-center bg-gradient-to-br from-[#FF3B30] to-[#c92a2a] text-white border-none shadow-[0_8px_24px_rgba(255,59,48,0.3)] ring-1 ring-white/30 w-full min-w-0 gap-3";
-        }
+    const c = milkDB[activeMilkCustomer] || {};
+    const recordsBox = document.getElementById('milk-detail-records');
+    const billEl = document.getElementById('milk-detail-bill');
+    const kgEl = document.getElementById('milk-detail-kg');
 
-        document.getElementById('milk-detail-kg').textContent = `${totalKg.toFixed(2)} KG`;
-        document.getElementById('milk-detail-bill').textContent = `${sign}₹${Math.round(totalKg * (c.rate || DEFAULT_RATE)).toLocaleString('en-IN')}`;
+    if (!recordsBox) return;
+
+    const records = filterByMonth(aarishMilkRecordsCore(c.records).map((r, i) => ({...r, originalIndex: i})))
+        .sort((a,b) => new Date(b.date || 0) - new Date(a.date || 0));
+
+    let netKg = 0;
+    let netAmount = 0;
+
+    const html = records.map((r, index) => {
+        const flow = aarishMilkFlowCore(r, c);
+        const qty = aarishMilkQtyCore(r);
+        const signedQty = flow === 'taken' ? -Math.abs(qty) : Math.abs(qty);
+        const amount = signedQty * aarishMilkRateCore(c, r);
+
+        netKg += signedQty;
+        netAmount += amount;
+
+        const rowTone = aarishMilkToneCore(signedQty);
+        const sign = signedQty < 0 ? '-' : '+';
+        const safeId = aarishMilkJsArgCore(r.id || r.key || r.originalIndex || '');
+        const delay = Math.min(index * 0.014, 0.112).toFixed(3);
+
+        return `<tr class="list-enter" data-module="milk-row" data-module-tone="${rowTone}" style="${aarishMilkVarsStyleCore(rowTone)} --aarish-stagger-v4:${delay}s; animation-delay:${delay}s;">
+            <td>${formatDisplayDate(r.date)}</td>
+            <td>${aarishMilkNumCore(r.morning) || '-'}</td>
+            <td>${aarishMilkNumCore(r.evening) || '-'}</td>
+            <td class="font-extrabold">${sign}${Math.abs(qty).toFixed(2)}</td>
+            <td class="text-right"><button onclick="haptic(); deleteMilkEntry(${safeId})" class="action-btn shrink-0"><i class="fa-solid fa-trash text-xs"></i></button></td>
+        </tr>`;
+    }).join('');
+
+    recordsBox.innerHTML = html || `<tr data-module="milk-row" data-module-tone="neutral" style="${aarishMilkVarsStyleCore('neutral')}">
+        <td colspan="5" class="text-center py-8 font-extrabold">No entries for ${MONTHS[selectedMonth]}</td>
+    </tr>`;
+
+    netKg = aarishMilkCleanZeroCore(netKg);
+    netAmount = aarishMilkCleanZeroCore(netAmount);
+
+    const tone = aarishMilkToneCore(netAmount || netKg);
+    const v = aarishMilkToneVarsCore(tone);
+    const screen = document.getElementById('milk-detail-screen');
+
+    aarishMilkApplyVarsCore(screen, tone);
+
+    const detailCard = (billEl && billEl.closest('.glass-card')) || document.querySelector('#milk-detail-screen .glass-card');
+    if (detailCard) {
+        detailCard.className = 'glass-card milk-core-total-card mb-6 flex justify-between items-center text-white border-none ring-1 ring-white/30 w-full min-w-0 gap-3';
+        aarishMilkApplyVarsCore(detailCard, tone);
+        detailCard.style.setProperty('background', `linear-gradient(135deg, ${v.tone}, ${v.tone2})`, 'important');
+        detailCard.style.setProperty('border-color', v.tone, 'important');
+        detailCard.style.setProperty('box-shadow', `0 8px 24px ${v.glow}`, 'important');
+        detailCard.querySelectorAll('p').forEach((p, i) => {
+            p.style.setProperty('color', '#FFFFFF', 'important');
+            if (i === 0) p.textContent = 'MONTH BILL';
+            if (i === 1) p.textContent = 'TOTAL MILK';
+        });
     }
+
+    if (kgEl) {
+        kgEl.textContent = aarishMilkSignedKgCore(netKg);
+        kgEl.style.setProperty('color', '#FFFFFF', 'important');
+    }
+
+    if (billEl) {
+        billEl.textContent = aarishMilkSignedMoneyCore(netAmount);
+        billEl.style.setProperty('color', '#FFFFFF', 'important');
+    }
+
+    aarishMilkApplyChromeCore();
+}
 
     function openMilkEntryModal() {
-        document.getElementById('milk-entry-date').value = getTodayISO();
-        document.getElementById('milk-morning-kg').value = '';
-        document.getElementById('milk-evening-kg').value = '';
-        openModal('add-milk-entry-modal');
-    }
+    const dateEl = document.getElementById('milk-entry-date');
+    const morningEl = document.getElementById('milk-morning-kg');
+    const eveningEl = document.getElementById('milk-evening-kg');
+
+    if (dateEl) dateEl.value = getTodayISO();
+    if (morningEl) morningEl.value = '';
+    if (eveningEl) eveningEl.value = '';
+
+    aarishMilkEnsureEntryButtonsCore();
+
+    const flowEl = document.getElementById('milk-entry-flow');
+    if (flowEl) flowEl.value = 'given';
+
+    openModal('add-milk-entry-modal');
+}
 
 
 
 
-        async function saveMilkEntry() {
-        const date = document.getElementById('milk-entry-date').value;
-        const m = parseFloat(document.getElementById('milk-morning-kg').value) || 0;
-        const e = parseFloat(document.getElementById('milk-evening-kg').value) || 0;
-        
-        if (!date || (m===0 && e===0)) return showToast('Please enter quantity');
-        if (!milkDB[activeMilkCustomer].records) milkDB[activeMilkCustomer].records = [];
+        async function saveMilkEntry(flowArg) {
+    const date = document.getElementById('milk-entry-date')?.value;
+    const m = parseFloat(document.getElementById('milk-morning-kg')?.value) || 0;
+    const e = parseFloat(document.getElementById('milk-evening-kg')?.value) || 0;
 
-        const existingIndex = milkDB[activeMilkCustomer].records.findIndex(r => r.date === date);
-        if (existingIndex !== -1) return showToast('Entry for this date already exists! Please delete the old one first.');
+    if (!activeMilkCustomer || !milkDB || !milkDB[activeMilkCustomer]) return showToast('Customer not selected');
+    if (!date || !Number.isFinite(m) || !Number.isFinite(e) || m < 0 || e < 0 || (m === 0 && e === 0)) return showToast('Please enter a positive quantity');
 
-        const uniqueId = "mlk_" + Date.now();
-        const newEntry = { id: uniqueId, date, morning: m, evening: e };
+    const customer = milkDB[activeMilkCustomer];
+    const hiddenFlow = document.getElementById('milk-entry-flow')?.value;
+    const flow = aarishMilkFlowCore({ flow: flowArg || hiddenFlow || 'given' }, customer);
 
-        milkDB[activeMilkCustomer].records.push(newEntry);
+    if (!customer.records) customer.records = [];
 
-        if (currentUserUID) {
+    const existingIndex = aarishMilkRecordsCore(customer.records).findIndex(r => String(r && r.date) === String(date) && aarishMilkFlowCore(r, customer) === flow);
+    if (existingIndex !== -1) return showToast((flow === 'taken' ? 'Taken' : 'Given') + ' milk entry already exists for this date. Delete old one first.');
+
+    const uniqueId = (window.aarishV98Id ? window.aarishV98Id('mlk') : ('mlk_' + Date.now() + '_' + Math.random().toString(36).slice(2, 10)));
+    const newEntry = { id: uniqueId, date, morning: m, evening: e, flow: flow, type: flow };
+
+    customer.records.push(newEntry);
+
+    if (currentUserUID) {
+        if (typeof window.aarishFirebaseLaterV48 === 'function') {
+            window.aarishFirebaseLaterV48(`milkDB/${activeMilkCustomer}/records/${uniqueId}`, 'set', newEntry);
+        } else if (typeof appDataRef !== 'undefined' && appDataRef) {
             await appDataRef.child(`milkDB/${activeMilkCustomer}/records/${uniqueId}`).set(newEntry);
         }
-
-        closeModal('add-milk-entry-modal'); 
-
-        const entryDateObj = new Date(date);
-        selectedMonth = entryDateObj.getMonth();
-        selectedYear = entryDateObj.getFullYear();
-        if (document.getElementById('filter-month-milk')) document.getElementById('filter-month-milk').value = selectedMonth;
-        if (document.getElementById('filter-year-milk')) document.getElementById('filter-year-milk').value = selectedYear;
-
-        renderMilkRecords();
-        updateDashboard();
-        showToast('Saved Safely!');
     }
+
+    closeModal('add-milk-entry-modal');
+
+    const parts = window.aarishV98DateParts ? window.aarishV98DateParts(date) : null;
+    if (parts) {
+        selectedMonth = parts.month;
+        selectedYear = parts.year;
+    } else {
+        const d = new Date(date);
+        selectedMonth = d.getMonth();
+        selectedYear = d.getFullYear();
+    }
+
+    if (document.getElementById('filter-month-milk')) document.getElementById('filter-month-milk').value = selectedMonth;
+    if (document.getElementById('filter-year-milk')) document.getElementById('filter-year-milk').value = selectedYear;
+
+    renderMilkRecords();
+    renderMilkList();
+    updateDashboard();
+
+    showToast(flow === 'taken' ? 'Taken milk saved!' : 'Given milk saved!');
+}
 
 
 
@@ -2065,38 +2448,49 @@ async function addMilkCustomer() {
 
 
          async function deleteMilkEntry(id) {
-        if(confirm('Are you sure you want to delete this entry?')) { 
-            milkDB[activeMilkCustomer].records = milkDB[activeMilkCustomer].records.filter(r => r.id !== id);
-            
-            if (currentUserUID) {
+    if (!activeMilkCustomer || !milkDB || !milkDB[activeMilkCustomer]) return;
+
+    if (confirm('Are you sure you want to delete this entry?')) {
+        milkDB[activeMilkCustomer].records = aarishMilkRecordsCore(milkDB[activeMilkCustomer].records).filter(r => String(r && r.id) !== String(id));
+
+        if (currentUserUID) {
+            if (typeof window.aarishFirebaseLaterV48 === 'function') {
+                window.aarishFirebaseLaterV48(`milkDB/${activeMilkCustomer}/records/${id}`, 'remove');
+            } else if (typeof appDataRef !== 'undefined' && appDataRef) {
                 await appDataRef.child(`milkDB/${activeMilkCustomer}/records/${id}`).remove();
             }
-            
-            renderMilkRecords();
-            updateDashboard();
-            showToast('Deleted!'); 
         }
+
+        renderMilkRecords();
+        renderMilkList();
+        updateDashboard();
+        showToast('Deleted!');
     }
+}
 
 
 
     
     // ========================== WHATSAPP PHOTO BILL SHARE FUNCTIONS ==========================
     async function generateAndShareBill() {
-        if (!activeMilkCustomer || !milkDB[activeMilkCustomer]) return;
-        showLoader("Generating bill photo...");
-        const c = milkDB[activeMilkCustomer];
-        let totalKg = 0;
-        filterByMonth(c.records || []).forEach(r => totalKg += (Number(r.morning)||0) + (Number(r.evening)||0));
-        const totalAmt = Math.round(totalKg * (c.rate || DEFAULT_RATE));
-        
-        document.getElementById('rcpt-name').textContent = activeMilkCustomer;
-        document.getElementById('rcpt-month').textContent = `${MONTHS[selectedMonth]} ${selectedYear}`;
-        document.getElementById('rcpt-qty').textContent = totalKg.toFixed(2);
-        document.getElementById('rcpt-amt').textContent = `₹${totalAmt.toLocaleString('en-IN')}`;
-        
-        await exportAndShareCanvas('receipt-card', `${activeMilkCustomer}_Bill.png`, `Hello ${activeMilkCustomer},\nHere is your Aarish Dairy bill for this month. Total: ₹${totalAmt}`);
-    }
+    if (!activeMilkCustomer || !milkDB || !milkDB[activeMilkCustomer]) return;
+
+    showLoader('Generating net bill photo...');
+
+    const c = milkDB[activeMilkCustomer];
+    const total = aarishMilkTotalsCore(c, true);
+
+    document.getElementById('rcpt-name').textContent = activeMilkCustomer;
+    document.getElementById('rcpt-month').textContent = `${MONTHS[selectedMonth]} ${selectedYear}`;
+    document.getElementById('rcpt-qty').textContent = aarishMilkSignedKgCore(total.netKg);
+    document.getElementById('rcpt-amt').textContent = aarishMilkSignedMoneyCore(total.netAmount);
+
+    await exportAndShareCanvas(
+        'receipt-card',
+        `${activeMilkCustomer}_Milk_Net_Bill.png`,
+        `Hello ${activeMilkCustomer},\nMilk bill for ${MONTHS[selectedMonth]} ${selectedYear}\nGiven: ${total.givenKg.toFixed(2)} KG = ₹${Math.round(total.givenAmount).toLocaleString('en-IN')}\nTaken: ${total.takenKg.toFixed(2)} KG = ₹${Math.round(total.takenAmount).toLocaleString('en-IN')}\nNet Milk: ${aarishMilkSignedKgCore(total.netKg)}\nNet Amount: ${aarishMilkSignedMoneyCore(total.netAmount)}`
+    );
+}
 
     async function shareSalaryBill(name) {
         showLoader("Generating Salary Slip...");
