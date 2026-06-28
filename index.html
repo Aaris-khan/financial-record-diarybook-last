@@ -1789,154 +1789,499 @@
 }
 /* AARISH_PARTY_LEDGER_CORE_CONTRACT_V1_END */
 
-
-
-
 /* AARISH_PREMIUM_UNIFORM_GLASS_CORE_START
-   Premium uniform UI/UX glass contract.
-   CSS-only. No JS, no Firebase, no math, no renderer, no wrapper.
-   Goal: same opacity / translucency / smoky glow language across all modules.
+   V3 FINAL: Premium Uniform Glass Physics.
+   CSS-only. No JS, no Firebase, no backend, no math, no wrappers.
+   Rule: same glass, same opacity, same shadow physics across Milk/Credit/Expense/Salary/Diary/Business/Party Ledger.
+   Only semantic color variable changes.
 */
 body, html {
-  --premiumBlur: 36px;
-  --premiumBlurStrong: 44px;
-  --premiumSaturate: 198%;
-  --premiumRadius: 24px;
-  --premiumRadiusStrong: 28px;
-  --premiumSpecularLight: rgba(255,255,255,0.78);
-  --premiumSpecularDark: rgba(255,255,255,0.10);
-  --premiumSmokeLight: rgba(15,23,42,0.085);
-  --premiumSmokeDark: rgba(0,0,0,0.62);
-  --premiumBlueSmoke: rgba(0,122,255,0.13);
-  --premiumPressScale: 0.974;
+  --surfaceGlass: rgba(255,255,255,0.780) !important;
+  --surfaceGlassStrong: rgba(255,255,255,0.920) !important;
+  --surfaceGlassDark: rgba(18,24,38,0.820) !important;
+  --surfaceBorder: rgba(255,255,255,0.680) !important;
+  --surfaceHairline: rgba(0,0,0,0.044) !important;
+
+  --surfaceShadow:
+    0 2px 8px rgba(15,23,42,0.038),
+    0 16px 48px rgba(15,23,42,0.088),
+    inset 0 1px 0 rgba(255,255,255,0.800),
+    inset 0 -1px 0 rgba(15,23,42,0.032) !important;
+
+  --surfaceActiveShadow:
+    0 14px 40px rgba(0,122,255,0.180),
+    0 5px 16px rgba(0,122,255,0.100),
+    inset 0 1px 0 rgba(255,255,255,0.760) !important;
+
+  --aariGlassBlur: 36px;
+  --aariGlassBlurStrong: 46px;
+  --aariGlassSaturate: 200%;
+  --aariGlassRadius: 24px;
+  --aariGlassRadiusStrong: 28px;
+  --aariGlassPressScale: 0.974;
+
+  --aariLightSpecular: rgba(255,255,255,0.680);
+  --aariDarkSpecular: rgba(255,255,255,0.105);
+  --aariLightSmoke: rgba(15,23,42,0.088);
+  --aariDarkSmoke: rgba(0,0,0,0.620);
+
+  --aariBlue: #007AFF;
+  --aariBlue2: #0A84FF;
+  --aariGreen: #34C759;
+  --aariGreen2: #30D158;
+  --aariRed: #FF453A;
+  --aariRed2: #FF2D55;
+  --aariYellow: #F5A623;
+  --aariYellow2: #FFB340;
+  --aariOrange: #FF9500;
+  --aariOrange2: #FFB340;
+
+  --aariBlueTint: rgba(0,122,255,0.112);
+  --aariGreenTint: rgba(52,199,89,0.112);
+  --aariRedTint: rgba(255,69,58,0.112);
+  --aariYellowTint: rgba(245,166,35,0.112);
+  --aariOrangeTint: rgba(255,149,0,0.112);
+
+  --aariBlueBorder: rgba(0,122,255,0.340);
+  --aariGreenBorder: rgba(52,199,89,0.340);
+  --aariRedBorder: rgba(255,69,58,0.340);
+  --aariYellowBorder: rgba(245,166,35,0.340);
+  --aariOrangeBorder: rgba(255,149,0,0.340);
+
+  --aariBlueGlow: rgba(0,122,255,0.285);
+  --aariGreenGlow: rgba(52,199,89,0.285);
+  --aariRedGlow: rgba(255,69,58,0.285);
+  --aariYellowGlow: rgba(245,166,35,0.285);
+  --aariOrangeGlow: rgba(255,149,0,0.285);
+}
+
+.dark body {
+  --surfaceGlass: rgba(18,24,38,0.820) !important;
+  --surfaceGlassStrong: rgba(28,34,48,0.900) !important;
+  --surfaceGlassDark: rgba(18,24,38,0.820) !important;
+  --surfaceBorder: rgba(255,255,255,0.135) !important;
+  --surfaceHairline: rgba(255,255,255,0.090) !important;
+
+  --surfaceShadow:
+    0 4px 14px rgba(0,0,0,0.340),
+    0 22px 64px rgba(0,0,0,0.640),
+    inset 0 1px 0 rgba(255,255,255,0.100),
+    inset 0 -1px 0 rgba(0,0,0,0.380) !important;
+
+  --surfaceActiveShadow:
+    0 20px 68px rgba(10,132,255,0.230),
+    0 8px 22px rgba(10,132,255,0.120),
+    inset 0 1px 0 rgba(255,255,255,0.110) !important;
 }
 
 body {
   background-image:
-    radial-gradient(circle at -12% -16%, rgba(52, 199, 89, 0.095), transparent 38%),
-    radial-gradient(circle at 108% 112%, rgba(10, 132, 255, 0.082), transparent 42%),
-    radial-gradient(circle at 50% 118%, rgba(245,166,35,0.030), transparent 34%) !important;
+    radial-gradient(circle at -14% -18%, rgba(52,199,89,0.110), transparent 40%),
+    radial-gradient(circle at 112% 114%, rgba(10,132,255,0.095), transparent 44%),
+    radial-gradient(circle at 52% 116%, rgba(245,166,35,0.038), transparent 36%) !important;
 }
 
 .dark body {
   background-image:
-    radial-gradient(circle at -12% -18%, rgba(52,199,89,0.165), transparent 39%),
-    radial-gradient(circle at 112% 114%, rgba(10,132,255,0.165), transparent 43%),
-    radial-gradient(circle at 52% 120%, rgba(245,166,35,0.055), transparent 34%) !important;
+    radial-gradient(circle at -14% -20%, rgba(52,199,89,0.185), transparent 40%),
+    radial-gradient(circle at 114% 116%, rgba(10,132,255,0.188), transparent 45%),
+    radial-gradient(circle at 54% 118%, rgba(245,166,35,0.068), transparent 36%) !important;
 }
 
-/* Global frosted surface language */
+/* Semantic normalization */
+#milk-screen[data-module-tone],
+#milk-detail-screen[data-module-tone],
+#tab-milk[data-module-tone] {
+  --moduleTone: var(--aariBlue) !important;
+  --moduleTone2: var(--aariBlue2) !important;
+  --moduleTint: var(--aariBlueTint) !important;
+  --moduleBorder: var(--aariBlueBorder) !important;
+  --moduleGlow: var(--aariBlueGlow) !important;
+}
+#milk-screen[data-module-tone="positive"],
+#milk-detail-screen[data-module-tone="positive"],
+#tab-milk[data-module-tone="positive"] {
+  --moduleTone: var(--aariGreen) !important;
+  --moduleTone2: var(--aariGreen2) !important;
+  --moduleTint: var(--aariGreenTint) !important;
+  --moduleBorder: var(--aariGreenBorder) !important;
+  --moduleGlow: var(--aariGreenGlow) !important;
+}
+#milk-screen[data-module-tone="negative"],
+#milk-detail-screen[data-module-tone="negative"],
+#tab-milk[data-module-tone="negative"] {
+  --moduleTone: var(--aariRed) !important;
+  --moduleTone2: var(--aariRed2) !important;
+  --moduleTint: var(--aariRedTint) !important;
+  --moduleBorder: var(--aariRedBorder) !important;
+  --moduleGlow: var(--aariRedGlow) !important;
+}
+
+#udhar-screen,
+#udhar-detail-screen,
+#tab-udhar,
+[data-credit-core-tone],
+[data-credit-core-top-tone],
+[data-credit-core-row-tone] {
+  --creditTone: var(--aariBlue) !important;
+  --creditTone2: var(--aariBlue2) !important;
+  --creditTint: var(--aariBlueTint) !important;
+  --creditBorder: var(--aariBlueBorder) !important;
+  --creditGlow: var(--aariBlueGlow) !important;
+}
+[data-credit-core-tone="positive"],
+[data-credit-core-top-tone="positive"],
+[data-credit-core-row-tone="positive"] {
+  --creditTone: var(--aariGreen) !important;
+  --creditTone2: var(--aariGreen2) !important;
+  --creditTint: var(--aariGreenTint) !important;
+  --creditBorder: var(--aariGreenBorder) !important;
+  --creditGlow: var(--aariGreenGlow) !important;
+}
+[data-credit-core-tone="negative"],
+[data-credit-core-top-tone="negative"],
+[data-credit-core-row-tone="negative"] {
+  --creditTone: var(--aariRed) !important;
+  --creditTone2: var(--aariRed2) !important;
+  --creditTint: var(--aariRedTint) !important;
+  --creditBorder: var(--aariRedBorder) !important;
+  --creditGlow: var(--aariRedGlow) !important;
+}
+
+#expenses-screen,
+#expense-detail-screen,
+#tab-expenses,
+[data-expense-core-tone],
+[data-expense-row-tone] {
+  --expenseTone: var(--aariBlue) !important;
+  --expenseTone2: var(--aariBlue2) !important;
+  --expenseTint: var(--aariBlueTint) !important;
+  --expenseBorder: var(--aariBlueBorder) !important;
+  --expenseGlow: var(--aariBlueGlow) !important;
+}
+#expenses-screen[data-expense-core-tone="negative"],
+#expense-detail-screen[data-expense-core-tone="negative"],
+#tab-expenses[data-expense-core-tone="negative"],
+[data-expense-core-tone="negative"],
+[data-expense-row-tone="negative"] {
+  --expenseTone: var(--aariRed) !important;
+  --expenseTone2: var(--aariRed2) !important;
+  --expenseTint: var(--aariRedTint) !important;
+  --expenseBorder: var(--aariRedBorder) !important;
+  --expenseGlow: var(--aariRedGlow) !important;
+}
+
+#salary-screen,
+#salary-detail-screen,
+#tab-salary,
+[data-salary-core-tone],
+[data-salary-row-tone-core] {
+  --salaryTone: var(--aariBlue) !important;
+  --salaryTone2: var(--aariBlue2) !important;
+  --salaryTint: var(--aariBlueTint) !important;
+  --salaryBorder: var(--aariBlueBorder) !important;
+  --salaryGlow: var(--aariBlueGlow) !important;
+  --salaryInset: var(--aariBlueBorder) !important;
+}
+[data-salary-core-tone="positive"],
+[data-salary-row-tone-core="positive"] {
+  --salaryTone: var(--aariGreen) !important;
+  --salaryTone2: var(--aariGreen2) !important;
+  --salaryTint: var(--aariGreenTint) !important;
+  --salaryBorder: var(--aariGreenBorder) !important;
+  --salaryGlow: var(--aariGreenGlow) !important;
+  --salaryInset: var(--aariGreenBorder) !important;
+}
+[data-salary-core-tone="negative"],
+[data-salary-row-tone-core="negative"] {
+  --salaryTone: var(--aariRed) !important;
+  --salaryTone2: var(--aariRed2) !important;
+  --salaryTint: var(--aariRedTint) !important;
+  --salaryBorder: var(--aariRedBorder) !important;
+  --salaryGlow: var(--aariRedGlow) !important;
+  --salaryInset: var(--aariRedBorder) !important;
+}
+
+#diary-screen,
+#diary-detail-screen,
+#tab-diary {
+  --diaryTone: var(--aariYellow) !important;
+  --diaryTone2: var(--aariYellow2) !important;
+  --diaryTint: var(--aariYellowTint) !important;
+  --diaryBorder: var(--aariYellowBorder) !important;
+  --diaryGlow: var(--aariYellowGlow) !important;
+  --diaryGlowStrong: rgba(245,166,35,0.360) !important;
+}
+
+#projects-screen,
+#project-detail-screen,
+#add-project-modal,
+#add-project-entry-modal,
+#tab-projects {
+  --businessBlue: var(--aariBlue) !important;
+  --businessBlue2: var(--aariBlue2) !important;
+  --businessBlueTint: var(--aariBlueTint) !important;
+  --businessBlueBorder: var(--aariBlueBorder) !important;
+  --businessBlueGlow: var(--aariBlueGlow) !important;
+  --businessBlueGlowStrong: rgba(0,122,255,0.360) !important;
+  --businessRed: var(--aariRed) !important;
+  --businessGreen: var(--aariGreen) !important;
+  --businessOrange: var(--aariOrange) !important;
+}
+
+#balances-screen,
+#balances-screen #dash-balances-list .party-ledger-core-card {
+  --partyBlue: var(--aariBlue) !important;
+  --partyBlue2: var(--aariBlue2) !important;
+  --partyBlueTint: var(--aariBlueTint) !important;
+  --partyBlueBorder: var(--aariBlueBorder) !important;
+  --partyBlueGlow: var(--aariBlueGlow) !important;
+  --partyTone: var(--aariBlue) !important;
+  --partyTone2: var(--aariBlue2) !important;
+  --partyTint: var(--aariBlueTint) !important;
+  --partyBorder: var(--aariBlueBorder) !important;
+  --partyGlow: var(--aariBlueGlow) !important;
+}
+#balances-screen #dash-balances-list .party-ledger-core-card[data-party-tone="positive"] {
+  --partyTone: var(--aariGreen) !important;
+  --partyTone2: var(--aariGreen2) !important;
+  --partyTint: var(--aariGreenTint) !important;
+  --partyBorder: var(--aariGreenBorder) !important;
+  --partyGlow: var(--aariGreenGlow) !important;
+}
+#balances-screen #dash-balances-list .party-ledger-core-card[data-party-tone="negative"] {
+  --partyTone: var(--aariRed) !important;
+  --partyTone2: var(--aariRed2) !important;
+  --partyTint: var(--aariRedTint) !important;
+  --partyBorder: var(--aariRedBorder) !important;
+  --partyGlow: var(--aariRedGlow) !important;
+}
+
+/* Global glass surfaces */
 .glass-card {
-  background:
-    linear-gradient(145deg, rgba(255,255,255,0.82), rgba(255,255,255,0.58)) !important;
-  backdrop-filter: blur(var(--premiumBlur)) saturate(var(--premiumSaturate)) !important;
-  -webkit-backdrop-filter: blur(var(--premiumBlur)) saturate(var(--premiumSaturate)) !important;
-  border-color: rgba(255,255,255,0.66) !important;
-  box-shadow:
-    0 2px 8px rgba(15,23,42,0.035),
-    0 14px 42px rgba(15,23,42,0.090),
-    inset 0 1px 0 rgba(255,255,255,0.78),
-    inset 0 -1px 0 rgba(15,23,42,0.030) !important;
+  background: linear-gradient(148deg, rgba(255,255,255,0.840), rgba(255,255,255,0.600)) !important;
+  backdrop-filter: blur(var(--aariGlassBlur)) saturate(var(--aariGlassSaturate)) !important;
+  -webkit-backdrop-filter: blur(var(--aariGlassBlur)) saturate(var(--aariGlassSaturate)) !important;
+  border-radius: var(--aariGlassRadius) !important;
+  border-color: rgba(255,255,255,0.680) !important;
+  box-shadow: var(--surfaceShadow) !important;
 }
-
 .dark .glass-card {
-  background:
-    linear-gradient(145deg, rgba(18,24,38,0.84), rgba(10,15,28,0.68)) !important;
-  border-color: rgba(255,255,255,0.13) !important;
-  box-shadow:
-    0 4px 14px rgba(0,0,0,0.32),
-    0 20px 60px rgba(0,0,0,0.62),
-    inset 0 1px 0 rgba(255,255,255,0.095),
-    inset 0 -1px 0 rgba(0,0,0,0.36) !important;
+  background: linear-gradient(148deg, rgba(18,24,38,0.860), rgba(8,12,24,0.700)) !important;
+  border-color: rgba(255,255,255,0.135) !important;
+  box-shadow: var(--surfaceShadow) !important;
 }
-
 .glass-card:active {
-  transform: scale(var(--premiumPressScale)) !important;
+  transform: scale(var(--aariGlassPressScale)) !important;
+  box-shadow: var(--surfaceActiveShadow) !important;
 }
 
-/* Header, bottom nav, modal, inputs: same premium glass family */
+/* Header / nav / modal / inputs */
 .header-sticky {
-  background: rgba(245,245,247,0.78) !important;
-  backdrop-filter: blur(38px) saturate(198%) !important;
-  -webkit-backdrop-filter: blur(38px) saturate(198%) !important;
-  box-shadow:
-    0 8px 26px rgba(15,23,42,0.045),
-    inset 0 1px 0 rgba(255,255,255,0.58) !important;
+  background: rgba(245,245,247,0.820) !important;
+  backdrop-filter: blur(40px) saturate(200%) !important;
+  -webkit-backdrop-filter: blur(40px) saturate(200%) !important;
+  border-bottom-color: var(--surfaceHairline) !important;
+  box-shadow: 0 8px 28px rgba(15,23,42,0.050), inset 0 1px 0 rgba(255,255,255,0.640) !important;
 }
-
 .dark .header-sticky {
-  background: rgba(0,0,0,0.74) !important;
-  box-shadow:
-    0 12px 34px rgba(0,0,0,0.48),
-    inset 0 1px 0 rgba(255,255,255,0.075) !important;
+  background: rgba(0,0,0,0.780) !important;
+  box-shadow: 0 12px 36px rgba(0,0,0,0.520), inset 0 1px 0 rgba(255,255,255,0.085) !important;
 }
-
 .bottom-nav {
-  background: rgba(255,255,255,0.80) !important;
-  backdrop-filter: blur(40px) saturate(205%) !important;
-  -webkit-backdrop-filter: blur(40px) saturate(205%) !important;
-  box-shadow:
-    0 -2px 10px rgba(15,23,42,0.035),
-    0 -14px 40px rgba(15,23,42,0.075),
-    inset 0 1px 0 rgba(255,255,255,0.58) !important;
+  background: rgba(255,255,255,0.820) !important;
+  backdrop-filter: blur(42px) saturate(208%) !important;
+  -webkit-backdrop-filter: blur(42px) saturate(208%) !important;
+  box-shadow: 0 -2px 10px rgba(15,23,42,0.038), 0 -16px 44px rgba(15,23,42,0.080), inset 0 1px 0 rgba(255,255,255,0.620) !important;
 }
-
 .dark .bottom-nav {
-  background: rgba(18,24,38,0.78) !important;
-  box-shadow:
-    0 -4px 16px rgba(0,0,0,0.34),
-    0 -20px 58px rgba(0,0,0,0.56),
-    inset 0 1px 0 rgba(255,255,255,0.085) !important;
+  background: rgba(14,20,34,0.820) !important;
+  box-shadow: 0 -4px 18px rgba(0,0,0,0.380), 0 -22px 62px rgba(0,0,0,0.600), inset 0 1px 0 rgba(255,255,255,0.090) !important;
 }
-
 .modal-content {
-  background:
-    linear-gradient(160deg, rgba(255,255,255,0.92), rgba(255,255,255,0.72)) !important;
-  backdrop-filter: blur(42px) saturate(198%) !important;
-  -webkit-backdrop-filter: blur(42px) saturate(198%) !important;
-  box-shadow:
-    0 -18px 58px rgba(15,23,42,0.15),
-    0 -4px 18px rgba(15,23,42,0.055),
-    inset 0 1px 0 rgba(255,255,255,0.82) !important;
+  background: linear-gradient(160deg, rgba(255,255,255,0.930), rgba(255,255,255,0.740)) !important;
+  backdrop-filter: blur(var(--aariGlassBlurStrong)) saturate(var(--aariGlassSaturate)) !important;
+  -webkit-backdrop-filter: blur(var(--aariGlassBlurStrong)) saturate(var(--aariGlassSaturate)) !important;
+  box-shadow: 0 -20px 62px rgba(15,23,42,0.158), 0 -4px 20px rgba(15,23,42,0.058), inset 0 1px 0 rgba(255,255,255,0.820) !important;
 }
-
 .dark .modal-content {
-  background:
-    linear-gradient(160deg, rgba(28,34,48,0.90), rgba(12,18,32,0.78)) !important;
-  box-shadow:
-    0 -22px 68px rgba(0,0,0,0.68),
-    0 -4px 18px rgba(10,132,255,0.08),
-    inset 0 1px 0 rgba(255,255,255,0.10) !important;
+  background: linear-gradient(160deg, rgba(28,34,48,0.900), rgba(10,15,28,0.780)) !important;
+  box-shadow: 0 -24px 72px rgba(0,0,0,0.660), 0 -4px 18px rgba(10,132,255,0.082), inset 0 1px 0 rgba(255,255,255,0.105) !important;
 }
-
 .input-box {
-  background:
-    linear-gradient(145deg, rgba(118,118,128,0.090), rgba(118,118,128,0.058)) !important;
-  border-color: rgba(0,0,0,0.040) !important;
-  backdrop-filter: blur(22px) saturate(170%) !important;
-  -webkit-backdrop-filter: blur(22px) saturate(170%) !important;
-  box-shadow:
-    inset 0 1px 0 rgba(255,255,255,0.48),
-    0 8px 22px rgba(15,23,42,0.035) !important;
+  background: linear-gradient(148deg, rgba(118,118,128,0.092), rgba(118,118,128,0.060)) !important;
+  border-color: rgba(0,0,0,0.042) !important;
+  backdrop-filter: blur(20px) saturate(180%) !important;
+  -webkit-backdrop-filter: blur(20px) saturate(180%) !important;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.500), 0 8px 24px rgba(15,23,42,0.036) !important;
 }
-
 .dark .input-box {
-  background:
-    linear-gradient(145deg, rgba(118,118,128,0.18), rgba(60,66,84,0.12)) !important;
-  border-color: rgba(255,255,255,0.090) !important;
-  box-shadow:
-    inset 0 1px 0 rgba(255,255,255,0.075),
-    0 10px 28px rgba(0,0,0,0.24) !important;
+  background: linear-gradient(148deg, rgba(118,118,128,0.180), rgba(60,66,84,0.128)) !important;
+  border-color: rgba(255,255,255,0.092) !important;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.078), 0 10px 30px rgba(0,0,0,0.260) !important;
 }
-
 .input-box:focus {
-  box-shadow:
-    0 0 0 4px rgba(0,122,255,0.16),
-    0 14px 34px rgba(0,122,255,0.105),
-    inset 0 1px 0 rgba(255,255,255,0.52) !important;
+  box-shadow: 0 0 0 4px rgba(0,122,255,0.155), 0 14px 36px rgba(0,122,255,0.105), inset 0 1px 0 rgba(255,255,255,0.540) !important;
 }
 
-/* Buttons: same lifted luminous depth, without changing semantic base colors */
+/* List card uniform formula */
+#milk-list .milk-core-card { --aariSemanticGlow: var(--moduleGlow); --aariSemanticBorder: var(--moduleBorder); }
+#udhar-list .glass-card[data-credit-core-tone] { --aariSemanticGlow: var(--creditGlow); --aariSemanticBorder: var(--creditBorder); }
+#expense-list-container .expense-core-card { --aariSemanticGlow: var(--expenseGlow); --aariSemanticBorder: var(--expenseBorder); }
+#salary-list .salary-core-card { --aariSemanticGlow: var(--salaryGlow); --aariSemanticBorder: var(--salaryBorder); }
+#diary-screen #diary-list .diary-core-card,
+#diary-list .diary-core-card { --aariSemanticGlow: var(--diaryGlow); --aariSemanticBorder: var(--diaryBorder); }
+#projects-screen #project-list .business-core-card { --aariSemanticGlow: var(--businessBlueGlow); --aariSemanticBorder: var(--businessBlueBorder); }
+#balances-screen #dash-balances-list .party-ledger-core-card { --aariSemanticGlow: var(--partyGlow); --aariSemanticBorder: var(--partyBorder); }
+
+#milk-list .milk-core-card,
+#udhar-list .glass-card[data-credit-core-tone],
+#expense-list-container .expense-core-card,
+#salary-list .salary-core-card,
+#diary-screen #diary-list .diary-core-card,
+#diary-list .diary-core-card,
+#projects-screen #project-list .business-core-card,
+#balances-screen #dash-balances-list .party-ledger-core-card {
+  border-radius: var(--aariGlassRadius) !important;
+  border-left-width: 4px !important;
+  border-left-style: solid !important;
+  border-left-color: var(--aariSemanticBorder) !important;
+  border-top-color: rgba(255,255,255,0.680) !important;
+  border-right-color: rgba(255,255,255,0.360) !important;
+  border-bottom-color: rgba(255,255,255,0.260) !important;
+  background: linear-gradient(148deg, rgba(255,255,255,0.840), rgba(255,255,255,0.600)) !important;
+  backdrop-filter: blur(var(--aariGlassBlur)) saturate(var(--aariGlassSaturate)) !important;
+  -webkit-backdrop-filter: blur(var(--aariGlassBlur)) saturate(var(--aariGlassSaturate)) !important;
+  box-shadow:
+    -4px 0 22px var(--aariSemanticGlow),
+    0 16px 48px var(--aariLightSmoke),
+    inset 1px 0 0 var(--aariSemanticBorder),
+    inset 0 1px 0 var(--aariLightSpecular) !important;
+}
+.dark #milk-list .milk-core-card,
+.dark #udhar-list .glass-card[data-credit-core-tone],
+.dark #expense-list-container .expense-core-card,
+.dark #salary-list .salary-core-card,
+.dark #diary-screen #diary-list .diary-core-card,
+.dark #diary-list .diary-core-card,
+.dark #projects-screen #project-list .business-core-card,
+.dark #balances-screen #dash-balances-list .party-ledger-core-card {
+  border-top-color: rgba(255,255,255,0.120) !important;
+  border-right-color: rgba(255,255,255,0.078) !important;
+  border-bottom-color: rgba(0,0,0,0.380) !important;
+  background: linear-gradient(148deg, rgba(18,24,38,0.860), rgba(8,12,24,0.700)) !important;
+  box-shadow:
+    -4px 0 28px var(--aariSemanticGlow),
+    0 22px 64px var(--aariDarkSmoke),
+    inset 1px 0 0 var(--aariSemanticBorder),
+    inset 0 1px 0 var(--aariDarkSpecular) !important;
+}
+
+/* Hero / total card uniform formula — no currentColor glow */
+#milk-detail-screen .milk-core-total-card { --aariTotalTone: var(--moduleTone); --aariTotalTone2: var(--moduleTone2); --aariTotalGlow: var(--moduleGlow); }
+#udhar-screen .glass-card[data-credit-core-top-tone],
+#udhar-detail-screen #udhar-detail-card[data-credit-core-tone] { --aariTotalTone: var(--creditTone); --aariTotalTone2: var(--creditTone2); --aariTotalGlow: var(--creditGlow); }
+#expenses-screen [data-expense-total-card-core],
+#expense-detail-screen #expense-detail-card[data-expense-core-tone] { --aariTotalTone: var(--expenseTone); --aariTotalTone2: var(--expenseTone2); --aariTotalGlow: var(--expenseGlow); }
+#salary-detail-screen #salary-detail-card[data-salary-core-tone] { --aariTotalTone: var(--salaryTone); --aariTotalTone2: var(--salaryTone2); --aariTotalGlow: var(--salaryGlow); }
+
+#milk-detail-screen .milk-core-total-card,
+#udhar-screen .glass-card[data-credit-core-top-tone],
+#udhar-detail-screen #udhar-detail-card[data-credit-core-tone],
+#expenses-screen [data-expense-total-card-core],
+#expense-detail-screen #expense-detail-card[data-expense-core-tone],
+#salary-detail-screen #salary-detail-card[data-salary-core-tone] {
+  border-radius: 26px !important;
+  background: linear-gradient(135deg, var(--aariTotalTone), var(--aariTotalTone2)) !important;
+  border-color: rgba(255,255,255,0.180) !important;
+  color: #FFFFFF !important;
+  -webkit-text-fill-color: #FFFFFF !important;
+  box-shadow:
+    0 8px 22px var(--aariTotalGlow),
+    0 24px 68px var(--aariTotalGlow),
+    inset 0 1px 0 rgba(255,255,255,0.340),
+    inset 0 -1px 0 rgba(0,0,0,0.080) !important;
+}
+.dark #milk-detail-screen .milk-core-total-card,
+.dark #udhar-screen .glass-card[data-credit-core-top-tone],
+.dark #udhar-detail-screen #udhar-detail-card[data-credit-core-tone],
+.dark #expenses-screen [data-expense-total-card-core],
+.dark #expense-detail-screen #expense-detail-card[data-expense-core-tone],
+.dark #salary-detail-screen #salary-detail-card[data-salary-core-tone] {
+  box-shadow:
+    0 10px 30px var(--aariTotalGlow),
+    0 30px 86px var(--aariTotalGlow),
+    inset 0 1px 0 rgba(255,255,255,0.180),
+    inset 0 -1px 0 rgba(0,0,0,0.220) !important;
+}
+#milk-detail-screen .milk-core-total-card *,
+#udhar-screen .glass-card[data-credit-core-top-tone] *,
+#udhar-detail-screen #udhar-detail-card[data-credit-core-tone] *,
+#expenses-screen [data-expense-total-card-core] *,
+#expense-detail-screen #expense-detail-card[data-expense-core-tone] *,
+#salary-detail-screen #salary-detail-card[data-salary-core-tone] * {
+  color: #FFFFFF !important;
+  -webkit-text-fill-color: #FFFFFF !important;
+  text-shadow: 0 1px 6px rgba(0,0,0,0.300), 0 4px 22px rgba(0,0,0,0.180) !important;
+}
+
+/* Avatar/icon jewel formula — split semantic glow, no currentColor box-shadow dependency */
+#milk-list .milk-avatar-core { --aariAvatarGlow: var(--moduleGlow); }
+#udhar-list .credit-avatar-core { --aariAvatarGlow: var(--creditGlow); }
+#expense-list-container .expense-avatar-core { --aariAvatarGlow: var(--expenseGlow); }
+#salary-list .salary-avatar-core { --aariAvatarGlow: var(--salaryGlow); }
+#diary-list .diary-avatar-core { --aariAvatarGlow: var(--diaryGlow); }
+#projects-screen #project-list .business-avatar-core { --aariAvatarGlow: var(--businessBlueGlow); }
+#balances-screen #dash-balances-list .party-avatar-core { --aariAvatarGlow: var(--partyGlow); }
+
+#milk-list .milk-avatar-core,
+#udhar-list .credit-avatar-core,
+#expense-list-container .expense-avatar-core,
+#salary-list .salary-avatar-core,
+#diary-list .diary-avatar-core,
+#projects-screen #project-list .business-avatar-core,
+#balances-screen #dash-balances-list .party-avatar-core {
+  backdrop-filter: blur(18px) saturate(200%) !important;
+  -webkit-backdrop-filter: blur(18px) saturate(200%) !important;
+  box-shadow:
+    0 8px 22px var(--aariAvatarGlow),
+    inset 0 1px 0 rgba(255,255,255,0.260) !important;
+}
+.dark #milk-list .milk-avatar-core,
+.dark #udhar-list .credit-avatar-core,
+.dark #expense-list-container .expense-avatar-core,
+.dark #salary-list .salary-avatar-core,
+.dark #diary-list .diary-avatar-core,
+.dark #projects-screen #project-list .business-avatar-core,
+.dark #balances-screen #dash-balances-list .party-avatar-core {
+  box-shadow:
+    0 10px 28px var(--aariAvatarGlow),
+    inset 0 1px 0 rgba(255,255,255,0.105) !important;
+}
+
+/* Business detail totals keep their semantic total color but use same depth */
+#project-detail-screen #project-dynamic-totals .business-total-card-core {
+  border-radius: var(--aariGlassRadius) !important;
+  backdrop-filter: blur(var(--aariGlassBlur)) saturate(var(--aariGlassSaturate)) !important;
+  -webkit-backdrop-filter: blur(var(--aariGlassBlur)) saturate(var(--aariGlassSaturate)) !important;
+  box-shadow:
+    0 16px 48px rgba(15,23,42,0.088),
+    0 8px 22px var(--businessTotalGlow),
+    0 24px 68px var(--businessTotalGlow),
+    inset 0 1px 0 rgba(255,255,255,0.680) !important;
+}
+.dark #project-detail-screen #project-dynamic-totals .business-total-card-core {
+  box-shadow:
+    0 22px 64px rgba(0,0,0,0.620),
+    0 10px 30px var(--businessTotalGlow),
+    0 30px 86px var(--businessTotalGlow),
+    inset 0 1px 0 rgba(255,255,255,0.105) !important;
+}
+#project-detail-screen #project-dynamic-totals .business-total-card-core :is(p,h3,span,div,i) {
+  text-shadow: 0 0 14px var(--businessTotalGlow), 0 1px 6px rgba(0,0,0,0.260), 0 4px 20px rgba(0,0,0,0.120) !important;
+}
+
+/* Buttons */
 .btn-primary,
 .btn-ios-share,
 .btn-ios-add,
@@ -1950,14 +2295,12 @@ button[data-salary-add-core],
 button[data-diary-new-core],
 button[data-business-new-core],
 button[data-business-entry-core] {
-  backdrop-filter: blur(18px) saturate(185%) !important;
-  -webkit-backdrop-filter: blur(18px) saturate(185%) !important;
+  backdrop-filter: blur(18px) saturate(200%) !important;
+  -webkit-backdrop-filter: blur(18px) saturate(200%) !important;
   box-shadow:
-    0 10px 28px currentColor,
-    0 4px 12px rgba(15,23,42,0.075),
-    inset 0 1px 0 rgba(255,255,255,0.30) !important;
+    0 10px 28px rgba(15,23,42,0.080),
+    inset 0 1px 0 rgba(255,255,255,0.320) !important;
 }
-
 .dark .btn-primary,
 .dark .btn-ios-share,
 .dark .btn-ios-add,
@@ -1972,267 +2315,38 @@ button[data-business-entry-core] {
 .dark button[data-business-new-core],
 .dark button[data-business-entry-core] {
   box-shadow:
-    0 12px 34px currentColor,
-    0 8px 20px rgba(0,0,0,0.36),
-    inset 0 1px 0 rgba(255,255,255,0.105) !important;
+    0 12px 36px rgba(0,0,0,0.390),
+    inset 0 1px 0 rgba(255,255,255,0.110) !important;
 }
 
-/* Uniform list-card premium depth across all modules */
-#milk-list .milk-core-card,
-#udhar-list .glass-card[data-credit-core-tone],
-#expense-list-container .expense-core-card,
-#salary-list .salary-core-card,
-#diary-screen #diary-list .diary-core-card,
-#projects-screen #project-list .business-core-card,
-#balances-screen #dash-balances-list .party-ledger-core-card {
-  border-radius: 24px !important;
-  background:
-    linear-gradient(145deg, rgba(255,255,255,0.82), rgba(255,255,255,0.56)) !important;
-  backdrop-filter: blur(34px) saturate(195%) !important;
-  -webkit-backdrop-filter: blur(34px) saturate(195%) !important;
-  border-top-color: rgba(255,255,255,0.64) !important;
-  border-right-color: rgba(255,255,255,0.34) !important;
-  border-bottom-color: rgba(255,255,255,0.24) !important;
-}
-
-.dark #milk-list .milk-core-card,
-.dark #udhar-list .glass-card[data-credit-core-tone],
-.dark #expense-list-container .expense-core-card,
-.dark #salary-list .salary-core-card,
-.dark #diary-screen #diary-list .diary-core-card,
-.dark #projects-screen #project-list .business-core-card,
-.dark #balances-screen #dash-balances-list .party-ledger-core-card {
-  background:
-    linear-gradient(145deg, rgba(18,24,38,0.84), rgba(5,10,22,0.66)) !important;
-  border-top-color: rgba(255,255,255,0.115) !important;
-  border-right-color: rgba(255,255,255,0.075) !important;
-  border-bottom-color: rgba(0,0,0,0.36) !important;
-}
-
-/* Preserve each module color, only unify glow strength */
-#milk-list .milk-core-card {
-  box-shadow:
-    -4px 0 18px var(--moduleGlow),
-    0 14px 42px rgba(15,23,42,0.085),
-    inset 1px 0 0 var(--moduleBorder),
-    inset 0 1px 0 rgba(255,255,255,0.62) !important;
-}
-#udhar-list .glass-card[data-credit-core-tone] {
-  box-shadow:
-    -4px 0 18px var(--creditGlow),
-    0 14px 42px rgba(15,23,42,0.085),
-    inset 1px 0 0 var(--creditBorder),
-    inset 0 1px 0 rgba(255,255,255,0.62) !important;
-}
-#expense-list-container .expense-core-card {
-  box-shadow:
-    -4px 0 18px var(--expenseGlow),
-    0 14px 42px rgba(15,23,42,0.085),
-    inset 1px 0 0 var(--expenseBorder),
-    inset 0 1px 0 rgba(255,255,255,0.62) !important;
-}
-#salary-list .salary-core-card {
-  box-shadow:
-    -4px 0 18px var(--salaryGlow),
-    0 14px 42px rgba(15,23,42,0.085),
-    inset 1px 0 0 var(--salaryInset),
-    inset 0 1px 0 rgba(255,255,255,0.62) !important;
-}
-#diary-screen #diary-list .diary-core-card {
-  box-shadow:
-    -4px 0 18px var(--diaryGlow),
-    0 14px 42px rgba(15,23,42,0.085),
-    inset 1px 0 0 var(--diaryBorder),
-    inset 0 1px 0 rgba(255,255,255,0.62) !important;
-}
-#projects-screen #project-list .business-core-card {
-  box-shadow:
-    -5px 0 20px rgba(0,122,255,0.23),
-    0 14px 42px rgba(15,23,42,0.085),
-    inset 1px 0 0 rgba(0,122,255,0.38),
-    inset 0 1px 0 rgba(255,255,255,0.62) !important;
-}
-#balances-screen #dash-balances-list .party-ledger-core-card {
-  box-shadow:
-    -5px 0 20px var(--partyGlow),
-    0 14px 42px rgba(15,23,42,0.085),
-    inset 1px 0 0 var(--partyBorder),
-    inset 0 1px 0 rgba(255,255,255,0.62) !important;
-}
-
-.dark #milk-list .milk-core-card {
-  box-shadow:
-    -4px 0 24px var(--moduleGlow),
-    0 20px 58px rgba(0,0,0,0.58),
-    inset 1px 0 0 var(--moduleBorder),
-    inset 0 1px 0 rgba(255,255,255,0.095) !important;
-}
-.dark #udhar-list .glass-card[data-credit-core-tone] {
-  box-shadow:
-    -4px 0 24px var(--creditGlow),
-    0 20px 58px rgba(0,0,0,0.58),
-    inset 1px 0 0 var(--creditBorder),
-    inset 0 1px 0 rgba(255,255,255,0.095) !important;
-}
-.dark #expense-list-container .expense-core-card {
-  box-shadow:
-    -4px 0 24px var(--expenseGlow),
-    0 20px 58px rgba(0,0,0,0.58),
-    inset 1px 0 0 var(--expenseBorder),
-    inset 0 1px 0 rgba(255,255,255,0.095) !important;
-}
-.dark #salary-list .salary-core-card {
-  box-shadow:
-    -4px 0 24px var(--salaryGlow),
-    0 20px 58px rgba(0,0,0,0.58),
-    inset 1px 0 0 var(--salaryInset),
-    inset 0 1px 0 rgba(255,255,255,0.095) !important;
-}
-.dark #diary-screen #diary-list .diary-core-card {
-  box-shadow:
-    -4px 0 24px var(--diaryGlow),
-    0 20px 58px rgba(0,0,0,0.58),
-    inset 1px 0 0 var(--diaryBorder),
-    inset 0 1px 0 rgba(255,255,255,0.095) !important;
-}
-.dark #projects-screen #project-list .business-core-card {
-  box-shadow:
-    -5px 0 28px rgba(0,122,255,0.32),
-    0 20px 58px rgba(0,0,0,0.58),
-    inset 1px 0 0 rgba(0,122,255,0.46),
-    inset 0 1px 0 rgba(255,255,255,0.095) !important;
-}
-.dark #balances-screen #dash-balances-list .party-ledger-core-card {
-  box-shadow:
-    -5px 0 28px var(--partyGlow),
-    0 20px 58px rgba(0,0,0,0.58),
-    inset 1px 0 0 var(--partyBorder),
-    inset 0 1px 0 rgba(255,255,255,0.095) !important;
-}
-
-/* Uniform net/total cards: rich diffused inner/outer glow */
-#milk-detail-screen .milk-core-total-card,
-#udhar-screen .glass-card[data-credit-core-top-tone],
-#udhar-detail-screen #udhar-detail-card[data-credit-core-tone],
-#expenses-screen [data-expense-total-card-core],
-#expense-detail-screen #expense-detail-card[data-expense-core-tone],
-#salary-detail-screen #salary-detail-card[data-salary-core-tone] {
-  border-radius: 26px !important;
-  box-shadow:
-    0 8px 24px currentColor,
-    0 24px 70px currentColor,
-    inset 0 1px 0 rgba(255,255,255,0.34),
-    inset 0 -1px 0 rgba(0,0,0,0.08) !important;
-}
-
-#milk-detail-screen .milk-core-total-card *,
-#udhar-screen .glass-card[data-credit-core-top-tone] *,
-#udhar-detail-screen #udhar-detail-card[data-credit-core-tone] *,
-#expenses-screen [data-expense-total-card-core] *,
-#expense-detail-screen #expense-detail-card[data-expense-core-tone] *,
-#salary-detail-screen #salary-detail-card[data-salary-core-tone] * {
-  text-shadow:
-    0 1px 6px rgba(0,0,0,0.30),
-    0 4px 22px rgba(0,0,0,0.18) !important;
-}
-
-.dark #milk-detail-screen .milk-core-total-card,
-.dark #udhar-screen .glass-card[data-credit-core-top-tone],
-.dark #udhar-detail-screen #udhar-detail-card[data-credit-core-tone],
-.dark #expenses-screen [data-expense-total-card-core],
-.dark #expense-detail-screen #expense-detail-card[data-expense-core-tone],
-.dark #salary-detail-screen #salary-detail-card[data-salary-core-tone] {
-  box-shadow:
-    0 12px 36px currentColor,
-    0 30px 86px currentColor,
-    inset 0 1px 0 rgba(255,255,255,0.18),
-    inset 0 -1px 0 rgba(0,0,0,0.22) !important;
-}
-
-/* Business total cards keep semantic color but match net-card glow language */
-#project-detail-screen #project-dynamic-totals .business-total-card-core {
-  border-radius: 24px !important;
-  backdrop-filter: blur(34px) saturate(195%) !important;
-  -webkit-backdrop-filter: blur(34px) saturate(195%) !important;
-  box-shadow:
-    0 14px 38px rgba(15,23,42,0.090),
-    0 0 34px var(--businessTotalGlow),
-    0 26px 72px var(--businessTotalGlow),
-    inset 0 1px 0 rgba(255,255,255,0.62) !important;
-}
-.dark #project-detail-screen #project-dynamic-totals .business-total-card-core {
-  box-shadow:
-    0 18px 48px rgba(0,0,0,0.46),
-    0 0 36px var(--businessTotalGlow),
-    0 28px 78px var(--businessTotalGlow),
-    inset 0 1px 0 rgba(255,255,255,0.090) !important;
-}
-#project-detail-screen #project-dynamic-totals .business-total-card-core :is(p,h3,span,div,i) {
-  text-shadow:
-    0 0 14px var(--businessTotalGlow),
-    0 1px 6px rgba(0,0,0,0.26),
-    0 4px 20px rgba(0,0,0,0.12) !important;
-}
-
-/* Avatars and icon boxes: same frosted jewel look */
-#milk-list .milk-avatar-core,
-#udhar-list .credit-avatar-core,
-#expense-list-container .expense-avatar-core,
-#salary-list .salary-avatar-core,
-#diary-list .diary-avatar-core,
-#projects-screen #project-list .business-avatar-core,
-#balances-screen #dash-balances-list .party-avatar-core,
-.squircle {
-  backdrop-filter: blur(18px) saturate(190%) !important;
-  -webkit-backdrop-filter: blur(18px) saturate(190%) !important;
-  box-shadow:
-    0 8px 22px currentColor,
-    inset 0 1px 0 rgba(255,255,255,0.24) !important;
-}
-.dark #milk-list .milk-avatar-core,
-.dark #udhar-list .credit-avatar-core,
-.dark #expense-list-container .expense-avatar-core,
-.dark #salary-list .salary-avatar-core,
-.dark #diary-list .diary-avatar-core,
-.dark #projects-screen #project-list .business-avatar-core,
-.dark #balances-screen #dash-balances-list .party-avatar-core,
-.dark .squircle {
-  box-shadow:
-    0 9px 26px currentColor,
-    inset 0 1px 0 rgba(255,255,255,0.10) !important;
-}
-
-/* Tables and detail list glass: same surface rhythm */
+/* Tables, diary, AI panel */
 .table-custom thead {
-  backdrop-filter: blur(18px) saturate(170%) !important;
-  -webkit-backdrop-filter: blur(18px) saturate(170%) !important;
+  backdrop-filter: blur(18px) saturate(180%) !important;
+  -webkit-backdrop-filter: blur(18px) saturate(180%) !important;
 }
 .table-custom td,
 .table-custom th {
   text-shadow: 0 0 8px currentColor !important;
 }
-
-/* Diary paper and AI panel: same premium smoke, base colors preserved */
 .diary-paper {
   box-shadow:
-    0 10px 34px rgba(0,0,0,0.055),
-    inset 0 2px 16px rgba(245,166,35,0.040),
-    0 0 24px rgba(245,166,35,0.085) !important;
+    0 12px 36px rgba(0,0,0,0.060),
+    inset 0 2px 16px rgba(245,166,35,0.044),
+    0 0 26px rgba(245,166,35,0.092) !important;
 }
 .dark .diary-paper {
   box-shadow:
-    0 14px 44px rgba(0,0,0,0.50),
-    inset 0 1px 0 rgba(255,255,255,0.065),
-    0 0 28px rgba(245,166,35,0.17) !important;
+    0 16px 48px rgba(0,0,0,0.540),
+    inset 0 1px 0 rgba(255,255,255,0.072),
+    0 0 32px rgba(245,166,35,0.180) !important;
 }
 .dark #gemini-chat-window {
   box-shadow:
-    0 16px 48px rgba(0,0,0,0.52),
-    0 0 26px rgba(10,132,255,0.18),
-    inset 0 1px 0 rgba(255,255,255,0.065) !important;
+    0 18px 52px rgba(0,0,0,0.560),
+    0 0 30px rgba(10,132,255,0.190),
+    inset 0 1px 0 rgba(255,255,255,0.075) !important;
 }
 
-/* Motion safety */
 @media (prefers-reduced-motion: reduce) {
   .glass-card,
   .nav-item,
@@ -2244,7 +2358,6 @@ button[data-business-entry-core] {
   }
 }
 /* AARISH_PREMIUM_UNIFORM_GLASS_CORE_END */
-
 </style>
 
      
