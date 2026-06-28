@@ -36,13 +36,13 @@
         
         body, html { 
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, sans-serif; 
-    --surfaceGlass: rgba(255, 255, 255, 0.68);
-    --surfaceGlassStrong: rgba(255, 255, 255, 0.82);
-    --surfaceGlassDark: rgba(18, 24, 38, 0.60);
-    --surfaceBorder: rgba(255, 255, 255, 0.54);
-    --surfaceHairline: rgba(0, 0, 0, 0.045);
-    --surfaceShadow: 0 10px 34px rgba(15, 23, 42, 0.070), inset 0 1px 0 rgba(255, 255, 255, 0.62);
-    --surfaceActiveShadow: 0 14px 42px rgba(0, 122, 255, 0.18), inset 0 1px 0 rgba(255, 255, 255, 0.68);
+    --surfaceGlass: rgba(255, 255, 255, 0.78);
+    --surfaceGlassStrong: rgba(255, 255, 255, 0.92);
+    --surfaceGlassDark: rgba(18, 24, 38, 0.78);
+    --surfaceBorder: rgba(255, 255, 255, 0.66);
+    --surfaceHairline: rgba(0, 0, 0, 0.040);
+    --surfaceShadow: 0 2px 8px rgba(15, 23, 42, 0.038), 0 14px 42px rgba(15, 23, 42, 0.088), inset 0 1px 0 rgba(255, 255, 255, 0.80), inset 0 -1px 0 rgba(15,23,42,0.028);
+    --surfaceActiveShadow: 0 16px 48px rgba(0, 122, 255, 0.23), 0 5px 16px rgba(0, 122, 255, 0.11), inset 0 1px 0 rgba(255, 255, 255, 0.80);
     background-color: #F5F5F7; 
     background-image:
         radial-gradient(circle at 0% -10%, rgba(52, 199, 89, 0.075), transparent 34%),
@@ -52,13 +52,13 @@
     transition: background-color 0.5s ease, color 0.5s ease, background-image 0.5s ease; 
 }
         .dark body { 
-    --surfaceGlass: rgba(18, 24, 38, 0.60);
-    --surfaceGlassStrong: rgba(28, 34, 48, 0.72);
-    --surfaceGlassDark: rgba(18, 24, 38, 0.60);
-    --surfaceBorder: rgba(255, 255, 255, 0.115);
-    --surfaceHairline: rgba(255, 255, 255, 0.085);
-    --surfaceShadow: 0 16px 46px rgba(0, 0, 0, 0.48), inset 0 1px 0 rgba(255, 255, 255, 0.075);
-    --surfaceActiveShadow: 0 18px 54px rgba(10, 132, 255, 0.18), inset 0 1px 0 rgba(255, 255, 255, 0.09);
+    --surfaceGlass: rgba(18, 24, 38, 0.78);
+    --surfaceGlassStrong: rgba(28, 34, 48, 0.88);
+    --surfaceGlassDark: rgba(18, 24, 38, 0.78);
+    --surfaceBorder: rgba(255, 255, 255, 0.135);
+    --surfaceHairline: rgba(255, 255, 255, 0.090);
+    --surfaceShadow: 0 4px 14px rgba(0, 0, 0, 0.32), 0 20px 60px rgba(0, 0, 0, 0.66), inset 0 1px 0 rgba(255, 255, 255, 0.095), inset 0 -1px 0 rgba(0,0,0,0.36);
+    --surfaceActiveShadow: 0 20px 68px rgba(10, 132, 255, 0.25), 0 8px 22px rgba(10, 132, 255, 0.13), inset 0 1px 0 rgba(255, 255, 255, 0.11);
     background-color: #000000; 
     background-image:
         radial-gradient(circle at 0% -12%, rgba(52, 199, 89, 0.14), transparent 34%),
@@ -127,7 +127,7 @@
         /* Advanced Frosted Glass Cards + Premium Active Glow */
         .glass-card { 
     background: var(--surfaceGlass); 
-    backdrop-filter: blur(26px) saturate(180%); -webkit-backdrop-filter: blur(26px) saturate(180%);
+    backdrop-filter: blur(36px) saturate(198%); -webkit-backdrop-filter: blur(36px) saturate(198%);
     border-radius: 24px; padding: 22px; 
     box-shadow: var(--surfaceShadow); 
     border: 1px solid var(--surfaceBorder); 
@@ -395,10 +395,73 @@
                 h1, h2, h3, h4 { letter-spacing: -0.02em; }
 
      
-            /* Search Bar Overlap Fix */
+            /* ==================== AARISH_SEARCH_ICON_CORE_CONTRACT_V1_START ====================
+           Core fix: search icon has its own paint layer.
+           Problem: input-box background/backdrop could paint over the absolute icon.
+           No wrapper, no backend, no Firebase, no CSV/PDF/export logic touched.
+        */
         .input-box.pl-11 {
-            padding-left: 46px !important;
+            padding-left: 48px !important;
         }
+
+        .screen .relative > i.fa-search,
+        .modal-content .relative > i.fa-search {
+            position: absolute !important;
+            left: 16px !important;
+            top: 50% !important;
+            transform: translateY(-50%) !important;
+            z-index: 9 !important;
+            width: 20px !important;
+            height: 20px !important;
+            min-width: 20px !important;
+            min-height: 20px !important;
+            display: inline-flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            pointer-events: none !important;
+            opacity: 1 !important;
+            visibility: visible !important;
+            line-height: 1 !important;
+            font-size: 15px !important;
+            -webkit-text-fill-color: currentColor !important;
+            filter: none !important;
+        }
+
+        .screen .relative > i.fa-search + input.input-box,
+        .screen .relative > i.fa-search + .input-box,
+        .modal-content .relative > i.fa-search + input.input-box,
+        .modal-content .relative > i.fa-search + .input-box {
+            position: relative !important;
+            z-index: 1 !important;
+            padding-left: 48px !important;
+        }
+
+        #balances-screen .relative > i.fa-search,
+        #milk-screen .relative > i.fa-search,
+        #udhar-screen .relative > i.fa-search,
+        #salary-screen .relative > i.fa-search,
+        #expenses-screen .relative > i.fa-search,
+        #projects-screen .relative > i.fa-search,
+        #business-screen .relative > i.fa-search,
+        [data-business-search-icon-core="true"] {
+            color: #007AFF !important;
+            -webkit-text-fill-color: #007AFF !important;
+            text-shadow: 0 0 10px rgba(0,122,255,0.26) !important;
+        }
+
+        #diary-screen .relative > i.fa-search,
+        #diary-screen [data-diary-search-icon-core="true"] {
+            color: #F5A623 !important;
+            -webkit-text-fill-color: #F5A623 !important;
+            text-shadow: 0 0 10px rgba(245,166,35,0.26) !important;
+        }
+
+        .dark .screen .relative > i.fa-search,
+        .dark .modal-content .relative > i.fa-search {
+            opacity: 1 !important;
+            visibility: visible !important;
+        }
+        /* AARISH_SEARCH_ICON_CORE_CONTRACT_V1_END */
 
         /* ==================== GOL BUTTON & CARD ANTI-PICHKA FIX ==================== */
         .header-sticky button {
@@ -1622,6 +1685,566 @@
 }
 /* AARISH_MILK_EMPTY_BIG_CSS_V1_END */
 
+
+
+
+/* AARISH_PARTY_LEDGER_CORE_CONTRACT_V1_START
+   Party Ledger core-only UI contract.
+   Static UI = permanent blue.
+   Party rows = semantic green/red from real net balance.
+   No overlay, no wrapper chain, no requestAnimationFrame painter.
+*/
+#balances-screen {
+  --partyBlue: #007AFF;
+  --partyBlue2: #0A84FF;
+  --partyBlueTint: rgba(0,122,255,0.10);
+  --partyBlueBorder: rgba(0,122,255,0.22);
+  --partyBlueGlow: rgba(0,122,255,0.30);
+  --partyTone: #007AFF;
+  --partyTone2: #0A84FF;
+  --partyTint: rgba(0,122,255,0.10);
+  --partyBorder: rgba(0,122,255,0.28);
+  --partyGlow: rgba(0,122,255,0.28);
+}
+
+#balances-screen .header-sticky h1,
+#balances-screen .relative > i.fa-search,
+#balances-screen [data-party-search-icon-core],
+#balances-screen #balance-search,
+#balances-screen #balance-search::placeholder,
+#balances-screen #balance-search::-webkit-input-placeholder {
+  color: var(--partyBlue) !important;
+  -webkit-text-fill-color: var(--partyBlue) !important;
+  caret-color: var(--partyBlue) !important;
+  text-shadow: 0 0 12px var(--partyBlueGlow) !important;
+  opacity: 1 !important;
+}
+
+#balances-screen #balance-search {
+  border-color: var(--partyBlueBorder) !important;
+  font-weight: 800 !important;
+}
+
+#balances-screen #balance-search::placeholder,
+#balances-screen #balance-search::-webkit-input-placeholder {
+  font-weight: 800 !important;
+}
+
+#balances-screen #dash-balances-list .party-ledger-core-card {
+  border-left: 5px solid var(--partyTone) !important;
+  background: var(--surfaceGlass) !important;
+  box-shadow: -5px 0 18px var(--partyGlow), 0 10px 26px rgba(15,23,42,0.07), inset 1px 0 0 var(--partyBorder), inset 0 1px 0 rgba(255,255,255,0.58) !important;
+  transition-property: transform, opacity !important;
+  transition-duration: 100ms !important;
+}
+
+.dark #balances-screen #dash-balances-list .party-ledger-core-card {
+  background: var(--surfaceGlassDark) !important;
+  box-shadow: -5px 0 22px var(--partyGlow), 0 14px 36px rgba(0,0,0,0.48), inset 1px 0 0 var(--partyBorder), inset 0 1px 0 rgba(255,255,255,0.08) !important;
+}
+
+#balances-screen #dash-balances-list .party-ledger-core-card[data-party-tone="positive"] {
+  --partyTone: #34C759;
+  --partyTone2: #28A745;
+  --partyTint: rgba(52,199,89,0.13);
+  --partyBorder: rgba(52,199,89,0.42);
+  --partyGlow: rgba(52,199,89,0.30);
+}
+
+#balances-screen #dash-balances-list .party-ledger-core-card[data-party-tone="negative"] {
+  --partyTone: #FF3B30;
+  --partyTone2: #C92A2A;
+  --partyTint: rgba(255,59,48,0.13);
+  --partyBorder: rgba(255,59,48,0.42);
+  --partyGlow: rgba(255,59,48,0.30);
+}
+
+#balances-screen #dash-balances-list .party-ledger-core-card :is(.party-name-core,.party-label-core,.party-amount-core,.party-avatar-core,i.fa-chevron-right) {
+  color: var(--partyTone) !important;
+  -webkit-text-fill-color: var(--partyTone) !important;
+  text-shadow: 0 0 10px var(--partyGlow) !important;
+  opacity: 1 !important;
+}
+
+#balances-screen #dash-balances-list .party-avatar-core {
+  background: var(--partyTint) !important;
+  border: 1px solid var(--partyBorder) !important;
+  box-shadow: 0 8px 22px var(--partyGlow), inset 0 1px 0 rgba(255,255,255,0.20) !important;
+}
+
+#balances-screen #dash-balances-list .party-label-core {
+  font-weight: 900 !important;
+  letter-spacing: 0.12em !important;
+}
+
+#balances-screen #dash-balances-list .party-amount-core {
+  font-weight: 900 !important;
+  letter-spacing: -0.03em !important;
+}
+
+#balances-screen #dash-balances-list .party-empty-core {
+  color: var(--partyBlue) !important;
+  -webkit-text-fill-color: var(--partyBlue) !important;
+  text-shadow: 0 0 12px var(--partyBlueGlow) !important;
+}
+/* AARISH_PARTY_LEDGER_CORE_CONTRACT_V1_END */
+
+
+
+
+/* AARISH_PREMIUM_UNIFORM_GLASS_CORE_START
+   Premium uniform UI/UX glass contract.
+   CSS-only. No JS, no Firebase, no math, no renderer, no wrapper.
+   Goal: same opacity / translucency / smoky glow language across all modules.
+*/
+body, html {
+  --premiumBlur: 36px;
+  --premiumBlurStrong: 44px;
+  --premiumSaturate: 198%;
+  --premiumRadius: 24px;
+  --premiumRadiusStrong: 28px;
+  --premiumSpecularLight: rgba(255,255,255,0.78);
+  --premiumSpecularDark: rgba(255,255,255,0.10);
+  --premiumSmokeLight: rgba(15,23,42,0.085);
+  --premiumSmokeDark: rgba(0,0,0,0.62);
+  --premiumBlueSmoke: rgba(0,122,255,0.13);
+  --premiumPressScale: 0.974;
+}
+
+body {
+  background-image:
+    radial-gradient(circle at -12% -16%, rgba(52, 199, 89, 0.095), transparent 38%),
+    radial-gradient(circle at 108% 112%, rgba(10, 132, 255, 0.082), transparent 42%),
+    radial-gradient(circle at 50% 118%, rgba(245,166,35,0.030), transparent 34%) !important;
+}
+
+.dark body {
+  background-image:
+    radial-gradient(circle at -12% -18%, rgba(52,199,89,0.165), transparent 39%),
+    radial-gradient(circle at 112% 114%, rgba(10,132,255,0.165), transparent 43%),
+    radial-gradient(circle at 52% 120%, rgba(245,166,35,0.055), transparent 34%) !important;
+}
+
+/* Global frosted surface language */
+.glass-card {
+  background:
+    linear-gradient(145deg, rgba(255,255,255,0.82), rgba(255,255,255,0.58)) !important;
+  backdrop-filter: blur(var(--premiumBlur)) saturate(var(--premiumSaturate)) !important;
+  -webkit-backdrop-filter: blur(var(--premiumBlur)) saturate(var(--premiumSaturate)) !important;
+  border-color: rgba(255,255,255,0.66) !important;
+  box-shadow:
+    0 2px 8px rgba(15,23,42,0.035),
+    0 14px 42px rgba(15,23,42,0.090),
+    inset 0 1px 0 rgba(255,255,255,0.78),
+    inset 0 -1px 0 rgba(15,23,42,0.030) !important;
+}
+
+.dark .glass-card {
+  background:
+    linear-gradient(145deg, rgba(18,24,38,0.84), rgba(10,15,28,0.68)) !important;
+  border-color: rgba(255,255,255,0.13) !important;
+  box-shadow:
+    0 4px 14px rgba(0,0,0,0.32),
+    0 20px 60px rgba(0,0,0,0.62),
+    inset 0 1px 0 rgba(255,255,255,0.095),
+    inset 0 -1px 0 rgba(0,0,0,0.36) !important;
+}
+
+.glass-card:active {
+  transform: scale(var(--premiumPressScale)) !important;
+}
+
+/* Header, bottom nav, modal, inputs: same premium glass family */
+.header-sticky {
+  background: rgba(245,245,247,0.78) !important;
+  backdrop-filter: blur(38px) saturate(198%) !important;
+  -webkit-backdrop-filter: blur(38px) saturate(198%) !important;
+  box-shadow:
+    0 8px 26px rgba(15,23,42,0.045),
+    inset 0 1px 0 rgba(255,255,255,0.58) !important;
+}
+
+.dark .header-sticky {
+  background: rgba(0,0,0,0.74) !important;
+  box-shadow:
+    0 12px 34px rgba(0,0,0,0.48),
+    inset 0 1px 0 rgba(255,255,255,0.075) !important;
+}
+
+.bottom-nav {
+  background: rgba(255,255,255,0.80) !important;
+  backdrop-filter: blur(40px) saturate(205%) !important;
+  -webkit-backdrop-filter: blur(40px) saturate(205%) !important;
+  box-shadow:
+    0 -2px 10px rgba(15,23,42,0.035),
+    0 -14px 40px rgba(15,23,42,0.075),
+    inset 0 1px 0 rgba(255,255,255,0.58) !important;
+}
+
+.dark .bottom-nav {
+  background: rgba(18,24,38,0.78) !important;
+  box-shadow:
+    0 -4px 16px rgba(0,0,0,0.34),
+    0 -20px 58px rgba(0,0,0,0.56),
+    inset 0 1px 0 rgba(255,255,255,0.085) !important;
+}
+
+.modal-content {
+  background:
+    linear-gradient(160deg, rgba(255,255,255,0.92), rgba(255,255,255,0.72)) !important;
+  backdrop-filter: blur(42px) saturate(198%) !important;
+  -webkit-backdrop-filter: blur(42px) saturate(198%) !important;
+  box-shadow:
+    0 -18px 58px rgba(15,23,42,0.15),
+    0 -4px 18px rgba(15,23,42,0.055),
+    inset 0 1px 0 rgba(255,255,255,0.82) !important;
+}
+
+.dark .modal-content {
+  background:
+    linear-gradient(160deg, rgba(28,34,48,0.90), rgba(12,18,32,0.78)) !important;
+  box-shadow:
+    0 -22px 68px rgba(0,0,0,0.68),
+    0 -4px 18px rgba(10,132,255,0.08),
+    inset 0 1px 0 rgba(255,255,255,0.10) !important;
+}
+
+.input-box {
+  background:
+    linear-gradient(145deg, rgba(118,118,128,0.090), rgba(118,118,128,0.058)) !important;
+  border-color: rgba(0,0,0,0.040) !important;
+  backdrop-filter: blur(22px) saturate(170%) !important;
+  -webkit-backdrop-filter: blur(22px) saturate(170%) !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.48),
+    0 8px 22px rgba(15,23,42,0.035) !important;
+}
+
+.dark .input-box {
+  background:
+    linear-gradient(145deg, rgba(118,118,128,0.18), rgba(60,66,84,0.12)) !important;
+  border-color: rgba(255,255,255,0.090) !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.075),
+    0 10px 28px rgba(0,0,0,0.24) !important;
+}
+
+.input-box:focus {
+  box-shadow:
+    0 0 0 4px rgba(0,122,255,0.16),
+    0 14px 34px rgba(0,122,255,0.105),
+    inset 0 1px 0 rgba(255,255,255,0.52) !important;
+}
+
+/* Buttons: same lifted luminous depth, without changing semantic base colors */
+.btn-primary,
+.btn-ios-share,
+.btn-ios-add,
+.action-btn,
+#milk-new-btn-v50,
+#credit-entry-btn-v52,
+button[data-credit-core-tone],
+button[data-expense-add-core],
+button[data-salary-new-core],
+button[data-salary-add-core],
+button[data-diary-new-core],
+button[data-business-new-core],
+button[data-business-entry-core] {
+  backdrop-filter: blur(18px) saturate(185%) !important;
+  -webkit-backdrop-filter: blur(18px) saturate(185%) !important;
+  box-shadow:
+    0 10px 28px currentColor,
+    0 4px 12px rgba(15,23,42,0.075),
+    inset 0 1px 0 rgba(255,255,255,0.30) !important;
+}
+
+.dark .btn-primary,
+.dark .btn-ios-share,
+.dark .btn-ios-add,
+.dark .action-btn,
+.dark #milk-new-btn-v50,
+.dark #credit-entry-btn-v52,
+.dark button[data-credit-core-tone],
+.dark button[data-expense-add-core],
+.dark button[data-salary-new-core],
+.dark button[data-salary-add-core],
+.dark button[data-diary-new-core],
+.dark button[data-business-new-core],
+.dark button[data-business-entry-core] {
+  box-shadow:
+    0 12px 34px currentColor,
+    0 8px 20px rgba(0,0,0,0.36),
+    inset 0 1px 0 rgba(255,255,255,0.105) !important;
+}
+
+/* Uniform list-card premium depth across all modules */
+#milk-list .milk-core-card,
+#udhar-list .glass-card[data-credit-core-tone],
+#expense-list-container .expense-core-card,
+#salary-list .salary-core-card,
+#diary-screen #diary-list .diary-core-card,
+#projects-screen #project-list .business-core-card,
+#balances-screen #dash-balances-list .party-ledger-core-card {
+  border-radius: 24px !important;
+  background:
+    linear-gradient(145deg, rgba(255,255,255,0.82), rgba(255,255,255,0.56)) !important;
+  backdrop-filter: blur(34px) saturate(195%) !important;
+  -webkit-backdrop-filter: blur(34px) saturate(195%) !important;
+  border-top-color: rgba(255,255,255,0.64) !important;
+  border-right-color: rgba(255,255,255,0.34) !important;
+  border-bottom-color: rgba(255,255,255,0.24) !important;
+}
+
+.dark #milk-list .milk-core-card,
+.dark #udhar-list .glass-card[data-credit-core-tone],
+.dark #expense-list-container .expense-core-card,
+.dark #salary-list .salary-core-card,
+.dark #diary-screen #diary-list .diary-core-card,
+.dark #projects-screen #project-list .business-core-card,
+.dark #balances-screen #dash-balances-list .party-ledger-core-card {
+  background:
+    linear-gradient(145deg, rgba(18,24,38,0.84), rgba(5,10,22,0.66)) !important;
+  border-top-color: rgba(255,255,255,0.115) !important;
+  border-right-color: rgba(255,255,255,0.075) !important;
+  border-bottom-color: rgba(0,0,0,0.36) !important;
+}
+
+/* Preserve each module color, only unify glow strength */
+#milk-list .milk-core-card {
+  box-shadow:
+    -4px 0 18px var(--moduleGlow),
+    0 14px 42px rgba(15,23,42,0.085),
+    inset 1px 0 0 var(--moduleBorder),
+    inset 0 1px 0 rgba(255,255,255,0.62) !important;
+}
+#udhar-list .glass-card[data-credit-core-tone] {
+  box-shadow:
+    -4px 0 18px var(--creditGlow),
+    0 14px 42px rgba(15,23,42,0.085),
+    inset 1px 0 0 var(--creditBorder),
+    inset 0 1px 0 rgba(255,255,255,0.62) !important;
+}
+#expense-list-container .expense-core-card {
+  box-shadow:
+    -4px 0 18px var(--expenseGlow),
+    0 14px 42px rgba(15,23,42,0.085),
+    inset 1px 0 0 var(--expenseBorder),
+    inset 0 1px 0 rgba(255,255,255,0.62) !important;
+}
+#salary-list .salary-core-card {
+  box-shadow:
+    -4px 0 18px var(--salaryGlow),
+    0 14px 42px rgba(15,23,42,0.085),
+    inset 1px 0 0 var(--salaryInset),
+    inset 0 1px 0 rgba(255,255,255,0.62) !important;
+}
+#diary-screen #diary-list .diary-core-card {
+  box-shadow:
+    -4px 0 18px var(--diaryGlow),
+    0 14px 42px rgba(15,23,42,0.085),
+    inset 1px 0 0 var(--diaryBorder),
+    inset 0 1px 0 rgba(255,255,255,0.62) !important;
+}
+#projects-screen #project-list .business-core-card {
+  box-shadow:
+    -5px 0 20px rgba(0,122,255,0.23),
+    0 14px 42px rgba(15,23,42,0.085),
+    inset 1px 0 0 rgba(0,122,255,0.38),
+    inset 0 1px 0 rgba(255,255,255,0.62) !important;
+}
+#balances-screen #dash-balances-list .party-ledger-core-card {
+  box-shadow:
+    -5px 0 20px var(--partyGlow),
+    0 14px 42px rgba(15,23,42,0.085),
+    inset 1px 0 0 var(--partyBorder),
+    inset 0 1px 0 rgba(255,255,255,0.62) !important;
+}
+
+.dark #milk-list .milk-core-card {
+  box-shadow:
+    -4px 0 24px var(--moduleGlow),
+    0 20px 58px rgba(0,0,0,0.58),
+    inset 1px 0 0 var(--moduleBorder),
+    inset 0 1px 0 rgba(255,255,255,0.095) !important;
+}
+.dark #udhar-list .glass-card[data-credit-core-tone] {
+  box-shadow:
+    -4px 0 24px var(--creditGlow),
+    0 20px 58px rgba(0,0,0,0.58),
+    inset 1px 0 0 var(--creditBorder),
+    inset 0 1px 0 rgba(255,255,255,0.095) !important;
+}
+.dark #expense-list-container .expense-core-card {
+  box-shadow:
+    -4px 0 24px var(--expenseGlow),
+    0 20px 58px rgba(0,0,0,0.58),
+    inset 1px 0 0 var(--expenseBorder),
+    inset 0 1px 0 rgba(255,255,255,0.095) !important;
+}
+.dark #salary-list .salary-core-card {
+  box-shadow:
+    -4px 0 24px var(--salaryGlow),
+    0 20px 58px rgba(0,0,0,0.58),
+    inset 1px 0 0 var(--salaryInset),
+    inset 0 1px 0 rgba(255,255,255,0.095) !important;
+}
+.dark #diary-screen #diary-list .diary-core-card {
+  box-shadow:
+    -4px 0 24px var(--diaryGlow),
+    0 20px 58px rgba(0,0,0,0.58),
+    inset 1px 0 0 var(--diaryBorder),
+    inset 0 1px 0 rgba(255,255,255,0.095) !important;
+}
+.dark #projects-screen #project-list .business-core-card {
+  box-shadow:
+    -5px 0 28px rgba(0,122,255,0.32),
+    0 20px 58px rgba(0,0,0,0.58),
+    inset 1px 0 0 rgba(0,122,255,0.46),
+    inset 0 1px 0 rgba(255,255,255,0.095) !important;
+}
+.dark #balances-screen #dash-balances-list .party-ledger-core-card {
+  box-shadow:
+    -5px 0 28px var(--partyGlow),
+    0 20px 58px rgba(0,0,0,0.58),
+    inset 1px 0 0 var(--partyBorder),
+    inset 0 1px 0 rgba(255,255,255,0.095) !important;
+}
+
+/* Uniform net/total cards: rich diffused inner/outer glow */
+#milk-detail-screen .milk-core-total-card,
+#udhar-screen .glass-card[data-credit-core-top-tone],
+#udhar-detail-screen #udhar-detail-card[data-credit-core-tone],
+#expenses-screen [data-expense-total-card-core],
+#expense-detail-screen #expense-detail-card[data-expense-core-tone],
+#salary-detail-screen #salary-detail-card[data-salary-core-tone] {
+  border-radius: 26px !important;
+  box-shadow:
+    0 8px 24px currentColor,
+    0 24px 70px currentColor,
+    inset 0 1px 0 rgba(255,255,255,0.34),
+    inset 0 -1px 0 rgba(0,0,0,0.08) !important;
+}
+
+#milk-detail-screen .milk-core-total-card *,
+#udhar-screen .glass-card[data-credit-core-top-tone] *,
+#udhar-detail-screen #udhar-detail-card[data-credit-core-tone] *,
+#expenses-screen [data-expense-total-card-core] *,
+#expense-detail-screen #expense-detail-card[data-expense-core-tone] *,
+#salary-detail-screen #salary-detail-card[data-salary-core-tone] * {
+  text-shadow:
+    0 1px 6px rgba(0,0,0,0.30),
+    0 4px 22px rgba(0,0,0,0.18) !important;
+}
+
+.dark #milk-detail-screen .milk-core-total-card,
+.dark #udhar-screen .glass-card[data-credit-core-top-tone],
+.dark #udhar-detail-screen #udhar-detail-card[data-credit-core-tone],
+.dark #expenses-screen [data-expense-total-card-core],
+.dark #expense-detail-screen #expense-detail-card[data-expense-core-tone],
+.dark #salary-detail-screen #salary-detail-card[data-salary-core-tone] {
+  box-shadow:
+    0 12px 36px currentColor,
+    0 30px 86px currentColor,
+    inset 0 1px 0 rgba(255,255,255,0.18),
+    inset 0 -1px 0 rgba(0,0,0,0.22) !important;
+}
+
+/* Business total cards keep semantic color but match net-card glow language */
+#project-detail-screen #project-dynamic-totals .business-total-card-core {
+  border-radius: 24px !important;
+  backdrop-filter: blur(34px) saturate(195%) !important;
+  -webkit-backdrop-filter: blur(34px) saturate(195%) !important;
+  box-shadow:
+    0 14px 38px rgba(15,23,42,0.090),
+    0 0 34px var(--businessTotalGlow),
+    0 26px 72px var(--businessTotalGlow),
+    inset 0 1px 0 rgba(255,255,255,0.62) !important;
+}
+.dark #project-detail-screen #project-dynamic-totals .business-total-card-core {
+  box-shadow:
+    0 18px 48px rgba(0,0,0,0.46),
+    0 0 36px var(--businessTotalGlow),
+    0 28px 78px var(--businessTotalGlow),
+    inset 0 1px 0 rgba(255,255,255,0.090) !important;
+}
+#project-detail-screen #project-dynamic-totals .business-total-card-core :is(p,h3,span,div,i) {
+  text-shadow:
+    0 0 14px var(--businessTotalGlow),
+    0 1px 6px rgba(0,0,0,0.26),
+    0 4px 20px rgba(0,0,0,0.12) !important;
+}
+
+/* Avatars and icon boxes: same frosted jewel look */
+#milk-list .milk-avatar-core,
+#udhar-list .credit-avatar-core,
+#expense-list-container .expense-avatar-core,
+#salary-list .salary-avatar-core,
+#diary-list .diary-avatar-core,
+#projects-screen #project-list .business-avatar-core,
+#balances-screen #dash-balances-list .party-avatar-core,
+.squircle {
+  backdrop-filter: blur(18px) saturate(190%) !important;
+  -webkit-backdrop-filter: blur(18px) saturate(190%) !important;
+  box-shadow:
+    0 8px 22px currentColor,
+    inset 0 1px 0 rgba(255,255,255,0.24) !important;
+}
+.dark #milk-list .milk-avatar-core,
+.dark #udhar-list .credit-avatar-core,
+.dark #expense-list-container .expense-avatar-core,
+.dark #salary-list .salary-avatar-core,
+.dark #diary-list .diary-avatar-core,
+.dark #projects-screen #project-list .business-avatar-core,
+.dark #balances-screen #dash-balances-list .party-avatar-core,
+.dark .squircle {
+  box-shadow:
+    0 9px 26px currentColor,
+    inset 0 1px 0 rgba(255,255,255,0.10) !important;
+}
+
+/* Tables and detail list glass: same surface rhythm */
+.table-custom thead {
+  backdrop-filter: blur(18px) saturate(170%) !important;
+  -webkit-backdrop-filter: blur(18px) saturate(170%) !important;
+}
+.table-custom td,
+.table-custom th {
+  text-shadow: 0 0 8px currentColor !important;
+}
+
+/* Diary paper and AI panel: same premium smoke, base colors preserved */
+.diary-paper {
+  box-shadow:
+    0 10px 34px rgba(0,0,0,0.055),
+    inset 0 2px 16px rgba(245,166,35,0.040),
+    0 0 24px rgba(245,166,35,0.085) !important;
+}
+.dark .diary-paper {
+  box-shadow:
+    0 14px 44px rgba(0,0,0,0.50),
+    inset 0 1px 0 rgba(255,255,255,0.065),
+    0 0 28px rgba(245,166,35,0.17) !important;
+}
+.dark #gemini-chat-window {
+  box-shadow:
+    0 16px 48px rgba(0,0,0,0.52),
+    0 0 26px rgba(10,132,255,0.18),
+    inset 0 1px 0 rgba(255,255,255,0.065) !important;
+}
+
+/* Motion safety */
+@media (prefers-reduced-motion: reduce) {
+  .glass-card,
+  .nav-item,
+  .list-enter,
+  button,
+  .screen.active {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+/* AARISH_PREMIUM_UNIFORM_GLASS_CORE_END */
+
 </style>
 
      
@@ -1738,7 +2361,7 @@
         </div>
         <div class="p-5">
             <div class="relative w-full mb-6">
-                <i data-diary-search-icon-core="true" class="fa-solid fa-search absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+                <i data-party-search-icon-core="true" class="fa-solid fa-search absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
                 <input id="balance-search" type="text" placeholder="Search party name..." class="input-box w-full pl-11" onkeyup="renderDashboardBalances()">
             </div>
             <div id="dash-balances-list" class="space-y-3.5 w-full"></div>
@@ -3070,6 +3693,8 @@ function aarishCostShowAppV1() {
     try { if (typeof updateDiaryCoreUi === 'function') updateDiaryCoreUi(); } catch(e) {}
 
     try { if (typeof updateBusinessCoreUi === 'function') updateBusinessCoreUi(); } catch(e) {}
+
+    try { if (typeof updatePartyLedgerCoreUi === 'function') updatePartyLedgerCoreUi(); } catch(e) {}
 }
 
 async function saveCacheNowCostV81(reason) {
@@ -3920,6 +4545,8 @@ async function loadUserData() {
     try { if (typeof updateDiaryCoreUi === 'function') updateDiaryCoreUi(); } catch(e) {}
 
     try { if (typeof updateBusinessCoreUi === 'function') updateBusinessCoreUi(); } catch(e) {}
+
+    try { if (typeof updatePartyLedgerCoreUi === 'function') updatePartyLedgerCoreUi(); } catch(e) {}
 }
 
 
@@ -3980,105 +4607,207 @@ async function loadUserData() {
     try { if (typeof updateDiaryCoreUi === 'function') updateDiaryCoreUi(); } catch(e) {}
 
     try { if (typeof updateBusinessCoreUi === 'function') updateBusinessCoreUi(); } catch(e) {}
+
+    try { if (typeof updatePartyLedgerCoreUi === 'function') updatePartyLedgerCoreUi(); } catch(e) {}
 }
 
     // ===== PARTY LEDGER LOGIC (MILK + CREDIT MERGER) =====
-    function openAllBalances() {
-        document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-        document.getElementById('balances-screen').classList.add('active');
-        renderDashboardBalances();
-    }
+    
+// ========================== AARISH_PARTY_LEDGER_CORE_ENGINE_V1_START ==========================
+function partyLedgerEscCoreV1(v) {
+    return String(v == null ? '' : v).replace(/[&<>"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
+}
 
-    function renderDashboardBalances() {
-    const box = document.getElementById('dash-balances-list');
-    if (!box) return;
+function partyLedgerCleanNameCoreV1(v) {
+    return String(v == null ? '' : v)
+        .normalize('NFKC')
+        .replace(/[\u0000-\u001F\u007F]/g, ' ')
+        .replace(/\s+/g, ' ')
+        .trim();
+}
 
-    const searchEl = document.getElementById('balance-search');
-    const q = String((searchEl && searchEl.value) || '').toLowerCase().trim();
-    const balances = {};
+function partyLedgerArrayCoreV1(v) {
+    try {
+        if (Array.isArray(v)) return v.filter(Boolean);
+        if (v && typeof v === 'object') return Object.keys(v).map(k => {
+            const item = v[k];
+            if (item && typeof item === 'object' && !item.id) item.id = k;
+            return item;
+        }).filter(Boolean);
+    } catch (e) {}
+    return [];
+}
 
-    const esc = (v) => {
-        try {
-            if (typeof aarishBackendEscapeHtmlCoreV2 === 'function') return aarishBackendEscapeHtmlCoreV2(v, 300);
-            if (typeof sanitizeHTML === 'function') return sanitizeHTML(String(v == null ? '' : v));
-        } catch (e) {}
-        return String(v == null ? '' : v).replace(/[&<>"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
+function partyLedgerNumCoreV1(v) {
+    const n = Number(v);
+    return Number.isFinite(n) ? n : 0;
+}
+
+function partyLedgerMoneyCoreV1(v) {
+    return Math.abs(Math.round(partyLedgerNumCoreV1(v))).toLocaleString('en-IN');
+}
+
+function partyLedgerTonePackCoreV1(tone) {
+    if (tone === 'negative') return {
+        color: '#FF3B30',
+        color2: '#C92A2A',
+        tint: 'rgba(255,59,48,0.13)',
+        border: 'rgba(255,59,48,0.42)',
+        glow: 'rgba(255,59,48,0.30)',
+        label: 'TO PAY',
+        sign: '-'
     };
-
-    const addBalance = (rawName, rawAmount) => {
-        const name = String(rawName == null ? '' : rawName).normalize('NFKC').replace(/\s+/g, ' ').trim();
-        const amount = Number(rawAmount);
-        if (!name || !Number.isFinite(amount) || Math.abs(amount) < 0.000001) return;
-        balances[name] = (Number(balances[name]) || 0) + amount;
+    return {
+        color: '#34C759',
+        color2: '#28A745',
+        tint: 'rgba(52,199,89,0.13)',
+        border: 'rgba(52,199,89,0.42)',
+        glow: 'rgba(52,199,89,0.30)',
+        label: 'TO RECEIVE',
+        sign: '+'
     };
+}
 
-    Object.keys(milkDB || {}).forEach(name => {
-        const c = milkDB[name] || {};
-        let net = 0;
+function partyLedgerVarsCoreV1(tone) {
+    const p = partyLedgerTonePackCoreV1(tone);
+    return `--partyTone:${p.color};--partyTone2:${p.color2};--partyTint:${p.tint};--partyBorder:${p.border};--partyGlow:${p.glow};`;
+}
 
-        try {
-            if (typeof aarishMilkTotalsCore === 'function') {
-                net = Number((aarishMilkTotalsCore(c, false) || {}).netAmount || 0);
-            } else {
-                (c.records || []).forEach(r => {
-                    const qty = ((Number(r && r.morning) || 0) + (Number(r && r.evening) || 0));
-                    const rate = Number((r && r.rate) || c.rate || DEFAULT_RATE || 0);
-                    const flow = String((r && (r.flow || r.type)) || '').toLowerCase();
-                    net += Math.abs(qty) * rate * (/taken|debit|dene_wala|negative/.test(flow) ? -1 : 1);
-                });
-            }
-        } catch (e) {
-            net = 0;
+function partyLedgerInitialCoreV1(name) {
+    const clean = partyLedgerCleanNameCoreV1(name);
+    return partyLedgerEscCoreV1((clean.charAt(0) || 'P').toUpperCase());
+}
+
+function updatePartyLedgerCoreUi() {
+    try {
+        const screen = document.getElementById('balances-screen');
+        if (screen) screen.setAttribute('data-party-ledger-core', 'true');
+
+        const title = document.querySelector('#balances-screen .header-sticky h1');
+        if (title) {
+            title.setAttribute('data-party-static-blue-core', 'true');
+            title.style.setProperty('color', '#007AFF', 'important');
+            title.style.setProperty('-webkit-text-fill-color', '#007AFF', 'important');
+            title.style.setProperty('text-shadow', '0 0 12px rgba(0,122,255,0.30)', 'important');
         }
 
-        addBalance(name, net);
-    });
+        const searchIcon = document.querySelector('#balances-screen .relative > i.fa-search');
+        if (searchIcon) {
+            searchIcon.setAttribute('data-party-search-icon-core', 'true');
+            searchIcon.style.setProperty('color', '#007AFF', 'important');
+            searchIcon.style.setProperty('-webkit-text-fill-color', '#007AFF', 'important');
+            searchIcon.style.setProperty('text-shadow', '0 0 12px rgba(0,122,255,0.30)', 'important');
+            searchIcon.style.setProperty('opacity', '1', 'important');
+        }
 
-    (Array.isArray(udharDB) ? udharDB : []).forEach(u => {
-        const signed = (typeof creditSignedAmountCoreV1 === 'function')
-            ? creditSignedAmountCoreV1(u)
-            : (String((u && u.type) || '').toLowerCase() === 'credit' ? Number(u && u.amount) : -Number(u && u.amount));
-        addBalance(u && u.name, signed);
-    });
+        const search = document.getElementById('balance-search');
+        if (search) {
+            search.setAttribute('data-party-search-core', 'true');
+            search.style.setProperty('color', '#007AFF', 'important');
+            search.style.setProperty('-webkit-text-fill-color', '#007AFF', 'important');
+            search.style.setProperty('caret-color', '#007AFF', 'important');
+        }
+    } catch (e) {}
+}
+// ========================== AARISH_PARTY_LEDGER_CORE_ENGINE_V1_END ==========================
+
+
+function openAllBalances() {
+    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+    const screen = document.getElementById('balances-screen');
+    if (screen) screen.classList.add('active');
+    updatePartyLedgerCoreUi();
+    renderDashboardBalances();
+}
+
+    function renderDashboardBalances() {
+    let balances = {};
+    const search = document.getElementById('balance-search');
+    const q = String((search && search.value) || '').toLowerCase().trim();
+
+    // 1. Milk lifetime calculation stays same as original Party Ledger contract.
+    try {
+        Object.keys(milkDB || {}).forEach(name => {
+            const c = milkDB[name] || {};
+            let total = 0;
+            partyLedgerArrayCoreV1(c.records).forEach(r => {
+                total += (partyLedgerNumCoreV1(r && r.morning) + partyLedgerNumCoreV1(r && r.evening)) * (partyLedgerNumCoreV1(c.rate) || DEFAULT_RATE || 0);
+            });
+
+            const cleanName = partyLedgerCleanNameCoreV1(name);
+            if (!cleanName) return;
+            if (!balances[cleanName]) balances[cleanName] = 0;
+
+            if (c.type === 'dene_wala') balances[cleanName] -= total;
+            else balances[cleanName] += total;
+        });
+    } catch (e) {}
+
+    // 2. Credit Book / Udhar calculation. Use Credit core signed helper if present.
+    try {
+        const rows = (typeof creditEntriesCoreV1 === 'function') ? creditEntriesCoreV1() : partyLedgerArrayCoreV1(udharDB);
+        rows.forEach(u => {
+            if (!u) return;
+            const cleanName = partyLedgerCleanNameCoreV1(u.name);
+            if (!cleanName) return;
+            if (!balances[cleanName]) balances[cleanName] = 0;
+
+            let signed;
+            if (typeof creditSignedAmountCoreV1 === 'function') {
+                signed = creditSignedAmountCoreV1(u);
+            } else {
+                const amount = partyLedgerNumCoreV1(u.amount);
+                const t = String(u.type || u.flow || '').toLowerCase();
+                signed = (t === 'credit' || t === 'given' || t === 'receive' || t === 'positive') ? amount : -amount;
+            }
+            balances[cleanName] += partyLedgerNumCoreV1(signed);
+        });
+    } catch (e) {}
 
     let html = '';
     let hasData = false;
 
     Object.keys(balances)
-        .filter(n => String(n).toLowerCase().includes(q))
+        .filter(n => n.toLowerCase().includes(q))
         .sort((a, b) => Math.abs(balances[b]) - Math.abs(balances[a]))
-        .slice(0, 500)
         .forEach((name, i) => {
-            const net = Number(balances[name]) || 0;
+            const net = partyLedgerNumCoreV1(balances[name]);
             if (Math.round(net) === 0) return;
 
             hasData = true;
-            const isPlus = net > 0;
-            const colorClass = isPlus ? 'text-[#34C759]' : 'text-[#FF3B30]';
-            const bgClass = isPlus ? 'bg-[#34C759]/10' : 'bg-[#FF3B30]/10';
-            const sign = isPlus ? '+' : '-';
-            const label = isPlus ? 'To Receive' : 'To Pay';
-            const displayNet = Math.round(Math.abs(net)).toLocaleString('en-IN');
-            const safeName = esc(name);
-            const safeInitial = esc(String(name || '?').trim().charAt(0).toUpperCase() || '?');
-            const delay = Math.min(i * 0.015, 0.12).toFixed(3);
 
-            html += `<div class="glass-card mb-3 flex items-center justify-between w-full min-w-0 list-enter" style="padding:16px;border-left:4px solid ${isPlus ? '#34C759' : '#FF3B30'};animation-delay:${delay}s;flex-shrink:0!important;min-width:0!important;">
-                <div class="flex items-center gap-3 w-full min-w-0 mr-2">
-                    <div class="w-10 h-10 shrink-0 squircle ${bgClass} ${colorClass} font-extrabold flex items-center justify-center text-sm">${safeInitial}</div>
+            const tone = net > 0 ? 'positive' : 'negative';
+            const pack = partyLedgerTonePackCoreV1(tone);
+            const safeName = partyLedgerEscCoreV1(name);
+            const displayNet = partyLedgerMoneyCoreV1(net);
+
+            html += `<div
+                data-party-core-card="true"
+                data-party-tone="${tone}"
+                data-aarish-party-stripe-v65="${tone}"
+                data-module-tone="${tone}"
+                class="glass-card party-ledger-core-card party-ledger-balance-stripe-v40 list-enter flex items-center justify-between w-full min-w-0"
+                style="${partyLedgerVarsCoreV1(tone)} animation-delay:${i * 0.035}s;">
+                <div class="flex items-center gap-4 flex-1 min-w-0 mr-3">
+                    <div class="party-avatar-core w-12 h-12 shrink-0 squircle font-extrabold flex items-center justify-center text-lg">${partyLedgerInitialCoreV1(name)}</div>
                     <div class="flex-1 min-w-0">
-                        <h4 class="font-bold text-[16px] truncate w-full text-gray-900 dark:text-white leading-tight">${safeName}</h4>
-                        <p class="text-[10px] text-gray-500 font-bold uppercase tracking-wider truncate w-full mt-0.5">${label}</p>
+                        <h4 class="party-name-core font-extrabold text-[18px] leading-tight truncate w-full">${safeName}</h4>
+                        <p class="party-label-core text-[11px] font-extrabold uppercase tracking-widest truncate w-full mt-0.5">${pack.label}</p>
                     </div>
                 </div>
-                <div class="text-right shrink-0">
-                    <span class="font-extrabold ${colorClass} text-[17px]">${sign}₹${displayNet}</span>
+                <div class="flex items-center gap-3 shrink-0">
+                    <span class="party-amount-core font-extrabold text-[22px] tracking-tight">${pack.sign}₹${displayNet}</span>
+                    <i class="fa-solid fa-chevron-right text-[13px] opacity-80"></i>
                 </div>
             </div>`;
         });
 
-    if (!hasData) html = `<div class="text-center py-10 text-gray-400 font-semibold text-sm">No active balances!</div>`;
-    box.innerHTML = html;
+    const box = document.getElementById('dash-balances-list');
+    if (box) {
+        box.innerHTML = hasData ? html : `<div class="party-empty-core text-center py-12 font-extrabold text-lg">No parties found</div>`;
+    }
+
+    updatePartyLedgerCoreUi();
 }
     // =============================================================
 
