@@ -35,13 +35,36 @@
         }
         
         body, html { 
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, sans-serif; 
-            background-color: #F5F5F7; 
-            color: #1C1C1E; 
-            overflow-x: hidden; 
-            transition: background-color 0.5s ease, color 0.5s ease; 
-        }
-        .dark body { background-color: #000000; color: #FFFFFF; }
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, sans-serif; 
+    --surfaceGlass: rgba(255, 255, 255, 0.68);
+    --surfaceGlassStrong: rgba(255, 255, 255, 0.82);
+    --surfaceGlassDark: rgba(18, 24, 38, 0.60);
+    --surfaceBorder: rgba(255, 255, 255, 0.54);
+    --surfaceHairline: rgba(0, 0, 0, 0.045);
+    --surfaceShadow: 0 10px 34px rgba(15, 23, 42, 0.070), inset 0 1px 0 rgba(255, 255, 255, 0.62);
+    --surfaceActiveShadow: 0 14px 42px rgba(0, 122, 255, 0.18), inset 0 1px 0 rgba(255, 255, 255, 0.68);
+    background-color: #F5F5F7; 
+    background-image:
+        radial-gradient(circle at 0% -10%, rgba(52, 199, 89, 0.075), transparent 34%),
+        radial-gradient(circle at 100% 110%, rgba(10, 132, 255, 0.060), transparent 38%);
+    color: #1C1C1E; 
+    overflow-x: hidden; 
+    transition: background-color 0.5s ease, color 0.5s ease, background-image 0.5s ease; 
+}
+        .dark body { 
+    --surfaceGlass: rgba(18, 24, 38, 0.60);
+    --surfaceGlassStrong: rgba(28, 34, 48, 0.72);
+    --surfaceGlassDark: rgba(18, 24, 38, 0.60);
+    --surfaceBorder: rgba(255, 255, 255, 0.115);
+    --surfaceHairline: rgba(255, 255, 255, 0.085);
+    --surfaceShadow: 0 16px 46px rgba(0, 0, 0, 0.48), inset 0 1px 0 rgba(255, 255, 255, 0.075);
+    --surfaceActiveShadow: 0 18px 54px rgba(10, 132, 255, 0.18), inset 0 1px 0 rgba(255, 255, 255, 0.09);
+    background-color: #000000; 
+    background-image:
+        radial-gradient(circle at 0% -12%, rgba(52, 199, 89, 0.14), transparent 34%),
+        radial-gradient(circle at 100% 112%, rgba(10, 132, 255, 0.13), transparent 40%);
+    color: #FFFFFF; 
+}
 
         /* Ambient Background Glow */
         .ambient-glow {
@@ -103,35 +126,36 @@
 
         /* Advanced Frosted Glass Cards + Premium Active Glow */
         .glass-card { 
-            background: rgba(255, 255, 255, 0.65); 
-            backdrop-filter: blur(24px) saturate(180%); -webkit-backdrop-filter: blur(24px) saturate(180%);
-            border-radius: 24px; padding: 22px; 
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.04), inset 0 1px 2px rgba(255, 255, 255, 0.6); 
-            border: 1px solid rgba(255, 255, 255, 0.5); 
-            transition: all 0.3s cubic-bezier(0.32, 0.72, 0, 1) !important; 
-            flex-shrink: 0 !important;
-        }
+    background: var(--surfaceGlass); 
+    backdrop-filter: blur(26px) saturate(180%); -webkit-backdrop-filter: blur(26px) saturate(180%);
+    border-radius: 24px; padding: 22px; 
+    box-shadow: var(--surfaceShadow); 
+    border: 1px solid var(--surfaceBorder); 
+    transition: transform 0.24s cubic-bezier(0.32, 0.72, 0, 1), box-shadow 0.24s ease, background-color 0.35s ease, border-color 0.35s ease !important; 
+    flex-shrink: 0 !important;
+}
         .dark .glass-card { 
-            background: rgba(28, 28, 30, 0.65); 
-            border-color: rgba(255, 255, 255, 0.08); 
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3), inset 0 1px 1px rgba(255, 255, 255, 0.05); 
-        }
+    background: var(--surfaceGlass); 
+    border-color: var(--surfaceBorder); 
+    box-shadow: var(--surfaceShadow); 
+}
         .glass-card:active { 
-            transform: scale(0.96) !important; 
-            box-shadow: 0 8px 30px rgba(0, 122, 255, 0.15) !important; /* Apple Blue Glow on tap */
-        }
+    transform: scale(0.975) !important; 
+    box-shadow: var(--surfaceActiveShadow) !important;
+}
         
         /* Scrollable Bottom Tab Bar */
         .bottom-nav { 
-            position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); 
-            width: 100%; max-width: 480px; background: rgba(255, 255, 255, 0.85); 
-            backdrop-filter: blur(30px) saturate(200%); -webkit-backdrop-filter: blur(30px) saturate(200%);
-            border-top: 0.5px solid rgba(0, 0, 0, 0.05); 
-            display: flex; overflow-x: auto; scroll-behavior: smooth;
-            padding: 12px 8px calc(12px + env(safe-area-inset-bottom)); z-index: 50; 
-        }
+    position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); 
+    width: 100%; max-width: 480px; background: rgba(255, 255, 255, 0.74); 
+    backdrop-filter: blur(34px) saturate(190%); -webkit-backdrop-filter: blur(34px) saturate(190%);
+    border-top: 0.5px solid var(--surfaceHairline); 
+    display: flex; overflow-x: auto; scroll-behavior: smooth;
+    padding: 12px 8px calc(12px + env(safe-area-inset-bottom)); z-index: 50;
+    box-shadow: 0 -10px 32px rgba(15, 23, 42, 0.055), inset 0 1px 0 rgba(255,255,255,0.42);
+}
         .bottom-nav::-webkit-scrollbar { display: none; }
-        .dark .bottom-nav { background: rgba(28, 28, 30, 0.85); border-top-color: rgba(255, 255, 255, 0.1); }
+        .dark .bottom-nav { background: rgba(18, 24, 38, 0.66); border-top-color: var(--surfaceHairline); box-shadow: 0 -14px 40px rgba(0,0,0,0.42), inset 0 1px 0 rgba(255,255,255,0.07); }
         
         /* Nav Item with Premium Text Shadow Glow */
         .nav-item { 
@@ -156,12 +180,14 @@
             z-index: 100; display: none; align-items: flex-end; transition: opacity 0.4s ease;
         }
         .modal-content { 
-            background: #FFFFFF; width: 100%; max-width: 480px; margin: 0 auto; 
-            border-radius: 36px 36px 0 0; padding: 24px 24px 48px; 
-            animation: slideUpSheet 0.4s cubic-bezier(0.32, 0.72, 0, 1); max-height: 90vh; max-height: 90dvh; overflow-y: auto; 
-            box-shadow: 0 -10px 40px rgba(0,0,0,0.1);
-        }
-        .dark .modal-content { background: #1C1C1E; color: #FFFFFF; box-shadow: 0 -10px 40px rgba(0,0,0,0.5); }
+    background: rgba(255, 255, 255, 0.82); width: 100%; max-width: 480px; margin: 0 auto; 
+    border-radius: 36px 36px 0 0; padding: 24px 24px 48px; 
+    animation: slideUpSheet 0.4s cubic-bezier(0.32, 0.72, 0, 1); max-height: 90vh; max-height: 90dvh; overflow-y: auto; 
+    box-shadow: 0 -16px 52px rgba(15,23,42,0.13), inset 0 1px 0 rgba(255,255,255,0.72);
+    border: 1px solid rgba(255,255,255,0.62);
+    backdrop-filter: blur(30px) saturate(180%); -webkit-backdrop-filter: blur(30px) saturate(180%);
+}
+        .dark .modal-content { background: rgba(28, 34, 48, 0.76); color: #FFFFFF; border-color: rgba(255,255,255,0.10); box-shadow: 0 -18px 58px rgba(0,0,0,0.60), inset 0 1px 0 rgba(255,255,255,0.08); }
         @keyframes slideUpSheet { from { transform: translateY(100%); } to { transform: translateY(0); } }
         
         /* Tables */
@@ -194,11 +220,12 @@
         @keyframes spin { to { transform: rotate(360deg); } }
 
         .header-sticky { 
-            background: rgba(245, 245, 247, 0.75); backdrop-filter: blur(30px) saturate(180%); -webkit-backdrop-filter: blur(30px) saturate(180%);
-            position: sticky; top: 0; z-index: 10; display: flex; align-items: center; justify-content: space-between; 
-            padding: calc(16px + env(safe-area-inset-top)) 24px 16px; border-bottom: 0.5px solid rgba(0,0,0,0.03); gap: 8px;
-        }
-        .dark .header-sticky { background: rgba(0, 0, 0, 0.75); border-bottom-color: rgba(255,255,255,0.08); }
+    background: rgba(245, 245, 247, 0.70); backdrop-filter: blur(34px) saturate(180%); -webkit-backdrop-filter: blur(34px) saturate(180%);
+    position: sticky; top: 0; z-index: 10; display: flex; align-items: center; justify-content: space-between; 
+    padding: calc(16px + env(safe-area-inset-top)) 24px 16px; border-bottom: 0.5px solid var(--surfaceHairline); gap: 8px;
+    box-shadow: 0 8px 24px rgba(15,23,42,0.035);
+}
+        .dark .header-sticky { background: rgba(0, 0, 0, 0.66); border-bottom-color: var(--surfaceHairline); box-shadow: 0 10px 30px rgba(0,0,0,0.38); }
         
         /* ==================== ULTIMATE ANTI-BROWSER LOCK ==================== */
         html, body {
@@ -234,43 +261,46 @@
 
         /* Premium Inputs */
         .input-box { 
-            width: 100%; 
-            background: rgba(118, 118, 128, 0.08); 
-            border: 1px solid rgba(0,0,0,0.02); 
-            border-radius: 16px; 
-            padding: 16px 20px !important; 
-            outline: none; 
-            font-weight: 500; 
-            transition: all 0.3s ease;
-            color: #1C1C1E;
-            font-size: 16px !important;
-            min-height: 52px !important;
-        }
-        .dark .input-box { background: rgba(118, 118, 128, 0.18); border-color: rgba(255,255,255,0.02); color: #FFFFFF; }
-        .input-box:focus { background: rgba(118, 118, 128, 0.12); box-shadow: 0 0 0 4px rgba(0, 122, 255, 0.15); border-color: transparent; }
+    width: 100%; 
+    background: rgba(118, 118, 128, 0.075); 
+    border: 1px solid rgba(0,0,0,0.035); 
+    border-radius: 16px; 
+    padding: 16px 20px !important; 
+    outline: none; 
+    font-weight: 500; 
+    transition: background-color 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease, color 0.25s ease;
+    color: #1C1C1E;
+    font-size: 16px !important;
+    min-height: 52px !important;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.40);
+    backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+}
+        .dark .input-box { background: rgba(118, 118, 128, 0.16); border-color: rgba(255,255,255,0.075); color: #FFFFFF; box-shadow: inset 0 1px 0 rgba(255,255,255,0.06); }
+        .input-box:focus { background: rgba(118, 118, 128, 0.105); box-shadow: 0 0 0 4px rgba(0, 122, 255, 0.14), 0 10px 28px rgba(0,122,255,0.08); border-color: rgba(0, 122, 255, 0.24); }
 
         /* Premium iOS Buttons */
         .btn-primary { 
-            background: #007AFF; 
-            color: #FFFFFF; 
-            padding: 16px !important; 
-            border-radius: 18px; 
-            font-weight: 600; 
-            letter-spacing: 0.3px;
-            border: none; 
-            cursor: pointer; 
-            width: 100%;
-            display: flex; 
-            align-items: center; 
-            justify-content: center; 
-            gap: 8px; 
-            transition: transform 0.2s cubic-bezier(0.32, 0.72, 0, 1), opacity 0.2s ease;
-            font-size: 17px !important;
-            min-height: 54px !important;
-            flex-shrink: 0 !important;
-            box-shadow: 0 4px 14px rgba(0, 122, 255, 0.25);
-        }
-        .btn-primary:active { transform: scale(0.96); opacity: 0.85; }
+    background: #007AFF; 
+    color: #FFFFFF; 
+    padding: 16px !important; 
+    border-radius: 18px; 
+    font-weight: 600; 
+    letter-spacing: 0.3px;
+    border: none; 
+    cursor: pointer; 
+    width: 100%;
+    display: flex; 
+    align-items: center; 
+    justify-content: center; 
+    gap: 8px; 
+    transition: transform 0.2s cubic-bezier(0.32, 0.72, 0, 1), opacity 0.2s ease, box-shadow 0.25s ease;
+    font-size: 17px !important;
+    min-height: 54px !important;
+    flex-shrink: 0 !important;
+    box-shadow: 0 9px 26px rgba(0, 122, 255, 0.28), inset 0 1px 0 rgba(255,255,255,0.25);
+    text-shadow: 0 1px 8px rgba(0,0,0,0.18);
+}
+        .btn-primary:active { transform: scale(0.975); opacity: 0.90; box-shadow: 0 12px 34px rgba(0,122,255,0.34), inset 0 1px 0 rgba(255,255,255,0.22); }
         
         .btn-google { background: #FFFFFF; color: #000000; box-shadow: 0 4px 14px rgba(0,0,0,0.06), inset 0 1px 1px #FFF; }
         .dark .btn-google { background: #2C2C2E; color: #FFFFFF; box-shadow: 0 4px 14px rgba(0,0,0,0.3), inset 0 1px 1px rgba(255,255,255,0.1); }
@@ -490,11 +520,11 @@
   border-left-width: 4px !important;
   border-left-style: solid !important;
   border-left-color: var(--moduleTone) !important;
-  background: rgba(255,255,255,0.72) !important;
+  background: var(--surfaceGlass) !important;
   box-shadow: 0 8px 26px rgba(0,0,0,0.05), -3px 0 16px var(--moduleGlow) !important;
 }
 .dark #milk-list .milk-core-card {
-  background: rgba(12,18,36,0.84) !important;
+  background: var(--surfaceGlassDark) !important;
   box-shadow: 0 12px 34px rgba(0,0,0,0.48), -3px 0 20px var(--moduleGlow) !important;
 }
 
@@ -520,7 +550,7 @@
   -webkit-text-fill-color: #007AFF !important;
 }
 .dark #milk-detail-screen .glass-card:not(.milk-core-total-card) {
-  background: rgba(12,18,36,0.84) !important;
+  background: var(--surfaceGlassDark) !important;
   border-color: rgba(148,163,184,0.14) !important;
 }
 @media (max-width: 380px) {
@@ -678,13 +708,13 @@
 /* Semantic list and row colors. */
 #udhar-list .glass-card[data-credit-core-tone] {
   border-left: 4px solid var(--creditTone) !important;
-  background: rgba(255,255,255,0.72) !important;
+  background: var(--surfaceGlass) !important;
   box-shadow: -4px 0 14px var(--creditGlow), 0 10px 26px rgba(15,23,42,0.07), inset 1px 0 0 var(--creditBorder), inset 0 1px 0 rgba(255,255,255,0.62) !important;
   transition-property: transform, opacity !important;
   transition-duration: 100ms !important;
 }
 .dark #udhar-list .glass-card[data-credit-core-tone] {
-  background: rgba(12,18,36,0.84) !important;
+  background: var(--surfaceGlassDark) !important;
   box-shadow: -4px 0 18px var(--creditGlow), 0 12px 34px rgba(0,0,0,0.42), inset 1px 0 0 var(--creditBorder), inset 0 1px 0 rgba(255,255,255,0.10) !important;
 }
 #udhar-list .glass-card[data-credit-core-tone] :is(h4,p,span,i,.font-bold,.font-extrabold),
@@ -868,13 +898,13 @@
 
 #expense-list-container .expense-core-card {
   border-left: 4px solid var(--expenseTone) !important;
-  background: rgba(255,255,255,0.72) !important;
+  background: var(--surfaceGlass) !important;
   box-shadow: -4px 0 14px var(--expenseGlow), 0 10px 26px rgba(15,23,42,0.07), inset 1px 0 0 var(--expenseBorder), inset 0 1px 0 rgba(255,255,255,0.62) !important;
   transition-property: transform, opacity !important;
   transition-duration: 100ms !important;
 }
 .dark #expense-list-container .expense-core-card {
-  background: rgba(12,18,36,0.84) !important;
+  background: var(--surfaceGlassDark) !important;
   box-shadow: -4px 0 18px var(--expenseGlow), 0 12px 34px rgba(0,0,0,0.42), inset 1px 0 0 var(--expenseBorder), inset 0 1px 0 rgba(255,255,255,0.10) !important;
 }
 #expense-list-container .expense-core-card :is(h4,p,span,i,.font-bold,.font-extrabold),
@@ -1064,7 +1094,7 @@
 
 #salary-list .salary-core-card {
   border-left: 4px solid var(--salaryTone) !important;
-  background: rgba(255,255,255,0.72) !important;
+  background: var(--surfaceGlass) !important;
   color: var(--salaryTone) !important;
   -webkit-text-fill-color: var(--salaryTone) !important;
   box-shadow: -4px 0 14px var(--salaryGlow), 0 10px 26px rgba(15,23,42,0.07), inset 1px 0 0 var(--salaryInset), inset 0 1px 0 rgba(255,255,255,0.62) !important;
@@ -1072,7 +1102,7 @@
   transition-duration: 100ms !important;
 }
 .dark #salary-list .salary-core-card {
-  background: rgba(12,18,36,0.84) !important;
+  background: var(--surfaceGlassDark) !important;
   box-shadow: -4px 0 18px var(--salaryGlow), 0 12px 34px rgba(0,0,0,0.42), inset 1px 0 0 var(--salaryInset), inset 0 1px 0 rgba(255,255,255,0.10) !important;
 }
 #salary-list .salary-core-card :is(h4,p,span,i,.font-bold,.font-extrabold),
@@ -1220,13 +1250,13 @@
 
 #diary-screen #diary-list .diary-core-card {
   border-left: 4px solid var(--diaryTone) !important;
-  background: rgba(255,255,255,0.72) !important;
+  background: var(--surfaceGlass) !important;
   box-shadow: -4px 0 14px var(--diaryGlow), 0 10px 26px rgba(15,23,42,0.07), inset 1px 0 0 var(--diaryBorder), inset 0 1px 0 rgba(255,255,255,0.62) !important;
   transition-property: transform, opacity !important;
   transition-duration: 100ms !important;
 }
 .dark #diary-screen #diary-list .diary-core-card {
-  background: rgba(12,18,36,0.84) !important;
+  background: var(--surfaceGlassDark) !important;
   box-shadow: -4px 0 18px var(--diaryGlow), 0 12px 34px rgba(0,0,0,0.42), inset 1px 0 0 var(--diaryBorder), inset 0 1px 0 rgba(255,255,255,0.10) !important;
 }
 #diary-screen #diary-list .diary-core-card .diary-preview-core {
@@ -2652,6 +2682,23 @@ function aarishBackendBadKeyCoreV2(k) {
     return !k || k.length > 220 || /[.#$\[\]\/\u0000-\u001F\u007F]/.test(k) || k === "__proto__" || k === "prototype" || k === "constructor";
 }
 
+function aarishBackendCleanFirebaseKeyTextCoreV4(v, fallback) {
+    var s = aarishBackendTextSafeCoreV2(v, 180)
+        .normalize("NFKC")
+        .replace(/[.#$\[\]\/\\<>"'`\u0000-\u001F\u007F]/g, " ")
+        .replace(/\s+/g, " ")
+        .trim();
+    if (!s) s = fallback || "";
+    if (s === "__proto__" || s === "prototype" || s === "constructor") s = (fallback || "Record");
+    return s.slice(0, 180).trim();
+}
+
+function aarishCostTimeoutCoreV4(label, ms) {
+    return new Promise(function(_, reject) {
+        setTimeout(function() { reject(new Error(String(label || "operation") + "-timeout")); }, Math.max(1200, Number(ms || 4500)));
+    });
+}
+
 function aarishBackendSanitizeFirebaseValueCoreV2(value, path, depth, seen) {
     depth = Number(depth || 0);
     if (depth > 18) return null;
@@ -2879,16 +2926,32 @@ async function aarishCostKvGetV1(key) {
         }
     }
 
-    return new Promise(function(resolve) {
-        try {
-            var tx = db.transaction("kv", "readonly");
-            var req = tx.objectStore("kv").get(key);
-            req.onsuccess = function() { resolve(req.result || null); };
-            req.onerror = function() { resolve(null); };
-        } catch(e) {
-            resolve(null);
-        }
-    });
+    return Promise.race([
+        new Promise(function(resolve) {
+            try {
+                var done = false;
+                function finish(v) {
+                    if (done) return;
+                    done = true;
+                    resolve(v || null);
+                }
+
+                var tx = db.transaction("kv", "readonly");
+                var req = tx.objectStore("kv").get(key);
+                req.onsuccess = function() { finish(req.result || null); };
+                req.onerror = function() { finish(null); };
+                tx.onerror = function() { finish(null); };
+                tx.onabort = function() { finish(null); };
+            } catch(e) {
+                try { __aarishCostDbCoreV1 = null; } catch(_) {}
+                resolve(null);
+            }
+        }),
+        aarishCostTimeoutCoreV4("idb-kv-get", 4500).catch(function(){
+            try { __aarishCostDbCoreV1 = null; } catch(_) {}
+            return null;
+        })
+    ]);
 }
 
 async function aarishCostKvSetV1(key, value) {
@@ -3069,38 +3132,50 @@ function aarishCostReadFallbackV1() {
 }
 
 function aarishCostWriteFallbackV1(arr) {
-    arr = Array.isArray(arr) ? arr.filter(Boolean) : [];
+    arr = aarishCostDedupeItemsV3(Array.isArray(arr) ? arr.filter(Boolean) : []);
 
-    var limits = [600, 300, 150, 75, 30, 10, 3, 1];
-    for (var i = 0; i < limits.length; i++) {
-        try {
-            localStorage.setItem(aarishCostFallbackKeyV1(), JSON.stringify(arr.slice(-limits[i])));
-            return true;
-        } catch(e) {}
-    }
-
+    /*
+      Never shrink by dropping old unsynced writes.
+      Old logic could save only the latest 600/300/150... items under quota pressure.
+      That creates silent data loss. Now it persists the full compact queue or returns false.
+    */
     try {
-        var now = Date.now();
-        if (now - Number(window.__aarishLastStorageFullToastV3 || 0) > 15000) {
-            window.__aarishLastStorageFullToastV3 = now;
-            aarishCostToastV1("Phone storage full. App band mat karo; internet aate hi pending sync bhejunga.");
-        }
-    } catch(e) {}
-
-    return false;
+        localStorage.setItem(aarishCostFallbackKeyV1(), JSON.stringify(arr));
+        return true;
+    } catch(e) {
+        try {
+            var now = Date.now();
+            if (now - Number(window.__aarishLastStorageFullToastV3 || 0) > 15000) {
+                window.__aarishLastStorageFullToastV3 = now;
+                aarishCostToastV1("Phone storage full. Purani pending sync safe hai; nayi entry RAM me rahegi jab tak app open hai.");
+            }
+        } catch(_) {}
+        return false;
+    }
 }
 
 /* AARISH_BACKEND_SURGICAL_STORAGE_SYNC_V3_START */
 function aarishCostVolatilePutV3(item) {
     try {
-        window.__aarishCostVolatileOutboxCoreV3 = window.__aarishCostVolatileOutboxCoreV3 || [];
         var uid = aarishCostUidV1();
         if (!item || !item.id || !uid || item.uid !== uid) return false;
 
-        window.__aarishCostVolatileOutboxCoreV3 = window.__aarishCostVolatileOutboxCoreV3
-            .filter(function(x) { return x && x.id !== item.id; })
-            .concat([item])
-            .slice(-500);
+        window.__aarishCostVolatileOutboxCoreV3 = window.__aarishCostVolatileOutboxCoreV3 || [];
+        var map = {};
+        window.__aarishCostVolatileOutboxCoreV3.forEach(function(x) {
+            if (x && x.id && x.uid === uid) map[x.id] = x;
+        });
+        map[item.id] = item;
+
+        var next = Object.keys(map).map(function(id) { return map[id]; })
+            .sort(function(a,b) { return Number(a.createdAt || 0) - Number(b.createdAt || 0); });
+
+        if (next.length > 5000) {
+            aarishCostToastV1("Too many unsynced RAM entries. Internet connect karo before adding more.");
+            return false;
+        }
+
+        window.__aarishCostVolatileOutboxCoreV3 = next;
 
         try {
             var now = Date.now();
@@ -3183,18 +3258,32 @@ async function aarishCostStoreOpV1(mode, fn) {
     var db = await aarishCostOpenDbV1();
     if (!db || !db.objectStoreNames.contains("sync_queue")) return null;
 
-    return new Promise(function(resolve) {
-        try {
-            var tx = db.transaction("sync_queue", mode);
-            var st = tx.objectStore("sync_queue");
-            var result = fn(st);
-            tx.oncomplete = function() { resolve(result === undefined ? true : result); };
-            tx.onerror = function() { resolve(null); };
-            tx.onabort = function() { resolve(null); };
-        } catch(e) {
-            resolve(null);
-        }
-    });
+    return Promise.race([
+        new Promise(function(resolve) {
+            try {
+                var done = false;
+                function finish(v) {
+                    if (done) return;
+                    done = true;
+                    resolve(v === undefined ? true : v);
+                }
+
+                var tx = db.transaction("sync_queue", mode);
+                var st = tx.objectStore("sync_queue");
+                var result = fn(st);
+                tx.oncomplete = function() { finish(result === undefined ? true : result); };
+                tx.onerror = function() { finish(null); };
+                tx.onabort = function() { finish(null); };
+            } catch(e) {
+                try { __aarishCostDbCoreV1 = null; } catch(_) {}
+                resolve(null);
+            }
+        }),
+        aarishCostTimeoutCoreV4("idb-sync-queue", 4500).catch(function() {
+            try { __aarishCostDbCoreV1 = null; } catch(_) {}
+            return null;
+        })
+    ]);
 }
 
 async function aarishCostPutOutboxV1(item) {
@@ -3205,13 +3294,20 @@ async function aarishCostPutOutboxV1(item) {
         return true;
     });
 
-    if (ok) return true;
+    if (ok) {
+        item.__queueTier = "idb";
+        return true;
+    }
 
     var arr = aarishCostReadFallbackV1();
     arr.push(item);
-    if (aarishCostWriteFallbackV1(arr)) return true;
+    if (aarishCostWriteFallbackV1(arr)) {
+        item.__queueTier = "localStorage";
+        return true;
+    }
 
     if (aarishCostVolatilePutV3(item)) {
+        item.__queueTier = "ram";
         try { aarishCostScheduleFlushV1(1000, "volatile-outbox"); } catch(e) {}
         return true;
     }
@@ -3410,12 +3506,29 @@ async function aarishFirebaseLaterV48(path, action, payload, opts) {
 
         var ok = await aarishCostPutOutboxV1(item);
 
+        if (!ok) {
+            var directRef = aarishCostOnlineV1() ? aarishCostAppRefV1() : null;
+            if (directRef) {
+                var directMega = aarishCostBuildMegaV1([item]);
+                await Promise.race([
+                    directRef.update(directMega),
+                    aarishCostTimeoutCoreV4("firebase-direct-update", 18000)
+                ]);
+                window.__aarishFirebaseCostRevV81 = Date.now();
+                await saveCacheNowCostV81("direct-" + cleanPath);
+                return { queued: false, direct: true, writes: keys.length };
+            }
+
+            aarishCostToastV1("Sync queue full. Internet connect karo; app close mat karo.");
+            return { queued: false, reason: "queue_full" };
+        }
+
         scheduleCacheSaveCostV81("queued-" + item.path);
 
         var urgent = String(action || "").toLowerCase() === "remove" || String(action || "").toLowerCase() === "delete" || opts.fast;
         aarishCostScheduleFlushV1(urgent ? 1200 : 35000, urgent ? "urgent" : "idle-batch");
 
-        return { queued: !!ok, id: item.id, writes: keys.length };
+        return { queued: true, id: item.id, writes: keys.length, tier: item.__queueTier || "unknown" };
     } catch(e) {
         aarishCostToastV1("Local sync queue issue!");
         return { queued: false, error: String(e && e.message ? e.message : e) };
@@ -4314,12 +4427,7 @@ function salaryJsCoreV1(v) {
     return JSON.stringify(String(v == null ? '' : v)).replace(/"/g, '&quot;');
 }
 function salaryCleanNameCoreV1(v) {
-    return String(v == null ? '' : v)
-        .normalize('NFKC')
-        .replace(/[.#$\[\]<>]/g, ' ')
-        .replace(/[\u0000-\u001F\u007F]/g, ' ')
-        .replace(/\s+/g, ' ')
-        .trim();
+    return aarishBackendCleanFirebaseKeyTextCoreV4(v, "");
 }
 function salaryCleanCompanyCoreV1(v) {
     return String(v == null ? '' : v)
@@ -5748,12 +5856,7 @@ function creditJsArgCoreV1(v) {
     return JSON.stringify(String(v == null ? '' : v)).replace(/"/g, '&quot;');
 }
 function creditCleanNameCoreV1(v) {
-    return String(v == null ? '' : v)
-        .normalize('NFKC')
-        .replace(/[<>"'`]/g, ' ')
-        .replace(/[\u0000-\u001F\u007F]/g, ' ')
-        .replace(/\s+/g, ' ')
-        .trim();
+    return aarishBackendCleanFirebaseKeyTextCoreV4(v, "");
 }
 function creditEntryAmountCoreV1(entry) {
     return creditNumCoreV1(entry && (entry.amount ?? entry.amt ?? entry.total ?? entry.price ?? entry.value));
@@ -6377,12 +6480,7 @@ function expenseJsSingleCoreV1(v) {
         .replace(/"/g, '&quot;');
 }
 function expenseCleanCategoryCoreV1(v) {
-    return String(v == null ? '' : v)
-        .normalize('NFKC')
-        .replace(/[<>"'`]/g, ' ')
-        .replace(/[\u0000-\u001F\u007F]/g, ' ')
-        .replace(/\s+/g, ' ')
-        .trim() || 'Other';
+    return aarishBackendCleanFirebaseKeyTextCoreV4(v, "Other") || "Other";
 }
 function expenseMoneyCoreV1(v) {
     return '₹' + Math.abs(Math.round(expenseNumCoreV1(v))).toLocaleString('en-IN');
