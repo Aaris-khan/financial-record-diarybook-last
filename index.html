@@ -603,8 +603,14 @@
   text-shadow: 0 2px 10px rgba(0,0,0,0.20) !important;
 }
 
-/* Permanent blue static Credit Book UI shown in screenshots.
-   These are not net/amount signals, so they never become red/green. */
+/* Detail customer name follows selected customer's own net, not global Credit Book net. */
+#udhar-detail-screen #udhar-detail-title[data-credit-core-tone] {
+  color: var(--creditTone) !important;
+  -webkit-text-fill-color: var(--creditTone) !important;
+  text-shadow: 0 0 12px var(--creditGlow) !important;
+}
+
+/* Permanent blue static Credit Book UI shown in screenshots. */
 #udhar-screen .relative .fa-search,
 #udhar-screen #udhar-search,
 #udhar-screen #udhar-search::placeholder,
@@ -665,7 +671,7 @@
   box-shadow: -4px 0 18px var(--creditGlow), 0 12px 34px rgba(0,0,0,0.42), inset 1px 0 0 var(--creditBorder), inset 0 1px 0 rgba(255,255,255,0.10) !important;
 }
 #udhar-list .glass-card[data-credit-core-tone] :is(h4,p,span,i,.font-bold,.font-extrabold),
-#udhar-detail-screen #udhar-detail-records tr[data-credit-core-row-tone] :is(td,span,i,.font-bold,.font-extrabold) {
+#udhar-detail-screen #udhar-detail-records tr[data-credit-core-row-tone] :is(td,span,.font-bold,.font-extrabold) {
   color: var(--creditTone) !important;
   -webkit-text-fill-color: var(--creditTone) !important;
   text-shadow: 0 0 9px var(--creditGlow) !important;
@@ -679,27 +685,65 @@
   box-shadow: 0 7px 18px var(--creditGlow), inset 0 1px 0 rgba(255,255,255,0.18) !important;
 }
 
-/* Delete stays red. */
-#udhar-detail-screen #udhar-detail-records .credit-delete-btn-core,
-#udhar-detail-screen #udhar-detail-records .credit-delete-btn-core *,
+/* Delete buttons are permanent red. They never inherit green/red row tone. */
+#udhar-detail-screen .credit-delete-btn-core,
+#udhar-detail-screen .credit-delete-btn-core *,
+#udhar-detail-screen [data-credit-delete-core="true"],
+#udhar-detail-screen [data-credit-delete-core="true"] *,
+#udhar-detail-screen #udhar-detail-records .action-btn.credit-delete-btn-core,
+#udhar-detail-screen #udhar-detail-records .action-btn.credit-delete-btn-core *,
 #credit-profile-delete-btn-core,
-#credit-profile-delete-btn-core * {
+#credit-profile-delete-btn-core *,
+#udhar-detail-screen .credit-profile-delete-btn-core,
+#udhar-detail-screen .credit-profile-delete-btn-core * {
   color: #FF3B30 !important;
   -webkit-text-fill-color: #FF3B30 !important;
+  text-shadow: 0 0 12px rgba(255,59,48,0.28) !important;
 }
-#credit-profile-delete-btn-core {
-  width: 44px !important;
-  height: 44px !important;
-  min-width: 44px !important;
-  min-height: 44px !important;
-  border-radius: 999px !important;
-  border: 1px solid rgba(255,59,48,0.18) !important;
+#udhar-detail-screen .credit-delete-btn-core,
+#udhar-detail-screen [data-credit-delete-core="true"],
+#credit-profile-delete-btn-core,
+#udhar-detail-screen .credit-profile-delete-btn-core {
   background: rgba(255,59,48,0.10) !important;
+  border: 1px solid rgba(255,59,48,0.18) !important;
+  box-shadow: 0 10px 26px rgba(255,59,48,0.14), inset 0 1px 0 rgba(255,255,255,0.36) !important;
+}
+#credit-profile-delete-btn-core,
+#udhar-detail-screen .credit-profile-delete-btn-core {
+  width: 52px !important;
+  height: 52px !important;
+  min-width: 52px !important;
+  min-height: 52px !important;
+  border-radius: 18px !important;
   display: inline-flex !important;
   align-items: center !important;
   justify-content: center !important;
-  box-shadow: 0 8px 22px rgba(255,59,48,0.14) !important;
+  flex-shrink: 0 !important;
+  margin-left: 12px !important;
+  padding: 0 !important;
 }
+#udhar-detail-screen #udhar-detail-records .credit-delete-btn-core {
+  min-width: 46px !important;
+  min-height: 46px !important;
+  width: 46px !important;
+  height: 46px !important;
+  border-radius: 16px !important;
+}
+#credit-profile-delete-btn-core i,
+#udhar-detail-screen .credit-profile-delete-btn-core i {
+  font-size: 22px !important;
+}
+#udhar-detail-screen #udhar-detail-records .credit-delete-btn-core i {
+  font-size: 18px !important;
+}
+#udhar-detail-screen .credit-delete-btn-core:active,
+#credit-profile-delete-btn-core:active,
+#udhar-detail-screen .credit-profile-delete-btn-core:active {
+  transform: scale(0.96) !important;
+  background: rgba(255,59,48,0.16) !important;
+  box-shadow: 0 12px 28px rgba(255,59,48,0.18) !important;
+}
+
 .dark #udhar-screen .glass-card[data-credit-core-top-tone],
 .dark #udhar-detail-screen #udhar-detail-card[data-credit-core-tone] {
   box-shadow: 0 12px 34px var(--creditGlow), inset 0 1px 0 rgba(255,255,255,0.16) !important;
@@ -708,6 +752,14 @@
 .dark #udhar-detail-screen .credit-share-btn-core {
   border-color: rgba(10,132,255,0.28) !important;
   box-shadow: 0 8px 24px rgba(10,132,255,0.13) !important;
+}
+.dark #udhar-detail-screen .credit-delete-btn-core,
+.dark #udhar-detail-screen [data-credit-delete-core="true"],
+.dark #credit-profile-delete-btn-core,
+.dark #udhar-detail-screen .credit-profile-delete-btn-core {
+  background: rgba(255,59,48,0.14) !important;
+  border-color: rgba(255,59,48,0.24) !important;
+  box-shadow: 0 12px 30px rgba(255,59,48,0.18), inset 0 1px 0 rgba(255,255,255,0.05) !important;
 }
 /* Dark mode only changes surface/glow strength. Credit semantic colors stay: green positive, red negative, blue neutral. */
 /* AARISH_CREDIT_BOOK_CORE_PARITY_V1_END */
@@ -3945,6 +3997,64 @@ async function creditFirebaseCoreV1(path, action, value, opts) {
         try { showToast('Saved locally. Cloud sync pending.'); } catch (_) {}
     }
 }
+
+/* AARISH_CREDIT_DETAIL_HEADER_TONE_CORE_V2_START */
+function creditPersonNetCoreV1(name) {
+    const clean = creditCleanNameCoreV1(name || '');
+    let net = 0;
+    creditEntriesCoreV1().forEach(entry => {
+        if (creditCleanNameCoreV1(entry && entry.name) === clean) net += creditSignedAmountCoreV1(entry);
+    });
+    return creditCleanZeroCoreV1(net);
+}
+function creditApplyDetailHeaderToneCoreV1(netOrName) {
+    let net;
+    if (typeof netOrName === 'number' && Number.isFinite(netOrName)) {
+        net = creditCleanZeroCoreV1(netOrName);
+    } else {
+        net = creditPersonNetCoreV1(netOrName || activeUdharPerson || '');
+    }
+
+    const tone = creditToneCoreV1(net);
+    const pack = creditPackCoreV1(tone);
+    const title = document.getElementById('udhar-detail-title');
+    const screen = document.getElementById('udhar-detail-screen');
+
+    if (screen) {
+        screen.setAttribute('data-credit-core-detail-tone', tone);
+        screen.setAttribute('data-module-tone', tone);
+        screen.setAttribute('style', (screen.getAttribute('style') || '') + ';' + creditStyleVarsCoreV1(tone));
+    }
+
+    if (title) {
+        title.setAttribute('data-credit-core-tone', tone);
+        title.setAttribute('data-module-tone', tone);
+        title.setAttribute('style', creditStyleVarsCoreV1(tone));
+        title.style.setProperty('color', pack.color, 'important');
+        title.style.setProperty('-webkit-text-fill-color', pack.color, 'important');
+        title.style.setProperty('text-shadow', '0 0 12px ' + pack.glow, 'important');
+    }
+
+    const profileDelete = document.getElementById('credit-profile-delete-btn-core') || document.querySelector('#udhar-detail-screen .credit-profile-delete-btn-core');
+    if (profileDelete) {
+        profileDelete.setAttribute('data-credit-delete-core', 'true');
+        profileDelete.style.setProperty('color', '#FF3B30', 'important');
+        profileDelete.style.setProperty('-webkit-text-fill-color', '#FF3B30', 'important');
+        profileDelete.style.setProperty('background', 'rgba(255,59,48,0.10)', 'important');
+        profileDelete.style.setProperty('border-color', 'rgba(255,59,48,0.18)', 'important');
+        profileDelete.style.setProperty('box-shadow', '0 10px 26px rgba(255,59,48,0.16)', 'important');
+        try {
+            profileDelete.querySelectorAll('*').forEach(x => {
+                x.style.setProperty('color', '#FF3B30', 'important');
+                x.style.setProperty('-webkit-text-fill-color', '#FF3B30', 'important');
+            });
+        } catch (e) {}
+    }
+
+    return tone;
+}
+/* AARISH_CREDIT_DETAIL_HEADER_TONE_CORE_V2_END */
+
 function updateCreditBookCoreUi() {
     const totals = creditTotalsCoreV1();
     const tone = creditToneCoreV1(totals.net);
@@ -3982,26 +4092,51 @@ function updateCreditBookCoreUi() {
 function ensureCreditDetailDeleteButtonCoreV1() {
     const screen = document.getElementById('udhar-detail-screen');
     if (!screen) return;
+
     const row = screen.querySelector('.header-sticky .flex.items-center') || screen.querySelector('.header-sticky');
     if (!row) return;
-    let btn = document.getElementById('credit-profile-delete-btn-core') || document.getElementById('credit-profile-delete-btn-v29');
+
+    let btn = document.getElementById('credit-profile-delete-btn-core') || document.getElementById('credit-profile-delete-btn-v29') || row.querySelector('.credit-profile-delete-btn-core');
+
     if (!btn) {
         btn = document.createElement('button');
-        btn.id = 'credit-profile-delete-btn-core';
         btn.type = 'button';
         btn.setAttribute('aria-label', 'Delete credit profile');
+        btn.setAttribute('title', 'Delete credit profile');
         btn.innerHTML = '<i class="fa-solid fa-trash"></i>';
         row.appendChild(btn);
     }
+
+    btn.id = 'credit-profile-delete-btn-core';
+    btn.type = 'button';
     btn.className = 'credit-profile-delete-btn-core shrink-0';
+    btn.setAttribute('data-credit-delete-core', 'true');
+    btn.setAttribute('aria-label', 'Delete credit profile');
+    btn.setAttribute('title', 'Delete credit profile');
+
+    btn.style.setProperty('color', '#FF3B30', 'important');
+    btn.style.setProperty('-webkit-text-fill-color', '#FF3B30', 'important');
+    btn.style.setProperty('background', 'rgba(255,59,48,0.10)', 'important');
+    btn.style.setProperty('border-color', 'rgba(255,59,48,0.18)', 'important');
+    btn.style.setProperty('box-shadow', '0 10px 26px rgba(255,59,48,0.16)', 'important');
+
+    try {
+        btn.querySelectorAll('*').forEach(x => {
+            x.style.setProperty('color', '#FF3B30', 'important');
+            x.style.setProperty('-webkit-text-fill-color', '#FF3B30', 'important');
+        });
+    } catch (e) {}
+
     btn.onclick = function (event) {
         if (event) { event.preventDefault(); event.stopPropagation(); }
         try { haptic(); } catch (e) {}
         deleteUdharPersonProfile(activeUdharPerson);
     };
+
     try {
         const shareBtn = document.querySelector('#udhar-detail-screen button[onclick*="shareUdharBill"]');
         if (shareBtn) shareBtn.classList.add('credit-share-btn-core');
+
         const addBtn = document.querySelector('#udhar-detail-screen button[onclick*="openUdharModal(activeUdharPerson)"]');
         if (addBtn) {
             addBtn.classList.remove('btn-ios-share', '!bg-gray-500/10', '!text-gray-700', 'dark:!text-gray-300', '!border-gray-500/20');
@@ -4009,6 +4144,7 @@ function ensureCreditDetailDeleteButtonCoreV1() {
         }
     } catch (e) {}
 
+    try { creditApplyDetailHeaderToneCoreV1(activeUdharPerson); } catch (e) {}
 }
 /* AARISH_CREDIT_BOOK_CORE_OWNER_V1_END */
 
@@ -4146,19 +4282,25 @@ function openUdharModal(name = null) {
     
     function openUdharDetail(name) {
     if (isLongPress) { isLongPress = false; return; }
+
     activeUdharPerson = creditCleanNameCoreV1(name || '');
 
     const title = document.getElementById('udhar-detail-title');
     if (title) title.textContent = activeUdharPerson || 'Customer';
+
     document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+
     const screen = document.getElementById('udhar-detail-screen');
     if (screen) screen.classList.add('active');
+
     ensureCreditDetailDeleteButtonCoreV1();
+    creditApplyDetailHeaderToneCoreV1(activeUdharPerson);
     renderUdharRecords();
 }
 
     function renderUdharRecords() {
     if (!activeUdharPerson) return;
+
     ensureCreditDetailDeleteButtonCoreV1();
 
     const records = creditEntriesCoreV1()
@@ -4166,24 +4308,38 @@ function openUdharModal(name = null) {
         .sort((a, b) => String((b && b.date) || '').localeCompare(String((a && a.date) || '')));
 
     let net = 0;
+
     const html = records.map((r, index) => {
         const signed = creditSignedAmountCoreV1(r);
         net += signed;
+
         const rowTone = creditToneCoreV1(signed);
         const rowPack = creditPackCoreV1(rowTone);
+        const deleteArg = creditJsArgCoreV1(r && r.id);
+
         return `<tr class="list-enter" data-credit-core-row-tone="${rowTone}" data-module-tone="${rowTone}" style="${creditStyleVarsCoreV1(rowTone)} animation-delay:${index * 0.025}s;">
             <td>${creditFormatDateCoreV1(r.date)}</td>
             <td><span class="credit-core-badge text-[10px] font-extrabold uppercase px-2 py-1 rounded-md">${rowPack.row}</span></td>
-            <td class="font-extrabold text-[16px]">${creditMoneyCoreV1(signed)}</td>
-            <td class="text-right"><button onclick="event.stopPropagation(); haptic(); deleteUdhar('${creditEscCoreV1(r.id)}')" class="action-btn credit-delete-btn-core shrink-0"><i class="fa-solid fa-trash text-xs"></i></button></td>
+            <td class="font-extrabold text-[16px]">${signed > 0 ? '+' : (signed < 0 ? '-' : '')}${creditMoneyCoreV1(signed)}</td>
+            <td class="text-right">
+                <button
+                    type="button"
+                    data-credit-delete-core="true"
+                    aria-label="Delete entry"
+                    onclick="event.stopPropagation(); try{haptic()}catch(e){}; deleteUdhar(${deleteArg})"
+                    class="action-btn credit-delete-btn-core shrink-0">
+                    <i class="fa-solid fa-trash"></i>
+                </button>
+            </td>
         </tr>`;
     }).join('');
 
     const tbody = document.getElementById('udhar-detail-records');
-    if (tbody) tbody.innerHTML = html || `<tr><td colspan="4" class="text-center py-8 text-gray-400 font-semibold">No entries found</td></tr>`;
+    if (tbody) {
+        tbody.innerHTML = html || `<tr data-credit-core-row-tone="neutral"><td colspan="4" class="text-center py-8 font-semibold">No entries found</td></tr>`;
+    }
 
     const tone = creditToneCoreV1(net);
-    const pack = creditPackCoreV1(tone);
     const detailCard = document.getElementById('udhar-detail-card');
     const statusEl = document.getElementById('udhar-detail-status');
     const totalEl = document.getElementById('udhar-detail-total');
@@ -4194,9 +4350,16 @@ function openUdharModal(name = null) {
         detailCard.setAttribute('data-module-tone', tone);
         detailCard.setAttribute('style', creditStyleVarsCoreV1(tone));
     }
-    if (statusEl) statusEl.textContent = tone === 'positive' ? 'YOU WILL RECEIVE' : (tone === 'negative' ? 'YOU WILL PAY' : 'SETTLED');
-    if (totalEl) totalEl.textContent = (net > 0 ? '+' : (net < 0 ? '-' : '')) + creditMoneyCoreV1(net);
 
+    if (statusEl) {
+        statusEl.textContent = tone === 'positive' ? 'YOU WILL RECEIVE' : (tone === 'negative' ? 'YOU WILL PAY' : 'SETTLED');
+    }
+
+    if (totalEl) {
+        totalEl.textContent = (net > 0 ? '+' : (net < 0 ? '-' : '')) + creditMoneyCoreV1(net);
+    }
+
+    creditApplyDetailHeaderToneCoreV1(net);
     updateCreditBookCoreUi();
 }
     
