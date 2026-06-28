@@ -1508,89 +1508,805 @@
 
 
 
-         function loadUserData() {
+         
+// ========================== AARISH_FIREBASE_COST_CORE_V1_START ==========================
+// Single-owner low-cost Firebase core.
+// Big-file logic merged safely:
+// - V81 cache-first full read shield
+// - V83 IndexedDB adaptive outbox
+// - V87 raw batch API + cross-tab guarded flush
+// No renderer wrapper, no overlay, no repaint loop, no new script tag.
+window.__AARISH_FIREBASE_COST_CORE_V1 = true;
+window.__aarishFirebaseCostRevV81 = window.__aarishFirebaseCostRevV81 || 0;
+
+var __aarishCostDbCoreV1 = null;
+var __aarishCostFlushTimerV1 = null;
+var __aarishCostFlushHardTimerV1 = null;
+var __aarishCostFlushBusyV1 = false;
+var __aarishCostMetaCheckTimerV1 = null;
+
+function aarishCostUidV1() {
+    try { return String(currentUserUID || (firebase && firebase.auth && firebase.auth().currentUser && firebase.auth().currentUser.uid) || ""); } catch(e) { return ""; }
+}
+
+function aarishCostAppRefV1() {
+    try {
+        if (typeof appDataRef !== "undefined" && appDataRef) return appDataRef;
+        var uid = aarishCostUidV1();
+        if (uid && typeof database !== "undefined" && database && database.ref) return database.ref("users/" + uid + "/appData");
+    } catch(e) {}
+    return null;
+}
+
+function aarishCostOnlineV1() {
+    try { return navigator.onLine !== false; } catch(e) { return true; }
+}
+
+function aarishCostServerTimeV1() {
+    try { return firebase.database.ServerValue.TIMESTAMP; } catch(e) { return Date.now(); }
+}
+
+function aarishCostToastV1(msg) {
+    try { if (typeof showToast === "function") showToast(msg); } catch(e) {}
+}
+
+function aarishCostCleanPathV1(path) {
+    var s = String(path == null ? "" : path)
+        .replace(/^\/+/, "")
+        .replace(/\/+/g, "/")
+        .replace(/\/+$/, "");
+    if (!s) return "";
+
+    var parts = s.split("/").filter(Boolean);
+    if (!parts.length) return "";
+
+    for (var i = 0; i < parts.length; i++) {
+        var part = String(parts[i] || "");
+        if (!part || part.length > 220) return "";
+        if (/[.#$\[\]\u0000-\u001F\u007F]/.test(part)) return "";
+        if (part === "__proto__" || part === "prototype" || part === "constructor") return "";
+    }
+
+    return parts.join("/");
+}
+
+function aarishCostIdV1(prefix) {
+    return String(prefix || "obx") + "_" + Date.now() + "_" + Math.random().toString(36).slice(2, 11);
+}
+
+function aarishCostCacheKeyV1() {
+    return "AARISH_APPDATA_CACHE_V81::" + (aarishCostUidV1() || "nouid");
+}
+
+function aarishCostFallbackKeyV1() {
+    return "AARISH_OUTBOX_FALLBACK_V83::" + (aarishCostUidV1() || "nouid");
+}
+
+function aarishCostOpenDbV1() {
+    if (__aarishCostDbCoreV1) return Promise.resolve(__aarishCostDbCoreV1);
+
+    return new Promise(function(resolve) {
+        try {
+            if (!window.indexedDB) return resolve(null);
+
+            var req = indexedDB.open("AARISH_FIREBASE_CACHE_DB_V81", 3);
+
+            req.onupgradeneeded = function() {
+                var db = req.result;
+                if (!db.objectStoreNames.contains("kv")) db.createObjectStore("kv");
+                if (!db.objectStoreNames.contains("sync_queue")) db.createObjectStore("sync_queue", { keyPath: "id" });
+            };
+
+            req.onsuccess = function() {
+                __aarishCostDbCoreV1 = req.result;
+                try {
+                    __aarishCostDbCoreV1.onversionchange = function() {
+                        try { __aarishCostDbCoreV1.close(); } catch(e) {}
+                        __aarishCostDbCoreV1 = null;
+                    };
+                } catch(e) {}
+                resolve(req.result);
+            };
+
+            req.onerror = function() { resolve(null); };
+            req.onblocked = function() { resolve(null); };
+        } catch(e) {
+            resolve(null);
+        }
+    });
+}
+
+async function aarishCostKvGetV1(key) {
+    var db = await aarishCostOpenDbV1();
+    if (!db || !db.objectStoreNames.contains("kv")) {
+        try {
+            var raw = localStorage.getItem("IDB_FALLBACK_" + key);
+            return raw ? JSON.parse(raw) : null;
+        } catch(e) {
+            return null;
+        }
+    }
+
+    return new Promise(function(resolve) {
+        try {
+            var tx = db.transaction("kv", "readonly");
+            var req = tx.objectStore("kv").get(key);
+            req.onsuccess = function() { resolve(req.result || null); };
+            req.onerror = function() { resolve(null); };
+        } catch(e) {
+            resolve(null);
+        }
+    });
+}
+
+async function aarishCostKvSetV1(key, value) {
+    var db = await aarishCostOpenDbV1();
+    if (!db || !db.objectStoreNames.contains("kv")) {
+        try { localStorage.setItem("IDB_FALLBACK_" + key, JSON.stringify(value)); } catch(e) {}
+        return true;
+    }
+
+    return new Promise(function(resolve) {
+        try {
+            var tx = db.transaction("kv", "readwrite");
+            tx.objectStore("kv").put(value, key);
+            tx.oncomplete = function() { resolve(true); };
+            tx.onerror = function() { resolve(false); };
+            tx.onabort = function() { resolve(false); };
+        } catch(e) {
+            resolve(false);
+        }
+    });
+}
+
+function aarishCostSafeLoadV1(dbData) {
+    if (!dbData) return [];
+    try {
+        if (Array.isArray(dbData)) return dbData.filter(Boolean);
+        return Object.entries(dbData)
+            .filter(function(pair) { return pair[1] !== null && typeof pair[1] === "object"; })
+            .map(function(pair) {
+                var key = pair[0];
+                var val = pair[1] || {};
+                return Object.assign({}, val, { id: val.id || key });
+            });
+    } catch(e) {
+        return [];
+    }
+}
+
+function aarishCostSafeGroupV1(obj) {
+    var out = obj && typeof obj === "object" && !Array.isArray(obj) ? obj : {};
+    try {
+        Object.keys(out).forEach(function(k) {
+            if (!out[k] || typeof out[k] !== "object") {
+                delete out[k];
+                return;
+            }
+            out[k].records = aarishCostSafeLoadV1(out[k].records);
+        });
+    } catch(e) {}
+    return out;
+}
+
+function aarishCostNormalizeStateV1(raw) {
+    raw = raw || {};
+    return {
+        milkDB: aarishCostSafeGroupV1(raw.milkDB || {}),
+        salaryDB: aarishCostSafeGroupV1(raw.salaryDB || {}),
+        projectDB: aarishCostSafeGroupV1(raw.projectDB || {}),
+        udharDB: aarishCostSafeLoadV1(raw.udharDB),
+        expenseDB: aarishCostSafeLoadV1(raw.expenseDB),
+        diaryDB: aarishCostSafeLoadV1(raw.diaryDB)
+    };
+}
+
+function aarishCostApplyStateV1(state) {
+    state = aarishCostNormalizeStateV1(state || {});
+    milkDB = state.milkDB || {};
+    salaryDB = state.salaryDB || {};
+    projectDB = state.projectDB || {};
+    udharDB = Array.isArray(state.udharDB) ? state.udharDB : [];
+    expenseDB = Array.isArray(state.expenseDB) ? state.expenseDB : [];
+    diaryDB = Array.isArray(state.diaryDB) ? state.diaryDB : [];
+}
+
+function aarishCostGetStateV1() {
+    return {
+        milkDB: milkDB || {},
+        salaryDB: salaryDB || {},
+        projectDB: projectDB || {},
+        udharDB: Array.isArray(udharDB) ? udharDB : [],
+        expenseDB: Array.isArray(expenseDB) ? expenseDB : [],
+        diaryDB: Array.isArray(diaryDB) ? diaryDB : []
+    };
+}
+
+function aarishCostShowAppV1() {
+    try { if (typeof updateActiveScreen === "function") updateActiveScreen(); } catch(e) {}
+    try { if (typeof hideLoader === "function") hideLoader(); } catch(e) {}
+    try { document.getElementById("login-screen").style.display = "none"; } catch(e) {}
+    try { document.getElementById("main-app").classList.remove("hidden"); } catch(e) {}
+}
+
+async function saveCacheNowCostV81(reason) {
+    try {
+        var uid = aarishCostUidV1();
+        if (!uid) return false;
+
+        var payload = Object.assign({}, aarishCostGetStateV1(), {
+            uid: uid,
+            savedAt: Date.now(),
+            serverRev: Number(window.__aarishFirebaseCostRevV81 || 0),
+            reason: reason || "auto"
+        });
+
+        return await aarishCostKvSetV1(aarishCostCacheKeyV1(), payload);
+    } catch(e) {
+        return false;
+    }
+}
+
+function scheduleCacheSaveCostV81(reason) {
+    try {
+        clearTimeout(window.__aarishCacheSaveTimerV81);
+        window.__aarishCacheSaveTimerV81 = setTimeout(function() {
+            saveCacheNowCostV81(reason || "debounced");
+        }, 450);
+    } catch(e) {}
+}
+
+async function loadCacheCostV81() {
+    try {
+        var uid = aarishCostUidV1();
+        var cached = await aarishCostKvGetV1(aarishCostCacheKeyV1());
+        if (!cached || cached.uid !== uid) return false;
+
+        aarishCostApplyStateV1(cached);
+        window.__aarishFirebaseCostRevV81 = Number(cached.serverRev || cached.savedAt || 0);
+        return true;
+    } catch(e) {
+        return false;
+    }
+}
+
+function aarishCostReadFallbackV1() {
+    try {
+        var raw = localStorage.getItem(aarishCostFallbackKeyV1());
+        var arr = raw ? JSON.parse(raw) : [];
+        return Array.isArray(arr) ? arr : [];
+    } catch(e) {
+        return [];
+    }
+}
+
+function aarishCostWriteFallbackV1(arr) {
+    try {
+        localStorage.setItem(aarishCostFallbackKeyV1(), JSON.stringify((arr || []).slice(-600)));
+        return true;
+    } catch(e) {
+        aarishCostToastV1("Phone storage full. Internet ON rakho; sync retry hoga.");
+        return false;
+    }
+}
+
+async function aarishCostStoreOpV1(mode, fn) {
+    var db = await aarishCostOpenDbV1();
+    if (!db || !db.objectStoreNames.contains("sync_queue")) return null;
+
+    return new Promise(function(resolve) {
+        try {
+            var tx = db.transaction("sync_queue", mode);
+            var st = tx.objectStore("sync_queue");
+            var result = fn(st);
+            tx.oncomplete = function() { resolve(result === undefined ? true : result); };
+            tx.onerror = function() { resolve(null); };
+            tx.onabort = function() { resolve(null); };
+        } catch(e) {
+            resolve(null);
+        }
+    });
+}
+
+async function aarishCostPutOutboxV1(item) {
+    var ok = await aarishCostStoreOpV1("readwrite", function(st) {
+        st.put(item);
+        return true;
+    });
+
+    if (ok) return true;
+
+    var arr = aarishCostReadFallbackV1();
+    arr.push(item);
+    return aarishCostWriteFallbackV1(arr);
+}
+
+async function aarishCostGetOutboxV1() {
+    var uid = aarishCostUidV1();
+    var fallback = aarishCostReadFallbackV1();
+
+    var db = await aarishCostOpenDbV1();
+    if (!db || !db.objectStoreNames.contains("sync_queue")) {
+        return fallback.filter(function(x) { return x && x.uid === uid; });
+    }
+
+    return new Promise(function(resolve) {
+        try {
+            var tx = db.transaction("sync_queue", "readonly");
+            var req = tx.objectStore("sync_queue").getAll();
+
+            req.onsuccess = function() {
+                var arr = Array.isArray(req.result) ? req.result : [];
+                resolve(arr.concat(fallback)
+                    .filter(function(x) { return x && x.uid === uid; })
+                    .sort(function(a,b) { return Number(a.createdAt || 0) - Number(b.createdAt || 0); }));
+            };
+
+            req.onerror = function() {
+                resolve(fallback.filter(function(x) { return x && x.uid === uid; }));
+            };
+        } catch(e) {
+            resolve(fallback.filter(function(x) { return x && x.uid === uid; }));
+        }
+    });
+}
+
+async function aarishCostDeleteOutboxV1(ids) {
+    ids = ids || [];
+
+    await aarishCostStoreOpV1("readwrite", function(st) {
+        ids.forEach(function(id) {
+            try { st.delete(id); } catch(e) {}
+        });
+        return true;
+    });
+
+    var keep = aarishCostReadFallbackV1().filter(function(x) {
+        return ids.indexOf(x && x.id) === -1;
+    });
+    aarishCostWriteFallbackV1(keep);
+}
+
+function aarishCostWritesFromActionV1(path, action, payload) {
+    var writes = {};
+    path = aarishCostCleanPathV1(path);
+    action = String(action || "set").toLowerCase();
+
+    if (!path) return writes;
+
+    if (action === "remove" || action === "delete") {
+        writes[path] = null;
+        return writes;
+    }
+
+    if (action === "update" && payload && typeof payload === "object" && !Array.isArray(payload)) {
+        Object.keys(payload).forEach(function(k) {
+            var childPath = aarishCostCleanPathV1(path + "/" + k);
+            if (childPath) writes[childPath] = payload[k];
+        });
+        return writes;
+    }
+
+    writes[path] = (typeof payload === "undefined" ? null : payload);
+    return writes;
+}
+
+function aarishCostSetDeepV1(obj, parts, value) {
+    var cur = obj;
+    for (var i = 0; i < parts.length - 1; i++) {
+        var p = parts[i];
+        if (!cur[p] || typeof cur[p] !== "object" || Array.isArray(cur[p])) cur[p] = {};
+        cur = cur[p];
+    }
+    cur[parts[parts.length - 1]] = value;
+}
+
+function aarishCostPutCoalescedV1(mega, path, value) {
+    path = aarishCostCleanPathV1(path);
+    if (!path) return;
+
+    var parts = path.split("/").filter(Boolean);
+
+    for (var i = parts.length - 1; i >= 1; i--) {
+        var parent = parts.slice(0, i).join("/");
+        if (Object.prototype.hasOwnProperty.call(mega, parent)) {
+            if (mega[parent] === null) {
+                if (value === null) return;
+                delete mega[parent];
+                break;
+            }
+
+            if (typeof mega[parent] === "object" && !Array.isArray(mega[parent])) {
+                aarishCostSetDeepV1(mega[parent], parts.slice(i), value);
+                return;
+            }
+
+            delete mega[parent];
+            break;
+        }
+    }
+
+    Object.keys(mega).forEach(function(k) {
+        if (k.indexOf(path + "/") === 0) delete mega[k];
+    });
+
+    mega[path] = value;
+}
+
+function aarishCostBuildMegaV1(items) {
+    var mega = {};
+
+    (items || []).slice()
+        .sort(function(a,b) { return Number(a.createdAt || 0) - Number(b.createdAt || 0); })
+        .forEach(function(item) {
+            var writes = item.writes || aarishCostWritesFromActionV1(item.path, item.action, item.payload);
+            Object.keys(writes).forEach(function(path) {
+                aarishCostPutCoalescedV1(mega, path, writes[path]);
+            });
+        });
+
+    var rev = Date.now();
+    aarishCostPutCoalescedV1(mega, "_syncMeta/rev", rev);
+    aarishCostPutCoalescedV1(mega, "_syncMeta/mode", "AARISH_FIREBASE_COST_CORE_V1");
+    aarishCostPutCoalescedV1(mega, "_syncMeta/updatedAt", aarishCostServerTimeV1());
+
+    window.__aarishFirebaseCostRevV81 = rev;
+    return mega;
+}
+
+function aarishCostScheduleFlushV1(delay, reason) {
+    try {
+        clearTimeout(__aarishCostFlushTimerV1);
+        __aarishCostFlushTimerV1 = setTimeout(function() {
+            flushFirebaseWriteOutboxV87(reason || "timer", { force: false });
+        }, Math.max(120, Number(delay || 35000)));
+
+        if (!__aarishCostFlushHardTimerV1) {
+            __aarishCostFlushHardTimerV1 = setTimeout(function() {
+                __aarishCostFlushHardTimerV1 = null;
+                flushFirebaseWriteOutboxV87("hard-max-wait", { force: true });
+            }, 120000);
+        }
+    } catch(e) {}
+}
+
+async function aarishFirebaseLaterV48(path, action, payload, opts) {
+    opts = opts || {};
+
+    try {
+        var uid = aarishCostUidV1();
+        var writes = aarishCostWritesFromActionV1(path, action, payload);
+        var keys = Object.keys(writes);
+
+        if (!uid) return { queued: false, reason: "no_uid" };
+        if (!keys.length) return { queued: false, reason: "empty" };
+
+        var item = {
+            id: aarishCostIdV1("obx"),
+            uid: uid,
+            path: aarishCostCleanPathV1(path),
+            action: String(action || "set"),
+            payload: typeof payload === "undefined" ? null : payload,
+            writes: writes,
+            createdAt: Date.now(),
+            attempts: 0,
+            reason: String((opts && opts.reason) || "")
+        };
+
+        var ok = await aarishCostPutOutboxV1(item);
+
+        scheduleCacheSaveCostV81("queued-" + item.path);
+
+        var urgent = String(action || "").toLowerCase() === "remove" || String(action || "").toLowerCase() === "delete" || opts.fast;
+        aarishCostScheduleFlushV1(urgent ? 1200 : 35000, urgent ? "urgent" : "idle-batch");
+
+        return { queued: !!ok, id: item.id, writes: keys.length };
+    } catch(e) {
+        aarishCostToastV1("Local sync queue issue!");
+        return { queued: false, error: String(e && e.message ? e.message : e) };
+    }
+}
+
+window.aarishFirebaseLaterV48 = aarishFirebaseLaterV48;
+
+async function aarishFirebaseBatchLaterV87(flatPayload, reason) {
+    try {
+        var uid = aarishCostUidV1();
+        var writes = {};
+        Object.keys(flatPayload || {}).forEach(function(path) {
+            var clean = aarishCostCleanPathV1(path);
+            if (!clean || clean.indexOf("_syncMeta") === 0) return;
+            writes[clean] = flatPayload[path];
+        });
+
+        var keys = Object.keys(writes);
+        if (!uid) return { queued: false, reason: "no_uid" };
+        if (!keys.length) return { queued: false, reason: "empty" };
+
+        var item = {
+            id: aarishCostIdV1("raw87"),
+            uid: uid,
+            path: "__raw_batch_v87__",
+            action: "raw-batch",
+            payload: null,
+            writes: writes,
+            createdAt: Date.now(),
+            attempts: 0,
+            reason: String(reason || "raw-batch")
+        };
+
+        var ok = await aarishCostPutOutboxV1(item);
+        scheduleCacheSaveCostV81("raw-batch-" + String(reason || ""));
+        aarishCostScheduleFlushV1(1000, "raw-batch");
+
+        return { queued: !!ok, items: keys.length };
+    } catch(e) {
+        return { queued: false, error: String(e && e.message ? e.message : e) };
+    }
+}
+
+window.aarishFirebaseBatchLaterV87 = aarishFirebaseBatchLaterV87;
+
+function aarishCostLockKeyV1() {
+    return "AARISH_SYNC_LOCK_V87::" + (aarishCostUidV1() || "nouid");
+}
+
+function aarishCostAcquireLockV1() {
+    var key = aarishCostLockKeyV1();
+    var owner = "tab_" + Date.now() + "_" + Math.random().toString(36).slice(2, 10);
+
+    try {
+        var oldRaw = localStorage.getItem(key);
+        if (oldRaw) {
+            var old = JSON.parse(oldRaw);
+            if (old && Number(old.expiresAt || 0) > Date.now() && old.owner !== owner) return null;
+        }
+
+        localStorage.setItem(key, JSON.stringify({
+            owner: owner,
+            createdAt: Date.now(),
+            expiresAt: Date.now() + 45000
+        }));
+
+        var check = JSON.parse(localStorage.getItem(key) || "{}");
+        if (!check || check.owner !== owner) return null;
+
+        return function release() {
+            try {
+                var cur = JSON.parse(localStorage.getItem(key) || "{}");
+                if (cur && cur.owner === owner) localStorage.removeItem(key);
+            } catch(e) {}
+        };
+    } catch(e) {
+        return function noop() {};
+    }
+}
+
+async function flushFirebaseWriteOutboxV87(reason, opts) {
+    opts = opts || {};
+
+    if (__aarishCostFlushBusyV1) return { ok: false, locked: true };
+    if (!aarishCostUidV1()) return { ok: false, reason: "no_uid" };
+    if (!aarishCostOnlineV1() && !opts.force) return { ok: false, offline: true };
+
+    var ref = aarishCostAppRefV1();
+    if (!ref) return { ok: false, reason: "no_ref" };
+
+    var release = aarishCostAcquireLockV1();
+    if (!release) return { ok: false, locked: true, reason: "cross-tab-busy" };
+
+    __aarishCostFlushBusyV1 = true;
+
+    try {
+        var items = await aarishCostGetOutboxV1();
+
+        if (!items.length) {
+            clearTimeout(__aarishCostFlushHardTimerV1);
+            __aarishCostFlushHardTimerV1 = null;
+            return { ok: true, empty: true };
+        }
+
+        var batch = items.slice(0, 250);
+        var mega = aarishCostBuildMegaV1(batch);
+        var ids = batch.map(function(x) { return x.id; });
+
+        await ref.update(mega);
+        await aarishCostDeleteOutboxV1(ids);
+        await saveCacheNowCostV81("flush-" + String(reason || ""));
+
+        if (items.length > batch.length) {
+            aarishCostScheduleFlushV1(1000, "more-pending");
+        } else {
+            clearTimeout(__aarishCostFlushHardTimerV1);
+            __aarishCostFlushHardTimerV1 = null;
+        }
+
+        return { ok: true, sent: ids.length, remaining: Math.max(0, items.length - batch.length) };
+    } catch(e) {
+        aarishCostScheduleFlushV1(10000 + Math.floor(Math.random() * 3000), "retry");
+        aarishCostToastV1("Pending sync saved. Internet check karo.");
+        return { ok: false, error: String(e && e.message ? e.message : e) };
+    } finally {
+        __aarishCostFlushBusyV1 = false;
+        try { release(); } catch(e) {}
+    }
+}
+
+window.flushFirebaseWriteOutboxV87 = flushFirebaseWriteOutboxV87;
+window.flushFirebaseWriteOutboxV83 = flushFirebaseWriteOutboxV87;
+
+async function aarishOutboxStatusV83() {
+    var items = await aarishCostGetOutboxV1();
+    return {
+        pending: items.length,
+        oldestAgeSec: items.length ? Math.round((Date.now() - Number(items[0].createdAt || Date.now())) / 1000) : 0,
+        flushing: !!__aarishCostFlushBusyV1,
+        online: aarishCostOnlineV1(),
+        mode: "AARISH_FIREBASE_COST_CORE_V1"
+    };
+}
+
+window.aarishOutboxStatusV83 = aarishOutboxStatusV83;
+window.aarishSyncGuardStatusV87 = aarishOutboxStatusV83;
+
+async function fullFirebaseSyncCostV81(reason) {
+    var uid = aarishCostUidV1();
+    if (!uid) return false;
+
+    try { if (typeof showLoader === "function") showLoader("ONE-TIME CLOUD SYNC..."); } catch(e) {}
+
+    appDataRef = database.ref("users/" + uid + "/appData");
+
+    var names = ["milkDB", "salaryDB", "projectDB", "udharDB", "expenseDB", "diaryDB"];
+    var snaps = await Promise.all(names.map(function(name) {
+        return appDataRef.child(name).once("value").then(function(snap) {
+            return [name, snap.val()];
+        }).catch(function() {
+            return [name, null];
+        });
+    }));
+
+    var raw = {};
+    snaps.forEach(function(pair) { raw[pair[0]] = pair[1]; });
+
+    var state = aarishCostNormalizeStateV1(raw);
+    aarishCostApplyStateV1(state);
+
+    try {
+        var metaSnap = await Promise.race([
+            appDataRef.child("_syncMeta/rev").once("value"),
+            new Promise(function(_, reject) { setTimeout(function(){ reject(new Error("meta-timeout")); }, 6500); })
+        ]);
+        window.__aarishFirebaseCostRevV81 = Number(metaSnap.val() || Date.now());
+    } catch(e) {
+        window.__aarishFirebaseCostRevV81 = Date.now();
+    }
+
+    await saveCacheNowCostV81(reason || "full-sync");
+    aarishCostShowAppV1();
+
+    try { aarishCostScheduleFlushV1(1200, "after-full-sync"); } catch(e) {}
+    return true;
+}
+
+window.fullFirebaseSyncCostV81 = fullFirebaseSyncCostV81;
+window.aarishForceFullFirebaseSyncV81 = function() {
+    return fullFirebaseSyncCostV81("manual-force-sync");
+};
+
+async function aarishAutoPullCloudIfNewerV87(reason, opts) {
+    opts = opts || {};
+
+    try {
+        var uid = aarishCostUidV1();
+        var ref = aarishCostAppRefV1();
+        if (!uid || !ref || !aarishCostOnlineV1()) return { ok: false, reason: "not-ready" };
+
+        var minGap = opts.force ? 0 : 60000;
+        if (Date.now() - Number(window.__aarishLastMetaCheckV1 || 0) < minGap) {
+            return { ok: true, skipped: "throttled" };
+        }
+
+        window.__aarishLastMetaCheckV1 = Date.now();
+
+        await flushFirebaseWriteOutboxV87("before-meta-check", { force: false });
+
+        var snap = await Promise.race([
+            ref.child("_syncMeta/rev").once("value"),
+            new Promise(function(_, reject) { setTimeout(function(){ reject(new Error("meta-timeout")); }, 6500); })
+        ]);
+
+        var cloudRev = Number(snap.val() || 0);
+        var localRev = Number(window.__aarishFirebaseCostRevV81 || 0);
+
+        if (cloudRev && (!localRev || cloudRev > localRev || opts.forcePull)) {
+            await fullFirebaseSyncCostV81("auto-pull-newer-cloud");
+            return { ok: true, pulled: true, cloudRev: cloudRev, localRev: localRev };
+        }
+
+        return { ok: true, upToDate: true, cloudRev: cloudRev, localRev: localRev };
+    } catch(e) {
+        return { ok: false, error: String(e && e.message ? e.message : e) };
+    }
+}
+
+window.aarishAutoPullCloudIfNewerV87 = aarishAutoPullCloudIfNewerV87;
+window.aarishAutoPullCloudIfNewerV85 = aarishAutoPullCloudIfNewerV87;
+
+function installFirebaseCostCoreV1() {
+    if (window.__aarishFirebaseCostCoreEventsV1) return;
+    window.__aarishFirebaseCostCoreEventsV1 = true;
+
+    try {
+        window.addEventListener("online", function() {
+            setTimeout(function() {
+                flushFirebaseWriteOutboxV87("online", { force: true });
+                aarishAutoPullCloudIfNewerV87("online", { force: true });
+            }, 700);
+        }, { passive: true });
+    } catch(e) {}
+
+    try {
+        window.addEventListener("focus", function() {
+            setTimeout(function() {
+                flushFirebaseWriteOutboxV87("focus", { force: false });
+                aarishAutoPullCloudIfNewerV87("focus", { force: false });
+            }, 1000);
+        }, { passive: true });
+    } catch(e) {}
+
+    try {
+        document.addEventListener("visibilitychange", function() {
+            if (document.hidden) {
+                flushFirebaseWriteOutboxV87("hidden", { force: false });
+                saveCacheNowCostV81("hidden");
+            } else {
+                setTimeout(function() {
+                    flushFirebaseWriteOutboxV87("visible", { force: false });
+                    aarishAutoPullCloudIfNewerV87("visible", { force: false });
+                }, 1000);
+            }
+        }, { passive: true });
+    } catch(e) {}
+
+    try {
+        window.addEventListener("pagehide", function() {
+            flushFirebaseWriteOutboxV87("pagehide", { force: false });
+            saveCacheNowCostV81("pagehide");
+        }, { passive: true });
+    } catch(e) {}
+}
+
+installFirebaseCostCoreV1();
+// ========================== AARISH_FIREBASE_COST_CORE_V1_END ==========================
+
+
+async function loadUserData() {
     showLoader("SYNCING DATA...");
     appDataRef = database.ref(`users/${currentUserUID}/appData`);
-    
-    // 🔥 THE MASTER ENGINE: Null values hatane aur ID jodne ke liye
-    const safeLoad = (dbData) => {
-        if (!dbData) return [];
-        return Object.entries(dbData)
-            .filter(([key, val]) => val !== null && typeof val === 'object') 
-            .map(([key, val]) => {
-                return { ...val, id: val.id || key }; 
-            });
-    };
 
-    let loadedModules = 0;
-    const initialSyncComplete = () => {
-        loadedModules++;
-        // Jab pehli baar 6 ke 6 module load ho jayein, tab app khulegi
-        if (loadedModules === 6) {
-            updateActiveScreen();
-            hideLoader();
-            document.getElementById('login-screen').style.display = 'none';
-            document.getElementById('main-app').classList.remove('hidden');
-        } else if (loadedModules > 6) {
-            // Live updates ke waqt sirf screen refresh hogi
-            updateActiveScreen();
+    try {
+        installFirebaseCostCoreV1();
+
+        const hasCache = await loadCacheCostV81();
+
+        if (hasCache) {
+            aarishCostShowAppV1();
+            aarishCostScheduleFlushV1(1200, "cache-boot-flush");
+
+            clearTimeout(__aarishCostMetaCheckTimerV1);
+            __aarishCostMetaCheckTimerV1 = setTimeout(function() {
+                aarishAutoPullCloudIfNewerV87("cache-boot-meta", { force: true });
+            }, 1700);
+
+            return;
         }
-    };
 
-    // 1. UDHAR MODULE SYNC
-    appDataRef.child('udharDB').on('value', (snapshot) => {
-        udharDB = safeLoad(snapshot.val());
-        initialSyncComplete();
-    });
-
-    // 2. EXPENSE MODULE SYNC
-    appDataRef.child('expenseDB').on('value', (snapshot) => {
-        expenseDB = safeLoad(snapshot.val());
-        initialSyncComplete();
-    });
-
-    // 3. DIARY MODULE SYNC
-    appDataRef.child('diaryDB').on('value', (snapshot) => {
-        diaryDB = safeLoad(snapshot.val());
-        initialSyncComplete();
-    });
-
-    // 4. MILK MODULE SYNC
-    appDataRef.child('milkDB').on('value', (snapshot) => {
-        const data = snapshot.val() || {};
-        milkDB = data;
-        Object.keys(milkDB).forEach(k => {
-            milkDB[k].records = safeLoad(milkDB[k].records);
-        });
-        initialSyncComplete();
-    });
-
-    // 5. SALARY MODULE SYNC
-    appDataRef.child('salaryDB').on('value', (snapshot) => {
-        const data = snapshot.val() || {};
-        salaryDB = data;
-        Object.keys(salaryDB).forEach(k => {
-            salaryDB[k].records = safeLoad(salaryDB[k].records);
-        });
-        initialSyncComplete();
-    });
-
-
-    // 6. PROJECTS (BUSINESS HUB) SYNC
-    appDataRef.child('projectDB').on('value', (snapshot) => {
-        const data = snapshot.val() || {};
-        projectDB = data;
-        
-        // 🔥 FIX: Project (Business Hub) ke records par bhi safeLoad lagaya
-        Object.keys(projectDB).forEach(k => {
-            projectDB[k].records = safeLoad(projectDB[k].records);
-        });
-        
-        initialSyncComplete();
-    });
-
-
-             
+        await fullFirebaseSyncCostV81("first-open-no-cache");
+    } catch(e) {
+        console.warn("Aarish cost-core load failed, falling back to one-time Firebase sync:", e);
+        await fullFirebaseSyncCostV81("fallback-after-cost-core-error");
+    }
 }
 
     
@@ -1767,13 +2483,13 @@ async function saveDiaryEntry() {
         const entry = diaryDB.find(d => d.id === activeDiaryIndex);
         if(entry) {
             entry.date = date; entry.title = title; entry.content = content; entry.updated = Date.now();
-            if (currentUserUID) await appDataRef.child(`diaryDB/${activeDiaryIndex}`).set(entry);
+            if (currentUserUID) await aarishFirebaseLaterV48(`diaryDB/${activeDiaryIndex}`, 'set', entry);
         }
     } else {
         const uniqueId = "dia_" + Date.now();
         const entry = { id: uniqueId, date, title, content, updated: Date.now() };
         diaryDB.unshift(entry);
-        if (currentUserUID) await appDataRef.child(`diaryDB/${uniqueId}`).set(entry);
+        if (currentUserUID) await aarishFirebaseLaterV48(`diaryDB/${uniqueId}`, 'set', entry);
         activeDiaryIndex = uniqueId;
     }
     
@@ -1832,7 +2548,7 @@ function renderDiaryList() {
   async function deleteDiary(id, goBack = false) { 
     if(confirm('Delete this page permanently?')) { 
         diaryDB = diaryDB.filter(d => d.id !== id); 
-        if (currentUserUID) await appDataRef.child(`diaryDB/${id}`).remove();
+        if (currentUserUID) await aarishFirebaseLaterV48(`diaryDB/${id}`, 'remove', null, { fast: true });
         
         if(goBack) switchTab('diary');
         else renderDiaryList();
@@ -1856,7 +2572,7 @@ function renderDiaryList() {
     salaryDB[name] = { company: company, type: type, records: [] }; 
     
     if (currentUserUID) {
-        await appDataRef.child(`salaryDB/${name}`).set(salaryDB[name]); 
+        await aarishFirebaseLaterV48(`salaryDB/${name}`, 'set', salaryDB[name]); 
     }
     
     closeModal('add-salary-person-modal'); 
@@ -1880,7 +2596,7 @@ async function deleteSalaryPersonProfile(name) {
         delete salaryDB[name]; 
         
         if (currentUserUID) {
-            await appDataRef.child(`salaryDB/${name}`).remove();      
+            await aarishFirebaseLaterV48(`salaryDB/${name}`, 'remove', null, { fast: true });      
         }
         
         if(activeSalaryPerson === name) activeSalaryPerson = null; 
@@ -1965,7 +2681,7 @@ async function deleteSalaryPersonProfile(name) {
         salaryDB[activeSalaryPerson].records.push(newEntry);
         
         if (currentUserUID) {
-            await appDataRef.child(`salaryDB/${activeSalaryPerson}/records/${uniqueId}`).set(newEntry);
+            await aarishFirebaseLaterV48(`salaryDB/${activeSalaryPerson}/records/${uniqueId}`, 'set', newEntry);
         }
         
         closeModal('add-salary-entry-modal'); 
@@ -2019,7 +2735,7 @@ async function deleteSalaryPersonProfile(name) {
             salaryDB[activeSalaryPerson].records = salaryDB[activeSalaryPerson].records.filter(r => r.id !== id);
             
             if (currentUserUID) {
-                await appDataRef.child(`salaryDB/${activeSalaryPerson}/records/${id}`).remove();
+                await aarishFirebaseLaterV48(`salaryDB/${activeSalaryPerson}/records/${id}`, 'remove', null, { fast: true });
             }
             
             renderSalaryRecords();
@@ -2038,32 +2754,34 @@ async function addMilkCustomer() {
     const nameEl = document.getElementById('new-milk-name');
     const rateEl = document.getElementById('new-milk-rate');
     const typeEl = document.getElementById('new-milk-type');
-    const name = aarishMilkNormalizeNameCore(nameEl && nameEl.value);
+
+    const entered = aarishMilkNormalizeNameCore(nameEl && nameEl.value);
     const rate = parseFloat(rateEl && rateEl.value) || DEFAULT_RATE;
     const type = (typeEl && typeEl.value) || 'lene_wala';
 
-    if (!name) return showToast('Enter Name!');
+    if (!entered) return showToast('Enter Name!');
 
-    const existingKey = aarishMilkFindExistingKeyCore(name);
-    if (existingKey && milkDB[existingKey]) {
+    const existingKey = aarishMilkFindExistingKeyCore(entered);
+    if (existingKey && milkDB && milkDB[existingKey]) {
         activeMilkCustomer = existingKey;
         if (nameEl) nameEl.value = '';
         if (rateEl) rateEl.value = '';
         closeModal('add-milk-customer-modal');
         renderMilkList();
         updateDashboard();
-        return showToast('Customer already exists!');
+        return showToast('Customer already exists — duplicate not created!');
     }
 
-    milkDB[name] = { rate: rate, type: type, records: [], canonicalNameV18: aarishMilkNameKeyCore(name) };
+    const name = entered;
+    milkDB[name] = {
+        rate: rate,
+        type: type,
+        records: [],
+        canonicalNameV18: aarishMilkNameKeyCore(name),
+        createdAtV18: new Date().toISOString()
+    };
 
-    if (currentUserUID) {
-        if (typeof window.aarishFirebaseLaterV48 === 'function') {
-            window.aarishFirebaseLaterV48(`milkDB/${name}`, 'set', milkDB[name]);
-        } else if (typeof appDataRef !== 'undefined' && appDataRef) {
-            await appDataRef.child(`milkDB/${name}`).set(milkDB[name]);
-        }
-    }
+    await aarishMilkFirebaseWriteCore(`milkDB/${name}`, 'set', milkDB[name], 'add-milk-customer');
 
     if (nameEl) nameEl.value = '';
     if (rateEl) rateEl.value = '';
@@ -2098,16 +2816,17 @@ async function addMilkCustomer() {
     if (confirm(`Are you sure you want to permanently delete the customer "${customerName}" and all their records?`)) {
         delete milkDB[customerName];
 
-        if (currentUserUID) {
-            if (typeof window.aarishFirebaseBatchLaterV87 === 'function') {
-                const payload = {};
-                payload[`milkDB/${customerName}`] = null;
-                window.aarishFirebaseBatchLaterV87(payload, 'delete-milk-profile');
-            } else if (typeof window.aarishFirebaseLaterV48 === 'function') {
-                window.aarishFirebaseLaterV48(`milkDB/${customerName}`, 'remove');
-            } else if (typeof appDataRef !== 'undefined' && appDataRef) {
-                await appDataRef.child(`milkDB/${customerName}`).remove();
+        if (typeof window.aarishFirebaseBatchLaterV87 === 'function') {
+            const payload = {};
+            payload[`milkDB/${customerName}`] = null;
+
+            try {
+                await window.aarishFirebaseBatchLaterV87(payload, 'delete-milk-profile');
+            } catch(e) {
+                await aarishMilkFirebaseWriteCore(`milkDB/${customerName}`, 'remove', null, 'delete-milk-profile-batch-fallback');
             }
+        } else {
+            await aarishMilkFirebaseWriteCore(`milkDB/${customerName}`, 'remove', null, 'delete-milk-profile');
         }
 
         if (activeMilkCustomer === customerName) activeMilkCustomer = null;
@@ -2135,6 +2854,177 @@ function aarishMilkRecordsCore(v) {
     if (v && typeof v === 'object') return Object.keys(v).map(k => v[k]).filter(Boolean);
     return [];
 }
+
+
+/* AARISH_MILK_BACKGROUND_CORE_V1_START
+   Milk-only background Firebase writer:
+   same milkDB paths, queued fallback, no overlay, no wrapper chain, no repaint loop.
+*/
+function aarishMilkUidCore() {
+    try { if (currentUserUID) return currentUserUID; } catch(e) {}
+    try { if (firebase && firebase.auth && firebase.auth().currentUser) return firebase.auth().currentUser.uid; } catch(e) {}
+    return '';
+}
+
+function aarishMilkAppDataRefCore() {
+    try { if (appDataRef) return appDataRef; } catch(e) {}
+    try {
+        const uid = aarishMilkUidCore();
+        if (uid && database && database.ref) return database.ref(`users/${uid}/appData`);
+    } catch(e) {}
+    return null;
+}
+
+function aarishMilkOnlineCore() {
+    try { return navigator.onLine !== false; } catch(e) { return true; }
+}
+
+function aarishMilkOutboxKeyCore(uid) {
+    return 'AARISH_MILK_OUTBOX_CORE_V1::' + (uid || 'pending');
+}
+
+function aarishMilkOutboxKeysCore() {
+    const uid = aarishMilkUidCore();
+    const keys = [aarishMilkOutboxKeyCore('pending')];
+    if (uid) keys.push(aarishMilkOutboxKeyCore(uid));
+    return Array.from(new Set(keys));
+}
+
+function aarishMilkSanitizeFirebaseValueCore(value) {
+    if (value == null) return value;
+    try { return JSON.parse(JSON.stringify(value)); } catch(e) { return value; }
+}
+
+function aarishMilkReadOutboxCore(key) {
+    try {
+        const raw = localStorage.getItem(key);
+        const arr = raw ? JSON.parse(raw) : [];
+        return Array.isArray(arr) ? arr.filter(Boolean) : [];
+    } catch(e) {
+        return [];
+    }
+}
+
+function aarishMilkWriteOutboxCore(key, items) {
+    try {
+        localStorage.setItem(key, JSON.stringify((items || []).filter(Boolean).slice(-400)));
+        return true;
+    } catch(e) {
+        return false;
+    }
+}
+
+function aarishMilkQueueWriteCore(path, action, payload, reason) {
+    const uid = aarishMilkUidCore();
+    const key = aarishMilkOutboxKeyCore(uid || 'pending');
+    const items = aarishMilkReadOutboxCore(key);
+
+    items.push({
+        id: 'milk_bg_' + Date.now() + '_' + Math.random().toString(36).slice(2, 10),
+        path: String(path || ''),
+        action: String(action || 'set'),
+        payload: aarishMilkSanitizeFirebaseValueCore(payload),
+        createdAt: Date.now(),
+        reason: String(reason || 'milk-core-write')
+    });
+
+    const ok = aarishMilkWriteOutboxCore(key, items);
+
+    if (ok) {
+        try { showToast('Saved locally. Internet आते ही Milk sync हो जाएगा.'); } catch(e) {}
+    } else {
+        try { showToast('Phone storage full. Internet ON करके फिर save करें.'); } catch(e) {}
+    }
+
+    return { queued: ok, path, action };
+}
+
+async function aarishMilkDirectFirebaseWriteCore(path, action, payload) {
+    const ref = aarishMilkAppDataRefCore();
+    if (!ref) throw new Error('Milk Firebase ref not ready');
+
+    const child = ref.child(String(path || ''));
+
+    if (action === 'remove') return child.remove();
+    if (action === 'update') return child.update(payload || {});
+    return child.set(aarishMilkSanitizeFirebaseValueCore(payload));
+}
+
+async function aarishMilkFirebaseWriteCore(path, action, payload, reason) {
+    action = action || 'set';
+    if (!path) return { ok:false, reason:'missing_path' };
+
+    try {
+        if (typeof window.aarishFirebaseLaterV48 === 'function' && !window.aarishFirebaseLaterV48.__aarishMilkBackgroundCoreV1) {
+            return await window.aarishFirebaseLaterV48(path, action, payload);
+        }
+    } catch(e) {
+        return aarishMilkQueueWriteCore(path, action, payload, reason || 'v48-failed');
+    }
+
+    if (!aarishMilkUidCore() || !aarishMilkAppDataRefCore() || !aarishMilkOnlineCore()) {
+        return aarishMilkQueueWriteCore(path, action, payload, reason || 'offline-or-ref-not-ready');
+    }
+
+    try {
+        await aarishMilkDirectFirebaseWriteCore(path, action, payload);
+        return { ok:true, path, action };
+    } catch(e) {
+        return aarishMilkQueueWriteCore(path, action, payload, reason || 'direct-write-failed');
+    }
+}
+
+async function aarishMilkFlushOutboxCore(reason) {
+    if (!aarishMilkUidCore() || !aarishMilkAppDataRefCore() || !aarishMilkOnlineCore()) return { ok:false, reason:'not-ready' };
+    if (window.__aarishMilkFlushOutboxCoreBusy) return { ok:false, reason:'busy' };
+
+    window.__aarishMilkFlushOutboxCoreBusy = true;
+    let sent = 0;
+
+    try {
+        for (const key of aarishMilkOutboxKeysCore()) {
+            const items = aarishMilkReadOutboxCore(key);
+            if (!items.length) continue;
+
+            const keep = [];
+
+            for (const item of items) {
+                try {
+                    await aarishMilkDirectFirebaseWriteCore(item.path, item.action, item.payload);
+                    sent++;
+                } catch(e) {
+                    keep.push(item);
+                }
+            }
+
+            aarishMilkWriteOutboxCore(key, keep);
+        }
+
+        if (sent) {
+            try { showToast('Milk background sync complete'); } catch(e) {}
+            try { renderMilkList(); } catch(e) {}
+            try { if (activeMilkCustomer) renderMilkRecords(); } catch(e) {}
+            try { updateDashboard(); } catch(e) {}
+        }
+
+        return { ok:true, sent, reason: reason || 'manual' };
+    } finally {
+        window.__aarishMilkFlushOutboxCoreBusy = false;
+    }
+}
+
+function aarishMilkInstallBackgroundCore() {
+    window.aarishMilkFlushOutboxCore = aarishMilkFlushOutboxCore;
+
+    try { window.addEventListener('online', function(){ aarishMilkFlushOutboxCore('online'); }, { passive:true }); } catch(e) {}
+    try { window.addEventListener('focus', function(){ aarishMilkFlushOutboxCore('focus'); }, { passive:true }); } catch(e) {}
+    try { document.addEventListener('visibilitychange', function(){ if (!document.hidden) aarishMilkFlushOutboxCore('visible'); }, { passive:true }); } catch(e) {}
+    try { setTimeout(function(){ aarishMilkFlushOutboxCore('boot'); }, 1200); } catch(e) {}
+}
+
+aarishMilkInstallBackgroundCore();
+/* AARISH_MILK_BACKGROUND_CORE_V1_END */
+
 
 function aarishMilkCleanZeroCore(v) {
     const n = aarishMilkNumCore(v);
@@ -2414,7 +3304,8 @@ function renderMilkList() {
 
         const rowTone = aarishMilkToneCore(signedQty);
         const sign = signedQty < 0 ? '-' : '+';
-        const safeId = aarishMilkJsArgCore(r.id || r.key || r.originalIndex || '');
+        const rawId = (r && r.id != null) ? r.id : ((r && r.key != null) ? r.key : r.originalIndex);
+        const safeId = aarishMilkJsArgCore(rawId);
         const delay = Math.min(index * 0.014, 0.112).toFixed(3);
 
         return `<tr class="list-enter" data-module="milk-row" data-module-tone="${rowTone}" style="${aarishMilkVarsStyleCore(rowTone)} --aarish-stagger-v4:${delay}s; animation-delay:${delay}s;">
@@ -2508,13 +3399,7 @@ function renderMilkList() {
 
     customer.records.push(newEntry);
 
-    if (currentUserUID) {
-        if (typeof window.aarishFirebaseLaterV48 === 'function') {
-            window.aarishFirebaseLaterV48(`milkDB/${activeMilkCustomer}/records/${uniqueId}`, 'set', newEntry);
-        } else if (typeof appDataRef !== 'undefined' && appDataRef) {
-            await appDataRef.child(`milkDB/${activeMilkCustomer}/records/${uniqueId}`).set(newEntry);
-        }
-    }
+    await aarishMilkFirebaseWriteCore(`milkDB/${activeMilkCustomer}/records/${uniqueId}`, 'set', newEntry, 'save-milk-entry');
 
     closeModal('add-milk-entry-modal');
 
@@ -2547,15 +3432,18 @@ function renderMilkList() {
     if (!activeMilkCustomer || !milkDB || !milkDB[activeMilkCustomer]) return;
 
     if (confirm('Are you sure you want to delete this entry?')) {
-        milkDB[activeMilkCustomer].records = aarishMilkRecordsCore(milkDB[activeMilkCustomer].records).filter(r => String(r && r.id) !== String(id));
+        const targetId = String(id);
+        const oldRecords = aarishMilkRecordsCore(milkDB[activeMilkCustomer].records);
+        let firebaseRecordKey = targetId;
 
-        if (currentUserUID) {
-            if (typeof window.aarishFirebaseLaterV48 === 'function') {
-                window.aarishFirebaseLaterV48(`milkDB/${activeMilkCustomer}/records/${id}`, 'remove');
-            } else if (typeof appDataRef !== 'undefined' && appDataRef) {
-                await appDataRef.child(`milkDB/${activeMilkCustomer}/records/${id}`).remove();
-            }
-        }
+        milkDB[activeMilkCustomer].records = oldRecords.filter((r, idx) => {
+            const rid = (r && r.id != null) ? r.id : ((r && r.key != null) ? r.key : idx);
+            const keep = String(rid) !== targetId;
+            if (!keep) firebaseRecordKey = String(rid);
+            return keep;
+        });
+
+        await aarishMilkFirebaseWriteCore(`milkDB/${activeMilkCustomer}/records/${firebaseRecordKey}`, 'remove', null, 'delete-milk-entry');
 
         renderMilkRecords();
         renderMilkList();
@@ -2836,7 +3724,7 @@ async function shareDiaryBill(id) {
         udharDB.unshift(newEntry);
         
         if (currentUserUID) {
-            await appDataRef.child(`udharDB/${uniqueId}`).set(newEntry);
+            await aarishFirebaseLaterV48(`udharDB/${uniqueId}`, 'set', newEntry);
         }
         
         closeModal('add-udhar-modal'); 
@@ -2925,7 +3813,7 @@ async function shareDiaryBill(id) {
             // 3. 🔥 FIREBASE SE SIRF WAHI ENTRIES HATAO (Purana saveDB hata diya)
             if (currentUserUID) {
                 for (let e of entriesToDelete) {
-                    await appDataRef.child(`udharDB/${e.id}`).remove();
+                    await aarishFirebaseLaterV48(`udharDB/${e.id}`, 'remove', null, { fast: true });
                 }
             }
             
@@ -2992,7 +3880,7 @@ async function shareDiaryBill(id) {
             udharDB = udharDB.filter(u => u.id !== id); 
             
             if (currentUserUID) {
-                await appDataRef.child(`udharDB/${id}`).remove();
+                await aarishFirebaseLaterV48(`udharDB/${id}`, 'remove', null, { fast: true });
             }
             
             renderUdharList();
@@ -3060,7 +3948,7 @@ async function shareDiaryBill(id) {
 
         // SIRF EK EENT FIREBASE PAR BHEJI
         if (currentUserUID) {
-            await appDataRef.child(`expenseDB/${uniqueId}`).set(newEntry);
+            await aarishFirebaseLaterV48(`expenseDB/${uniqueId}`, 'set', newEntry);
         }
         
         closeModal('add-expense-modal'); 
@@ -3126,7 +4014,7 @@ async function deleteExpenseCategoryProfile(category) {
         
         if (currentUserUID) {
             for (let e of entriesToDelete) {
-                await appDataRef.child(`expenseDB/${e.id}`).remove();
+                await aarishFirebaseLaterV48(`expenseDB/${e.id}`, 'remove', null, { fast: true });
             }
         }
         
@@ -3176,7 +4064,7 @@ async function deleteExpenseCategoryProfile(category) {
             
             // SIRF WAHI ENTRY FIREBASE SE UDAAYI
             if (currentUserUID) {
-                await appDataRef.child(`expenseDB/${id}`).remove();
+                await aarishFirebaseLaterV48(`expenseDB/${id}`, 'remove', null, { fast: true });
             }
             
             renderExpenseList();
@@ -3207,7 +4095,7 @@ async function saveNewProject() {
     projectDB[name] = { records: [], created: Date.now() }; 
     
     if (currentUserUID) {
-        await appDataRef.child(`projectDB/${name}`).set(projectDB[name]); 
+        await aarishFirebaseLaterV48(`projectDB/${name}`, 'set', projectDB[name]); 
     }
     
     closeModal('add-project-modal'); 
@@ -3246,7 +4134,7 @@ async function saveNewProject() {
         delete projectDB[name]; 
         
         if (currentUserUID) {
-            await appDataRef.child(`projectDB/${name}`).remove(); 
+            await aarishFirebaseLaterV48(`projectDB/${name}`, 'remove', null, { fast: true }); 
         }
         
         renderProjectsList(); 
@@ -3306,7 +4194,7 @@ async function saveNewProject() {
     
     // 3. 🔥 SIRF NAYI ENTRY FIREBASE BHEJI (saveDB() hata diya)
     if (currentUserUID) {
-        await appDataRef.child(`projectDB/${activeProject}/records/${uniqueId}`).set(newEntry);
+        await aarishFirebaseLaterV48(`projectDB/${activeProject}/records/${uniqueId}`, 'set', newEntry);
     }
     
     closeModal('add-project-entry-modal'); 
@@ -3377,7 +4265,7 @@ async function saveNewProject() {
             
             // FIREBASE SE SIRF WOHI ENTRY HATAYI
             if (currentUserUID) {
-                await appDataRef.child(`projectDB/${activeProject}/records/${id}`).remove();
+                await aarishFirebaseLaterV48(`projectDB/${activeProject}/records/${id}`, 'remove', null, { fast: true });
             }
             
             renderProjectRecords(); 
