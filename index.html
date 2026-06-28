@@ -1527,6 +1527,71 @@
 }
 /* AARISH_BUSINESS_CORE_CONTRACT_V1_END */
 
+
+
+
+/* AARISH_MILK_EMPTY_BIG_CSS_V1_START
+   Milk empty-state core contract.
+   Only #milk-list empty fallback. No overlay, no wrapper, no repaint loop.
+*/
+#milk-list .milk-empty-core-v1 {
+  min-height: 46vh !important;
+  padding: 76px 16px 110px !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: flex-start !important;
+  text-align: center !important;
+  user-select: none !important;
+}
+#milk-list .milk-empty-icon-core-v1 {
+  width: 150px !important;
+  height: 150px !important;
+  border-radius: 999px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  color: #007AFF !important;
+  -webkit-text-fill-color: #007AFF !important;
+  background: rgba(0,122,255,0.10) !important;
+  border: 1px solid rgba(0,122,255,0.16) !important;
+  box-shadow: 0 0 30px rgba(0,122,255,0.18), inset 0 1px 0 rgba(255,255,255,0.24) !important;
+}
+#milk-list .milk-empty-icon-core-v1 i {
+  font-size: 64px !important;
+  line-height: 1 !important;
+  color: #007AFF !important;
+  -webkit-text-fill-color: #007AFF !important;
+  text-shadow: 0 0 16px rgba(0,122,255,0.24) !important;
+}
+#milk-list .milk-empty-text-core-v1 {
+  margin-top: 30px !important;
+  color: #007AFF !important;
+  -webkit-text-fill-color: #007AFF !important;
+  font-weight: 900 !important;
+  font-size: 22px !important;
+  letter-spacing: -0.02em !important;
+  text-shadow: 0 0 12px rgba(0,122,255,0.30) !important;
+}
+.dark #milk-list .milk-empty-icon-core-v1 {
+  background: rgba(0,122,255,0.12) !important;
+  border-color: rgba(10,132,255,0.22) !important;
+  box-shadow: 0 0 34px rgba(0,122,255,0.24), inset 0 1px 0 rgba(255,255,255,0.08) !important;
+}
+@media (max-width: 380px) {
+  #milk-list .milk-empty-icon-core-v1 {
+    width: 132px !important;
+    height: 132px !important;
+  }
+  #milk-list .milk-empty-icon-core-v1 i {
+    font-size: 56px !important;
+  }
+  #milk-list .milk-empty-text-core-v1 {
+    font-size: 20px !important;
+  }
+}
+/* AARISH_MILK_EMPTY_BIG_CSS_V1_END */
+
 </style>
 
      
@@ -1536,6 +1601,7 @@
     <meta name="apple-mobile-web-app-title" content="Aarish Pro">
     <link rel="icon" type="image/png" href="https://cdn-icons-png.flaticon.com/512/2965/2965358.png">
     <link rel="apple-touch-icon" href="https://cdn-icons-png.flaticon.com/512/2965/2965358.png">
+<!-- AARISH_CORE_AUTOPSY_MASTER_FIX_V1 applied 20260628_121835: atomic sync + party ledger + batched profile delete -->
 </head>
 
 <body>
@@ -2243,16 +2309,44 @@
 
          // ========================== INTERNET CHECKER ==========================
     function updateOnlineStatus() {
-        const offlineScreen = document.getElementById('offline-screen');
-        if (navigator.onLine) {
-            offlineScreen.classList.remove('show');
-            setTimeout(() => offlineScreen.style.display = 'none', 400);
-        } else {
-            if (navigator.vibrate) navigator.vibrate([50, 50, 50]); // Error vibration
-            offlineScreen.style.display = 'flex';
-            setTimeout(() => offlineScreen.classList.add('show'), 10);
-        }
+    const offlineScreen = document.getElementById('offline-screen');
+    if (!offlineScreen) return;
+
+    const mainApp = document.getElementById('main-app');
+    const appIsVisible = !!(mainApp && !mainApp.classList.contains('hidden'));
+
+    if (navigator.onLine) {
+        offlineScreen.classList.remove('show');
+        offlineScreen.style.pointerEvents = 'none';
+        setTimeout(() => {
+            offlineScreen.style.display = 'none';
+        }, 250);
+
+        try {
+            if (typeof flushFirebaseWriteOutboxV87 === 'function') flushFirebaseWriteOutboxV87('online-status', { force: true });
+            if (typeof aarishAutoPullCloudIfNewerV87 === 'function') aarishAutoPullCloudIfNewerV87('online-status', { force: true });
+        } catch (e) {}
+        return;
     }
+
+    try { if (navigator.vibrate) navigator.vibrate([50, 50, 50]); } catch(e) {}
+
+    /*
+      Offline is supported by local queue.
+      After login/cache boot, do not block the app.
+    */
+    if (appIsVisible) {
+        offlineScreen.classList.remove('show');
+        offlineScreen.style.pointerEvents = 'none';
+        offlineScreen.style.display = 'none';
+        try { showToast('Offline mode: entries local me save honge, internet aate hi sync honge.'); } catch(e) {}
+        return;
+    }
+
+    offlineScreen.style.pointerEvents = 'auto';
+    offlineScreen.style.display = 'flex';
+    setTimeout(() => offlineScreen.classList.add('show'), 10);
+}
     
     window.addEventListener('online', updateOnlineStatus);
     window.addEventListener('offline', updateOnlineStatus);
@@ -2307,9 +2401,14 @@
     function showLoader(text = "SYNCING DATA...") { document.getElementById('loader-text').textContent = text; document.getElementById('global-loader').classList.add('show'); }
     function hideLoader() { document.getElementById('global-loader').classList.remove('show'); }
     function showToast(msg) {
-        const t = document.getElementById('toast'); document.getElementById('toast-msg').innerHTML = msg;
-        t.classList.add('show'); setTimeout(() => t.classList.remove('show'), 2500);
-    }
+    const t = document.getElementById('toast');
+    const m = document.getElementById('toast-msg');
+    if (!t || !m) return;
+    m.textContent = (typeof aarishBackendTextSafeCoreV2 === 'function') ? aarishBackendTextSafeCoreV2(msg, 500) : String(msg == null ? '' : msg);
+    t.classList.add('show');
+    clearTimeout(window.__aarishToastTimerCoreV2);
+    window.__aarishToastTimerCoreV2 = setTimeout(() => t.classList.remove('show'), 2500);
+}
     function openModal(id) { 
         const m = document.getElementById(id);
         m.style.display = 'flex';
@@ -2419,41 +2518,80 @@
 
     // ========================== GOOGLE AUTH ==========================
     function initFirebase() {
-        if (!app) {
-            app = firebase.initializeApp(firebaseConfig);
-            auth = firebase.auth();
-            database = firebase.database();
-            
-            auth.onAuthStateChanged((user) => {
-                if (user) {
-                    currentUserUID = user.uid;
-                    document.getElementById('login-screen').style.display = 'none';
-                    document.getElementById('main-app').classList.remove('hidden');
-                    loadUserData();
-                } else {
-                    hideLoader();
-                    document.getElementById('login-screen').style.display = 'flex';
-                    document.getElementById('main-app').classList.add('hidden');
-                }
-            });
-        }
+    if (!app) {
+        app = firebase.initializeApp(firebaseConfig);
+        auth = firebase.auth();
+        database = firebase.database();
+
+        try {
+            if (firebase.auth && firebase.auth.Auth && firebase.auth.Auth.Persistence) {
+                auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL).catch(function(){});
+            }
+        } catch(e) {}
+
+        try {
+            var cachedUid = aarishBackendCachedUidCoreV2();
+            if (cachedUid) {
+                try { currentUserUID = cachedUid; } catch(e) { window.currentUserUID = cachedUid; }
+            }
+        } catch(e) {}
+
+        auth.onAuthStateChanged((user) => {
+            if (user) {
+                aarishBackendRememberUidCoreV2(user.uid);
+                currentUserUID = user.uid;
+                document.getElementById('login-screen').style.display = 'none';
+                document.getElementById('main-app').classList.remove('hidden');
+                loadUserData();
+            } else {
+                hideLoader();
+                document.getElementById('login-screen').style.display = 'flex';
+                document.getElementById('main-app').classList.add('hidden');
+            }
+        });
     }
+}
    
-    function handleGoogleLogin() {
-        showLoader("CONNECTING...");
-        const provider = new firebase.auth.GoogleAuthProvider();
-        auth.signInWithPopup(provider).then((result) => {
-            showToast('Welcome ' + result.user.displayName.split(' ')[0] + '!');
-        }).catch((err) => { hideLoader(); showToast(err.message); });
+    async function handleGoogleLogin() {
+    showLoader("CONNECTING...");
+    const provider = new firebase.auth.GoogleAuthProvider();
+    try { provider.setCustomParameters({ prompt: "select_account" }); } catch(e) {}
+
+    try {
+        const result = await auth.signInWithPopup(provider);
+        const firstName = ((result && result.user && result.user.displayName) || "User").split(" ")[0];
+        showToast("Welcome " + firstName + "!");
+    } catch (err) {
+        const code = String((err && err.code) || "");
+        const msg = String((err && err.message) || err || "Login failed");
+
+        /*
+          Android WebView/PWA often blocks popup.
+          This keeps the same auth core but falls back to redirect.
+        */
+        if (/popup|cancelled-popup-request|operation-not-supported|unauthorized-domain|web-storage-unsupported/i.test(code + " " + msg)) {
+            try {
+                await auth.signInWithRedirect(provider);
+                return;
+            } catch (redirectErr) {
+                hideLoader();
+                showToast((redirectErr && redirectErr.message) || "Login failed");
+                return;
+            }
+        }
+
+        hideLoader();
+        showToast(msg);
     }
+}
 
     function logout() {
     if (confirm('Are you sure you want to logout?')) {
         auth.signOut().then(() => {
             if (appDataRef) appDataRef.off();
+            aarishBackendClearUidCoreV2();
             currentUserUID = null;
             
-            // Ye line naye add ki hai data clear karne ke liye
             milkDB = {}; udharDB = []; expenseDB = []; salaryDB = {}; diaryDB = []; projectDB = {};
             
             document.getElementById('main-app').classList.add('hidden');
@@ -2486,8 +2624,161 @@ var __aarishCostFlushHardTimerV1 = null;
 var __aarishCostFlushBusyV1 = false;
 var __aarishCostMetaCheckTimerV1 = null;
 
+
+// ========================== AARISH_BACKEND_HARDENING_CORE_V2_START ==========================
+// Core backend hardening merged from big-file V92/V95/V97 ideas.
+// Integrated inside data/Firebase core: no overlay script, no wrapper chain, no setInterval.
+window.__AARISH_BACKEND_HARDENING_CORE_V2 = true;
+
+function aarishBackendTextSafeCoreV2(v, maxLen) {
+    var s = String(v == null ? "" : v);
+    if (maxLen && s.length > maxLen) s = s.slice(0, maxLen);
+    return s.replace(/[\u0000-\u0008\u000B\u000C\u000E-\u001F\u007F]/g, "");
+}
+
+function aarishBackendEscapeHtmlCoreV2(v, maxLen) {
+    return aarishBackendTextSafeCoreV2(v, maxLen || 8000).replace(/[&<>"']/g, function(ch) {
+        return ({ "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;", "'":"&#39;" })[ch];
+    });
+}
+
+function aarishBackendFiniteCoreV2(v) {
+    v = Number(v);
+    return Number.isFinite(v) ? v : 0;
+}
+
+function aarishBackendBadKeyCoreV2(k) {
+    k = String(k == null ? "" : k);
+    return !k || k.length > 220 || /[.#$\[\]\/\u0000-\u001F\u007F]/.test(k) || k === "__proto__" || k === "prototype" || k === "constructor";
+}
+
+function aarishBackendSanitizeFirebaseValueCoreV2(value, path, depth, seen) {
+    depth = Number(depth || 0);
+    if (depth > 18) return null;
+    if (value === null) return null;
+    if (typeof value === "undefined") return undefined;
+
+    var t = typeof value;
+    if (t === "string") return aarishBackendTextSafeCoreV2(value, 20000);
+    if (t === "number") return aarishBackendFiniteCoreV2(value);
+    if (t === "boolean") return value;
+    if (t === "bigint") return String(value);
+    if (t === "function" || t === "symbol") return undefined;
+
+    try {
+        if (value instanceof Date) return isNaN(value.getTime()) ? null : value.toISOString();
+    } catch(e) {}
+
+    seen = seen || [];
+    if (seen.indexOf(value) !== -1) return null;
+    seen.push(value);
+
+    if (Array.isArray(value)) {
+        var arr = [];
+        for (var i = 0; i < value.length && i < 20000; i++) {
+            if (!Object.prototype.hasOwnProperty.call(value, i)) continue;
+            var av = aarishBackendSanitizeFirebaseValueCoreV2(value[i], String(path || "") + "/" + i, depth + 1, seen);
+            if (typeof av !== "undefined") arr.push(av);
+        }
+        seen.pop();
+        return arr;
+    }
+
+    var out = {};
+    Object.keys(value || {}).slice(0, 5000).forEach(function(k) {
+        if (k === ".sv") {
+            var sv = aarishBackendSanitizeFirebaseValueCoreV2(value[k], String(path || "") + "/" + k, depth + 1, seen);
+            if (typeof sv !== "undefined") out[k] = sv;
+            return;
+        }
+        if (aarishBackendBadKeyCoreV2(k)) return;
+        var child = aarishBackendSanitizeFirebaseValueCoreV2(value[k], String(path || "") + "/" + k, depth + 1, seen);
+        if (typeof child !== "undefined") out[k] = child;
+    });
+    seen.pop();
+    return out;
+}
+
+function aarishBackendArrayFromObjectCoreV2(v) {
+    try {
+        if (Array.isArray(v)) return v.filter(Boolean);
+        if (v && typeof v === "object") return Object.keys(v).map(function(k) {
+            var item = v[k];
+            if (item && typeof item === "object" && !item.id) item.id = k;
+            return item;
+        }).filter(Boolean);
+    } catch(e) {}
+    return [];
+}
+
+function aarishBackendNormalizeArraysCoreV2() {
+    try {
+        if (typeof udharDB !== "undefined" && !Array.isArray(udharDB)) udharDB = aarishBackendArrayFromObjectCoreV2(udharDB);
+        if (typeof expenseDB !== "undefined" && !Array.isArray(expenseDB)) expenseDB = aarishBackendArrayFromObjectCoreV2(expenseDB);
+        if (typeof diaryDB !== "undefined" && !Array.isArray(diaryDB)) diaryDB = aarishBackendArrayFromObjectCoreV2(diaryDB);
+
+        if (typeof milkDB === "object" && milkDB) {
+            Object.keys(milkDB).forEach(function(k) { if (milkDB[k]) milkDB[k].records = aarishBackendArrayFromObjectCoreV2(milkDB[k].records); });
+        }
+        if (typeof salaryDB === "object" && salaryDB) {
+            Object.keys(salaryDB).forEach(function(k) { if (salaryDB[k]) salaryDB[k].records = aarishBackendArrayFromObjectCoreV2(salaryDB[k].records); });
+        }
+        if (typeof projectDB === "object" && projectDB) {
+            Object.keys(projectDB).forEach(function(k) { if (projectDB[k]) projectDB[k].records = aarishBackendArrayFromObjectCoreV2(projectDB[k].records); });
+        }
+    } catch(e) {}
+}
+
+function aarishBackendRememberUidCoreV2(uid) {
+    uid = String(uid || "");
+    if (!uid || uid.length > 160 || /[^A-Za-z0-9:_\-\.]/.test(uid)) return "";
+    try { localStorage.setItem("aarish_cached_uid_v92", uid); } catch(e) {}
+    try { currentUserUID = uid; } catch(e) { window.currentUserUID = uid; }
+    return uid;
+}
+
+function aarishBackendCachedUidCoreV2() {
+    try {
+        var uid = String(localStorage.getItem("aarish_cached_uid_v92") || "");
+        if (uid && uid.length <= 160 && !/[^A-Za-z0-9:_\-\.]/.test(uid)) return uid;
+    } catch(e) {}
+    return "";
+}
+
+function aarishBackendClearUidCoreV2() {
+    try { localStorage.removeItem("aarish_cached_uid_v92"); } catch(e) {}
+}
+
+function aarishBackendActionGuardCoreV2(key, ms) {
+    key = "AARISH_ACTION_LOCK_CORE_V2::" + String(key || "action");
+    ms = Math.max(450, Number(ms || 900));
+    window.__aarishActionLockCoreV2 = window.__aarishActionLockCoreV2 || {};
+    var now = Date.now();
+    if (window.__aarishActionLockCoreV2[key] && window.__aarishActionLockCoreV2[key] > now) {
+        try { if (typeof showToast === "function") showToast("Please wait..."); } catch(e) {}
+        return false;
+    }
+    window.__aarishActionLockCoreV2[key] = now + ms;
+    return true;
+}
+
+function aarishBackendAfterMutationCoreV2(reason) {
+    try { aarishBackendNormalizeArraysCoreV2(); } catch(e) {}
+    try { if (typeof scheduleCacheSaveCostV81 === "function") scheduleCacheSaveCostV81(reason || "mutation"); } catch(e) {}
+}
+// ========================== AARISH_BACKEND_HARDENING_CORE_V2_END ==========================
+
+
 function aarishCostUidV1() {
-    try { return String(currentUserUID || (firebase && firebase.auth && firebase.auth().currentUser && firebase.auth().currentUser.uid) || ""); } catch(e) { return ""; }
+    try {
+        var uid = "";
+        try { uid = String(currentUserUID || ""); } catch(e) {}
+        if (!uid && typeof auth !== "undefined" && auth && auth.currentUser) uid = String(auth.currentUser.uid || "");
+        if (!uid && typeof firebase !== "undefined" && firebase.auth && firebase.auth().currentUser) uid = String(firebase.auth().currentUser.uid || "");
+        if (!uid) uid = aarishBackendCachedUidCoreV2();
+        if (uid) return aarishBackendRememberUidCoreV2(uid);
+    } catch(e) {}
+    return "";
 }
 
 function aarishCostAppRefV1() {
@@ -2603,17 +2894,31 @@ async function aarishCostKvGetV1(key) {
 async function aarishCostKvSetV1(key, value) {
     var db = await aarishCostOpenDbV1();
     if (!db || !db.objectStoreNames.contains("kv")) {
-        try { localStorage.setItem("IDB_FALLBACK_" + key, JSON.stringify(value)); } catch(e) {}
-        return true;
+        try {
+            localStorage.setItem("IDB_FALLBACK_" + key, JSON.stringify(value));
+            return true;
+        } catch(e) {
+            try { console.warn("Aarish cache fallback write failed:", e); } catch(_) {}
+            return false;
+        }
     }
 
     return new Promise(function(resolve) {
         try {
+            var done = false;
+            function finish(v) {
+                if (done) return;
+                done = true;
+                resolve(!!v);
+            }
+
             var tx = db.transaction("kv", "readwrite");
             tx.objectStore("kv").put(value, key);
-            tx.oncomplete = function() { resolve(true); };
-            tx.onerror = function() { resolve(false); };
-            tx.onabort = function() { resolve(false); };
+            tx.oncomplete = function() { finish(true); };
+            tx.onerror = function() { finish(false); };
+            tx.onabort = function() { finish(false); };
+
+            setTimeout(function() { finish(false); }, 4500);
         } catch(e) {
             resolve(false);
         }
@@ -2663,24 +2968,28 @@ function aarishCostNormalizeStateV1(raw) {
 }
 
 function aarishCostApplyStateV1(state) {
-    state = aarishCostNormalizeStateV1(state || {});
+    state = aarishBackendSanitizeFirebaseValueCoreV2(state || {}, "appData") || {};
+    state = aarishCostNormalizeStateV1(state);
     milkDB = state.milkDB || {};
     salaryDB = state.salaryDB || {};
     projectDB = state.projectDB || {};
     udharDB = Array.isArray(state.udharDB) ? state.udharDB : [];
     expenseDB = Array.isArray(state.expenseDB) ? state.expenseDB : [];
     diaryDB = Array.isArray(state.diaryDB) ? state.diaryDB : [];
+    aarishBackendNormalizeArraysCoreV2();
 }
 
 function aarishCostGetStateV1() {
-    return {
+    aarishBackendNormalizeArraysCoreV2();
+    var state = {
         milkDB: milkDB || {},
         salaryDB: salaryDB || {},
         projectDB: projectDB || {},
-        udharDB: Array.isArray(udharDB) ? udharDB : [],
-        expenseDB: Array.isArray(expenseDB) ? expenseDB : [],
-        diaryDB: Array.isArray(diaryDB) ? diaryDB : []
+        udharDB: Array.isArray(udharDB) ? udharDB : aarishBackendArrayFromObjectCoreV2(udharDB),
+        expenseDB: Array.isArray(expenseDB) ? expenseDB : aarishBackendArrayFromObjectCoreV2(expenseDB),
+        diaryDB: Array.isArray(diaryDB) ? diaryDB : aarishBackendArrayFromObjectCoreV2(diaryDB)
     };
+    return aarishBackendSanitizeFirebaseValueCoreV2(state, "appData") || state;
 }
 
 function aarishCostShowAppV1() {
@@ -2734,7 +3043,15 @@ async function loadCacheCostV81() {
         if (!cached || cached.uid !== uid) return false;
 
         aarishCostApplyStateV1(cached);
-        window.__aarishFirebaseCostRevV81 = Number(cached.serverRev || cached.savedAt || 0);
+
+        /*
+          savedAt is phone-cache time, not cloud truth.
+          Only real _syncMeta/rev can become local cloud revision.
+        */
+        var serverRev = Number(cached.serverRev || 0);
+        window.__aarishFirebaseCostRevV81 = Number.isFinite(serverRev) && serverRev > 0 ? serverRev : 0;
+        window.__aarishCacheLoadedWithoutServerRevV81 = !(serverRev > 0);
+
         return true;
     } catch(e) {
         return false;
@@ -2752,14 +3069,115 @@ function aarishCostReadFallbackV1() {
 }
 
 function aarishCostWriteFallbackV1(arr) {
+    arr = Array.isArray(arr) ? arr.filter(Boolean) : [];
+
+    var limits = [600, 300, 150, 75, 30, 10, 3, 1];
+    for (var i = 0; i < limits.length; i++) {
+        try {
+            localStorage.setItem(aarishCostFallbackKeyV1(), JSON.stringify(arr.slice(-limits[i])));
+            return true;
+        } catch(e) {}
+    }
+
     try {
-        localStorage.setItem(aarishCostFallbackKeyV1(), JSON.stringify((arr || []).slice(-600)));
+        var now = Date.now();
+        if (now - Number(window.__aarishLastStorageFullToastV3 || 0) > 15000) {
+            window.__aarishLastStorageFullToastV3 = now;
+            aarishCostToastV1("Phone storage full. App band mat karo; internet aate hi pending sync bhejunga.");
+        }
+    } catch(e) {}
+
+    return false;
+}
+
+/* AARISH_BACKEND_SURGICAL_STORAGE_SYNC_V3_START */
+function aarishCostVolatilePutV3(item) {
+    try {
+        window.__aarishCostVolatileOutboxCoreV3 = window.__aarishCostVolatileOutboxCoreV3 || [];
+        var uid = aarishCostUidV1();
+        if (!item || !item.id || !uid || item.uid !== uid) return false;
+
+        window.__aarishCostVolatileOutboxCoreV3 = window.__aarishCostVolatileOutboxCoreV3
+            .filter(function(x) { return x && x.id !== item.id; })
+            .concat([item])
+            .slice(-500);
+
+        try {
+            var now = Date.now();
+            if (now - Number(window.__aarishLastVolatileToastV3 || 0) > 15000) {
+                window.__aarishLastVolatileToastV3 = now;
+                aarishCostToastV1("Storage full: pending sync RAM me safe hai. App close mat karo.");
+            }
+        } catch(e) {}
+
         return true;
     } catch(e) {
-        aarishCostToastV1("Phone storage full. Internet ON rakho; sync retry hoga.");
         return false;
     }
 }
+
+function aarishCostVolatileGetV3() {
+    try {
+        var uid = aarishCostUidV1();
+        return (window.__aarishCostVolatileOutboxCoreV3 || []).filter(function(x) {
+            return x && x.uid === uid;
+        });
+    } catch(e) {
+        return [];
+    }
+}
+
+function aarishCostVolatileDeleteV3(ids) {
+    try {
+        ids = ids || [];
+        window.__aarishCostVolatileOutboxCoreV3 = (window.__aarishCostVolatileOutboxCoreV3 || []).filter(function(x) {
+            return ids.indexOf(x && x.id) === -1;
+        });
+    } catch(e) {}
+}
+
+function aarishCostDedupeItemsV3(items) {
+    var map = {};
+    (items || []).forEach(function(item) {
+        if (!item || !item.id) return;
+        var old = map[item.id];
+        if (!old || Number(item.createdAt || 0) >= Number(old.createdAt || 0)) map[item.id] = item;
+    });
+    return Object.keys(map).map(function(id) { return map[id]; })
+        .sort(function(a,b) { return Number(a.createdAt || 0) - Number(b.createdAt || 0); });
+}
+
+function aarishCostJsonBytesV3(value) {
+    try { return JSON.stringify(value).length; } catch(e) { return 0; }
+}
+
+function aarishCostPickBatchV3(items) {
+    var out = [];
+    var mega = {};
+    var maxItems = 160;
+    var maxBytes = 750000;
+
+    for (var i = 0; i < (items || []).length && out.length < maxItems; i++) {
+        var candidate = out.concat([items[i]]);
+        var testMega = aarishCostBuildMegaV1(candidate);
+        var size = aarishCostJsonBytesV3(testMega);
+
+        if (out.length && size > maxBytes) break;
+        out = candidate;
+        mega = testMega;
+
+        if (size > maxBytes) break;
+    }
+
+    if (!out.length && items && items.length) {
+        out = [items[0]];
+        mega = aarishCostBuildMegaV1(out);
+    }
+
+    return { items: out, mega: mega };
+}
+/* AARISH_BACKEND_SURGICAL_STORAGE_SYNC_V3_END */
+
 
 async function aarishCostStoreOpV1(mode, fn) {
     var db = await aarishCostOpenDbV1();
@@ -2780,6 +3198,8 @@ async function aarishCostStoreOpV1(mode, fn) {
 }
 
 async function aarishCostPutOutboxV1(item) {
+    if (!item || !item.id) return false;
+
     var ok = await aarishCostStoreOpV1("readwrite", function(st) {
         st.put(item);
         return true;
@@ -2789,35 +3209,50 @@ async function aarishCostPutOutboxV1(item) {
 
     var arr = aarishCostReadFallbackV1();
     arr.push(item);
-    return aarishCostWriteFallbackV1(arr);
+    if (aarishCostWriteFallbackV1(arr)) return true;
+
+    if (aarishCostVolatilePutV3(item)) {
+        try { aarishCostScheduleFlushV1(1000, "volatile-outbox"); } catch(e) {}
+        return true;
+    }
+
+    return false;
 }
 
 async function aarishCostGetOutboxV1() {
     var uid = aarishCostUidV1();
     var fallback = aarishCostReadFallbackV1();
+    var volatileItems = aarishCostVolatileGetV3();
 
     var db = await aarishCostOpenDbV1();
     if (!db || !db.objectStoreNames.contains("sync_queue")) {
-        return fallback.filter(function(x) { return x && x.uid === uid; });
+        return aarishCostDedupeItemsV3(fallback.concat(volatileItems).filter(function(x) { return x && x.uid === uid; }));
     }
 
     return new Promise(function(resolve) {
         try {
+            var settled = false;
+            function finish(arr) {
+                if (settled) return;
+                settled = true;
+                resolve(aarishCostDedupeItemsV3((arr || []).concat(fallback, volatileItems)
+                    .filter(function(x) { return x && x.uid === uid; })));
+            }
+
             var tx = db.transaction("sync_queue", "readonly");
             var req = tx.objectStore("sync_queue").getAll();
 
             req.onsuccess = function() {
-                var arr = Array.isArray(req.result) ? req.result : [];
-                resolve(arr.concat(fallback)
-                    .filter(function(x) { return x && x.uid === uid; })
-                    .sort(function(a,b) { return Number(a.createdAt || 0) - Number(b.createdAt || 0); }));
+                finish(Array.isArray(req.result) ? req.result : []);
             };
 
-            req.onerror = function() {
-                resolve(fallback.filter(function(x) { return x && x.uid === uid; }));
-            };
+            req.onerror = function() { finish([]); };
+            tx.onerror = function() { finish([]); };
+            tx.onabort = function() { finish([]); };
+
+            setTimeout(function() { finish([]); }, 4500);
         } catch(e) {
-            resolve(fallback.filter(function(x) { return x && x.uid === uid; }));
+            resolve(aarishCostDedupeItemsV3(fallback.concat(volatileItems).filter(function(x) { return x && x.uid === uid; })));
         }
     });
 }
@@ -2836,6 +3271,7 @@ async function aarishCostDeleteOutboxV1(ids) {
         return ids.indexOf(x && x.id) === -1;
     });
     aarishCostWriteFallbackV1(keep);
+    aarishCostVolatileDeleteV3(ids);
 }
 
 function aarishCostWritesFromActionV1(path, action, payload) {
@@ -2853,12 +3289,15 @@ function aarishCostWritesFromActionV1(path, action, payload) {
     if (action === "update" && payload && typeof payload === "object" && !Array.isArray(payload)) {
         Object.keys(payload).forEach(function(k) {
             var childPath = aarishCostCleanPathV1(path + "/" + k);
-            if (childPath) writes[childPath] = payload[k];
+            if (!childPath || childPath.indexOf("_syncMeta") === 0) return;
+            var safeChild = aarishBackendSanitizeFirebaseValueCoreV2(payload[k], childPath);
+            if (typeof safeChild !== "undefined") writes[childPath] = safeChild;
         });
         return writes;
     }
 
-    writes[path] = (typeof payload === "undefined" ? null : payload);
+    var safePayload = aarishBackendSanitizeFirebaseValueCoreV2(payload, path);
+    if (typeof safePayload !== "undefined") writes[path] = safePayload;
     return writes;
 }
 
@@ -2921,7 +3360,6 @@ function aarishCostBuildMegaV1(items) {
     aarishCostPutCoalescedV1(mega, "_syncMeta/mode", "AARISH_FIREBASE_COST_CORE_V1");
     aarishCostPutCoalescedV1(mega, "_syncMeta/updatedAt", aarishCostServerTimeV1());
 
-    window.__aarishFirebaseCostRevV81 = rev;
     return mega;
 }
 
@@ -2946,18 +3384,24 @@ async function aarishFirebaseLaterV48(path, action, payload, opts) {
 
     try {
         var uid = aarishCostUidV1();
-        var writes = aarishCostWritesFromActionV1(path, action, payload);
-        var keys = Object.keys(writes);
-
+        var cleanPath = aarishCostCleanPathV1(path);
         if (!uid) return { queued: false, reason: "no_uid" };
+        if (!cleanPath) {
+            aarishCostToastV1("Invalid sync path blocked safely");
+            return { queued: false, reason: "invalid_path" };
+        }
+
+        var safePayload = aarishBackendSanitizeFirebaseValueCoreV2(payload, cleanPath);
+        var writes = aarishCostWritesFromActionV1(cleanPath, action, safePayload);
+        var keys = Object.keys(writes);
         if (!keys.length) return { queued: false, reason: "empty" };
 
         var item = {
             id: aarishCostIdV1("obx"),
             uid: uid,
-            path: aarishCostCleanPathV1(path),
+            path: cleanPath,
             action: String(action || "set"),
-            payload: typeof payload === "undefined" ? null : payload,
+            payload: typeof safePayload === "undefined" ? null : safePayload,
             writes: writes,
             createdAt: Date.now(),
             attempts: 0,
@@ -2987,7 +3431,8 @@ async function aarishFirebaseBatchLaterV87(flatPayload, reason) {
         Object.keys(flatPayload || {}).forEach(function(path) {
             var clean = aarishCostCleanPathV1(path);
             if (!clean || clean.indexOf("_syncMeta") === 0) return;
-            writes[clean] = flatPayload[path];
+            var safeValue = aarishBackendSanitizeFirebaseValueCoreV2(flatPayload[path], clean);
+            if (typeof safeValue !== "undefined") writes[clean] = safeValue;
         });
 
         var keys = Object.keys(writes);
@@ -3025,6 +3470,8 @@ function aarishCostLockKeyV1() {
 function aarishCostAcquireLockV1() {
     var key = aarishCostLockKeyV1();
     var owner = "tab_" + Date.now() + "_" + Math.random().toString(36).slice(2, 10);
+    var ttl = 60000;
+    var beat = null;
 
     try {
         var oldRaw = localStorage.getItem(key);
@@ -3033,16 +3480,32 @@ function aarishCostAcquireLockV1() {
             if (old && Number(old.expiresAt || 0) > Date.now() && old.owner !== owner) return null;
         }
 
-        localStorage.setItem(key, JSON.stringify({
-            owner: owner,
-            createdAt: Date.now(),
-            expiresAt: Date.now() + 45000
-        }));
+        function writeLock() {
+            localStorage.setItem(key, JSON.stringify({
+                owner: owner,
+                createdAt: Date.now(),
+                expiresAt: Date.now() + ttl
+            }));
+        }
+
+        writeLock();
 
         var check = JSON.parse(localStorage.getItem(key) || "{}");
         if (!check || check.owner !== owner) return null;
 
+        beat = setInterval(function() {
+            try {
+                var cur = JSON.parse(localStorage.getItem(key) || "{}");
+                if (!cur || cur.owner !== owner) {
+                    clearInterval(beat);
+                    return;
+                }
+                writeLock();
+            } catch(e) {}
+        }, 15000);
+
         return function release() {
+            try { clearInterval(beat); } catch(e) {}
             try {
                 var cur = JSON.parse(localStorage.getItem(key) || "{}");
                 if (cur && cur.owner === owner) localStorage.removeItem(key);
@@ -3056,7 +3519,10 @@ function aarishCostAcquireLockV1() {
 async function flushFirebaseWriteOutboxV87(reason, opts) {
     opts = opts || {};
 
-    if (__aarishCostFlushBusyV1) return { ok: false, locked: true };
+    if (__aarishCostFlushBusyV1) {
+        try { aarishCostScheduleFlushV1(2500, "busy-reschedule"); } catch(e) {}
+        return { ok: false, locked: true };
+    }
     if (!aarishCostUidV1()) return { ok: false, reason: "no_uid" };
     if (!aarishCostOnlineV1() && !opts.force) return { ok: false, offline: true };
 
@@ -3064,7 +3530,10 @@ async function flushFirebaseWriteOutboxV87(reason, opts) {
     if (!ref) return { ok: false, reason: "no_ref" };
 
     var release = aarishCostAcquireLockV1();
-    if (!release) return { ok: false, locked: true, reason: "cross-tab-busy" };
+    if (!release) {
+        try { aarishCostScheduleFlushV1(3000, "cross-tab-busy"); } catch(e) {}
+        return { ok: false, locked: true, reason: "cross-tab-busy" };
+    }
 
     __aarishCostFlushBusyV1 = true;
 
@@ -3077,16 +3546,26 @@ async function flushFirebaseWriteOutboxV87(reason, opts) {
             return { ok: true, empty: true };
         }
 
-        var batch = items.slice(0, 250);
-        var mega = aarishCostBuildMegaV1(batch);
+        var picked = aarishCostPickBatchV3(items);
+        var batch = picked.items;
+        var mega = picked.mega;
         var ids = batch.map(function(x) { return x.id; });
+        var rev = Number(mega && mega["_syncMeta/rev"] || Date.now());
 
-        await ref.update(mega);
+        await Promise.race([
+            ref.update(mega),
+            new Promise(function(_, reject) {
+                setTimeout(function(){ reject(new Error("firebase-update-timeout")); }, 22000);
+            })
+        ]);
+
+        window.__aarishFirebaseCostRevV81 = Number.isFinite(rev) && rev > 0 ? rev : Date.now();
+
         await aarishCostDeleteOutboxV1(ids);
         await saveCacheNowCostV81("flush-" + String(reason || ""));
 
         if (items.length > batch.length) {
-            aarishCostScheduleFlushV1(1000, "more-pending");
+            aarishCostScheduleFlushV1(900, "more-pending");
         } else {
             clearTimeout(__aarishCostFlushHardTimerV1);
             __aarishCostFlushHardTimerV1 = null;
@@ -3128,36 +3607,38 @@ async function fullFirebaseSyncCostV81(reason) {
 
     appDataRef = database.ref("users/" + uid + "/appData");
 
-    var names = ["milkDB", "salaryDB", "projectDB", "udharDB", "expenseDB", "diaryDB"];
-    var snaps = await Promise.all(names.map(function(name) {
-        return appDataRef.child(name).once("value").then(function(snap) {
-            return [name, snap.val()];
-        }).catch(function() {
-            return [name, null];
-        });
-    }));
-
-    var raw = {};
-    snaps.forEach(function(pair) { raw[pair[0]] = pair[1]; });
-
-    var state = aarishCostNormalizeStateV1(raw);
-    aarishCostApplyStateV1(state);
-
     try {
-        var metaSnap = await Promise.race([
-            appDataRef.child("_syncMeta/rev").once("value"),
-            new Promise(function(_, reject) { setTimeout(function(){ reject(new Error("meta-timeout")); }, 6500); })
+        /*
+          Atomic cloud load:
+          Read /appData once, then normalize locally.
+          This prevents mixed cloud revisions during reconnect or multi-device sync.
+        */
+        var snap = await Promise.race([
+            appDataRef.once("value"),
+            new Promise(function(_, reject) {
+                setTimeout(function(){ reject(new Error("appdata-timeout")); }, 9000);
+            })
         ]);
-        window.__aarishFirebaseCostRevV81 = Number(metaSnap.val() || Date.now());
+
+        var raw = (snap && snap.val && snap.val()) || {};
+        var state = aarishCostNormalizeStateV1(raw);
+        aarishCostApplyStateV1(state);
+
+        var meta = raw && raw._syncMeta && typeof raw._syncMeta === "object" ? raw._syncMeta : {};
+        var rev = Number(meta.rev || 0);
+        window.__aarishFirebaseCostRevV81 = Number.isFinite(rev) && rev > 0 ? rev : Date.now();
+        window.__aarishCacheLoadedWithoutServerRevV81 = false;
+
+        await saveCacheNowCostV81(reason || "full-sync-atomic");
+        aarishCostShowAppV1();
+
+        try { aarishCostScheduleFlushV1(1200, "after-full-sync"); } catch(e) {}
+        return true;
     } catch(e) {
-        window.__aarishFirebaseCostRevV81 = Date.now();
+        try { if (typeof hideLoader === "function") hideLoader(); } catch(_) {}
+        try { if (typeof showToast === "function") showToast("Cloud sync failed. Cache/offline data safe rahega."); } catch(_) {}
+        return false;
     }
-
-    await saveCacheNowCostV81(reason || "full-sync");
-    aarishCostShowAppV1();
-
-    try { aarishCostScheduleFlushV1(1200, "after-full-sync"); } catch(e) {}
-    return true;
 }
 
 window.fullFirebaseSyncCostV81 = fullFirebaseSyncCostV81;
@@ -3167,6 +3648,12 @@ window.aarishForceFullFirebaseSyncV81 = function() {
 
 async function aarishAutoPullCloudIfNewerV87(reason, opts) {
     opts = opts || {};
+
+    if (window.__aarishCostPullBusyCoreV3) {
+        return { ok: true, skipped: "pull-busy" };
+    }
+
+    window.__aarishCostPullBusyCoreV3 = true;
 
     try {
         var uid = aarishCostUidV1();
@@ -3180,7 +3667,18 @@ async function aarishAutoPullCloudIfNewerV87(reason, opts) {
 
         window.__aarishLastMetaCheckV1 = Date.now();
 
-        await flushFirebaseWriteOutboxV87("before-meta-check", { force: false });
+        var flushResult = await flushFirebaseWriteOutboxV87("before-meta-check", { force: !!opts.force });
+        var pendingAfterFlush = await aarishCostGetOutboxV1();
+
+        if (pendingAfterFlush.length) {
+            aarishCostScheduleFlushV1(5000, "pending-before-pull");
+            return {
+                ok: true,
+                skipped: "local-pending-writes",
+                pending: pendingAfterFlush.length,
+                flushOk: !!(flushResult && flushResult.ok)
+            };
+        }
 
         var snap = await Promise.race([
             ref.child("_syncMeta/rev").once("value"),
@@ -3189,15 +3687,19 @@ async function aarishAutoPullCloudIfNewerV87(reason, opts) {
 
         var cloudRev = Number(snap.val() || 0);
         var localRev = Number(window.__aarishFirebaseCostRevV81 || 0);
+        var cacheHadNoServerRev = !!window.__aarishCacheLoadedWithoutServerRevV81;
 
-        if (cloudRev && (!localRev || cloudRev > localRev || opts.forcePull)) {
-            await fullFirebaseSyncCostV81("auto-pull-newer-cloud");
-            return { ok: true, pulled: true, cloudRev: cloudRev, localRev: localRev };
+        if (opts.forcePull || cacheHadNoServerRev || (cloudRev && (!localRev || cloudRev > localRev))) {
+            await fullFirebaseSyncCostV81(cacheHadNoServerRev ? "auto-pull-cache-had-no-server-rev" : "auto-pull-newer-cloud");
+            window.__aarishCacheLoadedWithoutServerRevV81 = false;
+            return { ok: true, pulled: true, cloudRev: cloudRev, localRev: localRev, cacheHadNoServerRev: cacheHadNoServerRev };
         }
 
         return { ok: true, upToDate: true, cloudRev: cloudRev, localRev: localRev };
     } catch(e) {
         return { ok: false, error: String(e && e.message ? e.message : e) };
+    } finally {
+        window.__aarishCostPullBusyCoreV3 = false;
     }
 }
 
@@ -3375,52 +3877,84 @@ async function loadUserData() {
     }
 
     function renderDashboardBalances() {
-        let balances = {};
-        const q = (document.getElementById('balance-search').value || '').toLowerCase();
+    const box = document.getElementById('dash-balances-list');
+    if (!box) return;
 
+    const searchEl = document.getElementById('balance-search');
+    const q = String((searchEl && searchEl.value) || '').toLowerCase().trim();
+    const balances = {};
 
-                // 1. Milk Calculation
-        Object.keys(milkDB).forEach(name => {
-            let c = milkDB[name];
-            let total = 0;
-            // 🔥 YAHAN FIX HAI: 'filterByMonth' hata diya! Ab Lifetime total aayega.
-            (c.records || []).forEach(r => total += ((Number(r.morning)||0) + (Number(r.evening)||0)) * (c.rate || DEFAULT_RATE));
-            if (!balances[name]) balances[name] = 0;
-            if (c.type === 'dene_wala') balances[name] -= total; 
-            else balances[name] += total; 
-        });
+    const esc = (v) => {
+        try {
+            if (typeof aarishBackendEscapeHtmlCoreV2 === 'function') return aarishBackendEscapeHtmlCoreV2(v, 300);
+            if (typeof sanitizeHTML === 'function') return sanitizeHTML(String(v == null ? '' : v));
+        } catch (e) {}
+        return String(v == null ? '' : v).replace(/[&<>"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
+    };
 
+    const addBalance = (rawName, rawAmount) => {
+        const name = String(rawName == null ? '' : rawName).normalize('NFKC').replace(/\s+/g, ' ').trim();
+        const amount = Number(rawAmount);
+        if (!name || !Number.isFinite(amount) || Math.abs(amount) < 0.000001) return;
+        balances[name] = (Number(balances[name]) || 0) + amount;
+    };
 
-        
-        // 2. Udhar Calculation
-        (udharDB || []).forEach(u => {
-            if (!balances[u.name]) balances[u.name] = 0;
-            if (u.type === 'credit') balances[u.name] += Number(u.amount); 
-            else balances[u.name] -= Number(u.amount); 
-        });
+    Object.keys(milkDB || {}).forEach(name => {
+        const c = milkDB[name] || {};
+        let net = 0;
 
-        let html = '';
-        let hasData = false;
-        
-        Object.keys(balances)
-            .filter(n => n.toLowerCase().includes(q))
-            .sort((a,b) => Math.abs(balances[b]) - Math.abs(balances[a]))
-            .forEach((name, i) => {
-            let net = balances[name];
+        try {
+            if (typeof aarishMilkTotalsCore === 'function') {
+                net = Number((aarishMilkTotalsCore(c, false) || {}).netAmount || 0);
+            } else {
+                (c.records || []).forEach(r => {
+                    const qty = ((Number(r && r.morning) || 0) + (Number(r && r.evening) || 0));
+                    const rate = Number((r && r.rate) || c.rate || DEFAULT_RATE || 0);
+                    const flow = String((r && (r.flow || r.type)) || '').toLowerCase();
+                    net += Math.abs(qty) * rate * (/taken|debit|dene_wala|negative/.test(flow) ? -1 : 1);
+                });
+            }
+        } catch (e) {
+            net = 0;
+        }
+
+        addBalance(name, net);
+    });
+
+    (Array.isArray(udharDB) ? udharDB : []).forEach(u => {
+        const signed = (typeof creditSignedAmountCoreV1 === 'function')
+            ? creditSignedAmountCoreV1(u)
+            : (String((u && u.type) || '').toLowerCase() === 'credit' ? Number(u && u.amount) : -Number(u && u.amount));
+        addBalance(u && u.name, signed);
+    });
+
+    let html = '';
+    let hasData = false;
+
+    Object.keys(balances)
+        .filter(n => String(n).toLowerCase().includes(q))
+        .sort((a, b) => Math.abs(balances[b]) - Math.abs(balances[a]))
+        .slice(0, 500)
+        .forEach((name, i) => {
+            const net = Number(balances[name]) || 0;
             if (Math.round(net) === 0) return;
-            hasData = true;
-            let isPlus = net > 0;
-            let colorClass = isPlus ? 'text-[#34C759]' : 'text-[#FF3B30]';
-            let bgClass = isPlus ? 'bg-[#34C759]/10' : 'bg-[#FF3B30]/10';
-            let sign = isPlus ? '+' : '-';
-            let label = isPlus ? 'To Receive' : 'To Pay';
-            let displayNet = Math.round(Math.abs(net)).toLocaleString('en-IN');
 
-            html += `<div class="glass-card mb-3 flex items-center justify-between w-full min-w-0 list-enter" style="padding: 16px; border-left: 4px solid ${isPlus ? '#34C759' : '#FF3B30'}; animation-delay: ${i * 0.05}s; flex-shrink: 0 !important; min-width: 0 !important;">
+            hasData = true;
+            const isPlus = net > 0;
+            const colorClass = isPlus ? 'text-[#34C759]' : 'text-[#FF3B30]';
+            const bgClass = isPlus ? 'bg-[#34C759]/10' : 'bg-[#FF3B30]/10';
+            const sign = isPlus ? '+' : '-';
+            const label = isPlus ? 'To Receive' : 'To Pay';
+            const displayNet = Math.round(Math.abs(net)).toLocaleString('en-IN');
+            const safeName = esc(name);
+            const safeInitial = esc(String(name || '?').trim().charAt(0).toUpperCase() || '?');
+            const delay = Math.min(i * 0.015, 0.12).toFixed(3);
+
+            html += `<div class="glass-card mb-3 flex items-center justify-between w-full min-w-0 list-enter" style="padding:16px;border-left:4px solid ${isPlus ? '#34C759' : '#FF3B30'};animation-delay:${delay}s;flex-shrink:0!important;min-width:0!important;">
                 <div class="flex items-center gap-3 w-full min-w-0 mr-2">
-                    <div class="w-10 h-10 shrink-0 squircle ${bgClass} ${colorClass} font-extrabold flex items-center justify-center text-sm">${name[0].toUpperCase()}</div>
+                    <div class="w-10 h-10 shrink-0 squircle ${bgClass} ${colorClass} font-extrabold flex items-center justify-center text-sm">${safeInitial}</div>
                     <div class="flex-1 min-w-0">
-                        <h4 class="font-bold text-[16px] truncate w-full text-gray-900 dark:text-white leading-tight">${name}</h4>
+                        <h4 class="font-bold text-[16px] truncate w-full text-gray-900 dark:text-white leading-tight">${safeName}</h4>
                         <p class="text-[10px] text-gray-500 font-bold uppercase tracking-wider truncate w-full mt-0.5">${label}</p>
                     </div>
                 </div>
@@ -3430,9 +3964,9 @@ async function loadUserData() {
             </div>`;
         });
 
-        if (!hasData) html = `<div class="text-center py-10 text-gray-400 font-semibold text-sm">No active balances!</div>`;
-        document.getElementById('dash-balances-list').innerHTML = html;
-    }
+    if (!hasData) html = `<div class="text-center py-10 text-gray-400 font-semibold text-sm">No active balances!</div>`;
+    box.innerHTML = html;
+}
     // =============================================================
 
     
@@ -3603,6 +4137,8 @@ function updateDiaryCoreUi() {
 
    
 async function saveDiaryEntry() {
+    if (typeof aarishBackendActionGuardCoreV2 === 'function' && !aarishBackendActionGuardCoreV2('saveDiaryEntry', 900)) return;
+
     const date = (document.getElementById('diary-entry-date') || {}).value;
     let title = diarySanitizeCoreV1((document.getElementById('diary-entry-title') || {}).value) || 'Untitled';
     let content = diarySanitizeCoreV1((document.getElementById('diary-entry-content') || {}).value);
@@ -3981,6 +4517,8 @@ function updateSalaryCoreUi() {
 
     // ========================== SALARY ==========================
     async function addSalaryPerson() {
+    if (typeof aarishBackendActionGuardCoreV2 === 'function' && !aarishBackendActionGuardCoreV2('addSalaryPerson', 900)) return;
+
     const nameEl = document.getElementById('new-salary-name');
     const companyEl = document.getElementById('new-salary-company');
     const typeEl = document.getElementById('new-salary-type');
@@ -4161,6 +4699,8 @@ async function deleteSalaryPersonProfile(name) {
 
 
     async function saveSalaryEntry() {
+    if (typeof aarishBackendActionGuardCoreV2 === 'function' && !aarishBackendActionGuardCoreV2('saveSalaryEntry', 900)) return;
+
     const db = salaryDBCoreV1();
     const person = db[activeSalaryPerson];
     if (!activeSalaryPerson || !person) return showToast('Salary profile not selected!');
@@ -4281,6 +4821,8 @@ async function deleteSalaryPersonProfile(name) {
     
     // ========================== MILK ==========================
 async function addMilkCustomer() {
+    if (typeof aarishBackendActionGuardCoreV2 === 'function' && !aarishBackendActionGuardCoreV2('addMilkCustomer', 900)) return;
+
     const nameEl = document.getElementById('new-milk-name');
     const rateEl = document.getElementById('new-milk-rate');
     const typeEl = document.getElementById('new-milk-type');
@@ -4387,169 +4929,106 @@ function aarishMilkRecordsCore(v) {
 
 
 /* AARISH_MILK_BACKGROUND_CORE_V1_START
-   Milk-only background Firebase writer:
-   same milkDB paths, queued fallback, no overlay, no wrapper chain, no repaint loop.
+   Rebuilt as core bridge to global Firebase cost-core.
+   One owner only: IndexedDB/global outbox writes and flushes Milk too.
+   Legacy Milk localStorage outbox is migrated once, then disabled.
 */
 function aarishMilkUidCore() {
+    try { return aarishCostUidV1 ? aarishCostUidV1() : ""; } catch(e) {}
     try { if (currentUserUID) return currentUserUID; } catch(e) {}
     try { if (firebase && firebase.auth && firebase.auth().currentUser) return firebase.auth().currentUser.uid; } catch(e) {}
-    return '';
-}
-
-function aarishMilkAppDataRefCore() {
-    try { if (appDataRef) return appDataRef; } catch(e) {}
-    try {
-        const uid = aarishMilkUidCore();
-        if (uid && database && database.ref) return database.ref(`users/${uid}/appData`);
-    } catch(e) {}
-    return null;
-}
-
-function aarishMilkOnlineCore() {
-    try { return navigator.onLine !== false; } catch(e) { return true; }
-}
-
-function aarishMilkOutboxKeyCore(uid) {
-    return 'AARISH_MILK_OUTBOX_CORE_V1::' + (uid || 'pending');
-}
-
-function aarishMilkOutboxKeysCore() {
-    const uid = aarishMilkUidCore();
-    const keys = [aarishMilkOutboxKeyCore('pending')];
-    if (uid) keys.push(aarishMilkOutboxKeyCore(uid));
-    return Array.from(new Set(keys));
+    return "";
 }
 
 function aarishMilkSanitizeFirebaseValueCore(value) {
+    try {
+        if (typeof aarishBackendSanitizeFirebaseValueCoreV2 === "function") {
+            return aarishBackendSanitizeFirebaseValueCoreV2(value, "milkDB");
+        }
+    } catch(e) {}
     if (value == null) return value;
     try { return JSON.parse(JSON.stringify(value)); } catch(e) { return value; }
 }
 
-function aarishMilkReadOutboxCore(key) {
-    try {
-        const raw = localStorage.getItem(key);
-        const arr = raw ? JSON.parse(raw) : [];
-        return Array.isArray(arr) ? arr.filter(Boolean) : [];
-    } catch(e) {
-        return [];
-    }
-}
-
-function aarishMilkWriteOutboxCore(key, items) {
-    try {
-        localStorage.setItem(key, JSON.stringify((items || []).filter(Boolean).slice(-400)));
-        return true;
-    } catch(e) {
-        return false;
-    }
-}
-
-function aarishMilkQueueWriteCore(path, action, payload, reason) {
-    const uid = aarishMilkUidCore();
-    const key = aarishMilkOutboxKeyCore(uid || 'pending');
-    const items = aarishMilkReadOutboxCore(key);
-
-    items.push({
-        id: 'milk_bg_' + Date.now() + '_' + Math.random().toString(36).slice(2, 10),
-        path: String(path || ''),
-        action: String(action || 'set'),
-        payload: aarishMilkSanitizeFirebaseValueCore(payload),
-        createdAt: Date.now(),
-        reason: String(reason || 'milk-core-write')
-    });
-
-    const ok = aarishMilkWriteOutboxCore(key, items);
-
-    if (ok) {
-        try { showToast('Saved locally. Internet आते ही Milk sync हो जाएगा.'); } catch(e) {}
-    } else {
-        try { showToast('Phone storage full. Internet ON करके फिर save करें.'); } catch(e) {}
-    }
-
-    return { queued: ok, path, action };
-}
-
-async function aarishMilkDirectFirebaseWriteCore(path, action, payload) {
-    const ref = aarishMilkAppDataRefCore();
-    if (!ref) throw new Error('Milk Firebase ref not ready');
-
-    const child = ref.child(String(path || ''));
-
-    if (action === 'remove') return child.remove();
-    if (action === 'update') return child.update(payload || {});
-    return child.set(aarishMilkSanitizeFirebaseValueCore(payload));
-}
-
 async function aarishMilkFirebaseWriteCore(path, action, payload, reason) {
-    action = action || 'set';
-    if (!path) return { ok:false, reason:'missing_path' };
+    action = action || "set";
+    path = String(path || "").replace(/^\/+/, "").replace(/\/+/g, "/").replace(/\/+$/, "");
+    if (!path) return { ok:false, reason:"missing_path" };
 
+    if (typeof aarishFirebaseLaterV48 !== "function" && !(window && typeof window.aarishFirebaseLaterV48 === "function")) {
+        try { showToast("Sync core not ready. Please reopen app."); } catch(e) {}
+        return { ok:false, reason:"global_outbox_missing" };
+    }
+
+    const writer = (typeof aarishFirebaseLaterV48 === "function") ? aarishFirebaseLaterV48 : window.aarishFirebaseLaterV48;
+    return await writer(path, action, aarishMilkSanitizeFirebaseValueCore(payload), { fast: true, reason: reason || "milk-core" });
+}
+
+function aarishMilkLegacyOutboxKeysCoreV2() {
+    const keys = [];
     try {
-        if (typeof window.aarishFirebaseLaterV48 === 'function' && !window.aarishFirebaseLaterV48.__aarishMilkBackgroundCoreV1) {
-            return await window.aarishFirebaseLaterV48(path, action, payload);
+        for (let i = 0; i < localStorage.length; i++) {
+            const k = localStorage.key(i);
+            if (k && k.indexOf("AARISH_MILK_OUTBOX_CORE_V1::") === 0) keys.push(k);
         }
-    } catch(e) {
-        return aarishMilkQueueWriteCore(path, action, payload, reason || 'v48-failed');
+    } catch(e) {}
+    return keys;
+}
+
+async function aarishMilkMigrateLegacyOutboxCoreV2(reason) {
+    if (typeof aarishFirebaseLaterV48 !== "function" && !(window && typeof window.aarishFirebaseLaterV48 === "function")) {
+        return { ok:false, reason:"global_outbox_missing" };
     }
 
-    if (!aarishMilkUidCore() || !aarishMilkAppDataRefCore() || !aarishMilkOnlineCore()) {
-        return aarishMilkQueueWriteCore(path, action, payload, reason || 'offline-or-ref-not-ready');
+    const writer = (typeof aarishFirebaseLaterV48 === "function") ? aarishFirebaseLaterV48 : window.aarishFirebaseLaterV48;
+    let migrated = 0;
+
+    for (const key of aarishMilkLegacyOutboxKeysCoreV2()) {
+        let items = [];
+        try {
+            const raw = localStorage.getItem(key);
+            items = raw ? JSON.parse(raw) : [];
+            if (!Array.isArray(items)) items = [];
+        } catch(e) {
+            items = [];
+        }
+
+        for (const item of items) {
+            if (!item || !item.path) continue;
+            try {
+                await writer(item.path, item.action || "set", aarishMilkSanitizeFirebaseValueCore(item.payload), {
+                    fast: true,
+                    reason: "legacy-milk-outbox-migration-" + String(reason || "boot")
+                });
+                migrated++;
+            } catch(e) {}
+        }
+
+        try { localStorage.removeItem(key); } catch(e) {}
     }
 
-    try {
-        await aarishMilkDirectFirebaseWriteCore(path, action, payload);
-        return { ok:true, path, action };
-    } catch(e) {
-        return aarishMilkQueueWriteCore(path, action, payload, reason || 'direct-write-failed');
+    if (migrated) {
+        try { showToast("Old Milk pending sync merged into main sync queue."); } catch(e) {}
+        try { if (typeof flushFirebaseWriteOutboxV87 === "function") flushFirebaseWriteOutboxV87("legacy-milk-migrated", { force: true }); } catch(e) {}
     }
+
+    return { ok:true, migrated };
 }
 
 async function aarishMilkFlushOutboxCore(reason) {
-    if (!aarishMilkUidCore() || !aarishMilkAppDataRefCore() || !aarishMilkOnlineCore()) return { ok:false, reason:'not-ready' };
-    if (window.__aarishMilkFlushOutboxCoreBusy) return { ok:false, reason:'busy' };
-
-    window.__aarishMilkFlushOutboxCoreBusy = true;
-    let sent = 0;
-
-    try {
-        for (const key of aarishMilkOutboxKeysCore()) {
-            const items = aarishMilkReadOutboxCore(key);
-            if (!items.length) continue;
-
-            const keep = [];
-
-            for (const item of items) {
-                try {
-                    await aarishMilkDirectFirebaseWriteCore(item.path, item.action, item.payload);
-                    sent++;
-                } catch(e) {
-                    keep.push(item);
-                }
-            }
-
-            aarishMilkWriteOutboxCore(key, keep);
-        }
-
-        if (sent) {
-            try { showToast('Milk background sync complete'); } catch(e) {}
-            try { renderMilkList(); } catch(e) {}
-            try { if (activeMilkCustomer) renderMilkRecords(); } catch(e) {}
-            try { updateDashboard(); } catch(e) {}
-        }
-
-        return { ok:true, sent, reason: reason || 'manual' };
-    } finally {
-        window.__aarishMilkFlushOutboxCoreBusy = false;
+    try { await aarishMilkMigrateLegacyOutboxCoreV2(reason || "manual"); } catch(e) {}
+    if (typeof flushFirebaseWriteOutboxV87 === "function") {
+        return await flushFirebaseWriteOutboxV87(reason || "milk-core", { force: true });
     }
+    return { ok:false, reason:"global_flush_missing" };
 }
 
 function aarishMilkInstallBackgroundCore() {
+    if (window.__aarishMilkCoreBridgeInstalledV2) return;
+    window.__aarishMilkCoreBridgeInstalledV2 = true;
     window.aarishMilkFlushOutboxCore = aarishMilkFlushOutboxCore;
 
-    try { window.addEventListener('online', function(){ aarishMilkFlushOutboxCore('online'); }, { passive:true }); } catch(e) {}
-    try { window.addEventListener('focus', function(){ aarishMilkFlushOutboxCore('focus'); }, { passive:true }); } catch(e) {}
-    try { document.addEventListener('visibilitychange', function(){ if (!document.hidden) aarishMilkFlushOutboxCore('visible'); }, { passive:true }); } catch(e) {}
-    try { setTimeout(function(){ aarishMilkFlushOutboxCore('boot'); }, 1200); } catch(e) {}
+    try { setTimeout(function(){ aarishMilkMigrateLegacyOutboxCoreV2("boot"); }, 800); } catch(e) {}
 }
 
 aarishMilkInstallBackgroundCore();
@@ -4746,6 +5225,19 @@ function aarishMilkEnsureEntryButtonsCore() {
 }
 /* AARISH_MILK_CORE_HELPERS_V1_END */
 
+
+/* AARISH_MILK_EMPTY_BIG_CORE_V1_START */
+function aarishMilkEmptyStateCoreV1() {
+    return `<div class="milk-empty-core-v1" data-milk-empty-core="true">
+        <div class="milk-empty-icon-core-v1">
+            <i class="fa-solid fa-jug-detergent" aria-hidden="true"></i>
+        </div>
+        <p class="milk-empty-text-core-v1">No customers found</p>
+    </div>`;
+}
+/* AARISH_MILK_EMPTY_BIG_CORE_V1_END */
+
+
 function renderMilkList() {
     const searchEl = document.getElementById('milk-search');
     const listEl = document.getElementById('milk-list');
@@ -4784,12 +5276,7 @@ function renderMilkList() {
         </div>`;
     }).join('');
 
-    listEl.innerHTML = html || `<div class="flex flex-col items-center justify-center py-24 text-center select-none">
-        <div class="w-28 h-28 rounded-full bg-[#007AFF]/10 text-[#007AFF] flex items-center justify-center shadow-[0_0_24px_rgba(0,122,255,0.14)]">
-            <i class="fa-solid fa-jug-detergent text-5xl"></i>
-        </div>
-        <p class="mt-8 text-[#007AFF] font-extrabold text-[17px] tracking-tight drop-shadow-[0_0_10px_rgba(0,122,255,0.28)]">No customers found</p>
-    </div>`;
+    listEl.innerHTML = html || aarishMilkEmptyStateCoreV1();
 
     aarishMilkApplyChromeCore();
 }
@@ -4908,6 +5395,8 @@ function renderMilkList() {
 
 
         async function saveMilkEntry(flowArg) {
+    if (typeof aarishBackendActionGuardCoreV2 === 'function' && !aarishBackendActionGuardCoreV2('saveMilkEntry', 900)) return;
+
     const date = document.getElementById('milk-entry-date')?.value;
     const m = parseFloat(document.getElementById('milk-morning-kg')?.value) || 0;
     const e = parseFloat(document.getElementById('milk-evening-kg')?.value) || 0;
@@ -5591,6 +6080,8 @@ function openUdharModal(name = null) {
 
 
         async function saveUdharEntry(type) {
+    if (typeof aarishBackendActionGuardCoreV2 === 'function' && !aarishBackendActionGuardCoreV2('saveUdharEntry', 900)) return;
+
     const date = (document.getElementById('udhar-date') || {}).value;
     const name = creditCleanNameCoreV1((document.getElementById('udhar-name') || {}).value);
     const amt = parseFloat((document.getElementById('udhar-amount') || {}).value);
@@ -5677,14 +6168,38 @@ function openUdharModal(name = null) {
          async function deleteUdharPersonProfile(name) {
     name = creditCleanNameCoreV1(name || activeUdharPerson || '');
     if (!name) return showToast('No credit profile selected!');
-    const entriesToDelete = creditEntriesCoreV1().filter(u => creditCleanNameCoreV1(u && u.name) === name);
+    if (typeof aarishBackendActionGuardCoreV2 === 'function' && !aarishBackendActionGuardCoreV2('deleteUdharPersonProfile:' + name, 2500)) return;
+
+    const entries = creditEntriesCoreV1();
+    const entriesToDelete = entries.filter(u => creditCleanNameCoreV1(u && u.name) === name);
     if (!entriesToDelete.length) return showToast('No records found!');
     if (!confirm(`Delete the credit profile for "${name}" and all ${entriesToDelete.length} records?`)) return;
 
-    setUdharDBCoreV1(creditEntriesCoreV1().filter(u => creditCleanNameCoreV1(u && u.name) !== name));
+    try {
+        const backup = {
+            version: 'CREDIT_CORE_V1',
+            type: 'credit-profile-delete-backup',
+            name,
+            deletedAt: new Date().toISOString(),
+            entries: entriesToDelete
+        };
+        try { localStorage.setItem('AARISH_CREDIT_DELETE_BACKUP_CORE_' + Date.now(), JSON.stringify(backup)); } catch (e) {}
+        await creditFirebaseCoreV1('udharDB_DELETE_BACKUP_CORE/' + Date.now(), 'set', backup, { fast: true });
+    } catch (e) {}
 
-    for (const entry of entriesToDelete) {
-        if (entry && entry.id) await creditFirebaseCoreV1(`udharDB/${entry.id}`, 'remove', null, { fast: true });
+    setUdharDBCoreV1(entries.filter(u => creditCleanNameCoreV1(u && u.name) !== name));
+
+    const payload = {};
+    entriesToDelete.forEach(entry => {
+        if (entry && entry.id) payload[`udharDB/${entry.id}`] = null;
+    });
+
+    if (Object.keys(payload).length) {
+        if (window.aarishFirebaseBatchLaterV87) {
+            await window.aarishFirebaseBatchLaterV87(payload, 'delete-credit-profile-core');
+        } else {
+            for (const path of Object.keys(payload)) await creditFirebaseCoreV1(path, 'remove', null, { fast: true });
+        }
     }
 
     if (activeUdharPerson === name) activeUdharPerson = null;
@@ -6085,6 +6600,8 @@ function updateExpenseDetailCoreUi(total) {
 
 
         async function saveExpenseEntry() {
+    if (typeof aarishBackendActionGuardCoreV2 === 'function' && !aarishBackendActionGuardCoreV2('saveExpenseEntry', 900)) return;
+
     const date = (document.getElementById('expense-date') || {}).value;
     const cat = expenseCleanCategoryCoreV1((document.getElementById('expense-category') || {}).value);
     const amt = parseFloat((document.getElementById('expense-amount') || {}).value);
@@ -6180,23 +6697,40 @@ function updateExpenseDetailCoreUi(total) {
 async function deleteExpenseCategoryProfile(category) {
     category = expenseCleanCategoryCoreV1(category || activeExpenseCategory || '');
     if (!category) return showToast('No expense category selected!');
+    if (typeof aarishBackendActionGuardCoreV2 === 'function' && !aarishBackendActionGuardCoreV2('deleteExpenseCategoryProfile:' + category, 2500)) return;
 
-    const entriesToDelete = expenseEntriesCoreV1().filter(e => expenseCleanCategoryCoreV1(e && e.category) === category);
+    const entries = expenseEntriesCoreV1();
+    const entriesToDelete = entries.filter(e => expenseCleanCategoryCoreV1(e && e.category) === category);
     if (!entriesToDelete.length) return showToast('No records found!');
 
     if (!confirm(`Delete the expense category "${category}" and all ${entriesToDelete.length} records?`)) return;
     if (!confirm(`Final confirmation: delete "${category}" permanently?`)) return;
 
     try {
-        const backup = { version: 'EXPENSE_CORE_V1', type: 'expense-category-delete-backup', category, deletedAt: new Date().toISOString(), entries: entriesToDelete };
+        const backup = {
+            version: 'EXPENSE_CORE_V1',
+            type: 'expense-category-delete-backup',
+            category,
+            deletedAt: new Date().toISOString(),
+            entries: entriesToDelete
+        };
         try { localStorage.setItem('AARISH_EXPENSE_DELETE_BACKUP_CORE_' + Date.now(), JSON.stringify(backup)); } catch (e) {}
         await expenseFirebaseCoreV1('expenseDB_DELETE_BACKUP_CORE/' + Date.now(), 'set', backup, { fast: true });
     } catch (e) {}
 
-    setExpenseDBCoreV1(expenseEntriesCoreV1().filter(e => expenseCleanCategoryCoreV1(e && e.category) !== category));
+    setExpenseDBCoreV1(entries.filter(e => expenseCleanCategoryCoreV1(e && e.category) !== category));
 
-    for (const e of entriesToDelete) {
-        if (e && e.id) await expenseFirebaseCoreV1(`expenseDB/${e.id}`, 'remove', null, { fast: true });
+    const payload = {};
+    entriesToDelete.forEach(e => {
+        if (e && e.id) payload[`expenseDB/${e.id}`] = null;
+    });
+
+    if (Object.keys(payload).length) {
+        if (window.aarishFirebaseBatchLaterV87) {
+            await window.aarishFirebaseBatchLaterV87(payload, 'delete-expense-category-core');
+        } else {
+            for (const path of Object.keys(payload)) await expenseFirebaseCoreV1(path, 'remove', null, { fast: true });
+        }
     }
 
     if (activeExpenseCategory === category) activeExpenseCategory = null;
@@ -6433,6 +6967,8 @@ function updateBusinessCoreUi() {
     // ========================== PREMIUM BUSINESS HUB LOGIC ==========================
 
 async function saveNewProject() {
+    if (typeof aarishBackendActionGuardCoreV2 === 'function' && !aarishBackendActionGuardCoreV2('saveNewProject', 900)) return;
+
     const input = document.getElementById('new-project-name');
     const name = businessCleanNameCoreV1(input && input.value);
     if (input) input.value = name;
@@ -6580,6 +7116,8 @@ async function saveNewProject() {
 }
 
     async function saveProjectEntry() {
+    if (typeof aarishBackendActionGuardCoreV2 === 'function' && !aarishBackendActionGuardCoreV2('saveProjectEntry', 900)) return;
+
     const db = businessProjectDBCoreV1();
     if (!activeProject || !db[activeProject]) return showToast('Business khata not selected!');
 
@@ -7021,13 +7559,19 @@ async function saveNewProject() {
     }
 
     function addMsgToAI(text, sender) {
-        const body = document.getElementById('gemini-chat-body');
-        const d = document.createElement('div');
-        d.className = `chat-msg chat-${sender}`;
-        d.innerHTML = text.replace(/\*\*(.*?)\*\*/g, '<b>$1</b>').replace(/\n/g, '<br>'); 
-        body.appendChild(d);
-        body.scrollTop = body.scrollHeight;
-    }
+    const body = document.getElementById('gemini-chat-body');
+    if (!body) return;
+    const d = document.createElement('div');
+    d.className = `chat-msg chat-${sender === 'user' ? 'user' : 'ai'}`;
+
+    const safe = (typeof aarishBackendEscapeHtmlCoreV2 === 'function')
+        ? aarishBackendEscapeHtmlCoreV2(text, 12000)
+        : String(text == null ? '' : text).replace(/[&<>"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
+
+    d.innerHTML = safe.replace(/\*\*(.*?)\*\*/g, '<b>$1</b>').replace(/\n/g, '<br>');
+    body.appendChild(d);
+    body.scrollTop = body.scrollHeight;
+}
 
     // Auto-show logo if key exists on app reload
     document.addEventListener('DOMContentLoaded', () => {
