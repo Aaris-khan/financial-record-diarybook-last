@@ -415,6 +415,7 @@
    Milk core-only semantic contract.
    JS computes positive/negative/neutral once; CSS consumes --moduleTone variables.
    Dark mode changes only surface/glow strength, not meaning colors.
+   Static search/filter/table labels remain permanent iOS blue.
 */
 #milk-screen[data-module-tone],
 #milk-detail-screen[data-module-tone],
@@ -424,6 +425,9 @@
   --moduleTint: rgba(0,122,255,0.10);
   --moduleGlow: rgba(0,122,255,0.28);
   --moduleBorder: rgba(0,122,255,0.34);
+  --milkStaticBlue: #007AFF;
+  --milkStaticBlue2: #0A84FF;
+  --milkStaticGlow: rgba(0,122,255,0.30);
 }
 #milk-screen[data-module-tone="positive"],
 #milk-detail-screen[data-module-tone="positive"],
@@ -456,7 +460,33 @@
   border-color: transparent !important;
   box-shadow: 0 8px 22px var(--moduleGlow) !important;
 }
+
+/* Permanent blue static Milk UI */
+#milk-screen .relative .fa-search,
+#milk-screen #milk-search,
+#milk-screen #milk-search::placeholder,
+#milk-screen #milk-search::-webkit-input-placeholder,
+#milk-detail-screen #filter-month-milk,
+#milk-detail-screen #filter-year-milk,
+#milk-detail-screen .table-custom th,
+#milk-detail-screen .flex.justify-between.items-center.mb-4 > h3 {
+  color: #007AFF !important;
+  -webkit-text-fill-color: #007AFF !important;
+  caret-color: #007AFF !important;
+  text-shadow: 0 0 10px rgba(0,122,255,0.24) !important;
+  opacity: 1 !important;
+}
+#milk-detail-screen #filter-month-milk,
+#milk-detail-screen #filter-year-milk {
+  border-color: rgba(0,122,255,0.22) !important;
+  font-weight: 800 !important;
+}
+
+/* Compact Milk list card, no extra label line */
 #milk-list .milk-core-card {
+  padding: 15px 18px !important;
+  min-height: 82px !important;
+  border-radius: 22px !important;
   border-left-width: 4px !important;
   border-left-style: solid !important;
   border-left-color: var(--moduleTone) !important;
@@ -467,6 +497,7 @@
   background: rgba(12,18,36,0.84) !important;
   box-shadow: 0 12px 34px rgba(0,0,0,0.48), -3px 0 20px var(--moduleGlow) !important;
 }
+
 #milk-detail-screen .milk-core-total-card {
   background: linear-gradient(135deg, var(--moduleTone), var(--moduleTone2)) !important;
   border-color: var(--moduleTone) !important;
@@ -483,9 +514,20 @@
   color: var(--moduleTone) !important;
   text-shadow: 0 0 9px var(--moduleGlow) !important;
 }
+#milk-detail-records tr[data-module-tone="neutral"] td,
+#milk-detail-records tr[data-module-tone="neutral"] td[colspan] {
+  color: #007AFF !important;
+  -webkit-text-fill-color: #007AFF !important;
+}
 .dark #milk-detail-screen .glass-card:not(.milk-core-total-card) {
   background: rgba(12,18,36,0.84) !important;
   border-color: rgba(148,163,184,0.14) !important;
+}
+@media (max-width: 380px) {
+  #milk-list .milk-core-card {
+    padding: 13px 16px !important;
+    min-height: 78px !important;
+  }
 }
 /* AARISH_MILK_CORE_CONTRACT_V1_END */
 </style>
@@ -1913,7 +1955,7 @@ async function deleteSalaryPersonProfile(name) {
             </tr>`;
         }).join('');
         
-        document.getElementById('salary-detail-records').innerHTML = html || `<tr><td colspan="3" class="text-center py-8 text-gray-400 font-semibold">No entries for ${MONTHS[selectedMonth]}</td></tr>`;
+        document.getElementById('salary-detail-records').innerHTML = html || `<tr><td colspan="3" class="text-center py-8 text-gray-400 font-semibold">No entries found</td></tr>`;
         
         const isLeneWala = s.type === 'lene_wala';
         const sign = isLeneWala ? '+' : '-';
@@ -2238,7 +2280,6 @@ function renderMilkList() {
         const safeName = aarishMilkEscapeCore(name);
         const argName = aarishMilkJsArgCore(name);
         const initial = safeName ? safeName.charAt(0).toUpperCase() : 'M';
-        const label = tone === 'positive' ? 'Net To Receive' : (tone === 'negative' ? 'Net To Pay' : 'Settled');
         const delay = Math.min(index * 0.014, 0.112).toFixed(3);
 
         return `<div
@@ -2252,19 +2293,18 @@ function renderMilkList() {
             onmouseleave="cancelLongPress()"
             class="glass-card milk-core-card mb-3.5 flex items-center justify-between cursor-pointer w-full ring-1 ring-white/40 dark:ring-white/5 list-enter"
             style="${aarishMilkVarsStyleCore(tone)} --aarish-stagger-v4:${delay}s; animation-delay:${delay}s; border-left-color:${v.tone}!important;">
-            <div class="flex items-center gap-4 w-full min-w-0">
-                <div class="w-12 h-12 shrink-0 squircle font-extrabold flex items-center justify-center text-lg" style="background:${v.tint}; color:${v.tone}; box-shadow:inset 0 1px 1px rgba(255,255,255,0.22);">${initial}</div>
+            <div class="flex items-center gap-3.5 w-full min-w-0">
+                <div class="w-11 h-11 shrink-0 squircle font-extrabold flex items-center justify-center text-[17px]" style="background:${v.tint}; color:${v.tone}; box-shadow:inset 0 1px 1px rgba(255,255,255,0.22);">${initial}</div>
                 <div class="flex-1 min-w-0">
-                    <h4 class="font-bold text-[17px] leading-tight truncate w-full flex items-center" style="color:${v.tone}; text-shadow:0 0 10px ${v.glow};">${safeName}</h4>
-                    <p class="text-[12px] font-extrabold uppercase tracking-wide truncate w-full mt-0.5" style="color:${v.tone}; opacity:.92;">${label}</p>
-                    <p class="text-[13px] font-medium truncate w-full mt-0.5 tracking-tight text-gray-500 dark:text-gray-300">
-                        <span style="color:${v.tone}; font-weight:800;">${aarishMilkSignedKgCore(total.netKg)}</span>
-                        <span class="mx-1">•</span>
-                        <span style="color:${v.tone}; font-weight:900;">${aarishMilkSignedMoneyCore(total.netAmount)}</span>
+                    <h4 class="font-extrabold text-[16px] leading-tight truncate w-full flex items-center" style="color:${v.tone}; text-shadow:0 0 10px ${v.glow};">${safeName}</h4>
+                    <p class="text-[13px] font-extrabold truncate w-full mt-1 tracking-tight">
+                        <span style="color:${v.tone};">${aarishMilkSignedKgCore(total.netKg)}</span>
+                        <span style="color:${v.tone}; opacity:.9;" class="mx-1">•</span>
+                        <span style="color:${v.tone};">${aarishMilkSignedMoneyCore(total.netAmount)}</span>
                     </p>
                 </div>
             </div>
-            <i class="fa-solid fa-chevron-right shrink-0 ml-3 text-[13px]" style="color:${v.tone}; opacity:.75;"></i>
+            <i class="fa-solid fa-chevron-right shrink-0 ml-3 text-[13px]" style="color:${v.tone}; opacity:.78;"></i>
         </div>`;
     }).join('');
 
@@ -2331,7 +2371,7 @@ function renderMilkList() {
     }).join('');
 
     recordsBox.innerHTML = html || `<tr data-module="milk-row" data-module-tone="neutral" style="${aarishMilkVarsStyleCore('neutral')}">
-        <td colspan="5" class="text-center py-8 font-extrabold">No entries for ${MONTHS[selectedMonth]}</td>
+        <td colspan="5" class="text-center py-8 font-extrabold">No entries found</td>
     </tr>`;
 
     netKg = aarishMilkCleanZeroCore(netKg);
@@ -3070,7 +3110,7 @@ async function deleteExpenseCategoryProfile(category) {
             </tr>`;
         }).join('');
 
-        document.getElementById('expense-detail-records').innerHTML = html || `<tr><td colspan="3" class="text-center py-8 text-gray-400 font-semibold">No entries for ${MONTHS[selectedMonth]}</td></tr>`;
+        document.getElementById('expense-detail-records').innerHTML = html || `<tr><td colspan="3" class="text-center py-8 text-gray-400 font-semibold">No entries found</td></tr>`;
         document.getElementById('expense-detail-total').textContent = `₹${total.toLocaleString('en-IN')}`;
     }
 
