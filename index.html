@@ -2125,14 +2125,14 @@ body {
 }
 
 /* List card uniform formula */
-#milk-list .milk-core-card { --aariSemanticGlow: var(--moduleGlow); --aariSemanticBorder: var(--moduleBorder); }
-#udhar-list .glass-card[data-credit-core-tone] { --aariSemanticGlow: var(--creditGlow); --aariSemanticBorder: var(--creditBorder); }
-#expense-list-container .expense-core-card { --aariSemanticGlow: var(--expenseGlow); --aariSemanticBorder: var(--expenseBorder); }
-#salary-list .salary-core-card { --aariSemanticGlow: var(--salaryGlow); --aariSemanticBorder: var(--salaryBorder); }
+#milk-list .milk-core-card { --aariSemanticGlow: var(--moduleGlow); --aariSemanticBorder: var(--moduleBorder); --aariSemanticStrip: var(--moduleTone); }
+#udhar-list .glass-card[data-credit-core-tone] { --aariSemanticGlow: var(--creditGlow); --aariSemanticBorder: var(--creditBorder); --aariSemanticStrip: var(--creditTone); }
+#expense-list-container .expense-core-card { --aariSemanticGlow: var(--expenseGlow); --aariSemanticBorder: var(--expenseBorder); --aariSemanticStrip: var(--expenseTone); }
+#salary-list .salary-core-card { --aariSemanticGlow: var(--salaryGlow); --aariSemanticBorder: var(--salaryBorder); --aariSemanticStrip: var(--salaryTone); }
 #diary-screen #diary-list .diary-core-card,
-#diary-list .diary-core-card { --aariSemanticGlow: var(--diaryGlow); --aariSemanticBorder: var(--diaryBorder); }
-#projects-screen #project-list .business-core-card { --aariSemanticGlow: var(--businessBlueGlow); --aariSemanticBorder: var(--businessBlueBorder); }
-#balances-screen #dash-balances-list .party-ledger-core-card { --aariSemanticGlow: var(--partyGlow); --aariSemanticBorder: var(--partyBorder); }
+#diary-list .diary-core-card { --aariSemanticGlow: var(--diaryGlow); --aariSemanticBorder: var(--diaryBorder); --aariSemanticStrip: var(--diaryTone); }
+#projects-screen #project-list .business-core-card { --aariSemanticGlow: var(--businessBlueGlow); --aariSemanticBorder: var(--businessBlueBorder); --aariSemanticStrip: var(--businessBlue); }
+#balances-screen #dash-balances-list .party-ledger-core-card { --aariSemanticGlow: var(--partyGlow); --aariSemanticBorder: var(--partyBorder); --aariSemanticStrip: var(--partyTone); }
 
 #milk-list .milk-core-card,
 #udhar-list .glass-card[data-credit-core-tone],
@@ -2145,7 +2145,7 @@ body {
   border-radius: var(--aariGlassRadius) !important;
   border-left-width: 4px !important;
   border-left-style: solid !important;
-  border-left-color: var(--aariSemanticBorder) !important;
+  border-left-color: var(--aariSemanticStrip, var(--aariSemanticBorder)) !important;
   border-top-color: rgba(255,255,255,0.680) !important;
   border-right-color: rgba(255,255,255,0.360) !important;
   border-bottom-color: rgba(255,255,255,0.260) !important;
