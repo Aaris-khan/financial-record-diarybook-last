@@ -316,8 +316,14 @@
             min-height: 38px !important;
             font-size: 14px !important;
             display: flex; align-items: center; gap: 6px;
-            transition: all 0.2s ease;
+            transition: transform 0.16s cubic-bezier(0.32, 0.72, 0, 1), opacity 0.16s ease;
             backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+            contain: paint;
+            isolation: isolate;
+            backface-visibility: hidden;
+            -webkit-backface-visibility: hidden;
+            will-change: transform;
+            /* AARISH_CORE_SHARE_STABLE_V2 */
         }
         .dark .btn-ios-share { background: rgba(10, 132, 255, 0.15); color: #5E5CE6; border-color: rgba(10, 132, 255, 0.2); }
         .btn-ios-share:active { transform: scale(0.95); background: rgba(0, 122, 255, 0.2); }
@@ -738,10 +744,29 @@
 #udhar-screen #udhar-search {
   border-color: var(--creditStaticBlueBorder) !important;
   font-weight: 800 !important;
+
+  /* Credit search paint stability: no glow flicker */
+  background: rgba(0,122,255,0.045) !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.420),
+    0 8px 22px rgba(0,122,255,0.055) !important;
+  text-shadow: none !important;
+  transition:
+    transform 0.16s cubic-bezier(0.32,0.72,0,1),
+    opacity 0.16s ease !important;
+  contain: paint !important;
+  isolation: isolate !important;
+  backface-visibility: hidden !important;
+  -webkit-backface-visibility: hidden !important;
+  will-change: transform !important;
 }
 #udhar-screen #udhar-search::placeholder,
 #udhar-screen #udhar-search::-webkit-input-placeholder {
   font-weight: 800 !important;
+  color: var(--creditStaticBlue) !important;
+  -webkit-text-fill-color: var(--creditStaticBlue) !important;
+  text-shadow: none !important;
+  opacity: 0.92 !important;
 }
 #udhar-detail-screen .table-custom th {
   font-weight: 900 !important;
@@ -849,7 +874,15 @@
 .dark #udhar-detail-screen #udhar-detail-card[data-credit-core-tone] {
   box-shadow: 0 12px 34px var(--creditGlow), inset 0 1px 0 rgba(255,255,255,0.16) !important;
 }
-.dark #udhar-screen #udhar-search,
+.dark #udhar-screen #udhar-search {
+  background: rgba(10,132,255,0.070) !important;
+  border-color: rgba(10,132,255,0.260) !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.065),
+    0 8px 22px rgba(10,132,255,0.060) !important;
+  text-shadow: none !important;
+}
+
 .dark #udhar-detail-screen .credit-share-btn-core {
   border-color: rgba(10,132,255,0.28) !important;
   box-shadow: 0 8px 24px rgba(10,132,255,0.13) !important;
@@ -2452,6 +2485,102 @@ button[data-business-entry-core] {
   }
 }
 /* AARISH_PREMIUM_UNIFORM_GLASS_CORE_END */
+
+/* AARISH_NET_CARD_TONE_PARITY_V13_START
+   Fixes only Net/Total cards:
+   - Milk detail card no longer uses dark solid gradient / forced white text.
+   - Expense detail amount no longer becomes white.
+   - Credit/Expense/Milk detail net cards keep same smoky-glass tone-on-tone formula.
+   Backend/Firebase/math untouched.
+*/
+#milk-detail-screen .milk-core-total-card[data-net-card-tone-parity-v13="true"] {
+  background: rgba(255,255,255,0.800) !important;
+  background:
+    linear-gradient(
+      148deg,
+      color-mix(in srgb, var(--aariTotalTone, var(--moduleTone)) 11%, rgba(255,255,255,0.860)) 0%,
+      color-mix(in srgb, var(--aariTotalTone2, var(--moduleTone2)) 8%, rgba(255,255,255,0.735)) 52%,
+      color-mix(in srgb, var(--aariTotalTone, var(--moduleTone)) 13%, rgba(255,255,255,0.620)) 100%
+    ) !important;
+  border-color: rgba(255,255,255,0.500) !important;
+  box-shadow:
+    0 0 0 1px rgba(255,255,255,0.380),
+    0 2px 8px rgba(15,23,42,0.052),
+    0 14px 40px rgba(15,23,42,0.095),
+    0 8px 22px var(--aariTotalGlow, var(--moduleGlow)),
+    0 24px 72px var(--aariTotalGlow, var(--moduleGlow)),
+    inset 0 1px 0 rgba(255,255,255,0.800),
+    inset 0 -1px 0 rgba(0,0,0,0.045) !important;
+}
+
+.dark #milk-detail-screen .milk-core-total-card[data-net-card-tone-parity-v13="true"] {
+  background: rgba(10,14,28,0.830) !important;
+  background:
+    linear-gradient(
+      148deg,
+      color-mix(in srgb, var(--aariTotalTone, var(--moduleTone)) 21%, rgba(10,14,28,0.850)) 0%,
+      color-mix(in srgb, var(--aariTotalTone2, var(--moduleTone2)) 16%, rgba(8,12,24,0.780)) 54%,
+      color-mix(in srgb, var(--aariTotalTone, var(--moduleTone)) 18%, rgba(0,0,0,0.640)) 100%
+    ) !important;
+  border-color: rgba(255,255,255,0.140) !important;
+  box-shadow:
+    0 0 0 1px rgba(255,255,255,0.085),
+    0 4px 16px rgba(0,0,0,0.400),
+    0 22px 66px rgba(0,0,0,0.680),
+    0 10px 32px var(--aariTotalGlow, var(--moduleGlow)),
+    0 32px 102px var(--aariTotalGlow, var(--moduleGlow)),
+    inset 0 1px 0 rgba(255,255,255,0.145),
+    inset 0 -1px 0 rgba(0,0,0,0.270) !important;
+}
+
+#milk-detail-screen .milk-core-total-card[data-net-card-tone-parity-v13="true"] p,
+#milk-detail-screen .milk-core-total-card[data-net-card-tone-parity-v13="true"] #milk-detail-bill,
+#milk-detail-screen .milk-core-total-card[data-net-card-tone-parity-v13="true"] #milk-detail-kg,
+#expense-detail-screen #expense-detail-total[data-net-card-value-parity-v13="true"] {
+  color: var(--aariTotalTone, var(--moduleTone, var(--expenseTone))) !important;
+  -webkit-text-fill-color: var(--aariTotalTone, var(--moduleTone, var(--expenseTone))) !important;
+  color: color-mix(in srgb, var(--aariTotalTone, var(--moduleTone, var(--expenseTone))) 60%, #06111F) !important;
+  -webkit-text-fill-color: color-mix(in srgb, var(--aariTotalTone, var(--moduleTone, var(--expenseTone))) 60%, #06111F) !important;
+}
+
+.dark #milk-detail-screen .milk-core-total-card[data-net-card-tone-parity-v13="true"] p,
+.dark #milk-detail-screen .milk-core-total-card[data-net-card-tone-parity-v13="true"] #milk-detail-bill,
+.dark #milk-detail-screen .milk-core-total-card[data-net-card-tone-parity-v13="true"] #milk-detail-kg,
+.dark #expense-detail-screen #expense-detail-total[data-net-card-value-parity-v13="true"] {
+  color: var(--aariTotalTone2, var(--moduleTone2, var(--expenseTone2))) !important;
+  -webkit-text-fill-color: var(--aariTotalTone2, var(--moduleTone2, var(--expenseTone2))) !important;
+  color: color-mix(in srgb, var(--aariTotalTone, var(--moduleTone, var(--expenseTone))) 72%, #FFFFFF) !important;
+  -webkit-text-fill-color: color-mix(in srgb, var(--aariTotalTone, var(--moduleTone, var(--expenseTone))) 72%, #FFFFFF) !important;
+}
+
+#milk-detail-screen .milk-core-total-card[data-net-card-tone-parity-v13="true"] p {
+  opacity: 0.92 !important;
+  text-shadow: 0 1px 0 rgba(255,255,255,0.260), 0 0 12px var(--aariTotalGlow, var(--moduleGlow)) !important;
+}
+
+#milk-detail-screen .milk-core-total-card[data-net-card-tone-parity-v13="true"] #milk-detail-bill,
+#milk-detail-screen .milk-core-total-card[data-net-card-tone-parity-v13="true"] #milk-detail-kg,
+#expense-detail-screen #expense-detail-total[data-net-card-value-parity-v13="true"] {
+  text-shadow: 0 1px 0 rgba(255,255,255,0.220), 0 0 16px var(--aariTotalGlow, var(--moduleGlow, var(--expenseGlow))) !important;
+}
+
+.dark #milk-detail-screen .milk-core-total-card[data-net-card-tone-parity-v13="true"] p,
+.dark #milk-detail-screen .milk-core-total-card[data-net-card-tone-parity-v13="true"] #milk-detail-bill,
+.dark #milk-detail-screen .milk-core-total-card[data-net-card-tone-parity-v13="true"] #milk-detail-kg,
+.dark #expense-detail-screen #expense-detail-total[data-net-card-value-parity-v13="true"] {
+  text-shadow: 0 1px 8px rgba(0,0,0,0.240), 0 0 18px var(--aariTotalGlow, var(--moduleGlow, var(--expenseGlow))) !important;
+}
+
+@supports not (color: color-mix(in srgb, red 10%, white)) {
+  #milk-detail-screen .milk-core-total-card[data-net-card-tone-parity-v13="true"] p,
+  #milk-detail-screen .milk-core-total-card[data-net-card-tone-parity-v13="true"] #milk-detail-bill,
+  #milk-detail-screen .milk-core-total-card[data-net-card-tone-parity-v13="true"] #milk-detail-kg,
+  #expense-detail-screen #expense-detail-total[data-net-card-value-parity-v13="true"] {
+    color: var(--aariTotalTone, var(--moduleTone, var(--expenseTone))) !important;
+    -webkit-text-fill-color: var(--aariTotalTone, var(--moduleTone, var(--expenseTone))) !important;
+  }
+}
+/* AARISH_NET_CARD_TONE_PARITY_V13_END */
 </style>
 
      
@@ -2480,8 +2609,8 @@ button[data-business-entry-core] {
     
 <div id="login-screen" style="position: fixed; inset: 0; background: #000; display: flex; align-items: center; justify-content: center; z-index: 9999; overflow: hidden;">
     <div style="position:absolute; top:-20%; left:-20%; width: 70%; height: 70%; background: radial-gradient(circle, #007AFF 0%, transparent 70%); opacity: 0.3; filter: blur(80px);"></div>
-    <div class="glass-card" style="width: 90%; max-width: 360px; text-align: center; position: relative; z-index: 1; background: rgba(28,28,30,0.8); border: 1px solid rgba(255,255,255,0.1);">
-        <div class="w-20 h-20 mx-auto bg-blue-500/20 shrink-0 rounded-[20px] flex items-center justify-center mb-6 box-shadow: 0 0 20px rgba(0,122,255,0.3);"><i class="fa-solid fa-leaf text-4xl text-blue-500"></i></div>
+    <div class="login-core-card" style="width: 90%; max-width: 360px; text-align: center; position: relative; z-index: 1; padding: 22px; border-radius: 28px; background: rgba(18,18,20,0.88) !important; border: 1px solid rgba(255,255,255,0.115) !important; box-shadow: 0 18px 58px rgba(0,0,0,0.68), 0 0 34px rgba(0,122,255,0.075), inset 0 1px 0 rgba(255,255,255,0.095) !important; backdrop-filter: blur(34px) saturate(180%) !important; -webkit-backdrop-filter: blur(34px) saturate(180%) !important; color: #FFFFFF !important; overflow: hidden;">
+        <div class="w-20 h-20 mx-auto bg-blue-500/20 shrink-0 rounded-[20px] flex items-center justify-center mb-6" style="box-shadow: 0 0 20px rgba(0,122,255,0.30);"><i class="fa-solid fa-leaf text-4xl text-blue-500"></i></div>
         <h2 style="font-size:28px; font-weight:800; color:#FFF; margin-bottom: 4px; letter-spacing: -0.5px;" class="truncate w-full min-w-0">Aarish Dairy</h2>
         <p style="color:#8E8E93; font-size:12px; margin-bottom: 36px; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px;" class="truncate w-full min-w-0">Pro Financial Hub</p>
         <button onclick="haptic(); handleGoogleLogin()" class="btn-primary btn-google shrink-0 w-full flex items-center justify-center gap-3" style="background:#FFF; color:#000;">
@@ -3219,6 +3348,9 @@ button[data-business-entry-core] {
         } else {
             html.classList.add('dark'); localStorage.setItem('theme', 'dark');
         }
+        setTimeout(() => {
+            try { if (typeof aarishDashboardPaintCoreV2 === 'function') aarishDashboardPaintCoreV2(); } catch(e) {}
+        }, 0);
     }
     if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
         document.documentElement.classList.add('dark');
@@ -4757,7 +4889,145 @@ async function loadUserData() {
 }
 
 
-    function updateDashboard() {
+    
+// ========================== AARISH_DASHBOARD_CORE_PAINT_V2_START ==========================
+// Core dashboard UI paint: no CSS overlay block, no backend/Firebase/math change.
+// It paints the existing dashboard cards from inside updateDashboard().
+function aarishDashboardPaintMetricCoreV2(valueId, toneName) {
+    const valueEl = document.getElementById(valueId);
+    if (!valueEl) return;
+
+    const card = valueEl.closest('.glass-card');
+    if (!card) return;
+
+    const iconBox = card.querySelector('.w-11.h-11') || card.querySelector('.squircle');
+    const isDark = document.documentElement.classList.contains('dark');
+
+    const packs = {
+        receive: {
+            tone: '#34C759',
+            tone2: '#30D158',
+            glow: 'rgba(52,199,89,0.245)',
+            tint: 'rgba(52,199,89,0.118)',
+            border: 'rgba(52,199,89,0.300)',
+            bgLight1: 'rgba(52,199,89,0.080)',
+            bgLight2: 'rgba(52,199,89,0.045)',
+            bgDark1: 'rgba(52,199,89,0.145)',
+            bgDark2: 'rgba(52,199,89,0.075)'
+        },
+        pay: {
+            tone: '#FF3B30',
+            tone2: '#FF453A',
+            glow: 'rgba(255,59,48,0.245)',
+            tint: 'rgba(255,59,48,0.118)',
+            border: 'rgba(255,59,48,0.300)',
+            bgLight1: 'rgba(255,59,48,0.080)',
+            bgLight2: 'rgba(255,59,48,0.045)',
+            bgDark1: 'rgba(255,59,48,0.145)',
+            bgDark2: 'rgba(255,59,48,0.075)'
+        },
+        expense: {
+            tone: '#F5A623',
+            tone2: '#FFB340',
+            glow: 'rgba(245,166,35,0.245)',
+            tint: 'rgba(245,166,35,0.118)',
+            border: 'rgba(245,166,35,0.300)',
+            bgLight1: 'rgba(245,166,35,0.078)',
+            bgLight2: 'rgba(245,166,35,0.043)',
+            bgDark1: 'rgba(245,166,35,0.135)',
+            bgDark2: 'rgba(245,166,35,0.070)'
+        },
+        profit: {
+            tone: '#007AFF',
+            tone2: '#0A84FF',
+            glow: 'rgba(0,122,255,0.245)',
+            tint: 'rgba(0,122,255,0.118)',
+            border: 'rgba(0,122,255,0.300)',
+            bgLight1: 'rgba(0,122,255,0.078)',
+            bgLight2: 'rgba(0,122,255,0.043)',
+            bgDark1: 'rgba(0,122,255,0.145)',
+            bgDark2: 'rgba(0,122,255,0.070)'
+        }
+    };
+
+    const p = packs[toneName] || packs.profit;
+
+    card.classList.add('dashboard-core-metric-card');
+    card.setAttribute('data-dashboard-core-tone', toneName);
+
+    card.style.setProperty('position', 'relative', 'important');
+    card.style.setProperty('overflow', 'visible', 'important');
+    card.style.setProperty('isolation', 'isolate', 'important');
+    card.style.setProperty('border-radius', '26px', 'important');
+    card.style.setProperty('border', isDark ? '1px solid rgba(255,255,255,0.130)' : '1px solid rgba(255,255,255,0.660)', 'important');
+    card.style.setProperty('backdrop-filter', 'blur(36px) saturate(205%)', 'important');
+    card.style.setProperty('-webkit-backdrop-filter', 'blur(36px) saturate(205%)', 'important');
+    card.style.setProperty('transition', 'transform 0.22s cubic-bezier(0.32,0.72,0,1), opacity 0.18s ease', 'important');
+
+    if (isDark) {
+        card.style.setProperty(
+            'background',
+            `linear-gradient(148deg, ${p.bgDark1}, rgba(18,24,38,0.840) 52%, ${p.bgDark2})`,
+            'important'
+        );
+        card.style.setProperty(
+            'box-shadow',
+            `0 0 0 1px rgba(255,255,255,0.078), 0 4px 14px rgba(0,0,0,0.330), 0 22px 64px rgba(0,0,0,0.620), 0 10px 30px ${p.glow}, 0 30px 88px ${p.glow}, inset 0 1px 0 rgba(255,255,255,0.100), inset 0 -1px 0 rgba(0,0,0,0.360)`,
+            'important'
+        );
+    } else {
+        card.style.setProperty(
+            'background',
+            `linear-gradient(148deg, ${p.bgLight1}, rgba(255,255,255,0.900) 52%, ${p.bgLight2})`,
+            'important'
+        );
+        card.style.setProperty(
+            'box-shadow',
+            `0 0 0 1px rgba(255,255,255,0.360), 0 2px 8px rgba(15,23,42,0.040), 0 16px 46px rgba(15,23,42,0.088), 0 8px 24px ${p.glow}, 0 24px 68px ${p.glow}, inset 0 1px 0 rgba(255,255,255,0.820), inset 0 -1px 0 rgba(15,23,42,0.030)`,
+            'important'
+        );
+    }
+
+    if (iconBox) {
+        iconBox.style.setProperty('color', p.tone, 'important');
+        iconBox.style.setProperty('-webkit-text-fill-color', p.tone, 'important');
+        iconBox.style.setProperty('background', p.tint, 'important');
+        iconBox.style.setProperty('border', `1px solid ${p.border}`, 'important');
+        iconBox.style.setProperty('backdrop-filter', 'blur(16px) saturate(195%)', 'important');
+        iconBox.style.setProperty('-webkit-backdrop-filter', 'blur(16px) saturate(195%)', 'important');
+        iconBox.style.setProperty(
+            'box-shadow',
+            isDark
+                ? `0 10px 28px ${p.glow}, 0 0 34px ${p.glow}, inset 0 1px 0 rgba(255,255,255,0.095)`
+                : `0 8px 22px ${p.glow}, 0 0 28px ${p.glow}, inset 0 1px 0 rgba(255,255,255,0.360)`,
+            'important'
+        );
+
+        iconBox.querySelectorAll('i, svg, span').forEach(x => {
+            x.style.setProperty('color', p.tone, 'important');
+            x.style.setProperty('-webkit-text-fill-color', p.tone, 'important');
+            x.style.setProperty('text-shadow', `0 0 14px ${p.glow}`, 'important');
+        });
+    }
+
+    valueEl.style.setProperty(
+        'text-shadow',
+        isDark
+            ? `0 1px 8px rgba(0,0,0,0.250), 0 0 18px ${p.glow}`
+            : `0 1px 0 rgba(255,255,255,0.260), 0 0 14px ${p.glow}`,
+        'important'
+    );
+}
+
+function aarishDashboardPaintCoreV2() {
+    aarishDashboardPaintMetricCoreV2('dash-lena', 'receive');
+    aarishDashboardPaintMetricCoreV2('dash-dena', 'pay');
+    aarishDashboardPaintMetricCoreV2('dash-expenses', 'expense');
+    aarishDashboardPaintMetricCoreV2('dash-profit', 'profit');
+}
+// ========================== AARISH_DASHBOARD_CORE_PAINT_V2_END ==========================
+
+function updateDashboard() {
     let rev = 0, exp = 0, lenaHai = 0, denaHai = 0;
     let udharOnlyLena = 0, udharOnlyDena = 0;
 
@@ -4796,6 +5066,7 @@ async function loadUserData() {
     document.getElementById('dash-expenses').textContent = `₹${Math.round(exp).toLocaleString('en-IN')}`;
     document.getElementById('dash-profit').textContent = `₹${Math.round(rev - exp).toLocaleString('en-IN')}`;
     document.getElementById('dash-profit').style.color = (rev - exp) < 0 ? '#FF3B30' : '#34C759';
+    try { aarishDashboardPaintCoreV2(); } catch(e) {}
 
     const udharLenaEl = document.getElementById('udhar-total-lena');
     const udharDenaEl = document.getElementById('udhar-total-dena');
@@ -6393,26 +6664,41 @@ function renderMilkList() {
 
     const detailCard = (billEl && billEl.closest('.glass-card')) || document.querySelector('#milk-detail-screen .glass-card');
     if (detailCard) {
-        detailCard.className = 'glass-card milk-core-total-card mb-6 flex justify-between items-center text-white border-none ring-1 ring-white/30 w-full min-w-0 gap-3';
+        detailCard.className = 'glass-card milk-core-total-card mb-6 flex justify-between items-center border-none ring-1 ring-white/30 w-full min-w-0 gap-3';
+        detailCard.setAttribute('data-net-card-tone-parity-v13', 'true');
+        detailCard.setAttribute('data-module-tone', tone);
         aarishMilkApplyVarsCore(detailCard, tone);
-        detailCard.style.setProperty('background', `linear-gradient(135deg, ${v.tone}, ${v.tone2})`, 'important');
-        detailCard.style.setProperty('border-color', v.tone, 'important');
-        detailCard.style.setProperty('box-shadow', `0 8px 24px ${v.glow}`, 'important');
+
+        /* UI paint only: remove old solid gradient / white inline paint so CSS glass formula can work */
+        detailCard.style.removeProperty('background');
+        detailCard.style.removeProperty('border-color');
+        detailCard.style.removeProperty('box-shadow');
+        detailCard.style.removeProperty('color');
+        detailCard.style.removeProperty('-webkit-text-fill-color');
+
         detailCard.querySelectorAll('p').forEach((p, i) => {
-            p.style.setProperty('color', '#FFFFFF', 'important');
             if (i === 0) p.textContent = 'MONTH BILL';
             if (i === 1) p.textContent = 'TOTAL MILK';
+            p.style.removeProperty('color');
+            p.style.removeProperty('-webkit-text-fill-color');
+            p.style.removeProperty('text-shadow');
         });
     }
 
     if (kgEl) {
         kgEl.textContent = aarishMilkSignedKgCore(netKg);
-        kgEl.style.setProperty('color', '#FFFFFF', 'important');
+        kgEl.setAttribute('data-net-card-value-parity-v13', 'true');
+        kgEl.style.removeProperty('color');
+        kgEl.style.removeProperty('-webkit-text-fill-color');
+        kgEl.style.removeProperty('text-shadow');
     }
 
     if (billEl) {
         billEl.textContent = aarishMilkSignedMoneyCore(netAmount);
-        billEl.style.setProperty('color', '#FFFFFF', 'important');
+        billEl.setAttribute('data-net-card-value-parity-v13', 'true');
+        billEl.style.removeProperty('color');
+        billEl.style.removeProperty('-webkit-text-fill-color');
+        billEl.style.removeProperty('text-shadow');
     }
 
     aarishMilkApplyChromeCore();
@@ -7602,8 +7888,8 @@ function updateExpenseDetailCoreUi(total) {
     }
     if (totalEl) {
         totalEl.textContent = expenseMoneyCoreV1(cleanTotal);
-        totalEl.style.setProperty('color', '#FFFFFF', 'important');
-        totalEl.style.setProperty('-webkit-text-fill-color', '#FFFFFF', 'important');
+        totalEl.setAttribute('data-net-card-value-parity-v13', 'true');
+        expensePaintTextCoreV1(totalEl, tone, false);
     }
 
     ensureExpenseDetailDeleteButtonCoreV1();
