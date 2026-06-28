@@ -588,7 +588,7 @@
   --creditStaticBlueGlow: rgba(0,122,255,0.30);
 }
 
-/* Semantic total cards: JS owns tone, CSS consumes variables. */
+/* Main Credit Book top card is single net balance, not separate receive/pay. */
 #udhar-screen .glass-card[data-credit-core-top-tone],
 #udhar-detail-screen #udhar-detail-card[data-credit-core-tone] {
   background: linear-gradient(135deg, var(--creditTone), var(--creditTone2)) !important;
@@ -603,14 +603,31 @@
   text-shadow: 0 2px 10px rgba(0,0,0,0.20) !important;
 }
 
-/* Detail customer name follows selected customer's own net, not global Credit Book net. */
+/* Credit title, Entry button, and bottom tab follow GLOBAL Credit Book net at cold start too. */
+#udhar-screen .header-sticky h1[data-credit-core-tone],
+#tab-udhar[data-credit-core-tone],
+#tab-udhar[data-credit-core-tone] i {
+  color: var(--creditTone) !important;
+  -webkit-text-fill-color: var(--creditTone) !important;
+  text-shadow: 0 0 12px var(--creditGlow) !important;
+}
+#udhar-screen .header-sticky button[data-credit-core-tone],
+#credit-entry-btn-v52[data-credit-core-tone] {
+  background: linear-gradient(135deg, var(--creditTone), var(--creditTone2)) !important;
+  color: #FFFFFF !important;
+  -webkit-text-fill-color: #FFFFFF !important;
+  border-color: transparent !important;
+  box-shadow: 0 8px 22px var(--creditGlow) !important;
+}
+
+/* Detail customer name follows selected customer's own net. */
 #udhar-detail-screen #udhar-detail-title[data-credit-core-tone] {
   color: var(--creditTone) !important;
   -webkit-text-fill-color: var(--creditTone) !important;
   text-shadow: 0 0 12px var(--creditGlow) !important;
 }
 
-/* Permanent blue static Credit Book UI shown in screenshots. */
+/* Permanent blue static Credit Book UI. */
 #udhar-screen .relative .fa-search,
 #udhar-screen #udhar-search,
 #udhar-screen #udhar-search::placeholder,
@@ -658,7 +675,7 @@
   text-shadow: 0 2px 8px rgba(0,0,0,0.16) !important;
 }
 
-/* Semantic list and semantic row colors remain untouched. */
+/* Semantic list and row colors. */
 #udhar-list .glass-card[data-credit-core-tone] {
   border-left: 4px solid var(--creditTone) !important;
   background: rgba(255,255,255,0.72) !important;
@@ -685,13 +702,11 @@
   box-shadow: 0 7px 18px var(--creditGlow), inset 0 1px 0 rgba(255,255,255,0.18) !important;
 }
 
-/* Delete buttons are permanent red. They never inherit green/red row tone. */
+/* Delete buttons are permanent red. They never inherit row tone. */
 #udhar-detail-screen .credit-delete-btn-core,
 #udhar-detail-screen .credit-delete-btn-core *,
 #udhar-detail-screen [data-credit-delete-core="true"],
 #udhar-detail-screen [data-credit-delete-core="true"] *,
-#udhar-detail-screen #udhar-detail-records .action-btn.credit-delete-btn-core,
-#udhar-detail-screen #udhar-detail-records .action-btn.credit-delete-btn-core *,
 #credit-profile-delete-btn-core,
 #credit-profile-delete-btn-core *,
 #udhar-detail-screen .credit-profile-delete-btn-core,
@@ -736,13 +751,6 @@
 #udhar-detail-screen #udhar-detail-records .credit-delete-btn-core i {
   font-size: 18px !important;
 }
-#udhar-detail-screen .credit-delete-btn-core:active,
-#credit-profile-delete-btn-core:active,
-#udhar-detail-screen .credit-profile-delete-btn-core:active {
-  transform: scale(0.96) !important;
-  background: rgba(255,59,48,0.16) !important;
-  box-shadow: 0 12px 28px rgba(255,59,48,0.18) !important;
-}
 
 .dark #udhar-screen .glass-card[data-credit-core-top-tone],
 .dark #udhar-detail-screen #udhar-detail-card[data-credit-core-tone] {
@@ -763,6 +771,182 @@
 }
 /* Dark mode only changes surface/glow strength. Credit semantic colors stay: green positive, red negative, blue neutral. */
 /* AARISH_CREDIT_BOOK_CORE_PARITY_V1_END */
+
+
+
+
+/* AARISH_EXPENSE_CORE_CONTRACT_V1_START
+   Expense core-only UI/UX contract.
+   JS computes tone once: negative when month/category total > 0, neutral when zero.
+   CSS consumes --expenseTone variables.
+   No overlay, no scanner, no MutationObserver, no setInterval.
+*/
+#expenses-screen,
+#expense-detail-screen,
+#tab-expenses {
+  --expenseTone: #007AFF;
+  --expenseTone2: #0A84FF;
+  --expenseTint: rgba(0,122,255,0.10);
+  --expenseBorder: rgba(0,122,255,0.28);
+  --expenseGlow: rgba(0,122,255,0.26);
+  --expenseStaticBlue: #007AFF;
+  --expenseStaticBlueGlow: rgba(0,122,255,0.26);
+}
+#expenses-screen[data-expense-core-tone="negative"],
+#expense-detail-screen[data-expense-core-tone="negative"],
+#tab-expenses[data-expense-core-tone="negative"],
+[data-expense-core-tone="negative"] {
+  --expenseTone: #FF3B30;
+  --expenseTone2: #C92A2A;
+  --expenseTint: rgba(255,59,48,0.10);
+  --expenseBorder: rgba(255,59,48,0.28);
+  --expenseGlow: rgba(255,59,48,0.28);
+}
+
+#expenses-screen .header-sticky h1[data-expense-core-tone],
+#expense-detail-screen .header-sticky h1[data-expense-core-tone],
+#tab-expenses[data-expense-core-tone],
+#tab-expenses[data-expense-core-tone] i {
+  color: var(--expenseTone) !important;
+  -webkit-text-fill-color: var(--expenseTone) !important;
+  text-shadow: 0 0 12px var(--expenseGlow) !important;
+}
+#expenses-screen button[data-expense-add-core],
+#expense-detail-screen button[data-expense-add-core] {
+  background: linear-gradient(135deg, #FF453A, #FF2D55) !important;
+  color: #FFFFFF !important;
+  -webkit-text-fill-color: #FFFFFF !important;
+  border-color: transparent !important;
+  box-shadow: 0 8px 22px rgba(255,59,48,0.30) !important;
+}
+#expenses-screen button[data-expense-add-core] *,
+#expense-detail-screen button[data-expense-add-core] * {
+  color: #FFFFFF !important;
+  -webkit-text-fill-color: #FFFFFF !important;
+}
+
+#expenses-screen [data-expense-total-card-core],
+#expense-detail-screen #expense-detail-card[data-expense-core-tone] {
+  background: linear-gradient(135deg, var(--expenseTone), var(--expenseTone2)) !important;
+  color: #FFFFFF !important;
+  border-color: transparent !important;
+  box-shadow: 0 10px 28px var(--expenseGlow), inset 0 1px 0 rgba(255,255,255,0.24) !important;
+}
+#expenses-screen [data-expense-total-card-core] *,
+#expense-detail-screen #expense-detail-card[data-expense-core-tone] * {
+  color: #FFFFFF !important;
+  -webkit-text-fill-color: #FFFFFF !important;
+  text-shadow: 0 2px 10px rgba(0,0,0,0.18) !important;
+}
+
+#expenses-screen #filter-month-exp,
+#expenses-screen #filter-year-exp,
+#expense-detail-screen [data-expense-all-entries-core],
+#expense-detail-screen .table-custom th,
+#expense-detail-screen table th,
+#expense-detail-screen button[data-expense-share-core],
+#expense-detail-screen button[data-expense-share-core] i,
+#expenses-screen button[data-expense-share-core],
+#expenses-screen button[data-expense-share-core] i {
+  color: var(--expenseStaticBlue) !important;
+  -webkit-text-fill-color: var(--expenseStaticBlue) !important;
+  caret-color: var(--expenseStaticBlue) !important;
+  text-shadow: 0 0 10px var(--expenseStaticBlueGlow) !important;
+  opacity: 1 !important;
+}
+#expenses-screen #filter-month-exp,
+#expenses-screen #filter-year-exp {
+  border-color: rgba(0,122,255,0.22) !important;
+  font-weight: 800 !important;
+}
+#expense-detail-screen button[data-expense-share-core],
+#expenses-screen button[data-expense-share-core] {
+  background: rgba(0,122,255,0.08) !important;
+  border-color: rgba(0,122,255,0.22) !important;
+  box-shadow: 0 8px 18px rgba(0,122,255,0.14) !important;
+}
+
+#expense-list-container .expense-core-card {
+  border-left: 4px solid var(--expenseTone) !important;
+  background: rgba(255,255,255,0.72) !important;
+  box-shadow: -4px 0 14px var(--expenseGlow), 0 10px 26px rgba(15,23,42,0.07), inset 1px 0 0 var(--expenseBorder), inset 0 1px 0 rgba(255,255,255,0.62) !important;
+  transition-property: transform, opacity !important;
+  transition-duration: 100ms !important;
+}
+.dark #expense-list-container .expense-core-card {
+  background: rgba(12,18,36,0.84) !important;
+  box-shadow: -4px 0 18px var(--expenseGlow), 0 12px 34px rgba(0,0,0,0.42), inset 1px 0 0 var(--expenseBorder), inset 0 1px 0 rgba(255,255,255,0.10) !important;
+}
+#expense-list-container .expense-core-card :is(h4,p,span,i,.font-bold,.font-extrabold),
+#expense-detail-screen #expense-detail-records tr[data-expense-row-tone="negative"] :is(td,span,.font-bold,.font-extrabold) {
+  color: var(--expenseTone) !important;
+  -webkit-text-fill-color: var(--expenseTone) !important;
+  text-shadow: 0 0 9px var(--expenseGlow) !important;
+}
+#expense-list-container .expense-avatar-core {
+  color: var(--expenseTone) !important;
+  -webkit-text-fill-color: var(--expenseTone) !important;
+  background: var(--expenseTint) !important;
+  border: 1px solid var(--expenseBorder) !important;
+  box-shadow: 0 7px 18px var(--expenseGlow), inset 0 1px 0 rgba(255,255,255,0.18) !important;
+}
+
+#expense-detail-records .expense-date-core,
+#expense-detail-records .expense-amount-core {
+  color: #FF3B30 !important;
+  -webkit-text-fill-color: #FF3B30 !important;
+  text-shadow: 0 0 9px rgba(255,59,48,0.22) !important;
+}
+#expense-detail-records tr[data-expense-empty-core="true"] td {
+  color: #007AFF !important;
+  -webkit-text-fill-color: #007AFF !important;
+  text-shadow: 0 0 10px rgba(0,122,255,0.24) !important;
+}
+#expense-detail-screen [data-expense-delete-core],
+#expense-detail-screen [data-expense-delete-core] *,
+#expense-detail-records .expense-delete-btn-core,
+#expense-detail-records .expense-delete-btn-core *,
+#expense-category-delete-btn-core,
+#expense-category-delete-btn-core * {
+  color: #FF3B30 !important;
+  -webkit-text-fill-color: #FF3B30 !important;
+  text-shadow: 0 0 12px rgba(255,59,48,0.28) !important;
+}
+#expense-detail-screen [data-expense-delete-core],
+#expense-detail-records .expense-delete-btn-core,
+#expense-category-delete-btn-core {
+  background: rgba(255,59,48,0.10) !important;
+  border: 1px solid rgba(255,59,48,0.18) !important;
+  box-shadow: 0 10px 26px rgba(255,59,48,0.14), inset 0 1px 0 rgba(255,255,255,0.36) !important;
+}
+#expense-category-delete-btn-core {
+  width: 52px !important;
+  height: 52px !important;
+  min-width: 52px !important;
+  min-height: 52px !important;
+  border-radius: 18px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  flex-shrink: 0 !important;
+  margin-left: 12px !important;
+  padding: 0 !important;
+}
+#expense-detail-records .expense-delete-btn-core {
+  min-width: 46px !important;
+  min-height: 46px !important;
+  width: 46px !important;
+  height: 46px !important;
+  border-radius: 16px !important;
+}
+.dark #expense-detail-screen [data-expense-delete-core],
+.dark #expense-detail-records .expense-delete-btn-core,
+.dark #expense-category-delete-btn-core {
+  background: rgba(255,59,48,0.14) !important;
+  border-color: rgba(255,59,48,0.24) !important;
+  box-shadow: 0 12px 30px rgba(255,59,48,0.18), inset 0 1px 0 rgba(255,255,255,0.05) !important;
+}
+/* AARISH_EXPENSE_CORE_CONTRACT_V1_END */
 
 </style>
 
@@ -1061,7 +1245,7 @@
             <h1 class="text-2xl font-extrabold truncate flex-1 min-w-0">Expenses</h1>
             <div class="flex gap-2 shrink-0">
                 <button onclick="haptic(); shareAllExpensesBill()" class="btn-ios-share !rounded-full !px-3 !py-2"><i class="fa-solid fa-arrow-up-right-from-square m-0"></i></button>
-                <button onclick="haptic(); openModal('add-expense-modal')" class="btn-primary w-auto px-5 py-2 !min-h-[38px] text-sm !rounded-[14px] !bg-[#FF3B30] !shadow-[0_4px_14px_rgba(255,59,48,0.25)]"><i class="fa-solid fa-plus"></i> Add</button>
+                <button id="expense-add-btn-core" data-expense-add-core="true" onclick="haptic(); openModal('add-expense-modal')" class="btn-primary w-auto px-5 py-2 !min-h-[38px] text-sm !rounded-[14px] !bg-[#FF3B30] !shadow-[0_4px_14px_rgba(255,59,48,0.25)]"><i class="fa-solid fa-plus"></i> Add</button>
             </div>
         </div>
         <div class="p-5">
@@ -1639,7 +1823,9 @@
         }
 
         updateDashboard();
-    }
+    
+        try { if (typeof updateExpenseCoreUi === 'function') updateExpenseCoreUi(); } catch(e) {}
+}
 
     function filterByMonth(records) {
         if (!Array.isArray(records)) return [];
@@ -1921,6 +2107,10 @@ function aarishCostShowAppV1() {
     try { if (typeof hideLoader === "function") hideLoader(); } catch(e) {}
     try { document.getElementById("login-screen").style.display = "none"; } catch(e) {}
     try { document.getElementById("main-app").classList.remove("hidden"); } catch(e) {}
+
+    try { if (typeof updateCreditBookCoreUi === 'function') updateCreditBookCoreUi(); } catch(e) {}
+
+    try { if (typeof updateExpenseCoreUi === 'function') updateExpenseCoreUi(); } catch(e) {}
 }
 
 async function saveCacheNowCostV81(reason) {
@@ -2574,6 +2764,10 @@ async function loadUserData() {
     if (udharDenaEl) udharDenaEl.textContent = `₹${Math.round(udharOnlyDena).toLocaleString('en-IN')}`;
 
     try { aarishMilkApplyChromeCore(); } catch(e) {}
+
+    try { if (typeof updateCreditBookCoreUi === 'function') updateCreditBookCoreUi(); } catch(e) {}
+
+    try { if (typeof updateExpenseCoreUi === 'function') updateExpenseCoreUi(); } catch(e) {}
 }
 
     // ===== PARTY LEDGER LOGIC (MILK + CREDIT MERGER) =====
@@ -3998,7 +4192,10 @@ async function creditFirebaseCoreV1(path, action, value, opts) {
     }
 }
 
-/* AARISH_CREDIT_DETAIL_HEADER_TONE_CORE_V2_START */
+
+
+
+/* AARISH_CREDIT_COLD_START_NET_CORE_V3_START */
 function creditPersonNetCoreV1(name) {
     const clean = creditCleanNameCoreV1(name || '');
     let net = 0;
@@ -4007,87 +4204,176 @@ function creditPersonNetCoreV1(name) {
     });
     return creditCleanZeroCoreV1(net);
 }
-function creditApplyDetailHeaderToneCoreV1(netOrName) {
-    let net;
-    if (typeof netOrName === 'number' && Number.isFinite(netOrName)) {
-        net = creditCleanZeroCoreV1(netOrName);
+
+function creditApplyVarsCoreV3(el, tone) {
+    if (!el) return;
+    const p = creditPackCoreV1(tone);
+    el.style.setProperty('--creditTone', p.color);
+    el.style.setProperty('--creditTone2', p.color2);
+    el.style.setProperty('--creditTint', p.tint);
+    el.style.setProperty('--creditBorder', p.border);
+    el.style.setProperty('--creditGlow', p.glow);
+}
+
+function creditNetLabelCoreV3(net) {
+    net = creditCleanZeroCoreV1(net);
+    if (net > 0) return 'NET BALANCE / PROFIT';
+    if (net < 0) return 'NET BALANCE / LOSS';
+    return 'NET BALANCE';
+}
+
+function creditSignedMoneyCoreV3(net) {
+    net = creditCleanZeroCoreV1(net);
+    if (net > 0) return '+' + creditMoneyCoreV1(net);
+    if (net < 0) return '-' + creditMoneyCoreV1(net);
+    return creditMoneyCoreV1(0);
+}
+
+function creditEnsureNetCardCoreV3(card) {
+    if (!card) return null;
+    if (card.dataset.creditNetCardCore === 'v3' && document.getElementById('credit-net-total-core-v3')) return card;
+
+    card.dataset.creditNetCardCore = 'v3';
+    card.innerHTML = `
+        <div class="flex-1 min-w-0">
+            <p id="credit-net-label-core-v3" class="text-[11px] font-bold uppercase opacity-90 tracking-wider truncate w-full drop-shadow-sm">NET BALANCE</p>
+            <h3 id="credit-net-total-core-v3" class="text-[34px] font-extrabold mt-2 tracking-tight truncate w-full drop-shadow-md">₹0</h3>
+        </div>
+        <div aria-hidden="true" style="display:none !important; visibility:hidden !important; width:0 !important; height:0 !important; overflow:hidden !important;">
+            <span id="udhar-total-lena">₹0</span>
+            <span id="udhar-total-dena">₹0</span>
+        </div>
+    `;
+    return card;
+}
+
+function creditPaintElementCoreV3(el, tone, asSolidButton) {
+    if (!el) return;
+    const pack = creditPackCoreV1(tone);
+    el.setAttribute('data-credit-core-tone', tone);
+    el.setAttribute('data-module-tone', tone);
+    creditApplyVarsCoreV3(el, tone);
+
+    if (asSolidButton) {
+        el.style.setProperty('background', `linear-gradient(135deg, ${pack.color}, ${pack.color2})`, 'important');
+        el.style.setProperty('background-color', pack.color, 'important');
+        el.style.setProperty('color', '#FFFFFF', 'important');
+        el.style.setProperty('-webkit-text-fill-color', '#FFFFFF', 'important');
+        el.style.setProperty('border-color', 'transparent', 'important');
+        el.style.setProperty('box-shadow', '0 8px 22px ' + pack.glow, 'important');
     } else {
-        net = creditPersonNetCoreV1(netOrName || activeUdharPerson || '');
+        el.style.setProperty('color', pack.color, 'important');
+        el.style.setProperty('-webkit-text-fill-color', pack.color, 'important');
+        el.style.setProperty('text-shadow', '0 0 12px ' + pack.glow, 'important');
     }
 
+    try {
+        el.querySelectorAll('i, span, svg, path').forEach(child => {
+            if (asSolidButton) {
+                child.style.setProperty('color', '#FFFFFF', 'important');
+                child.style.setProperty('-webkit-text-fill-color', '#FFFFFF', 'important');
+                child.style.setProperty('text-shadow', '0 2px 8px rgba(0,0,0,0.16)', 'important');
+            } else {
+                child.style.setProperty('color', pack.color, 'important');
+                child.style.setProperty('-webkit-text-fill-color', pack.color, 'important');
+                child.style.setProperty('text-shadow', '0 0 12px ' + pack.glow, 'important');
+            }
+        });
+    } catch (e) {}
+}
+
+function creditApplyDetailHeaderToneCoreV1(netOrName) {
+    let net;
+    if (typeof netOrName === 'number' && Number.isFinite(netOrName)) net = creditCleanZeroCoreV1(netOrName);
+    else net = creditPersonNetCoreV1(netOrName || activeUdharPerson || '');
+
     const tone = creditToneCoreV1(net);
-    const pack = creditPackCoreV1(tone);
     const title = document.getElementById('udhar-detail-title');
     const screen = document.getElementById('udhar-detail-screen');
 
     if (screen) {
         screen.setAttribute('data-credit-core-detail-tone', tone);
         screen.setAttribute('data-module-tone', tone);
-        screen.setAttribute('style', (screen.getAttribute('style') || '') + ';' + creditStyleVarsCoreV1(tone));
+        creditApplyVarsCoreV3(screen, tone);
     }
 
-    if (title) {
-        title.setAttribute('data-credit-core-tone', tone);
-        title.setAttribute('data-module-tone', tone);
-        title.setAttribute('style', creditStyleVarsCoreV1(tone));
-        title.style.setProperty('color', pack.color, 'important');
-        title.style.setProperty('-webkit-text-fill-color', pack.color, 'important');
-        title.style.setProperty('text-shadow', '0 0 12px ' + pack.glow, 'important');
-    }
+    creditPaintElementCoreV3(title, tone, false);
 
     const profileDelete = document.getElementById('credit-profile-delete-btn-core') || document.querySelector('#udhar-detail-screen .credit-profile-delete-btn-core');
-    if (profileDelete) {
-        profileDelete.setAttribute('data-credit-delete-core', 'true');
-        profileDelete.style.setProperty('color', '#FF3B30', 'important');
-        profileDelete.style.setProperty('-webkit-text-fill-color', '#FF3B30', 'important');
-        profileDelete.style.setProperty('background', 'rgba(255,59,48,0.10)', 'important');
-        profileDelete.style.setProperty('border-color', 'rgba(255,59,48,0.18)', 'important');
-        profileDelete.style.setProperty('box-shadow', '0 10px 26px rgba(255,59,48,0.16)', 'important');
-        try {
-            profileDelete.querySelectorAll('*').forEach(x => {
-                x.style.setProperty('color', '#FF3B30', 'important');
-                x.style.setProperty('-webkit-text-fill-color', '#FF3B30', 'important');
-            });
-        } catch (e) {}
-    }
+    if (profileDelete) creditPaintCreditDeleteCoreV3(profileDelete);
 
     return tone;
 }
-/* AARISH_CREDIT_DETAIL_HEADER_TONE_CORE_V2_END */
+
+function creditPaintCreditDeleteCoreV3(el) {
+    if (!el) return;
+    el.setAttribute('data-credit-delete-core', 'true');
+    el.style.setProperty('color', '#FF3B30', 'important');
+    el.style.setProperty('-webkit-text-fill-color', '#FF3B30', 'important');
+    el.style.setProperty('background', 'rgba(255,59,48,0.10)', 'important');
+    el.style.setProperty('border-color', 'rgba(255,59,48,0.18)', 'important');
+    el.style.setProperty('box-shadow', '0 10px 26px rgba(255,59,48,0.16)', 'important');
+    try {
+        el.querySelectorAll('*').forEach(x => {
+            x.style.setProperty('color', '#FF3B30', 'important');
+            x.style.setProperty('-webkit-text-fill-color', '#FF3B30', 'important');
+            x.style.setProperty('text-shadow', '0 0 12px rgba(255,59,48,0.28)', 'important');
+        });
+    } catch (e) {}
+}
+
+function creditColdStartCoreRefreshV3() {
+    try { updateCreditBookCoreUi(); } catch (e) {}
+}
+/* AARISH_CREDIT_COLD_START_NET_CORE_V3_END */
 
 function updateCreditBookCoreUi() {
     const totals = creditTotalsCoreV1();
-    const tone = creditToneCoreV1(totals.net);
-    const pack = creditPackCoreV1(tone);
+    const net = creditCleanZeroCoreV1(totals.net);
+    const tone = creditToneCoreV1(net);
+
     const screen = document.getElementById('udhar-screen');
     const title = document.querySelector('#udhar-screen .header-sticky h1');
     const btn = document.getElementById('credit-entry-btn-v52') || document.querySelector('#udhar-screen .header-sticky button[onclick*="openUdharModal"]');
     const tab = document.getElementById('tab-udhar');
-    const lena = document.getElementById('udhar-total-lena');
-    const dena = document.getElementById('udhar-total-dena');
-    const topCard = (lena && lena.closest && lena.closest('.glass-card')) || document.querySelector('#udhar-screen .p-5 > .glass-card');
 
-    if (screen) screen.setAttribute('data-credit-core-net', tone);
-    if (lena) lena.textContent = creditMoneyCoreV1(totals.receive);
-    if (dena) dena.textContent = creditMoneyCoreV1(totals.pay);
+    let lena = document.getElementById('udhar-total-lena');
+    let dena = document.getElementById('udhar-total-dena');
+    const topCard = (lena && lena.closest && lena.closest('.glass-card')) || (dena && dena.closest && dena.closest('.glass-card')) || document.querySelector('#udhar-screen .p-5 > .glass-card');
+
+    if (screen) {
+        screen.setAttribute('data-credit-core-net', tone);
+        screen.setAttribute('data-module-tone', tone);
+        creditApplyVarsCoreV3(screen, tone);
+    }
+
     if (topCard) {
+        creditEnsureNetCardCoreV3(topCard);
+        topCard.className = 'glass-card mb-6 flex justify-between items-center text-white border-none ring-1 ring-white/30 w-full min-w-0 gap-3';
         topCard.setAttribute('data-credit-core-top-tone', tone);
         topCard.setAttribute('data-module-tone', tone);
-        topCard.setAttribute('style', (topCard.getAttribute('style') || '') + ';' + creditStyleVarsCoreV1(tone));
+        creditApplyVarsCoreV3(topCard, tone);
+
+        const label = document.getElementById('credit-net-label-core-v3');
+        const total = document.getElementById('credit-net-total-core-v3');
+        if (label) label.textContent = creditNetLabelCoreV3(net);
+        if (total) total.textContent = creditSignedMoneyCoreV3(net);
+
+        lena = document.getElementById('udhar-total-lena');
+        dena = document.getElementById('udhar-total-dena');
     }
-    [title, btn, tab].forEach(el => {
-        if (!el) return;
-        el.setAttribute('data-credit-core-tone', tone);
-        el.style.setProperty('color', el === btn ? '#FFFFFF' : pack.color, 'important');
-        el.style.setProperty('text-shadow', '0 0 12px ' + pack.glow, 'important');
-        if (el === btn) {
-            if (!el.id) el.id = 'credit-entry-btn-v52';
-            el.style.setProperty('background', `linear-gradient(135deg, ${pack.color}, ${pack.color2})`, 'important');
-            el.style.setProperty('border-color', 'transparent', 'important');
-            el.style.setProperty('box-shadow', '0 8px 22px ' + pack.glow, 'important');
-            try { el.querySelectorAll('*').forEach(x => x.style.setProperty('color', '#FFFFFF', 'important')); } catch (e) {}
-        }
-    });
+
+    if (lena) lena.textContent = creditMoneyCoreV1(totals.receive);
+    if (dena) dena.textContent = creditMoneyCoreV1(totals.pay);
+
+    creditPaintElementCoreV3(title, tone, false);
+
+    if (btn) {
+        if (!btn.id) btn.id = 'credit-entry-btn-v52';
+        creditPaintElementCoreV3(btn, tone, true);
+    }
+
+    creditPaintElementCoreV3(tab, tone, false);
 }
 function ensureCreditDetailDeleteButtonCoreV1() {
     const screen = document.getElementById('udhar-detail-screen');
@@ -4101,8 +4387,6 @@ function ensureCreditDetailDeleteButtonCoreV1() {
     if (!btn) {
         btn = document.createElement('button');
         btn.type = 'button';
-        btn.setAttribute('aria-label', 'Delete credit profile');
-        btn.setAttribute('title', 'Delete credit profile');
         btn.innerHTML = '<i class="fa-solid fa-trash"></i>';
         row.appendChild(btn);
     }
@@ -4113,19 +4397,7 @@ function ensureCreditDetailDeleteButtonCoreV1() {
     btn.setAttribute('data-credit-delete-core', 'true');
     btn.setAttribute('aria-label', 'Delete credit profile');
     btn.setAttribute('title', 'Delete credit profile');
-
-    btn.style.setProperty('color', '#FF3B30', 'important');
-    btn.style.setProperty('-webkit-text-fill-color', '#FF3B30', 'important');
-    btn.style.setProperty('background', 'rgba(255,59,48,0.10)', 'important');
-    btn.style.setProperty('border-color', 'rgba(255,59,48,0.18)', 'important');
-    btn.style.setProperty('box-shadow', '0 10px 26px rgba(255,59,48,0.16)', 'important');
-
-    try {
-        btn.querySelectorAll('*').forEach(x => {
-            x.style.setProperty('color', '#FF3B30', 'important');
-            x.style.setProperty('-webkit-text-fill-color', '#FF3B30', 'important');
-        });
-    } catch (e) {}
+    creditPaintCreditDeleteCoreV3(btn);
 
     btn.onclick = function (event) {
         if (event) { event.preventDefault(); event.stopPropagation(); }
@@ -4337,6 +4609,7 @@ function openUdharModal(name = null) {
     const tbody = document.getElementById('udhar-detail-records');
     if (tbody) {
         tbody.innerHTML = html || `<tr data-credit-core-row-tone="neutral"><td colspan="4" class="text-center py-8 font-semibold">No entries found</td></tr>`;
+        try { tbody.querySelectorAll('.credit-delete-btn-core').forEach(creditPaintCreditDeleteCoreV3); } catch (e) {}
     }
 
     const tone = creditToneCoreV1(net);
@@ -4348,7 +4621,7 @@ function openUdharModal(name = null) {
         detailCard.className = 'glass-card mb-6 flex justify-between items-center text-white border-none ring-1 ring-white/30 w-full min-w-0 gap-3';
         detailCard.setAttribute('data-credit-core-tone', tone);
         detailCard.setAttribute('data-module-tone', tone);
-        detailCard.setAttribute('style', creditStyleVarsCoreV1(tone));
+        creditApplyVarsCoreV3(detailCard, tone);
     }
 
     if (statusEl) {
@@ -4405,159 +4678,467 @@ function openUdharModal(name = null) {
     await exportAndShareCanvas('udhar-receipt-card', `${activeUdharPerson}_Ledger.png`, `Hello ${activeUdharPerson},\nHere is your Credit Ledger summary. Net Balance: ${creditMoneyCoreV1(net)}`);
 }
 
+    
+/* AARISH_EXPENSE_CORE_ENGINE_V1_START */
+function expenseNumCoreV1(v) {
+    const x = Number(v);
+    return Number.isFinite(x) ? x : 0;
+}
+function expenseCleanZeroCoreV1(v) {
+    const x = expenseNumCoreV1(v);
+    return Math.abs(x) < 0.0001 ? 0 : x;
+}
+function expenseEntriesCoreV1() {
+    try {
+        if (Array.isArray(expenseDB)) return expenseDB.filter(Boolean);
+        if (expenseDB && typeof expenseDB === 'object') return Object.keys(expenseDB).map(k => expenseDB[k]).filter(Boolean);
+    } catch (e) {}
+    try {
+        if (Array.isArray(window.expenseDB)) return window.expenseDB.filter(Boolean);
+        if (window.expenseDB && typeof window.expenseDB === 'object') return Object.keys(window.expenseDB).map(k => window.expenseDB[k]).filter(Boolean);
+    } catch (e) {}
+    return [];
+}
+function setExpenseDBCoreV1(next) {
+    const safe = Array.isArray(next) ? next.filter(Boolean) : [];
+    try { expenseDB = safe; } catch (e) { window.expenseDB = safe; }
+}
+function expenseEscCoreV1(v) {
+    return String(v == null ? '' : v).replace(/[&<>"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
+}
+function expenseJsSingleCoreV1(v) {
+    return String(v == null ? '' : v)
+        .replace(/\\/g, '\\\\')
+        .replace(/'/g, "\\'")
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;');
+}
+function expenseCleanCategoryCoreV1(v) {
+    return String(v == null ? '' : v)
+        .normalize('NFKC')
+        .replace(/[<>"'`]/g, ' ')
+        .replace(/[\u0000-\u001F\u007F]/g, ' ')
+        .replace(/\s+/g, ' ')
+        .trim() || 'Other';
+}
+function expenseMoneyCoreV1(v) {
+    return '₹' + Math.abs(Math.round(expenseNumCoreV1(v))).toLocaleString('en-IN');
+}
+function expenseSignedMoneyCoreV1(v) {
+    const n = expenseCleanZeroCoreV1(v);
+    if (n > 0) return '-'+expenseMoneyCoreV1(n);
+    return expenseMoneyCoreV1(0);
+}
+function expenseFormatDateCoreV1(v) {
+    try { if (typeof formatDisplayDate === 'function') return formatDisplayDate(v); } catch (e) {}
+    return String(v || '-');
+}
+function expenseMonthRecordsCoreV1(list) {
+    const arr = Array.isArray(list) ? list : expenseEntriesCoreV1();
+    try { if (typeof filterByMonth === 'function') return filterByMonth(arr); } catch (e) {}
+    return arr;
+}
+function expenseToneCoreV1(total) {
+    total = expenseCleanZeroCoreV1(total);
+    return total > 0 ? 'negative' : 'neutral';
+}
+function expensePackCoreV1(tone) {
+    if (tone === 'negative') return { color:'#FF3B30', color2:'#C92A2A', tint:'rgba(255,59,48,0.10)', border:'rgba(255,59,48,0.28)', glow:'rgba(255,59,48,0.28)' };
+    return { color:'#007AFF', color2:'#0A84FF', tint:'rgba(0,122,255,0.10)', border:'rgba(0,122,255,0.28)', glow:'rgba(0,122,255,0.26)' };
+}
+function expenseApplyVarsCoreV1(el, tone) {
+    if (!el) return;
+    const p = expensePackCoreV1(tone);
+    el.setAttribute('data-expense-core-tone', tone);
+    el.setAttribute('data-module-tone', tone);
+    el.style.setProperty('--expenseTone', p.color);
+    el.style.setProperty('--expenseTone2', p.color2);
+    el.style.setProperty('--expenseTint', p.tint);
+    el.style.setProperty('--expenseBorder', p.border);
+    el.style.setProperty('--expenseGlow', p.glow);
+}
+function expensePaintTextCoreV1(el, tone, solid) {
+    if (!el) return;
+    const p = expensePackCoreV1(tone);
+    expenseApplyVarsCoreV1(el, tone);
+    if (solid) {
+        el.style.setProperty('background', `linear-gradient(135deg, ${p.color}, ${p.color2})`, 'important');
+        el.style.setProperty('background-color', p.color, 'important');
+        el.style.setProperty('color', '#FFFFFF', 'important');
+        el.style.setProperty('-webkit-text-fill-color', '#FFFFFF', 'important');
+        el.style.setProperty('border-color', 'transparent', 'important');
+        el.style.setProperty('box-shadow', '0 8px 22px ' + p.glow, 'important');
+        try { el.querySelectorAll('*').forEach(x => { x.style.setProperty('color', '#FFFFFF', 'important'); x.style.setProperty('-webkit-text-fill-color', '#FFFFFF', 'important'); }); } catch (e) {}
+    } else {
+        el.style.setProperty('color', p.color, 'important');
+        el.style.setProperty('-webkit-text-fill-color', p.color, 'important');
+        el.style.setProperty('text-shadow', '0 0 12px ' + p.glow, 'important');
+        try { el.querySelectorAll('i,span').forEach(x => { x.style.setProperty('color', p.color, 'important'); x.style.setProperty('-webkit-text-fill-color', p.color, 'important'); }); } catch (e) {}
+    }
+}
+function expenseTotalMonthCoreV1() {
+    let total = 0;
+    expenseMonthRecordsCoreV1(expenseEntriesCoreV1()).forEach(e => total += Math.abs(expenseNumCoreV1(e && e.amount)));
+    return total;
+}
+function expenseCategoryTotalCoreV1(category) {
+    const cat = expenseCleanCategoryCoreV1(category);
+    let total = 0;
+    expenseMonthRecordsCoreV1(expenseEntriesCoreV1()).forEach(e => {
+        if (expenseCleanCategoryCoreV1(e && e.category) === cat) total += Math.abs(expenseNumCoreV1(e && e.amount));
+    });
+    return total;
+}
+function expenseCategoryInitialCoreV1(category) {
+    const c = expenseCleanCategoryCoreV1(category);
+    return expenseEscCoreV1((c.charAt(0) || 'E').toUpperCase());
+}
+async function expenseFirebaseCoreV1(path, action, value, opts) {
+    try {
+        if (typeof currentUserUID === 'undefined' || !currentUserUID) return;
+        if (window.aarishFirebaseLaterV48) return await window.aarishFirebaseLaterV48(path, action, value, opts || { fast: true });
+        if (typeof appDataRef !== 'undefined' && appDataRef) {
+            const ref = appDataRef.child(path);
+            if (action === 'remove') return await ref.remove();
+            return await ref.set(value);
+        }
+    } catch (e) {
+        console.error('Expense Firebase core op failed:', e);
+        try { showToast('Saved locally. Cloud sync pending.'); } catch (_) {}
+    }
+}
+function expensePaintDeleteCoreV1(el) {
+    if (!el) return;
+    el.setAttribute('data-expense-delete-core', 'true');
+    el.style.setProperty('color', '#FF3B30', 'important');
+    el.style.setProperty('-webkit-text-fill-color', '#FF3B30', 'important');
+    el.style.setProperty('background', 'rgba(255,59,48,0.10)', 'important');
+    el.style.setProperty('border-color', 'rgba(255,59,48,0.18)', 'important');
+    el.style.setProperty('box-shadow', '0 10px 26px rgba(255,59,48,0.16)', 'important');
+    try { el.querySelectorAll('*').forEach(x => { x.style.setProperty('color', '#FF3B30', 'important'); x.style.setProperty('-webkit-text-fill-color', '#FF3B30', 'important'); }); } catch (e) {}
+}
+function ensureExpenseDetailDeleteButtonCoreV1() {
+    const screen = document.getElementById('expense-detail-screen');
+    if (!screen) return;
+    const header = screen.querySelector('.header-sticky');
+    if (!header) return;
+
+    const leftGroup = header.querySelector('.flex.items-center');
+    if (leftGroup) {
+        leftGroup.style.flex = '1 1 auto';
+        leftGroup.style.minWidth = '0';
+        leftGroup.classList.remove('w-full');
+    }
+    header.style.gap = '12px';
+
+    let btn = document.getElementById('expense-category-delete-btn-core');
+    if (!btn) {
+        btn = document.createElement('button');
+        btn.id = 'expense-category-delete-btn-core';
+        btn.type = 'button';
+        btn.innerHTML = '<i class="fa-solid fa-trash"></i>';
+        header.appendChild(btn);
+    }
+    btn.className = 'expense-category-delete-btn-core shrink-0';
+    btn.setAttribute('aria-label', 'Delete expense category');
+    btn.setAttribute('title', 'Delete expense category');
+    expensePaintDeleteCoreV1(btn);
+    btn.style.display = activeExpenseCategory ? 'inline-flex' : 'none';
+    btn.onclick = function(event) {
+        if (event) { event.preventDefault(); event.stopPropagation(); }
+        try { haptic(); } catch (e) {}
+        deleteExpenseCategoryProfile(activeExpenseCategory);
+    };
+}
+function expenseMarkStaticUiCoreV1() {
+    try {
+        document.querySelectorAll('#expense-detail-screen .flex.justify-between.items-center.mb-4 > h3').forEach(el => {
+            el.setAttribute('data-expense-all-entries-core', 'true');
+        });
+        document.querySelectorAll('#expense-detail-screen button[onclick*="shareExpenseCategoryBill"], #expenses-screen button[onclick*="shareAllExpensesBill"]').forEach(btn => {
+            btn.setAttribute('data-expense-share-core', 'true');
+        });
+        document.querySelectorAll('#expense-detail-screen button[onclick*="openExpenseEntryModal"], #expenses-screen button[onclick*="add-expense-modal"]').forEach(btn => {
+            btn.setAttribute('data-expense-add-core', 'true');
+        });
+    } catch (e) {}
+}
+function updateExpenseCoreUi() {
+    const total = expenseTotalMonthCoreV1();
+    const tone = expenseToneCoreV1(total);
+    const screen = document.getElementById('expenses-screen');
+    const detail = document.getElementById('expense-detail-screen');
+    const tab = document.getElementById('tab-expenses');
+    const title = document.querySelector('#expenses-screen .header-sticky h1');
+    const addBtn = document.getElementById('expense-add-btn-core') || document.querySelector('#expenses-screen button[onclick*="add-expense-modal"]');
+    const shareBtn = document.querySelector('#expenses-screen button[onclick*="shareAllExpensesBill"]');
+    const totalEl = document.getElementById('total-expense-display');
+    const topCard = totalEl && totalEl.closest ? totalEl.closest('.glass-card') : null;
+
+    if (screen) expenseApplyVarsCoreV1(screen, tone);
+    if (detail) expenseApplyVarsCoreV1(detail, tone);
+    expensePaintTextCoreV1(title, tone, false);
+    expensePaintTextCoreV1(tab, tone, false);
+    if (addBtn) { if (!addBtn.id) addBtn.id = 'expense-add-btn-core'; addBtn.setAttribute('data-expense-add-core', 'true'); expensePaintTextCoreV1(addBtn, 'negative', true); }
+    if (shareBtn) shareBtn.setAttribute('data-expense-share-core', 'true');
+    if (topCard) {
+        topCard.setAttribute('data-expense-total-card-core', 'true');
+        expenseApplyVarsCoreV1(topCard, tone);
+    }
+    if (totalEl) totalEl.textContent = expenseMoneyCoreV1(total);
+    expenseMarkStaticUiCoreV1();
+}
+function updateExpenseDetailCoreUi(total) {
+    const cleanTotal = expenseCleanZeroCoreV1(total);
+    const tone = expenseToneCoreV1(cleanTotal);
+    const detail = document.getElementById('expense-detail-screen');
+    const title = document.getElementById('expense-detail-title');
+    const totalEl = document.getElementById('expense-detail-total');
+    const card = totalEl && totalEl.closest ? totalEl.closest('.glass-card') : document.querySelector('#expense-detail-screen .glass-card');
+
+    if (detail) expenseApplyVarsCoreV1(detail, tone);
+    expensePaintTextCoreV1(title, tone, false);
+
+    if (card) {
+        card.id = 'expense-detail-card';
+        expenseApplyVarsCoreV1(card, tone);
+    }
+    if (totalEl) {
+        totalEl.textContent = expenseMoneyCoreV1(cleanTotal);
+        totalEl.style.setProperty('color', '#FFFFFF', 'important');
+        totalEl.style.setProperty('-webkit-text-fill-color', '#FFFFFF', 'important');
+    }
+
+    ensureExpenseDetailDeleteButtonCoreV1();
+    expenseMarkStaticUiCoreV1();
+}
+/* AARISH_EXPENSE_CORE_ENGINE_V1_END */
+
+
     // ========================== EXPENSES ==========================
     function openExpenseEntryModal() {
-        document.getElementById('expense-date').value = getTodayISO();
-        document.getElementById('expense-amount').value = '';
-        if (activeExpenseCategory && document.getElementById('expense-detail-screen').classList.contains('active')) {
-            document.getElementById('expense-category').value = activeExpenseCategory;
+    const dateEl = document.getElementById('expense-date');
+    const amtEl = document.getElementById('expense-amount');
+    const catEl = document.getElementById('expense-category');
+    if (dateEl) dateEl.value = getTodayISO();
+    if (amtEl) amtEl.value = '';
+
+    if (catEl) {
+        if (activeExpenseCategory && document.getElementById('expense-detail-screen') && document.getElementById('expense-detail-screen').classList.contains('active')) {
+            catEl.value = activeExpenseCategory;
         } else {
-            document.getElementById('expense-category').value = '';
+            catEl.value = '';
         }
-        openModal('add-expense-modal');
     }
+
+    openModal('add-expense-modal');
+    updateExpenseCoreUi();
+}
 
 
         async function saveExpenseEntry() {
-        const date = document.getElementById('expense-date').value;
-        let cat = document.getElementById('expense-category').value.trim() || 'Other';
-        cat = cat.replace(/[<>]/g, ''); 
-        const amt = parseFloat(document.getElementById('expense-amount').value);
-        if(!date || !amt) return showToast('Please enter details!');
-        
-        // Nayi ID aur Data
-        const uniqueId = "exp_" + Date.now();
-        const newEntry = { id: uniqueId, date, category: cat, amount: amt };
+    const date = (document.getElementById('expense-date') || {}).value;
+    const cat = expenseCleanCategoryCoreV1((document.getElementById('expense-category') || {}).value);
+    const amt = parseFloat((document.getElementById('expense-amount') || {}).value);
+    if (!date || !Number.isFinite(amt) || amt <= 0) return showToast('Please enter valid positive amount!');
 
-        expenseDB.unshift(newEntry); // Local add
+    const uniqueId = (window.aarishV98Id ? window.aarishV98Id('exp') : ('exp_' + Date.now() + '_' + Math.random().toString(36).slice(2, 10)));
+    const newEntry = { id: uniqueId, date, category: cat, amount: amt };
 
-        // SIRF EK EENT FIREBASE PAR BHEJI
-        if (currentUserUID) {
-            await aarishFirebaseLaterV48(`expenseDB/${uniqueId}`, 'set', newEntry);
-        }
-        
-        closeModal('add-expense-modal'); 
-        renderExpenseList();
-        if(document.getElementById('expense-detail-screen').classList.contains('active')) renderExpenseRecords();
-        updateDashboard();
-        showToast('Saved Safely!');
-    }
+    const next = expenseEntriesCoreV1();
+    next.unshift(newEntry);
+    setExpenseDBCoreV1(next);
+
+    await expenseFirebaseCoreV1(`expenseDB/${uniqueId}`, 'set', newEntry, { fast: true });
+
+    closeModal('add-expense-modal');
+    renderExpenseList();
+    if (document.getElementById('expense-detail-screen') && document.getElementById('expense-detail-screen').classList.contains('active')) renderExpenseRecords();
+    updateDashboard();
+    updateExpenseCoreUi();
+    showToast('Saved Safely!');
+}
 
     
 
     function renderExpenseList() {
-        let total = 0;
-        const records = filterByMonth((expenseDB || []).map((e, i) => ({...e, idx: i})));
-        
-        let grouped = {};
-        records.forEach(e => {
-            total += Number(e.amount);
-            if(!grouped[e.category]) grouped[e.category] = { category: e.category, total: 0, lastDate: e.date };
-            grouped[e.category].total += Number(e.amount);
-            if(new Date(e.date) > new Date(grouped[e.category].lastDate)) grouped[e.category].lastDate = e.date;
-        });
+    const box = document.getElementById('expense-list-container');
+    if (!box) return;
 
-                const html = Object.values(grouped).sort((a,b) => new Date(b.lastDate) - new Date(a.lastDate)).map((g, index) => {
-            return `<div 
-                onclick="haptic(); openExpenseDetail('${g.category}')" 
-                ontouchstart="startExpenseLongPress('${g.category}')" 
-                ontouchend="cancelExpenseLongPress()" 
-                ontouchmove="cancelExpenseLongPress()" 
-                onmousedown="startExpenseLongPress('${g.category}')" 
-                onmouseup="cancelExpenseLongPress()" 
+    let total = 0;
+    const grouped = {};
+    expenseMonthRecordsCoreV1(expenseEntriesCoreV1()).forEach(e => {
+        const cat = expenseCleanCategoryCoreV1(e && e.category);
+        const amount = Math.abs(expenseNumCoreV1(e && e.amount));
+        total += amount;
+        if (!grouped[cat]) grouped[cat] = { category: cat, total: 0, lastDate: (e && e.date) || '' };
+        grouped[cat].total += amount;
+        if (String((e && e.date) || '') > String(grouped[cat].lastDate || '')) grouped[cat].lastDate = (e && e.date) || '';
+    });
+
+    const html = Object.values(grouped)
+        .sort((a, b) => String(b.lastDate || '').localeCompare(String(a.lastDate || '')))
+        .map((g, index) => {
+            const tone = expenseToneCoreV1(g.total);
+            const catArg = expenseJsSingleCoreV1(g.category);
+            return `<div
+                data-expense-core-tone="${tone}"
+                data-module-tone="${tone}"
+                onclick="try{haptic()}catch(e){}; openExpenseDetail('${catArg}')"
+                ontouchstart="startExpenseLongPress('${catArg}')"
+                ontouchend="cancelExpenseLongPress()"
+                ontouchmove="cancelExpenseLongPress()"
+                onmousedown="startExpenseLongPress('${catArg}')"
+                onmouseup="cancelExpenseLongPress()"
                 onmouseleave="cancelExpenseLongPress()"
-                class="glass-card mb-3.5 flex items-center justify-between border-l-[3px] border-l-[#FF3B30] w-full min-w-0 cursor-pointer ring-1 ring-white/40 dark:ring-white/5 list-enter" style="animation-delay: ${index * 0.05}s;">
-                <div class="flex-1 min-w-0 mr-3">
-
-                    <h4 class="font-bold text-[17px] truncate w-full min-w-0 text-gray-900 dark:text-white">${g.category}</h4>
-                    <p class="text-[13px] text-gray-500 font-medium truncate w-full min-w-0 mt-0.5 tracking-tight">Last entry: ${formatDisplayDate(g.lastDate)}</p>
+                class="glass-card expense-core-card mb-3.5 flex items-center justify-between w-full min-w-0 cursor-pointer ring-1 ring-white/40 dark:ring-white/5 list-enter"
+                style="--expenseTone:#FF3B30;--expenseTone2:#C92A2A;--expenseTint:rgba(255,59,48,0.10);--expenseBorder:rgba(255,59,48,0.28);--expenseGlow:rgba(255,59,48,0.28);animation-delay:${index * 0.035}s;">
+                <div class="flex items-center gap-4 flex-1 min-w-0 mr-3">
+                    <div class="expense-avatar-core w-12 h-12 shrink-0 squircle font-extrabold flex items-center justify-center text-lg">${expenseCategoryInitialCoreV1(g.category)}</div>
+                    <div class="flex-1 min-w-0">
+                        <h4 class="font-extrabold text-[17px] truncate w-full min-w-0">${expenseEscCoreV1(g.category)}</h4>
+                        <p class="text-[13px] font-semibold truncate w-full min-w-0 mt-0.5 tracking-tight">Last entry: ${expenseFormatDateCoreV1(g.lastDate)}</p>
+                    </div>
                 </div>
                 <div class="flex items-center gap-3 shrink-0">
-                    <span class="font-extrabold text-[#FF3B30] shrink-0 text-lg">₹${Number(g.total).toLocaleString('en-IN')}</span>
-                    <i class="fa-solid fa-chevron-right text-gray-300 text-[13px] ml-1"></i>
+                    <span class="font-extrabold shrink-0 text-lg">${expenseSignedMoneyCoreV1(g.total)}</span>
+                    <i class="fa-solid fa-chevron-right text-[13px] ml-1"></i>
                 </div>
             </div>`;
         }).join('');
-        
-        document.getElementById('expense-list-container').innerHTML = html || getEmptyState('fa-receipt', 'No expenses for this month');
-        document.getElementById('total-expense-display').textContent = `₹${total.toLocaleString('en-IN')}`;
-    }
+
+    box.innerHTML = html || getEmptyState('fa-receipt', 'No expenses for this month');
+
+    const totalEl = document.getElementById('total-expense-display');
+    if (totalEl) totalEl.textContent = expenseMoneyCoreV1(total);
+
+    updateExpenseCoreUi();
+}
 
         let expensePressTimer;
     function startExpenseLongPress(category) {
-        isLongPress = false;
-        expensePressTimer = setTimeout(() => { 
-            isLongPress = true; haptic(); deleteExpenseCategoryProfile(category); 
-        }, 800); 
-    }
-    function cancelExpenseLongPress() { clearTimeout(expensePressTimer); }
+    isLongPress = false;
+    clearTimeout(expensePressTimer);
+    expensePressTimer = setTimeout(() => {
+        isLongPress = true;
+        try { haptic(); } catch (e) {}
+        try { showToast('Open category and use delete button.'); } catch (e) {}
+    }, 800);
+}
+    function cancelExpenseLongPress() {
+    clearTimeout(expensePressTimer);
+}
 
 async function deleteExpenseCategoryProfile(category) {
-    if (confirm(`Delete the expense category "${category}" and all its records?`)) {
-        const entriesToDelete = expenseDB.filter(e => e.category === category);
-        expenseDB = expenseDB.filter(e => e.category !== category); 
-        
-        if (currentUserUID) {
-            for (let e of entriesToDelete) {
-                await aarishFirebaseLaterV48(`expenseDB/${e.id}`, 'remove', null, { fast: true });
-            }
-        }
-        
-        if(activeExpenseCategory === category) activeExpenseCategory = null; 
-        renderExpenseList(); 
-        updateDashboard(); 
-        showToast('Category Deleted!');
+    category = expenseCleanCategoryCoreV1(category || activeExpenseCategory || '');
+    if (!category) return showToast('No expense category selected!');
+
+    const entriesToDelete = expenseEntriesCoreV1().filter(e => expenseCleanCategoryCoreV1(e && e.category) === category);
+    if (!entriesToDelete.length) return showToast('No records found!');
+
+    if (!confirm(`Delete the expense category "${category}" and all ${entriesToDelete.length} records?`)) return;
+    if (!confirm(`Final confirmation: delete "${category}" permanently?`)) return;
+
+    try {
+        const backup = { version: 'EXPENSE_CORE_V1', type: 'expense-category-delete-backup', category, deletedAt: new Date().toISOString(), entries: entriesToDelete };
+        try { localStorage.setItem('AARISH_EXPENSE_DELETE_BACKUP_CORE_' + Date.now(), JSON.stringify(backup)); } catch (e) {}
+        await expenseFirebaseCoreV1('expenseDB_DELETE_BACKUP_CORE/' + Date.now(), 'set', backup, { fast: true });
+    } catch (e) {}
+
+    setExpenseDBCoreV1(expenseEntriesCoreV1().filter(e => expenseCleanCategoryCoreV1(e && e.category) !== category));
+
+    for (const e of entriesToDelete) {
+        if (e && e.id) await expenseFirebaseCoreV1(`expenseDB/${e.id}`, 'remove', null, { fast: true });
     }
+
+    if (activeExpenseCategory === category) activeExpenseCategory = null;
+
+    renderExpenseList();
+    updateDashboard();
+    updateExpenseCoreUi();
+    switchTab('expenses');
+    showToast('Expense category deleted!');
 }
 
 
     
     function openExpenseDetail(category) {
-        if(isLongPress) { isLongPress = false; return; } // Touch conflict fix
-        activeExpenseCategory = category;
-        document.getElementById('expense-detail-title').textContent = category;
-        document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-        document.getElementById('expense-detail-screen').classList.add('active');
-        renderExpenseRecords();
-    }
+    if (isLongPress) { isLongPress = false; return; }
+
+    activeExpenseCategory = expenseCleanCategoryCoreV1(category || '');
+
+    const title = document.getElementById('expense-detail-title');
+    if (title) title.textContent = activeExpenseCategory || 'Expense Detail';
+
+    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+
+    const screen = document.getElementById('expense-detail-screen');
+    if (screen) screen.classList.add('active');
+
+    ensureExpenseDetailDeleteButtonCoreV1();
+    renderExpenseRecords();
+}
 
 
     function renderExpenseRecords() {
-        if (!activeExpenseCategory) return;
-        let total = 0;
-        
-        const records = filterByMonth((expenseDB || []).map((e, i) => ({...e, originalIndex: i})))
-                        .filter(e => e.category === activeExpenseCategory)
-                        .sort((a,b) => new Date(b.date) - new Date(a.date));
+    if (!activeExpenseCategory) return;
 
-        const html = records.map((r, index) => {
-            total += Number(r.amount);
-            return `<tr class="list-enter" style="animation-delay: ${index * 0.05}s;">
-                <td>${formatDisplayDate(r.date)}</td>
-                <td class="font-bold text-[#FF3B30] text-[16px]">₹${Number(r.amount).toLocaleString('en-IN')}</td>
-                <td class="text-right"><button onclick="haptic(); deleteExpense('${r.id}')" class="action-btn shrink-0"><i class="fa-solid fa-trash text-xs"></i></button></td>
-            </tr>`;
-        }).join('');
+    ensureExpenseDetailDeleteButtonCoreV1();
 
-        document.getElementById('expense-detail-records').innerHTML = html || `<tr><td colspan="3" class="text-center py-8 text-gray-400 font-semibold">No entries found</td></tr>`;
-        document.getElementById('expense-detail-total').textContent = `₹${total.toLocaleString('en-IN')}`;
+    const activeCat = expenseCleanCategoryCoreV1(activeExpenseCategory);
+    const records = expenseMonthRecordsCoreV1(expenseEntriesCoreV1())
+        .filter(e => expenseCleanCategoryCoreV1(e && e.category) === activeCat)
+        .sort((a, b) => String((b && b.date) || '').localeCompare(String((a && a.date) || '')));
+
+    let total = 0;
+    const html = records.map((r, index) => {
+        const amount = Math.abs(expenseNumCoreV1(r && r.amount));
+        total += amount;
+        const idArg = expenseJsSingleCoreV1((r && r.id) || '');
+        return `<tr class="list-enter" data-expense-row-tone="negative" data-expense-core-tone="negative" data-module-tone="negative" style="--expenseTone:#FF3B30;--expenseTone2:#C92A2A;--expenseTint:rgba(255,59,48,0.10);--expenseBorder:rgba(255,59,48,0.28);--expenseGlow:rgba(255,59,48,0.28);animation-delay:${index * 0.025}s;">
+            <td class="expense-date-core">${expenseEscCoreV1(expenseFormatDateCoreV1(r && r.date))}</td>
+            <td class="font-extrabold text-[16px] expense-amount-core">-${expenseMoneyCoreV1(amount)}</td>
+            <td class="text-right">
+                <button
+                    type="button"
+                    data-expense-delete-core="true"
+                    onclick="event.stopPropagation(); try{haptic()}catch(e){}; deleteExpense('${idArg}')"
+                    class="action-btn expense-delete-btn-core shrink-0"
+                    aria-label="Delete expense">
+                    <i class="fa-solid fa-trash"></i>
+                </button>
+            </td>
+        </tr>`;
+    }).join('');
+
+    const box = document.getElementById('expense-detail-records');
+    if (box) {
+        let monthName = '';
+        try { monthName = (typeof MONTHS !== 'undefined' && MONTHS[selectedMonth]) ? MONTHS[selectedMonth] : ''; } catch (e) {}
+        box.innerHTML = html || `<tr data-expense-empty-core="true"><td colspan="3" class="text-center py-8 font-extrabold">No entries for ${expenseEscCoreV1(monthName)}</td></tr>`;
+        try { box.querySelectorAll('.expense-delete-btn-core').forEach(expensePaintDeleteCoreV1); } catch (e) {}
     }
 
-        async function deleteExpense(id) { 
-        if(confirm('Delete expense?')) { 
-            expenseDB = expenseDB.filter(e => e.id !== id); // Local se hataya
-            
-            // SIRF WAHI ENTRY FIREBASE SE UDAAYI
-            if (currentUserUID) {
-                await aarishFirebaseLaterV48(`expenseDB/${id}`, 'remove', null, { fast: true });
-            }
-            
-            renderExpenseList();
-            if(document.getElementById('expense-detail-screen').classList.contains('active')) renderExpenseRecords();
-            updateDashboard();
-            showToast('Deleted!'); 
-        } 
+    updateExpenseDetailCoreUi(total);
+    updateExpenseCoreUi();
+}
+
+        async function deleteExpense(id) {
+    if (!id) return;
+    if (confirm('Delete expense?')) {
+        setExpenseDBCoreV1(expenseEntriesCoreV1().filter(e => String(e && e.id) !== String(id)));
+
+        await expenseFirebaseCoreV1(`expenseDB/${id}`, 'remove', null, { fast: true });
+
+        renderExpenseList();
+        if (document.getElementById('expense-detail-screen') && document.getElementById('expense-detail-screen').classList.contains('active')) renderExpenseRecords();
+        updateDashboard();
+        updateExpenseCoreUi();
+        showToast('Deleted!');
     }
+}
 
 
     // ========================== NAVIGATION ==========================
