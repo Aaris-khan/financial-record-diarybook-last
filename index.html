@@ -529,6 +529,46 @@
     min-height: 78px !important;
   }
 }
+
+
+/* AARISH_MILK_STATIC_DELETE_CORE_V3_START */
+#milk-detail-delete-btn.milk-detail-delete-core-btn {
+  width: 52px !important;
+  height: 52px !important;
+  min-width: 52px !important;
+  min-height: 52px !important;
+  border-radius: 18px !important;
+  border: 1px solid rgba(255,59,48,0.14) !important;
+  background: rgba(255,59,48,0.10) !important;
+  color: #FF3B30 !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  flex-shrink: 0 !important;
+  margin-left: 12px !important;
+  padding: 0 !important;
+  outline: none !important;
+  cursor: pointer !important;
+  box-shadow: 0 10px 26px rgba(255,59,48,0.12), inset 0 1px 0 rgba(255,255,255,0.40) !important;
+  transition: transform 0.18s ease, box-shadow 0.18s ease, background 0.18s ease !important;
+}
+#milk-detail-delete-btn.milk-detail-delete-core-btn i {
+  color: #FF3B30 !important;
+  font-size: 22px !important;
+  text-shadow: 0 0 12px rgba(255,59,48,0.24) !important;
+}
+#milk-detail-delete-btn.milk-detail-delete-core-btn:active {
+  transform: scale(0.96) !important;
+  background: rgba(255,59,48,0.16) !important;
+  box-shadow: 0 12px 28px rgba(255,59,48,0.18) !important;
+}
+.dark #milk-detail-delete-btn.milk-detail-delete-core-btn {
+  background: rgba(255,59,48,0.14) !important;
+  border-color: rgba(255,59,48,0.22) !important;
+  box-shadow: 0 12px 30px rgba(255,59,48,0.16), inset 0 1px 0 rgba(255,255,255,0.05) !important;
+}
+/* AARISH_MILK_STATIC_DELETE_CORE_V3_END */
+
 /* AARISH_MILK_CORE_CONTRACT_V1_END */
 </style>
 
@@ -668,10 +708,11 @@
 
     <div id="milk-detail-screen" class="screen">
         <div class="header-sticky">
-            <div class="flex items-center gap-3 w-full min-w-0">
+            <div class="flex items-center gap-3 flex-1 min-w-0">
                 <button onclick="haptic(); switchTab('milk')" class="w-10 h-10 shrink-0 rounded-full bg-black/5 dark:bg-white/10 flex items-center justify-center transition-transform active:scale-95"><i class="fa-solid fa-chevron-left"></i></button>
                 <h1 id="milk-detail-title" class="text-xl font-extrabold truncate flex-1 min-w-0 w-full">Customer</h1>
             </div>
+                <button id="milk-detail-delete-btn" type="button" onclick="haptic(); if (activeMilkCustomer) deleteMilkCustomerProfile(activeMilkCustomer); return false;" class="milk-detail-delete-core-btn" aria-label="Delete customer" title="Delete customer"><i class="fa-solid fa-trash"></i></button>
         </div>
         <div class="p-5">
             <div class="flex gap-2 mb-5 w-full">
@@ -2037,26 +2078,47 @@ async function addMilkCustomer() {
     
     let pressTimer;
     function startLongPress(name) {
-        isLongPress = false;
-        pressTimer = setTimeout(() => { 
-            isLongPress = true;
-            haptic(); 
-            deleteMilkCustomerProfile(name); 
-        }, 800); 
-    }
-    function cancelLongPress() { clearTimeout(pressTimer); }
+    try { if (typeof pressTimer !== "undefined") clearTimeout(pressTimer); } catch(e) {}
+    try { isLongPress = false; } catch(e) {}
+    return false;
+}
+    function cancelLongPress() {
+    try { if (typeof pressTimer !== "undefined") clearTimeout(pressTimer); } catch(e) {}
+    try { isLongPress = false; } catch(e) {}
+    return false;
+}
 
     async function deleteMilkCustomerProfile(name) {
-    if (confirm(`Are you sure you want to permanently delete the customer "${name}" and all their records?`)) {
-        delete milkDB[name]; 
-        
+    const customerName = String(name == null ? '' : name).trim();
+
+    if (!customerName || !milkDB || !milkDB[customerName]) {
+        return showToast('Customer not found');
+    }
+
+    if (confirm(`Are you sure you want to permanently delete the customer "${customerName}" and all their records?`)) {
+        delete milkDB[customerName];
+
         if (currentUserUID) {
-            await appDataRef.child(`milkDB/${name}`).remove();      
+            if (typeof window.aarishFirebaseBatchLaterV87 === 'function') {
+                const payload = {};
+                payload[`milkDB/${customerName}`] = null;
+                window.aarishFirebaseBatchLaterV87(payload, 'delete-milk-profile');
+            } else if (typeof window.aarishFirebaseLaterV48 === 'function') {
+                window.aarishFirebaseLaterV48(`milkDB/${customerName}`, 'remove');
+            } else if (typeof appDataRef !== 'undefined' && appDataRef) {
+                await appDataRef.child(`milkDB/${customerName}`).remove();
+            }
         }
-        
-        if(activeMilkCustomer === name) activeMilkCustomer = null; 
-        renderMilkList();    
-        updateDashboard();   
+
+        if (activeMilkCustomer === customerName) activeMilkCustomer = null;
+
+        renderMilkList();
+        updateDashboard();
+
+        try {
+            if (typeof switchTab === 'function') switchTab('milk');
+        } catch(e) {}
+
         showToast('Customer Deleted!');
     }
 }
@@ -2189,14 +2251,14 @@ function aarishMilkAllTotalsCore() {
 
 function aarishMilkSignedKgCore(v) {
     const n = aarishMilkCleanZeroCore(v);
-    if (!n) return '0.00 KG';
-    return (n < 0 ? '-' : '+') + Math.abs(n).toFixed(2) + ' KG';
+    if (n < 0) return '-' + Math.abs(n).toFixed(2) + ' KG';
+    return '+' + Math.abs(n).toFixed(2) + ' KG';
 }
 
 function aarishMilkSignedMoneyCore(v) {
     const n = Math.round(aarishMilkCleanZeroCore(v));
-    if (!n) return '₹0';
-    return (n < 0 ? '-₹' : '+₹') + Math.abs(n).toLocaleString('en-IN');
+    if (n < 0) return '-₹' + Math.abs(n).toLocaleString('en-IN');
+    return '+₹' + Math.abs(n).toLocaleString('en-IN');
 }
 
 function aarishMilkApplyChromeCore() {
@@ -2285,12 +2347,6 @@ function renderMilkList() {
         return `<div
             data-module="milk" data-module-tone="${tone}"
             onclick="haptic(); openMilkDetail(${argName})"
-            ontouchstart="startLongPress(${argName})"
-            ontouchend="cancelLongPress()"
-            ontouchmove="cancelLongPress()"
-            onmousedown="startLongPress(${argName})"
-            onmouseup="cancelLongPress()"
-            onmouseleave="cancelLongPress()"
             class="glass-card milk-core-card mb-3.5 flex items-center justify-between cursor-pointer w-full ring-1 ring-white/40 dark:ring-white/5 list-enter"
             style="${aarishMilkVarsStyleCore(tone)} --aarish-stagger-v4:${delay}s; animation-delay:${delay}s; border-left-color:${v.tone}!important;">
             <div class="flex items-center gap-3.5 w-full min-w-0">
