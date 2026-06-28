@@ -570,6 +570,148 @@
 /* AARISH_MILK_STATIC_DELETE_CORE_V3_END */
 
 /* AARISH_MILK_CORE_CONTRACT_V1_END */
+
+
+
+/* AARISH_CREDIT_BOOK_CORE_PARITY_V1_START */
+#udhar-screen,
+#udhar-detail-screen {
+  --creditTone: #007AFF;
+  --creditTone2: #0A84FF;
+  --creditTint: rgba(0,122,255,0.13);
+  --creditBorder: rgba(0,122,255,0.28);
+  --creditGlow: rgba(0,122,255,0.28);
+  --creditStaticBlue: #007AFF;
+  --creditStaticBlue2: #0A84FF;
+  --creditStaticBlueTint: rgba(0,122,255,0.10);
+  --creditStaticBlueBorder: rgba(0,122,255,0.22);
+  --creditStaticBlueGlow: rgba(0,122,255,0.30);
+}
+
+/* Semantic total cards: JS owns tone, CSS consumes variables. */
+#udhar-screen .glass-card[data-credit-core-top-tone],
+#udhar-detail-screen #udhar-detail-card[data-credit-core-tone] {
+  background: linear-gradient(135deg, var(--creditTone), var(--creditTone2)) !important;
+  color: #FFFFFF !important;
+  border-color: transparent !important;
+  box-shadow: 0 10px 28px var(--creditGlow), inset 0 1px 0 rgba(255,255,255,0.24) !important;
+}
+#udhar-screen .glass-card[data-credit-core-top-tone] *,
+#udhar-detail-screen #udhar-detail-card[data-credit-core-tone] * {
+  color: #FFFFFF !important;
+  -webkit-text-fill-color: #FFFFFF !important;
+  text-shadow: 0 2px 10px rgba(0,0,0,0.20) !important;
+}
+
+/* Permanent blue static Credit Book UI shown in screenshots.
+   These are not net/amount signals, so they never become red/green. */
+#udhar-screen .relative .fa-search,
+#udhar-screen #udhar-search,
+#udhar-screen #udhar-search::placeholder,
+#udhar-screen #udhar-search::-webkit-input-placeholder,
+#udhar-detail-screen .flex.justify-between.items-center.mb-4 > h3,
+#udhar-detail-screen .table-custom th,
+#udhar-detail-screen .credit-share-btn-core,
+#udhar-detail-screen .credit-share-btn-core i {
+  color: var(--creditStaticBlue) !important;
+  -webkit-text-fill-color: var(--creditStaticBlue) !important;
+  caret-color: var(--creditStaticBlue) !important;
+  text-shadow: 0 0 10px var(--creditStaticBlueGlow) !important;
+  opacity: 1 !important;
+}
+#udhar-screen #udhar-search {
+  border-color: var(--creditStaticBlueBorder) !important;
+  font-weight: 800 !important;
+}
+#udhar-screen #udhar-search::placeholder,
+#udhar-screen #udhar-search::-webkit-input-placeholder {
+  font-weight: 800 !important;
+}
+#udhar-detail-screen .table-custom th {
+  font-weight: 900 !important;
+  letter-spacing: 1px !important;
+}
+#udhar-detail-screen .credit-share-btn-core {
+  background: var(--creditStaticBlueTint) !important;
+  border-color: var(--creditStaticBlueBorder) !important;
+  box-shadow: 0 8px 22px rgba(0,122,255,0.10) !important;
+}
+
+/* Detail Add button stays green like screenshot, independent from person net. */
+#udhar-detail-screen .credit-add-btn-core {
+  background: linear-gradient(135deg, #34C759, #28A745) !important;
+  color: #FFFFFF !important;
+  -webkit-text-fill-color: #FFFFFF !important;
+  border-color: transparent !important;
+  box-shadow: 0 8px 22px rgba(52,199,89,0.28) !important;
+}
+#udhar-detail-screen .credit-add-btn-core *,
+#udhar-detail-screen .credit-add-btn-core i {
+  color: #FFFFFF !important;
+  -webkit-text-fill-color: #FFFFFF !important;
+  text-shadow: 0 2px 8px rgba(0,0,0,0.16) !important;
+}
+
+/* Semantic list and semantic row colors remain untouched. */
+#udhar-list .glass-card[data-credit-core-tone] {
+  border-left: 4px solid var(--creditTone) !important;
+  background: rgba(255,255,255,0.72) !important;
+  box-shadow: -4px 0 14px var(--creditGlow), 0 10px 26px rgba(15,23,42,0.07), inset 1px 0 0 var(--creditBorder), inset 0 1px 0 rgba(255,255,255,0.62) !important;
+  transition-property: transform, opacity !important;
+  transition-duration: 100ms !important;
+}
+.dark #udhar-list .glass-card[data-credit-core-tone] {
+  background: rgba(12,18,36,0.84) !important;
+  box-shadow: -4px 0 18px var(--creditGlow), 0 12px 34px rgba(0,0,0,0.42), inset 1px 0 0 var(--creditBorder), inset 0 1px 0 rgba(255,255,255,0.10) !important;
+}
+#udhar-list .glass-card[data-credit-core-tone] :is(h4,p,span,i,.font-bold,.font-extrabold),
+#udhar-detail-screen #udhar-detail-records tr[data-credit-core-row-tone] :is(td,span,i,.font-bold,.font-extrabold) {
+  color: var(--creditTone) !important;
+  -webkit-text-fill-color: var(--creditTone) !important;
+  text-shadow: 0 0 9px var(--creditGlow) !important;
+}
+#udhar-list .credit-avatar-core,
+#udhar-detail-screen .credit-core-badge {
+  color: var(--creditTone) !important;
+  -webkit-text-fill-color: var(--creditTone) !important;
+  background: var(--creditTint) !important;
+  border: 1px solid var(--creditBorder) !important;
+  box-shadow: 0 7px 18px var(--creditGlow), inset 0 1px 0 rgba(255,255,255,0.18) !important;
+}
+
+/* Delete stays red. */
+#udhar-detail-screen #udhar-detail-records .credit-delete-btn-core,
+#udhar-detail-screen #udhar-detail-records .credit-delete-btn-core *,
+#credit-profile-delete-btn-core,
+#credit-profile-delete-btn-core * {
+  color: #FF3B30 !important;
+  -webkit-text-fill-color: #FF3B30 !important;
+}
+#credit-profile-delete-btn-core {
+  width: 44px !important;
+  height: 44px !important;
+  min-width: 44px !important;
+  min-height: 44px !important;
+  border-radius: 999px !important;
+  border: 1px solid rgba(255,59,48,0.18) !important;
+  background: rgba(255,59,48,0.10) !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  box-shadow: 0 8px 22px rgba(255,59,48,0.14) !important;
+}
+.dark #udhar-screen .glass-card[data-credit-core-top-tone],
+.dark #udhar-detail-screen #udhar-detail-card[data-credit-core-tone] {
+  box-shadow: 0 12px 34px var(--creditGlow), inset 0 1px 0 rgba(255,255,255,0.16) !important;
+}
+.dark #udhar-screen #udhar-search,
+.dark #udhar-detail-screen .credit-share-btn-core {
+  border-color: rgba(10,132,255,0.28) !important;
+  box-shadow: 0 8px 24px rgba(10,132,255,0.13) !important;
+}
+/* Dark mode only changes surface/glow strength. Credit semantic colors stay: green positive, red negative, blue neutral. */
+/* AARISH_CREDIT_BOOK_CORE_PARITY_V1_END */
+
 </style>
 
      
@@ -846,8 +988,8 @@
             <div class="flex justify-between items-center mb-4 w-full min-w-0 gap-2">
                 <h3 class="font-bold text-[19px] tracking-tight truncate flex-1 min-w-0">All Entries</h3>
                 <div class="flex gap-2 shrink-0">
-                    <button onclick="haptic(); shareUdharBill()" class="btn-ios-share"><i class="fa-solid fa-arrow-up-right-from-square"></i> Share</button>
-                    <button onclick="haptic(); openUdharModal(activeUdharPerson)" class="btn-ios-share !bg-gray-500/10 !text-gray-700 dark:!text-gray-300 !border-gray-500/20"><i class="fa-solid fa-plus"></i> Add</button>
+                    <button onclick="haptic(); shareUdharBill()" class="btn-ios-share credit-share-btn-core"><i class="fa-solid fa-arrow-up-right-from-square"></i> Share</button>
+                    <button onclick="haptic(); openUdharModal(activeUdharPerson)" class="btn-ios-add credit-add-btn-core"><i class="fa-solid fa-plus"></i> Add</button>
                 </div>
             </div>
 
@@ -3693,232 +3835,412 @@ async function shareDiaryBill(id) {
 
     
     // ========================== UDHAR ==========================
-    function openUdharModal(name = null) {
-        document.getElementById('udhar-date').value = getTodayISO();
-        const nameInput = document.getElementById('udhar-name');
-        document.getElementById('udhar-amount').value = '';
+    
+/* AARISH_CREDIT_BOOK_CORE_OWNER_V1_START */
+function creditNumCoreV1(v) {
+    const x = Number(v);
+    return Number.isFinite(x) ? x : 0;
+}
+function creditCleanZeroCoreV1(v) {
+    const x = creditNumCoreV1(v);
+    return Math.abs(x) < 0.0001 ? 0 : x;
+}
+function creditEntriesCoreV1() {
+    try {
+        if (Array.isArray(udharDB)) return udharDB.filter(Boolean);
+        if (udharDB && typeof udharDB === 'object') return Object.keys(udharDB).map(k => udharDB[k]).filter(Boolean);
+    } catch (e) {}
+    try {
+        if (Array.isArray(window.udharDB)) return window.udharDB.filter(Boolean);
+        if (window.udharDB && typeof window.udharDB === 'object') return Object.keys(window.udharDB).map(k => window.udharDB[k]).filter(Boolean);
+    } catch (e) {}
+    return [];
+}
+function setUdharDBCoreV1(next) {
+    const safe = Array.isArray(next) ? next.filter(Boolean) : [];
+    try { udharDB = safe; } catch (e) { window.udharDB = safe; }
+}
+function creditEscCoreV1(v) {
+    return String(v == null ? '' : v).replace(/[&<>"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
+}
+function creditJsArgCoreV1(v) {
+    return JSON.stringify(String(v == null ? '' : v)).replace(/"/g, '&quot;');
+}
+function creditCleanNameCoreV1(v) {
+    return String(v == null ? '' : v)
+        .normalize('NFKC')
+        .replace(/[<>"'`]/g, ' ')
+        .replace(/[\u0000-\u001F\u007F]/g, ' ')
+        .replace(/\s+/g, ' ')
+        .trim();
+}
+function creditEntryAmountCoreV1(entry) {
+    return creditNumCoreV1(entry && (entry.amount ?? entry.amt ?? entry.total ?? entry.price ?? entry.value));
+}
+function creditSignedAmountCoreV1(entry) {
+    const amount = creditEntryAmountCoreV1(entry);
+    const raw = String((entry && (entry.type || entry.entryType || entry.flow || entry.direction || entry.status || entry.mode)) || '').toLowerCase();
+    if (raw.includes('debit') || raw.includes('dena') || raw.includes('pay') || raw.includes('paid') || raw.includes('minus') || raw.includes('negative') || raw.includes('taken') || raw === 'out') return -Math.abs(amount);
+    if (raw.includes('credit') || raw.includes('lena') || raw.includes('receive') || raw.includes('received') || raw.includes('plus') || raw.includes('positive') || raw.includes('given') || raw === 'in') return Math.abs(amount);
+    return amount;
+}
+function creditToneCoreV1(net) {
+    net = creditCleanZeroCoreV1(net);
+    if (net > 0) return 'positive';
+    if (net < 0) return 'negative';
+    return 'neutral';
+}
+function creditPackCoreV1(tone) {
+    if (tone === 'positive') return { color:'#34C759', color2:'#28A745', tint:'rgba(52,199,89,0.13)', border:'rgba(52,199,89,0.28)', glow:'rgba(52,199,89,0.30)', label:'To Receive', row:'Given', sign:'+' };
+    if (tone === 'negative') return { color:'#FF3B30', color2:'#C92A2A', tint:'rgba(255,59,48,0.13)', border:'rgba(255,59,48,0.28)', glow:'rgba(255,59,48,0.30)', label:'To Pay', row:'Taken', sign:'-' };
+    return { color:'#007AFF', color2:'#0A84FF', tint:'rgba(0,122,255,0.13)', border:'rgba(0,122,255,0.28)', glow:'rgba(0,122,255,0.28)', label:'Settled', row:'Settled', sign:'' };
+}
+function creditStyleVarsCoreV1(tone) {
+    const p = creditPackCoreV1(tone);
+    return `--creditTone:${p.color};--creditTone2:${p.color2};--creditTint:${p.tint};--creditBorder:${p.border};--creditGlow:${p.glow};`;
+}
+function creditMoneyCoreV1(v) {
+    return '₹' + Math.abs(Math.round(creditNumCoreV1(v))).toLocaleString('en-IN');
+}
+function creditFormatDateCoreV1(v) {
+    try { if (typeof formatDisplayDate === 'function') return formatDisplayDate(v); } catch (e) {}
+    return String(v || '-');
+}
+function creditNameInitialCoreV1(name) {
+    const s = String(name || '').trim();
+    return creditEscCoreV1((s.charAt(0) || '?').toUpperCase());
+}
+function creditGroupedCoreV1() {
+    const grouped = {};
+    creditEntriesCoreV1().forEach(entry => {
+        const name = creditCleanNameCoreV1(entry && entry.name) || 'Unknown';
+        if (!grouped[name]) grouped[name] = { name, net: 0, receive: 0, pay: 0, lastDate: '' };
+        const signed = creditSignedAmountCoreV1(entry);
+        grouped[name].net += signed;
+        if (signed >= 0) grouped[name].receive += Math.abs(signed); else grouped[name].pay += Math.abs(signed);
+        const d = String((entry && entry.date) || '');
+        if (d > String(grouped[name].lastDate || '')) grouped[name].lastDate = d;
+    });
+    return grouped;
+}
+function creditTotalsCoreV1() {
+    let receive = 0, pay = 0;
+    creditEntriesCoreV1().forEach(entry => {
+        const signed = creditSignedAmountCoreV1(entry);
+        if (signed >= 0) receive += Math.abs(signed); else pay += Math.abs(signed);
+    });
+    return { receive, pay, net: receive - pay };
+}
+async function creditFirebaseCoreV1(path, action, value, opts) {
+    try {
+        if (typeof currentUserUID === 'undefined' || !currentUserUID) return;
+        if (window.aarishFirebaseLaterV48) return await window.aarishFirebaseLaterV48(path, action, value, opts || { fast: true });
+        if (typeof appDataRef !== 'undefined' && appDataRef) {
+            const ref = appDataRef.child(path);
+            if (action === 'remove') return await ref.remove();
+            return await ref.set(value);
+        }
+    } catch (e) {
+        console.error('Credit Firebase core op failed:', e);
+        try { showToast('Saved locally. Cloud sync pending.'); } catch (_) {}
+    }
+}
+function updateCreditBookCoreUi() {
+    const totals = creditTotalsCoreV1();
+    const tone = creditToneCoreV1(totals.net);
+    const pack = creditPackCoreV1(tone);
+    const screen = document.getElementById('udhar-screen');
+    const title = document.querySelector('#udhar-screen .header-sticky h1');
+    const btn = document.getElementById('credit-entry-btn-v52') || document.querySelector('#udhar-screen .header-sticky button[onclick*="openUdharModal"]');
+    const tab = document.getElementById('tab-udhar');
+    const lena = document.getElementById('udhar-total-lena');
+    const dena = document.getElementById('udhar-total-dena');
+    const topCard = (lena && lena.closest && lena.closest('.glass-card')) || document.querySelector('#udhar-screen .p-5 > .glass-card');
 
-        if (name && typeof name === 'string') {
-            nameInput.value = name;
+    if (screen) screen.setAttribute('data-credit-core-net', tone);
+    if (lena) lena.textContent = creditMoneyCoreV1(totals.receive);
+    if (dena) dena.textContent = creditMoneyCoreV1(totals.pay);
+    if (topCard) {
+        topCard.setAttribute('data-credit-core-top-tone', tone);
+        topCard.setAttribute('data-module-tone', tone);
+        topCard.setAttribute('style', (topCard.getAttribute('style') || '') + ';' + creditStyleVarsCoreV1(tone));
+    }
+    [title, btn, tab].forEach(el => {
+        if (!el) return;
+        el.setAttribute('data-credit-core-tone', tone);
+        el.style.setProperty('color', el === btn ? '#FFFFFF' : pack.color, 'important');
+        el.style.setProperty('text-shadow', '0 0 12px ' + pack.glow, 'important');
+        if (el === btn) {
+            if (!el.id) el.id = 'credit-entry-btn-v52';
+            el.style.setProperty('background', `linear-gradient(135deg, ${pack.color}, ${pack.color2})`, 'important');
+            el.style.setProperty('border-color', 'transparent', 'important');
+            el.style.setProperty('box-shadow', '0 8px 22px ' + pack.glow, 'important');
+            try { el.querySelectorAll('*').forEach(x => x.style.setProperty('color', '#FFFFFF', 'important')); } catch (e) {}
+        }
+    });
+}
+function ensureCreditDetailDeleteButtonCoreV1() {
+    const screen = document.getElementById('udhar-detail-screen');
+    if (!screen) return;
+    const row = screen.querySelector('.header-sticky .flex.items-center') || screen.querySelector('.header-sticky');
+    if (!row) return;
+    let btn = document.getElementById('credit-profile-delete-btn-core') || document.getElementById('credit-profile-delete-btn-v29');
+    if (!btn) {
+        btn = document.createElement('button');
+        btn.id = 'credit-profile-delete-btn-core';
+        btn.type = 'button';
+        btn.setAttribute('aria-label', 'Delete credit profile');
+        btn.innerHTML = '<i class="fa-solid fa-trash"></i>';
+        row.appendChild(btn);
+    }
+    btn.className = 'credit-profile-delete-btn-core shrink-0';
+    btn.onclick = function (event) {
+        if (event) { event.preventDefault(); event.stopPropagation(); }
+        try { haptic(); } catch (e) {}
+        deleteUdharPersonProfile(activeUdharPerson);
+    };
+    try {
+        const shareBtn = document.querySelector('#udhar-detail-screen button[onclick*="shareUdharBill"]');
+        if (shareBtn) shareBtn.classList.add('credit-share-btn-core');
+        const addBtn = document.querySelector('#udhar-detail-screen button[onclick*="openUdharModal(activeUdharPerson)"]');
+        if (addBtn) {
+            addBtn.classList.remove('btn-ios-share', '!bg-gray-500/10', '!text-gray-700', 'dark:!text-gray-300', '!border-gray-500/20');
+            addBtn.classList.add('btn-ios-add', 'credit-add-btn-core');
+        }
+    } catch (e) {}
+
+}
+/* AARISH_CREDIT_BOOK_CORE_OWNER_V1_END */
+
+function openUdharModal(name = null) {
+    const dateEl = document.getElementById('udhar-date');
+    const nameInput = document.getElementById('udhar-name');
+    const amountEl = document.getElementById('udhar-amount');
+    if (dateEl) dateEl.value = getTodayISO();
+    if (amountEl) amountEl.value = '';
+
+    if (nameInput) {
+        const fixedName = creditCleanNameCoreV1(name || '');
+        if (fixedName) {
+            nameInput.value = fixedName;
             nameInput.setAttribute('readonly', true);
-            nameInput.style.opacity = '0.6';
+            nameInput.style.opacity = '0.65';
         } else {
             nameInput.value = '';
             nameInput.removeAttribute('readonly');
             nameInput.style.opacity = '1';
         }
-        openModal('add-udhar-modal');
     }
+    openModal('add-udhar-modal');
+    updateCreditBookCoreUi();
+}
 
 
         async function saveUdharEntry(type) {
-        const date = document.getElementById('udhar-date').value;
-        let name = document.getElementById('udhar-name').value.trim();
-        name = name.replace(/[<>]/g, ''); 
-        const amt = parseFloat(document.getElementById('udhar-amount').value);
-        if(!date || !name || !amt) return showToast('Fill complete form!');
-        
-        const uniqueId = "udh_" + Date.now();
-        const newEntry = { id: uniqueId, date, name, amount: amt, type };
-        
-        udharDB.unshift(newEntry);
-        
-        if (currentUserUID) {
-            await aarishFirebaseLaterV48(`udharDB/${uniqueId}`, 'set', newEntry);
-        }
-        
-        closeModal('add-udhar-modal'); 
-        renderUdharList();
-        if(document.getElementById('udhar-detail-screen').classList.contains('active')) renderUdharRecords();
-        updateDashboard();
-        showToast('Saved Safely!');
-    }
+    const date = (document.getElementById('udhar-date') || {}).value;
+    const name = creditCleanNameCoreV1((document.getElementById('udhar-name') || {}).value);
+    const amt = parseFloat((document.getElementById('udhar-amount') || {}).value);
+    if (!date || !name || !Number.isFinite(amt) || amt <= 0) return showToast('Fill complete form with valid amount!');
+
+    const cleanType = String(type || '').toLowerCase() === 'debit' ? 'debit' : 'credit';
+    const uniqueId = (window.aarishV98Id ? window.aarishV98Id('udh') : ('udh_' + Date.now() + '_' + Math.random().toString(36).slice(2, 10)));
+    const newEntry = { id: uniqueId, date, name, amount: amt, type: cleanType };
+
+    const next = creditEntriesCoreV1();
+    next.unshift(newEntry);
+    setUdharDBCoreV1(next);
+
+    await creditFirebaseCoreV1(`udharDB/${uniqueId}`, 'set', newEntry, { fast: true });
+
+    closeModal('add-udhar-modal');
+    updateDashboard();
+    renderUdharList();
+    if (document.getElementById('udhar-detail-screen') && document.getElementById('udhar-detail-screen').classList.contains('active')) renderUdharRecords();
+    updateCreditBookCoreUi();
+    showToast('Saved Safely!');
+}
 
 
     
 
     function renderUdharList() {
-        const q = (document.getElementById('udhar-search').value || '').toLowerCase();
-        
-        let grouped = {};
-        (udharDB || []).forEach((u, i) => {
-            if (!grouped[u.name]) grouped[u.name] = { name: u.name, net: 0, lastDate: u.date };
-            if (u.type === 'credit') grouped[u.name].net += Number(u.amount);
-            else grouped[u.name].net -= Number(u.amount);
-            
-            if (new Date(u.date) > new Date(grouped[u.name].lastDate)) grouped[u.name].lastDate = u.date;
-        });
+    const box = document.getElementById('udhar-list');
+    if (!box) return;
 
-        const html = Object.values(grouped)
-            .filter(g => g.name.toLowerCase().includes(q))
-            .sort((a,b) => new Date(b.lastDate) - new Date(a.lastDate))
-            .map((g, index) => {
-                const isPlus = g.net >= 0;
-                const colorClass = isPlus ? 'text-[#34C759]' : 'text-[#FF3B30]';
-                const bgClass = isPlus ? 'bg-[#34C759]/10' : 'bg-[#FF3B30]/10';
-                const borderClass = isPlus ? 'border-l-[#34C759]' : 'border-l-[#FF3B30]';
-                const sign = isPlus ? '+' : '-';
-                const label = isPlus ? 'To Receive' : 'To Pay';
-                const displayNet = Math.abs(g.net).toLocaleString('en-IN');
-
-                                return `<div 
-                    onclick="haptic(); openUdharDetail('${g.name}')" 
-                    ontouchstart="startUdharLongPress('${g.name}')" 
-                    ontouchend="cancelUdharLongPress()" 
-                    ontouchmove="cancelUdharLongPress()" 
-                    onmousedown="startUdharLongPress('${g.name}')" 
-                    onmouseup="cancelUdharLongPress()" 
-                    onmouseleave="cancelUdharLongPress()"
-                    class="glass-card mb-3.5 flex items-center justify-between cursor-pointer border-l-[3px] ${borderClass} w-full min-w-0 ring-1 ring-white/40 dark:ring-white/5 list-enter" style="animation-delay: ${index * 0.05}s;">
-                    <div class="flex-1 min-w-0 mr-3">
-
-                        <h4 class="font-bold text-[17px] truncate w-full min-w-0 text-gray-900 dark:text-white flex items-center gap-2">
-                            ${g.name}
-                        </h4>
-                        <p class="text-[13px] text-gray-500 font-medium truncate w-full min-w-0 mt-0.5 tracking-tight">Last entry: ${formatDisplayDate(g.lastDate)}</p>
+    const q = String((document.getElementById('udhar-search') || {}).value || '').toLowerCase();
+    const html = Object.values(creditGroupedCoreV1())
+        .filter(g => String(g.name || '').toLowerCase().includes(q))
+        .sort((a, b) => String(b.lastDate || '').localeCompare(String(a.lastDate || '')))
+        .map((g, index) => {
+            const net = creditCleanZeroCoreV1(g.net);
+            const tone = creditToneCoreV1(net);
+            const pack = creditPackCoreV1(tone);
+            const arg = creditJsArgCoreV1(g.name);
+            const sign = net > 0 ? '+' : (net < 0 ? '-' : '');
+            const label = tone === 'neutral' ? 'Settled' : pack.label;
+            return `<div
+                data-credit-core-tone="${tone}"
+                data-module-tone="${tone}"
+                class="glass-card mb-3.5 flex items-center justify-between cursor-pointer w-full min-w-0 ring-1 ring-white/40 dark:ring-white/5 list-enter rounded-2xl"
+                style="${creditStyleVarsCoreV1(tone)} animation-delay:${index * 0.03}s;"
+                onclick="try{haptic()}catch(e){}; openUdharDetail(${arg})">
+                <div class="flex items-center gap-4 flex-1 min-w-0">
+                    <div class="credit-avatar-core w-12 h-12 shrink-0 squircle font-extrabold flex items-center justify-center text-lg">${creditNameInitialCoreV1(g.name)}</div>
+                    <div class="flex-1 min-w-0">
+                        <h4 class="font-extrabold text-[17px] truncate w-full min-w-0">${creditEscCoreV1(g.name)}</h4>
+                        <p class="text-[13px] font-semibold truncate w-full min-w-0 mt-0.5 tracking-tight">Last entry: ${creditFormatDateCoreV1(g.lastDate)}</p>
                     </div>
-                    <div class="flex flex-col items-end gap-1 shrink-0">
-                        <span class="text-[9px] font-extrabold uppercase tracking-wider ${colorClass} bg-current/10 px-2 py-0.5 rounded-full">${label}</span>
-                        <div class="flex items-center gap-1">
-                            <span class="font-extrabold ${colorClass} shrink-0 text-lg">${sign}₹${displayNet}</span>
-                            <i class="fa-solid fa-chevron-right text-gray-300 text-[13px] ml-1"></i>
-                        </div>
+                </div>
+                <div class="flex flex-col items-end gap-1 shrink-0 ml-3">
+                    <span class="text-[9px] font-extrabold uppercase tracking-wider px-2 py-0.5 rounded-full credit-core-badge">${label}</span>
+                    <div class="flex items-center gap-1">
+                        <span class="font-extrabold shrink-0 text-lg">${sign}${creditMoneyCoreV1(net)}</span>
+                        <i class="fa-solid fa-chevron-right text-[13px] ml-1"></i>
                     </div>
-                </div>`;
-            }).join('');
-        document.getElementById('udhar-list').innerHTML = html || getEmptyState('fa-handshake', 'No credit records found');
-    }
+                </div>
+            </div>`;
+        }).join('');
+
+    box.innerHTML = html || getEmptyState('fa-handshake', 'No credit records found');
+    updateCreditBookCoreUi();
+}
 
         function filterUdharList() { renderUdharList(); }
 
     let udharPressTimer;
     function startUdharLongPress(name) {
-        isLongPress = false;
-        udharPressTimer = setTimeout(() => { 
-            isLongPress = true; haptic(); deleteUdharPersonProfile(name); 
-        }, 800); 
-    }
+    isLongPress = false;
+    clearTimeout(udharPressTimer);
+    udharPressTimer = setTimeout(() => {
+        isLongPress = true;
+        try { haptic(); } catch (e) {}
+        try { showToast('Open profile and use delete button.'); } catch (e) {}
+    }, 800);
+}
     function cancelUdharLongPress() { clearTimeout(udharPressTimer); }
 
 
          async function deleteUdharPersonProfile(name) {
-        if (confirm(`Delete the credit profile for "${name}" and all their records?`)) {
-            
-            // 1. Pehle us insaan ki saari entries dhoondo
-            const entriesToDelete = udharDB.filter(u => u.name === name);
-            
-            // 2. Local app se unhe hatao
-            udharDB = udharDB.filter(u => u.name !== name); 
-            
-            // 3. 🔥 FIREBASE SE SIRF WAHI ENTRIES HATAO (Purana saveDB hata diya)
-            if (currentUserUID) {
-                for (let e of entriesToDelete) {
-                    await aarishFirebaseLaterV48(`udharDB/${e.id}`, 'remove', null, { fast: true });
-                }
-            }
-            
-            if (activeUdharPerson === name) activeUdharPerson = null; 
-            renderUdharList(); 
-            updateDashboard(); 
-            showToast('Profile Deleted!');
-        }
+    name = creditCleanNameCoreV1(name || activeUdharPerson || '');
+    if (!name) return showToast('No credit profile selected!');
+    const entriesToDelete = creditEntriesCoreV1().filter(u => creditCleanNameCoreV1(u && u.name) === name);
+    if (!entriesToDelete.length) return showToast('No records found!');
+    if (!confirm(`Delete the credit profile for "${name}" and all ${entriesToDelete.length} records?`)) return;
+
+    setUdharDBCoreV1(creditEntriesCoreV1().filter(u => creditCleanNameCoreV1(u && u.name) !== name));
+
+    for (const entry of entriesToDelete) {
+        if (entry && entry.id) await creditFirebaseCoreV1(`udharDB/${entry.id}`, 'remove', null, { fast: true });
     }
+
+    if (activeUdharPerson === name) activeUdharPerson = null;
+    switchTab('udhar');
+    updateDashboard();
+    renderUdharList();
+    updateCreditBookCoreUi();
+    showToast('Profile Deleted!');
+}
 
 
     
     
     function openUdharDetail(name) {
-        if(isLongPress) { isLongPress = false; return; } // Touch conflict fix
-        activeUdharPerson = name;
+    if (isLongPress) { isLongPress = false; return; }
+    activeUdharPerson = creditCleanNameCoreV1(name || '');
 
-        document.getElementById('udhar-detail-title').textContent = name;
-        document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-        document.getElementById('udhar-detail-screen').classList.add('active');
-        renderUdharRecords();
-    }
+    const title = document.getElementById('udhar-detail-title');
+    if (title) title.textContent = activeUdharPerson || 'Customer';
+    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+    const screen = document.getElementById('udhar-detail-screen');
+    if (screen) screen.classList.add('active');
+    ensureCreditDetailDeleteButtonCoreV1();
+    renderUdharRecords();
+}
 
     function renderUdharRecords() {
-        if (!activeUdharPerson) return;
-        let net = 0;
-        
-        const records = udharDB.map((u, i) => ({...u, originalIndex: i}))
-                               .filter(u => u.name === activeUdharPerson)
-                               .sort((a,b) => new Date(b.date) - new Date(a.date));
+    if (!activeUdharPerson) return;
+    ensureCreditDetailDeleteButtonCoreV1();
 
-        const html = records.map((r, index) => {
-            const isCredit = r.type === 'credit';
-            if(isCredit) net += Number(r.amount); else net -= Number(r.amount);
+    const records = creditEntriesCoreV1()
+        .filter(u => creditCleanNameCoreV1(u && u.name) === creditCleanNameCoreV1(activeUdharPerson))
+        .sort((a, b) => String((b && b.date) || '').localeCompare(String((a && a.date) || '')));
 
-            return `<tr class="list-enter" style="animation-delay: ${index * 0.05}s;">
-                <td>${formatDisplayDate(r.date)}</td>
-                <td><span class="text-[10px] font-extrabold uppercase px-2 py-1 rounded-md ${isCredit ? 'bg-[#34C759]/10 text-[#34C759]' : 'bg-[#FF3B30]/10 text-[#FF3B30]'}">${isCredit ? 'Given' : 'Taken'}</span></td>
-                <td class="font-bold text-[16px]">₹${Number(r.amount).toLocaleString('en-IN')}</td>
-                <td class="text-right"><button onclick="event.stopPropagation(); haptic();  deleteUdhar('${r.id}')"  class="action-btn shrink-0"><i class="fa-solid fa-trash text-xs"></i></button></td>
-            </tr>`;
-        }).join('');
+    let net = 0;
+    const html = records.map((r, index) => {
+        const signed = creditSignedAmountCoreV1(r);
+        net += signed;
+        const rowTone = creditToneCoreV1(signed);
+        const rowPack = creditPackCoreV1(rowTone);
+        return `<tr class="list-enter" data-credit-core-row-tone="${rowTone}" data-module-tone="${rowTone}" style="${creditStyleVarsCoreV1(rowTone)} animation-delay:${index * 0.025}s;">
+            <td>${creditFormatDateCoreV1(r.date)}</td>
+            <td><span class="credit-core-badge text-[10px] font-extrabold uppercase px-2 py-1 rounded-md">${rowPack.row}</span></td>
+            <td class="font-extrabold text-[16px]">${creditMoneyCoreV1(signed)}</td>
+            <td class="text-right"><button onclick="event.stopPropagation(); haptic(); deleteUdhar('${creditEscCoreV1(r.id)}')" class="action-btn credit-delete-btn-core shrink-0"><i class="fa-solid fa-trash text-xs"></i></button></td>
+        </tr>`;
+    }).join('');
 
-        document.getElementById('udhar-detail-records').innerHTML = html || `<tr><td colspan="4" class="text-center py-8 text-gray-400 font-semibold">No entries found</td></tr>`;
+    const tbody = document.getElementById('udhar-detail-records');
+    if (tbody) tbody.innerHTML = html || `<tr><td colspan="4" class="text-center py-8 text-gray-400 font-semibold">No entries found</td></tr>`;
 
-        const detailCard = document.getElementById('udhar-detail-card');
-        const statusEl = document.getElementById('udhar-detail-status');
-        const totalEl = document.getElementById('udhar-detail-total');
+    const tone = creditToneCoreV1(net);
+    const pack = creditPackCoreV1(tone);
+    const detailCard = document.getElementById('udhar-detail-card');
+    const statusEl = document.getElementById('udhar-detail-status');
+    const totalEl = document.getElementById('udhar-detail-total');
 
-        if(net >= 0) {
-            detailCard.className = "glass-card mb-6 flex justify-between items-center bg-gradient-to-br from-[#34C759] to-[#28a745] text-white border-none shadow-[0_8px_24px_rgba(52,199,89,0.3)] ring-1 ring-white/30 w-full min-w-0 gap-3";
-            statusEl.textContent = "Net Balance (To Receive)";
-            totalEl.textContent = `+ ₹${net.toLocaleString('en-IN')}`;
-        } else {
-            detailCard.className = "glass-card mb-6 flex justify-between items-center bg-gradient-to-br from-[#FF3B30] to-[#c92a2a] text-white border-none shadow-[0_8px_24px_rgba(255,59,48,0.3)] ring-1 ring-white/30 w-full min-w-0 gap-3";
-            statusEl.textContent = "Net Balance (To Pay)";
-            totalEl.textContent = `- ₹${Math.abs(net).toLocaleString('en-IN')}`;
-        }
+    if (detailCard) {
+        detailCard.className = 'glass-card mb-6 flex justify-between items-center text-white border-none ring-1 ring-white/30 w-full min-w-0 gap-3';
+        detailCard.setAttribute('data-credit-core-tone', tone);
+        detailCard.setAttribute('data-module-tone', tone);
+        detailCard.setAttribute('style', creditStyleVarsCoreV1(tone));
     }
+    if (statusEl) statusEl.textContent = tone === 'positive' ? 'YOU WILL RECEIVE' : (tone === 'negative' ? 'YOU WILL PAY' : 'SETTLED');
+    if (totalEl) totalEl.textContent = (net > 0 ? '+' : (net < 0 ? '-' : '')) + creditMoneyCoreV1(net);
+
+    updateCreditBookCoreUi();
+}
     
 
-       async function deleteUdhar(id) { 
-        if(confirm('Delete permanently?')) { 
-            udharDB = udharDB.filter(u => u.id !== id); 
-            
-            if (currentUserUID) {
-                await aarishFirebaseLaterV48(`udharDB/${id}`, 'remove', null, { fast: true });
-            }
-            
-            renderUdharList();
-            if(document.getElementById('udhar-detail-screen').classList.contains('active')) renderUdharRecords();
-            updateDashboard();
-            showToast('Deleted!'); 
-        } 
+       async function deleteUdhar(id) {
+    if (!id) return;
+    if (confirm('Delete permanently?')) {
+        setUdharDBCoreV1(creditEntriesCoreV1().filter(u => String(u && u.id) !== String(id)));
+        await creditFirebaseCoreV1(`udharDB/${id}`, 'remove', null, { fast: true });
+
+        updateDashboard();
+        renderUdharList();
+        if (document.getElementById('udhar-detail-screen') && document.getElementById('udhar-detail-screen').classList.contains('active')) renderUdharRecords();
+        updateCreditBookCoreUi();
+        showToast('Deleted!');
     }
+}
 
 
     
 
     async function shareUdharBill() {
-        if (!activeUdharPerson) return;
-        showLoader("Generating Ledger...");
-        let net = 0;
-        udharDB.forEach(u => {
-            if(u.name === activeUdharPerson) {
-                if(u.type === 'credit') net += Number(u.amount); else net -= Number(u.amount);
-            }
-        });
+    if (!activeUdharPerson) return;
+    showLoader('Generating Ledger...');
+    let net = 0;
+    creditEntriesCoreV1().forEach(u => {
+        if (creditCleanNameCoreV1(u && u.name) === creditCleanNameCoreV1(activeUdharPerson)) net += creditSignedAmountCoreV1(u);
+    });
 
-        document.getElementById('udh-rcpt-name').textContent = activeUdharPerson;
-        const rcptStatus = document.getElementById('udh-rcpt-status');
-        const rcptAmt = document.getElementById('udh-rcpt-amt');
+    const nameEl = document.getElementById('udh-rcpt-name');
+    const rcptStatus = document.getElementById('udh-rcpt-status');
+    const rcptAmt = document.getElementById('udh-rcpt-amt');
+    const tone = creditToneCoreV1(net);
+    const pack = creditPackCoreV1(tone);
 
-        if(net >= 0) {
-            rcptStatus.textContent = "You need to pay us:";
-            rcptAmt.textContent = `₹${net.toLocaleString('en-IN')}`;
-            rcptAmt.style.color = "#34C759";
-        } else {
-            rcptStatus.textContent = "We owe you:";
-            rcptAmt.textContent = `₹${Math.abs(net).toLocaleString('en-IN')}`;
-            rcptAmt.style.color = "#FF3B30";
-        }
-
-        await exportAndShareCanvas('udhar-receipt-card', `${activeUdharPerson}_Ledger.png`, `Hello ${activeUdharPerson},\nHere is your Credit Ledger summary. Net Balance: ₹${Math.abs(net)}`);
+    if (nameEl) nameEl.textContent = activeUdharPerson;
+    if (rcptStatus) rcptStatus.textContent = tone === 'positive' ? 'You need to pay us:' : (tone === 'negative' ? 'We owe you:' : 'Settled:');
+    if (rcptAmt) {
+        rcptAmt.textContent = creditMoneyCoreV1(net);
+        rcptAmt.style.color = pack.color;
     }
+
+    await exportAndShareCanvas('udhar-receipt-card', `${activeUdharPerson}_Ledger.png`, `Hello ${activeUdharPerson},\nHere is your Credit Ledger summary. Net Balance: ${creditMoneyCoreV1(net)}`);
+}
 
     // ========================== EXPENSES ==========================
     function openExpenseEntryModal() {
