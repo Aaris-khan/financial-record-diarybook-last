@@ -4732,6 +4732,53 @@ function aarishCostScheduleFlushV1(delay, reason) {
         }
     } catch(e) {}
 }
+/* AARISH_BACKEND_FAST_CLOUD_COMMIT_CORE_V4_START
+   Core backend sync bridge:
+   - delete/save still goes through existing outbox
+   - destructive writes get fast cloud flush so other website versions see deletion
+   - no UI/UX, color, layout, animation or render design change
+*/
+var __aarishFastCommitBusyCoreV4 = false;
+async function aarishBackendFastCloudCommitCoreV4(reason, opts) {
+    opts = opts || {};
+    try {
+        if (typeof aarishCostUidV1 !== "function" || !aarishCostUidV1()) return { ok:false, reason:"no_uid" };
+
+        if (typeof aarishCostOnlineV1 === "function" && !aarishCostOnlineV1() && !opts.force) {
+            try { aarishCostScheduleFlushV1(1200, "fast-commit-offline-" + String(reason || "")); } catch(e) {}
+            return { ok:false, offline:true, scheduled:true };
+        }
+
+        if (__aarishFastCommitBusyCoreV4) {
+            try { aarishCostScheduleFlushV1(700, "fast-commit-busy-" + String(reason || "")); } catch(e) {}
+            return { ok:true, busy:true, scheduled:true };
+        }
+
+        __aarishFastCommitBusyCoreV4 = true;
+
+        var delay = Math.max(0, Number(opts.delay == null ? 80 : opts.delay));
+        if (delay) await new Promise(function(resolve) { setTimeout(resolve, delay); });
+
+        if (typeof flushFirebaseWriteOutboxV87 === "function") {
+            var out = await flushFirebaseWriteOutboxV87("fast-commit-" + String(reason || "write"), { force: !!opts.force });
+            try {
+                if (typeof saveCacheNowCostV81 === "function") {
+                    await saveCacheNowCostV81("fast-commit-" + String(reason || "write"));
+                }
+            } catch(e) {}
+            return out || { ok:true };
+        }
+
+        return { ok:false, reason:"flush_missing" };
+    } catch(e) {
+        try { aarishCostScheduleFlushV1(2500, "fast-commit-error"); } catch(_) {}
+        return { ok:false, error:String(e && e.message ? e.message : e) };
+    } finally {
+        __aarishFastCommitBusyCoreV4 = false;
+    }
+}
+/* AARISH_BACKEND_FAST_CLOUD_COMMIT_CORE_V4_END */
+
 async function aarishFirebaseLaterV48(path, action, payload, opts) {
     opts = opts || {};
 
@@ -4739,6 +4786,7 @@ async function aarishFirebaseLaterV48(path, action, payload, opts) {
         var uid = aarishCostUidV1();
         var cleanPath = aarishCostCleanPathV1(path);
         if (!uid) return { queued: false, reason: "no_uid" };
+
         if (!cleanPath) {
             aarishCostToastV1("Invalid sync path blocked safely");
             return { queued: false, reason: "invalid_path" };
@@ -4783,15 +4831,29 @@ async function aarishFirebaseLaterV48(path, action, payload, opts) {
 
         scheduleCacheSaveCostV81("queued-" + item.path);
 
-        var urgent = String(action || "").toLowerCase() === "remove" || String(action || "").toLowerCase() === "delete" || opts.fast;
-        aarishCostScheduleFlushV1(urgent ? 1200 : 35000, urgent ? "urgent" : "idle-batch");
+        var actionLower = String(action || "").toLowerCase();
+        var urgent = actionLower === "remove" || actionLower === "delete" || opts.fast;
 
-        return { queued: true, id: item.id, writes: keys.length, tier: item.__queueTier || "unknown" };
+        aarishCostScheduleFlushV1(urgent ? 220 : 35000, urgent ? "urgent-core-v4" : "idle-batch");
+
+        var fastCommit = null;
+        if (urgent && typeof aarishBackendFastCloudCommitCoreV4 === "function") {
+            fastCommit = await aarishBackendFastCloudCommitCoreV4(actionLower + "-" + cleanPath, { force: false, delay: 60 });
+        }
+
+        return {
+            queued: true,
+            id: item.id,
+            writes: keys.length,
+            tier: item.__queueTier || "unknown",
+            fastCommit: fastCommit
+        };
     } catch(e) {
         aarishCostToastV1("Local sync queue issue!");
         return { queued: false, error: String(e && e.message ? e.message : e) };
     }
 }
+
 
 window.aarishFirebaseLaterV48 = aarishFirebaseLaterV48;
 
@@ -4799,9 +4861,11 @@ async function aarishFirebaseBatchLaterV87(flatPayload, reason) {
     try {
         var uid = aarishCostUidV1();
         var writes = {};
+
         Object.keys(flatPayload || {}).forEach(function(path) {
             var clean = aarishCostCleanPathV1(path);
             if (!clean || clean.indexOf("_syncMeta") === 0) return;
+
             var safeValue = aarishBackendSanitizeFirebaseValueCoreV2(flatPayload[path], clean);
             if (typeof safeValue !== "undefined") writes[clean] = safeValue;
         });
@@ -4823,14 +4887,21 @@ async function aarishFirebaseBatchLaterV87(flatPayload, reason) {
         };
 
         var ok = await aarishCostPutOutboxV1(item);
-        scheduleCacheSaveCostV81("raw-batch-" + String(reason || ""));
-        aarishCostScheduleFlushV1(1000, "raw-batch");
 
-        return { queued: !!ok, items: keys.length };
+        scheduleCacheSaveCostV81("raw-batch-" + String(reason || ""));
+        aarishCostScheduleFlushV1(220, "raw-batch-core-v4");
+
+        var fastCommit = null;
+        if (ok && typeof aarishBackendFastCloudCommitCoreV4 === "function") {
+            fastCommit = await aarishBackendFastCloudCommitCoreV4("raw-batch-" + String(reason || ""), { force: false, delay: 60 });
+        }
+
+        return { queued: !!ok, items: keys.length, fastCommit: fastCommit };
     } catch(e) {
         return { queued: false, error: String(e && e.message ? e.message : e) };
     }
 }
+
 
 window.aarishFirebaseBatchLaterV87 = aarishFirebaseBatchLaterV87;
 
@@ -7200,21 +7271,42 @@ async function shareDiaryBill(id) {
 
     async function exportAndShareCanvas(elementId, fileName, shareText) {
         const receipt = document.getElementById(elementId);
+        if (!receipt) {
+            hideLoader();
+            showToast("Error! Receipt not found.");
+            return;
+        }
+        let canvas = null;
+        const cleanupCanvas = () => { try { if (canvas && canvas.parentNode) canvas.remove(); } catch(e) {} canvas = null; };
         try {
-            const canvas = await html2canvas(receipt, { scale: 2, backgroundColor: '#ffffff' });
+            canvas = await html2canvas(receipt, { scale: 2, backgroundColor: '#ffffff' });
             canvas.toBlob(async (blob) => {
-                const file = new File([blob], fileName, { type: 'image/png' });
-                if (navigator.canShare && navigator.canShare({ files: [file] })) {
+                try {
+                    if (!blob) {
+                        hideLoader();
+                        showToast("Error! Photo generation failed.");
+                        return;
+                    }
+                    const file = new File([blob], fileName, { type: 'image/png' });
+                    if (navigator.canShare && navigator.canShare({ files: [file] })) {
+                        hideLoader();
+                        await navigator.share({ files: [file], title: 'Aarish Dairy Pro', text: shareText });
+                    } else {
+                        const url = URL.createObjectURL(blob);
+                        const a = document.createElement('a');
+                        a.href = url; a.download = fileName; a.click();
+                        setTimeout(() => { try { URL.revokeObjectURL(url); } catch(e) {} }, 1000);
+                        hideLoader(); showToast("Photo downloaded!");
+                    }
+                } catch (innerError) {
                     hideLoader();
-                    await navigator.share({ files: [file], title: 'Aarish Dairy Pro', text: shareText });
-                } else {
-                    const url = URL.createObjectURL(blob);
-                    const a = document.createElement('a');
-                    a.href = url; a.download = fileName; a.click();
-                    hideLoader(); showToast("Photo downloaded!");
+                    showToast("Error! Photo generation failed.");
+                } finally {
+                    cleanupCanvas();
                 }
             });
         } catch (error) {
+            cleanupCanvas();
             hideLoader(); showToast("Error! Photo generation failed.");
         }
     }
@@ -7446,17 +7538,22 @@ function creditTotalsCoreV1() {
     return { receive, pay, net: receive - pay };
 }
 async function creditFirebaseCoreV1(path, action, value, opts) {
+    const hasUid = () => (typeof currentUserUID !== 'undefined' && !!currentUserUID);
+    const noCloud = () => { try { showToast('Cloud sync unavailable. Data saved only locally. Login/refresh karke sync karein.'); } catch (_) {} };
     try {
-        if (typeof currentUserUID === 'undefined' || !currentUserUID) return;
+        if (!hasUid()) { noCloud(); return false; }
         if (window.aarishFirebaseLaterV48) return await window.aarishFirebaseLaterV48(path, action, value, opts || { fast: true });
         if (typeof appDataRef !== 'undefined' && appDataRef) {
             const ref = appDataRef.child(path);
             if (action === 'remove') return await ref.remove();
             return await ref.set(value);
         }
+        noCloud();
+        return false;
     } catch (e) {
         console.error('Credit Firebase core op failed:', e);
         try { showToast('Saved locally. Cloud sync pending.'); } catch (_) {}
+        return false;
     }
 }
 
@@ -8532,21 +8629,27 @@ function businessVarsCoreV1(color, prefix) {
     return `--${prefix}Tone:${p.tone};--${prefix}Tone2:${p.tone2};--${prefix}Tint:${p.tint};--${prefix}Border:${p.border};--${prefix}Glow:${p.glow};--${prefix}Bg1:${p.bg1};`;
 }
 async function businessFirebaseCoreV1(path, action, value, opts) {
+    const hasUid = () => (typeof currentUserUID !== 'undefined' && !!currentUserUID);
+    const noCloud = () => { try { showToast('Cloud sync unavailable. Data saved only locally. Login/refresh karke sync karein.'); } catch (_) {} };
     try {
-        if (typeof currentUserUID === 'undefined' || !currentUserUID) return;
+        if (!hasUid()) { noCloud(); return false; }
         if (window.aarishFirebaseBatchLaterV87 && action === 'batch' && value && typeof value === 'object') {
             return await window.aarishFirebaseBatchLaterV87(value, opts || 'business-batch');
         }
         if (window.aarishFirebaseLaterV48) return await window.aarishFirebaseLaterV48(path, action, value, opts || { fast: true });
         if (typeof aarishFirebaseLaterV48 === 'function') return await aarishFirebaseLaterV48(path, action, value, opts || { fast: true });
         if (typeof appDataRef !== 'undefined' && appDataRef) {
+            if (action === 'batch' && value && typeof value === 'object') return await appDataRef.update(value);
             const ref = appDataRef.child(path);
             if (action === 'remove') return await ref.remove();
             return await ref.set(value);
         }
+        noCloud();
+        return false;
     } catch (e) {
         console.error('Business Firebase core op failed:', e);
         try { showToast('Saved locally. Cloud sync pending.'); } catch (_) {}
+        return false;
     }
 }
 function businessPaintDeleteCoreV1(el) {
@@ -8888,7 +8991,7 @@ async function saveNewProject() {
        
         /* ==================== UNIVERSAL AI LOGIC & API CALL ==================== */
     function handleGeminiIconClick() {
-        if (localStorage.getItem('gemini_user_api_key')) { 
+        if (aarishHasGeminiUserKeyCoreV2()) { 
             document.getElementById('gemini-floating-widget').style.display = 'block';
             toggleGeminiChat(); 
         } else { 
@@ -8907,7 +9010,7 @@ async function saveNewProject() {
         }
         
         localStorage.setItem('user_ai_model', model);
-        localStorage.setItem('gemini_user_api_key', key);
+        aarishSaveGeminiUserKeyCoreV2(key);
         
         closeModal('gemini-key-modal');
         document.getElementById('gemini-floating-widget').style.display = 'block';
@@ -8915,7 +9018,7 @@ async function saveNewProject() {
     }
 
     function changeGeminiKey() {
-        const existingKey = localStorage.getItem('gemini_user_api_key');
+        const existingKey = aarishReadGeminiUserKeyCoreV2();
         const existingModel = localStorage.getItem('user_ai_model');
         if (existingKey) document.getElementById('user-gemini-key').value = existingKey;
         if (existingModel) document.getElementById('user-ai-model').value = existingModel;
@@ -8931,27 +9034,38 @@ async function saveNewProject() {
     // Drag & Click Logic
     const fab = document.getElementById('gemini-draggable-logo');
     let isDragging = false, dragX, dragY, initL, initT, dragTimer;
-    
-    fab.addEventListener('touchstart', (e) => {
-        isDragging = false;
-        dragX = e.touches[0].clientX; dragY = e.touches[0].clientY;
-        const r = fab.getBoundingClientRect(); initL = r.left; initT = r.top;
-        fab.style.right = 'auto'; fab.style.bottom = 'auto';
-        fab.style.left = initL + 'px'; fab.style.top = initT + 'px';
-        dragTimer = setTimeout(() => { isDragging = true; }, 150);
-    }, {passive: false});
+    const fabDragAbort = (typeof AbortController !== 'undefined') ? new AbortController() : null;
+    try { if (window.__aarishGeminiFabDragAbortV2) window.__aarishGeminiFabDragAbortV2.abort(); } catch(e) {}
+    if (fabDragAbort) window.__aarishGeminiFabDragAbortV2 = fabDragAbort;
+    const fabTouchOptions = fabDragAbort ? {passive: false, signal: fabDragAbort.signal} : {passive: false};
+    const fabEndOptions = fabDragAbort ? {signal: fabDragAbort.signal} : false;
 
-    fab.addEventListener('touchmove', (e) => {
-        if (!isDragging) return; e.preventDefault();
-        fab.style.left = (initL + (e.touches[0].clientX - dragX)) + 'px';
-        fab.style.top = (initT + (e.touches[0].clientY - dragY)) + 'px';
-    }, {passive: false});
+    if (fab) {
+        fab.addEventListener('touchstart', (e) => {
+            isDragging = false;
+            dragX = e.touches[0].clientX; dragY = e.touches[0].clientY;
+            const r = fab.getBoundingClientRect(); initL = r.left; initT = r.top;
+            fab.style.right = 'auto'; fab.style.bottom = 'auto';
+            fab.style.left = initL + 'px'; fab.style.top = initT + 'px';
+            dragTimer = setTimeout(() => { isDragging = true; }, 150);
+        }, fabTouchOptions);
 
-    fab.addEventListener('touchend', (e) => {
-        clearTimeout(dragTimer);
-        if (!isDragging) { haptic(); toggleGeminiChat(); }
-        isDragging = false;
-    });
+        fab.addEventListener('touchmove', (e) => {
+            if (!isDragging) return; e.preventDefault();
+            fab.style.left = (initL + (e.touches[0].clientX - dragX)) + 'px';
+            fab.style.top = (initT + (e.touches[0].clientY - dragY)) + 'px';
+        }, fabTouchOptions);
+
+        fab.addEventListener('touchend', (e) => {
+            clearTimeout(dragTimer);
+            if (!isDragging) { haptic(); toggleGeminiChat(); }
+            isDragging = false;
+        }, fabEndOptions);
+    }
+
+    window.addEventListener('beforeunload', function() {
+        try { if (fabDragAbort) fabDragAbort.abort(); } catch(e) {}
+    }, { once: true });
 
     // === UNIVERSAL AI ROUTER LOGIC (PURE GEMINI FUTURE-PROOF) ===
 
@@ -8959,39 +9073,138 @@ async function saveNewProject() {
     window.aiPendingChunks = []; 
     window.isAiPaginating = false; 
     window.aiChatMemory = []; 
+    window.__aarishAiInFlightV2 = false;
+
+    function aarishAiPlainTextForMemoryV2(value) {
+        try {
+            let s = String(value == null ? '' : value)
+                .replace(/<br\s*\/?>/gi, '\n')
+                .replace(/<[^>]*>/g, '');
+            if (typeof document !== 'undefined') {
+                const t = document.createElement('textarea');
+                t.innerHTML = s;
+                s = t.value;
+            }
+            return s.replace(/\n{3,}/g, '\n\n').trim().slice(0, 8000);
+        } catch(e) {
+            return String(value == null ? '' : value).replace(/<[^>]*>/g, '').trim().slice(0, 8000);
+        }
+    }
+    function aarishB64EncodeCoreV2(value) {
+        try { return btoa(unescape(encodeURIComponent(String(value || '')))); }
+        catch(e) { try { return btoa(String(value || '')); } catch(_) { return String(value || ''); } }
+    }
+    function aarishB64DecodeCoreV2(value) {
+        try { return decodeURIComponent(escape(atob(String(value || '')))); }
+        catch(e) { try { return atob(String(value || '')); } catch(_) { return String(value || ''); } }
+    }
+    function aarishSaveGeminiUserKeyCoreV2(key) {
+        try { localStorage.setItem('gemini_user_api_key', 'b64:' + aarishB64EncodeCoreV2(key)); } catch(e) {}
+    }
+    function aarishReadGeminiUserKeyCoreV2() {
+        const raw = localStorage.getItem('gemini_user_api_key') || '';
+        if (!raw) return '';
+        return raw.indexOf('b64:') === 0 ? aarishB64DecodeCoreV2(raw.slice(4)) : raw;
+    }
+    function aarishHasGeminiUserKeyCoreV2() {
+        return !!aarishReadGeminiUserKeyCoreV2();
+    }
+    function aarishSafeGeminiModelCoreV2(model) {
+        const m = String(model || 'gemini-1.5-flash').trim();
+        return /^[A-Za-z0-9._:-]+$/.test(m) ? m : 'gemini-1.5-flash';
+    }
+    function aarishRemoveFailedAiTurnFromMemoryV2(userText) {
+        try {
+            if (!Array.isArray(window.aiChatMemory)) return;
+            for (let i = window.aiChatMemory.length - 1; i >= 0; i--) {
+                const msg = window.aiChatMemory[i];
+                const t = msg && msg.parts && msg.parts[0] ? String(msg.parts[0].text || '') : '';
+                if (msg && msg.role === 'user' && t === String(userText || '')) {
+                    window.aiChatMemory.splice(i, 1);
+                    break;
+                }
+            }
+        } catch(e) {}
+    }
+    function aarishAiSanitizeUrlProtocolsV2(root) {
+        try {
+            if (!root || !root.querySelectorAll) return;
+            root.querySelectorAll('[href],[src]').forEach(function(node) {
+                ['href','src'].forEach(function(attr) {
+                    const v = node.getAttribute(attr);
+                    if (!v) return;
+                    const clean = String(v).trim().replace(/[\u0000-\u001F\u007F\s]+/g, '').toLowerCase();
+                    if (/^(javascript:|vbscript:|data:text\/html)/i.test(clean)) node.setAttribute(attr, '#');
+                });
+            });
+        } catch(e) {}
+    }
+    function aarishAiEscapeCoreV2(value, maxLen) {
+        const raw = String(value == null ? '' : value).slice(0, maxLen || 12000);
+        if (typeof aarishBackendEscapeHtmlCoreV2 === 'function') return aarishBackendEscapeHtmlCoreV2(raw, maxLen || 12000);
+        return raw.replace(/[&<>"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
+    }
+    function aarishAiFetchWithTimeoutV2(url, options, timeoutMs) {
+        const ms = Math.max(8000, Number(timeoutMs || 45000));
+        if (typeof AbortController === 'undefined') return fetch(url, options);
+        const controller = new AbortController();
+        const timer = setTimeout(function(){ try { controller.abort(); } catch(e) {} }, ms);
+        const next = Object.assign({}, options || {}, { signal: controller.signal });
+        return fetch(url, next).finally(function(){ clearTimeout(timer); });
+    }
 
     // 2. Typing Indicator (Chat Animation)
     function toggleTypingIndicator(show) {
-        const body = document.getElementById('gemini-chat-body');
-        if (show) {
-            const d = document.createElement('div');
-            d.id = 'ai-typing-indicator';
-            d.className = `chat-msg chat-ai`;
-            d.innerHTML = `<span style="opacity:0.6;"><i class="fa-solid fa-circle-notch fa-spin"></i> Data analyze kar raha hoon...</span>`;
-            body.appendChild(d);
-            body.scrollTop = body.scrollHeight;
-        } else {
-            const el = document.getElementById('ai-typing-indicator');
-            if (el) el.remove();
+        try {
+            const body = document.getElementById('gemini-chat-body');
+            if (window.__aarishAiTypingSafetyTimerV2) {
+                clearTimeout(window.__aarishAiTypingSafetyTimerV2);
+                window.__aarishAiTypingSafetyTimerV2 = null;
+            }
+            if (show) {
+                if (!body) return;
+                const old = document.getElementById('ai-typing-indicator');
+                if (old) old.remove();
+                const d = document.createElement('div');
+                d.id = 'ai-typing-indicator';
+                d.className = `chat-msg chat-ai`;
+                d.setAttribute('data-created-at', String(Date.now()));
+                d.innerHTML = `<span style="opacity:0.6;"><i class="fa-solid fa-circle-notch fa-spin"></i> Data analyze kar raha hoon...</span>`;
+                body.appendChild(d);
+                body.scrollTop = body.scrollHeight;
+                window.__aarishAiTypingSafetyTimerV2 = setTimeout(function() {
+                    try { const stale = document.getElementById('ai-typing-indicator'); if (stale) stale.remove(); } catch(e) {}
+                    window.__aarishAiInFlightV2 = false;
+                    window.__aarishAiTypingSafetyTimerV2 = null;
+                    try { const icon = document.getElementById('gemini-fab-icon'); if (icon) icon.classList.remove('gemini-spinning'); } catch(e) {}
+                }, 45000);
+            } else {
+                const el = document.getElementById('ai-typing-indicator');
+                if (el) el.remove();
+            }
+        } catch(e) {
+            try { const el = document.getElementById('ai-typing-indicator'); if (el) el.remove(); } catch(_) {}
+            window.__aarishAiInFlightV2 = false;
         }
     }
 
     // 3. Smart Data Filter Engine (Month/Date/Year Detection)
     function getSmartFilteredContext(query) {
-        const q = query.toLowerCase();
+        const q = String(query || '').toLowerCase();
         const currentYear = new Date().getFullYear();
-        
-        // Agar aage ka data chahiye (Proceed Logic)
+
         if ((q.includes('proceed') || q.includes('aage') || q.includes('next')) && window.aiPendingChunks.length > 0) {
             const nextChunk = window.aiPendingChunks.shift();
             if (window.aiPendingChunks.length === 0) window.isAiPaginating = false;
             return { data: JSON.stringify(nextChunk), isProceed: true, hasMore: window.aiPendingChunks.length > 0 };
         }
 
+        window.aiPendingChunks = [];
+        window.isAiPaginating = false;
+
         let filterCondition = null;
         let isYearlySplit = false;
 
-        // Date, Year, Month Pehchan-ne ka logic
         const exactDateMatch = q.match(/\b(20\d{2}-\d{2}-\d{2})\b/);
         const yearMatch = q.match(/\b(20\d{2})\b/);
         const targetYear = yearMatch ? parseInt(yearMatch[1]) : currentYear;
@@ -9002,13 +9215,12 @@ async function saveNewProject() {
             6: /july|jul\b/, 7: /august|aug\b/, 8: /september|sep\b/,
             9: /october|oct\b/, 10: /november|nov\b/, 11: /december|dec\b/
         };
-        
+
         let targetMonths = [];
         for (let m in monthMap) {
             if (monthMap[m].test(q)) targetMonths.push(parseInt(m));
         }
 
-        // Conditions
         if (exactDateMatch) {
             const targetDate = exactDateMatch[1];
             filterCondition = (dateStr) => dateStr === targetDate;
@@ -9016,32 +9228,29 @@ async function saveNewProject() {
             filterCondition = (dateStr) => {
                 if (!dateStr) return false;
                 const d = new Date(dateStr);
-                return targetMonths.includes(d.getMonth()) && d.getFullYear() === targetYear;
+                return !isNaN(d.getTime()) && targetMonths.includes(d.getMonth()) && d.getFullYear() === targetYear;
             };
         } else if (yearMatch || q.includes('saal') || q.includes('year')) {
             isYearlySplit = true;
-            // First Chunk: Jan to Jun
             filterCondition = (dateStr) => {
                 if (!dateStr) return false;
                 const d = new Date(dateStr);
-                return d.getFullYear() === targetYear && d.getMonth() <= 5;
+                return !isNaN(d.getTime()) && d.getFullYear() === targetYear && d.getMonth() <= 5;
             };
-            // Second Chunk: Jul to Dec (Save for later)
             const filterConditionPart2 = (dateStr) => {
                 if (!dateStr) return false;
                 const d = new Date(dateStr);
-                return d.getFullYear() === targetYear && d.getMonth() > 5;
+                return !isNaN(d.getTime()) && d.getFullYear() === targetYear && d.getMonth() > 5;
             };
-            const chunk2 = applyFilterToDBs(filterConditionPart2);
-            window.aiPendingChunks = [chunk2];
+            window.aiPendingChunks = [applyFilterToDBs(filterConditionPart2)];
             window.isAiPaginating = true;
         } else {
-            // Default 30 days
             const thirtyDaysAgo = new Date();
             thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
             filterCondition = (dateStr) => {
                 if (!dateStr) return false;
-                return new Date(dateStr) >= thirtyDaysAgo;
+                const d = new Date(dateStr);
+                return !isNaN(d.getTime()) && d >= thirtyDaysAgo;
             };
         }
 
@@ -9052,138 +9261,150 @@ async function saveNewProject() {
     // 4. Safe Database Extractor (Crash Preventer)
     function applyFilterToDBs(condition) {
         const minifiedDB = {};
+        const safeCondition = (dateStr) => {
+            try { return !!condition(dateStr); } catch(e) { return false; }
+        };
 
         const safeMilkDB = typeof milkDB !== 'undefined' ? milkDB : {};
         const filteredMilk = {};
-        Object.keys(safeMilkDB).forEach(n => {
-            const recs = (safeMilkDB[n]?.records || []).filter(r => condition(r.date));
-            if (recs.length > 0) filteredMilk[n] = { rate: safeMilkDB[n].rate, type: safeMilkDB[n].type, records: recs };
+        Object.keys(safeMilkDB || {}).forEach(n => {
+            const parent = (safeMilkDB[n] && typeof safeMilkDB[n] === 'object') ? safeMilkDB[n] : {};
+            const recs = (parent.records || []).filter(r => r && safeCondition(r.date));
+            if (recs.length > 0) filteredMilk[n] = { rate: parent.rate, type: parent.type, records: recs };
         });
         if (Object.keys(filteredMilk).length > 0) minifiedDB.milk = filteredMilk;
 
         const safeUdharDB = typeof udharDB !== 'undefined' ? udharDB : [];
-        const filteredUdhar = safeUdharDB.filter(u => condition(u.date));
+        const filteredUdhar = (Array.isArray(safeUdharDB) ? safeUdharDB : Object.keys(safeUdharDB || {}).map(k => safeUdharDB[k])).filter(u => u && safeCondition(u.date));
         if (filteredUdhar.length > 0) minifiedDB.udhar = filteredUdhar;
 
         const safeExpenseDB = typeof expenseDB !== 'undefined' ? expenseDB : [];
-        const filteredExp = safeExpenseDB.filter(e => condition(e.date));
+        const filteredExp = (Array.isArray(safeExpenseDB) ? safeExpenseDB : Object.keys(safeExpenseDB || {}).map(k => safeExpenseDB[k])).filter(e => e && safeCondition(e.date));
         if (filteredExp.length > 0) minifiedDB.expenses = filteredExp;
 
         const safeDiaryDB = typeof diaryDB !== 'undefined' ? diaryDB : [];
-        const filteredDiary = safeDiaryDB.filter(d => condition(d.date));
+        const filteredDiary = (Array.isArray(safeDiaryDB) ? safeDiaryDB : Object.keys(safeDiaryDB || {}).map(k => safeDiaryDB[k])).filter(d => d && safeCondition(d.date));
         if (filteredDiary.length > 0) minifiedDB.diary = filteredDiary;
 
         const safeSalaryDB = typeof salaryDB !== 'undefined' ? salaryDB : {};
         const filteredSalary = {};
-        Object.keys(safeSalaryDB).forEach(n => {
-            const recs = (safeSalaryDB[n]?.records || []).filter(r => condition(r.date));
-            if (recs.length > 0) filteredSalary[n] = { company: safeSalaryDB[n].company, records: recs };
+        Object.keys(safeSalaryDB || {}).forEach(n => {
+            const parent = (safeSalaryDB[n] && typeof safeSalaryDB[n] === 'object') ? safeSalaryDB[n] : {};
+            const recs = (parent.records || []).filter(r => r && safeCondition(r.date));
+            if (recs.length > 0) filteredSalary[n] = Object.assign({}, parent, { records: recs });
         });
         if (Object.keys(filteredSalary).length > 0) minifiedDB.salary = filteredSalary;
 
         const safeProjectDB = typeof projectDB !== 'undefined' ? projectDB : {};
         const filteredProject = {};
-        Object.keys(safeProjectDB).forEach(n => {
-            const recs = (safeProjectDB[n]?.records || []).filter(r => condition(r.date));
-            if (recs.length > 0) filteredProject[n] = { records: recs };
+        Object.keys(safeProjectDB || {}).forEach(n => {
+            const parent = (safeProjectDB[n] && typeof safeProjectDB[n] === 'object') ? safeProjectDB[n] : {};
+            const recs = (parent.records || []).filter(r => r && safeCondition(r.date));
+            if (recs.length > 0) filteredProject[n] = Object.assign({}, parent, { records: recs });
         });
         if (Object.keys(filteredProject).length > 0) minifiedDB.project = filteredProject;
 
+        if (Object.keys(minifiedDB).length === 0) {
+            return { no_data_found: true, message: 'Selected filter ke liye matching app data nahi mila. User ko clearly batao ki data empty hai aur calculation possible nahi hai.' };
+        }
         return minifiedDB;
     }
 
     // 5. Ultimate Gemini API Caller (Future Proof & Memory Managed)
     async function sendToGemini() {
-        // BUG FIX: Stop Spam Clicks
-        if(document.getElementById('ai-typing-indicator')) return;
+        if (window.__aarishAiInFlightV2) return;
 
         const inputEl = document.getElementById('gemini-input');
-        const query = inputEl.value.trim();
+        const query = inputEl ? inputEl.value.trim() : '';
         if(!query) return;
 
-        addMsgToAI(query, 'user');
-        inputEl.value = '';
-        
-        const fabStar = document.getElementById('gemini-fab-icon');
-        fabStar.classList.add('gemini-spinning'); 
-        toggleTypingIndicator(true); 
+        const oldTyping = document.getElementById('ai-typing-indicator');
+        if (oldTyping) {
+            const createdAt = Number(oldTyping.getAttribute('data-created-at') || 0);
+            if (createdAt && Date.now() - createdAt <= 45000) return;
+            oldTyping.remove();
+        }
 
-        const apiKey = localStorage.getItem('gemini_user_api_key');
-        // Any new Gemini model typed by user will work automatically
-        let modelName = localStorage.getItem('user_ai_model') || 'gemini-1.5-flash'; 
+        window.__aarishAiInFlightV2 = true;
+        addMsgToAI(query, 'user');
+        if (inputEl) inputEl.value = '';
+
+        const fabStar = document.getElementById('gemini-fab-icon');
+        try { if (fabStar) fabStar.classList.add('gemini-spinning'); } catch(e) {}
+        toggleTypingIndicator(true);
+
+        const apiKey = aarishReadGeminiUserKeyCoreV2();
+        let modelName = aarishSafeGeminiModelCoreV2(localStorage.getItem('user_ai_model') || 'gemini-1.5-flash');
 
         if(!apiKey) {
-            fabStar.classList.remove('gemini-spinning');
+            try { if (fabStar) fabStar.classList.remove('gemini-spinning'); } catch(e) {}
             toggleTypingIndicator(false);
+            window.__aarishAiInFlightV2 = false;
             return addMsgToAI("⚠️ API Key missing hai. Key icon par click karein aur activate karein.", 'ai');
         }
 
-        // Memory Management: Save user query
         window.aiChatMemory.push({ role: "user", parts: [{ text: query }] });
-        
-        // BUG FIX: Splicing correctly (User + Model pairs)
-        if (window.aiChatMemory.length > 6) {
-            window.aiChatMemory.splice(0, 2); 
-        }
+        if (window.aiChatMemory.length > 6) window.aiChatMemory.splice(0, 2);
 
         const contextObj = getSmartFilteredContext(query);
-        
         let systemPrompt = `You are a helpful AI assistant for Aarish Dairy App. Analyze this exact user data carefully: ${contextObj.data}. Calculate exactly based on JSON. Reply in Hinglish, clearly and concisely. You remember the conversation context.`;
-
         if (contextObj.isProceed) systemPrompt += `\nNote: This is PART 2 of the previous yearly data.`;
         else if (contextObj.isYearlySplit) systemPrompt += `\nNote: This is ONLY PART 1. Tell user to type 'proceed' for the rest.`;
 
-        const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/${modelName}:generateContent?key=${apiKey}`;
+        const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(modelName)}:generateContent?key=${encodeURIComponent(apiKey)}`;
 
         try {
-            let res = await fetch(apiUrl, {
+            let res = await aarishAiFetchWithTimeoutV2(apiUrl, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
                     systemInstruction: { parts: [{ text: systemPrompt }] },
-                    contents: window.aiChatMemory 
+                    contents: window.aiChatMemory
                 })
-            });
+            }, 45000);
 
-            let data = await res.json();
+            let data = {};
+            try { data = await res.json(); } catch(parseErr) { throw new Error('API JSON parse failed'); }
+            const errMsg = data && data.error ? String(data.error.message || '') : '';
 
-            // Smart Fallback for older/newer Gemini format shifts
-            if (data.error && (data.error.code === 400 || data.error.message.includes('systemInstruction'))) {
+            if (data.error && (data.error.code === 400 || errMsg.includes('systemInstruction'))) {
                 const legacyHistory = window.aiChatMemory.map(msg => `${msg.role.toUpperCase()}: ${msg.parts[0].text}`).join("\n");
-                res = await fetch(apiUrl, {
+                res = await aarishAiFetchWithTimeoutV2(apiUrl, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
                         contents: [{ parts: [{ text: systemPrompt + "\n\nConversation History:\n" + legacyHistory }] }]
                     })
-                });
-                data = await res.json();
+                }, 45000);
+                try { data = await res.json(); } catch(parseErr2) { throw new Error('API JSON parse failed'); }
             }
 
-            if (data.error) throw new Error(data.error.message);
+            if (data.error) throw new Error(data.error.message || 'Gemini API error');
 
-            let finalReply = data.candidates[0].content.parts[0].text;
-            
+            const firstCandidate = data && Array.isArray(data.candidates) ? data.candidates[0] : null;
+            const candidateText = firstCandidate && firstCandidate.content && Array.isArray(firstCandidate.content.parts) && firstCandidate.content.parts[0] ? firstCandidate.content.parts[0].text : '';
+            if (!candidateText) {
+                const reason = firstCandidate && firstCandidate.finishReason ? ` Gemini status: ${firstCandidate.finishReason}` : '';
+                throw new Error('Gemini ne usable reply nahi diya.' + reason);
+            }
+
+            let finalReply = String(candidateText);
             if (contextObj.isYearlySplit && contextObj.hasMore) {
                 finalReply += `<br><br><span style="color:#007AFF; font-size:12px; font-weight:bold;">💡 AI Hint: Ye Jan-Jun ka data tha. Aage ke liye "proceed" type karein.</span>`;
             }
 
-            toggleTypingIndicator(false);
             addMsgToAI(finalReply, 'ai');
-
-            // Memory Management: Save AI reply
-            window.aiChatMemory.push({ role: "model", parts: [{ text: finalReply }] });
-
+            window.aiChatMemory.push({ role: "model", parts: [{ text: aarishAiPlainTextForMemoryV2(finalReply) }] });
+            if (window.aiChatMemory.length > 6) window.aiChatMemory.splice(0, 2);
         } catch(e) {
             console.error("AI Error:", e);
+            addMsgToAI(`<b>Technical Error:</b> API response issue. Detail: ${e && e.message ? e.message : e}`, 'ai');
+            aarishRemoveFailedAiTurnFromMemoryV2(query);
+        } finally {
             toggleTypingIndicator(false);
-            addMsgToAI(`<b>Technical Error:</b> API response issue. Detail: ${e.message}`, 'ai');
-            
-            // Revert corrupt memory
-            window.aiChatMemory.pop();
+            try { if (fabStar) fabStar.classList.remove('gemini-spinning'); } catch(e) {}
+            window.__aarishAiInFlightV2 = false;
         }
-        
-        fabStar.classList.remove('gemini-spinning');
     }
 
     function addMsgToAI(text, sender) {
@@ -9192,18 +9413,19 @@ async function saveNewProject() {
     const d = document.createElement('div');
     d.className = `chat-msg chat-${sender === 'user' ? 'user' : 'ai'}`;
 
-    const safe = (typeof aarishBackendEscapeHtmlCoreV2 === 'function')
-        ? aarishBackendEscapeHtmlCoreV2(text, 12000)
-        : String(text == null ? '' : text).replace(/[&<>"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
+    const escaped = aarishAiEscapeCoreV2(text, 12000);
+    d.innerHTML = escaped
+        .replace(/\*\*([^<]{1,300}?)\*\*/g, '<b>$1</b>')
+        .replace(/\n/g, '<br>');
 
-    d.innerHTML = safe.replace(/\*\*(.*?)\*\*/g, '<b>$1</b>').replace(/\n/g, '<br>');
+    aarishAiSanitizeUrlProtocolsV2(d);
     body.appendChild(d);
     body.scrollTop = body.scrollHeight;
 }
 
     // Auto-show logo if key exists on app reload
     document.addEventListener('DOMContentLoaded', () => {
-        if(localStorage.getItem('gemini_user_api_key')) {
+        if(aarishHasGeminiUserKeyCoreV2()) {
             document.getElementById('gemini-floating-widget').style.display = 'block';
         }
     });
@@ -9230,7 +9452,12 @@ async function saveNewProject() {
         
         const swCode = `self.addEventListener('fetch', function(e) {});`;
         const swBlob = new Blob([swCode], {type: 'application/javascript'});
-        navigator.serviceWorker.register(URL.createObjectURL(swBlob));
+        try {
+            if ('serviceWorker' in navigator && window.URL && typeof URL.createObjectURL === 'function') {
+                const swURL = URL.createObjectURL(swBlob);
+                navigator.serviceWorker.register(swURL).catch(function(){});
+            }
+        } catch(e) {}
     };
 </script>
 
