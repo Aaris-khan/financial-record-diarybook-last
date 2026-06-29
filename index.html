@@ -3293,6 +3293,9 @@ button[data-business-entry-core] {
 
     
 <script>
+/* AARISH_BACKEND_TITANIUM_CORE_V11_START */
+window.__AARISH_BACKEND_TITANIUM_CORE_V11 = true;
+/* AARISH_BACKEND_TITANIUM_CORE_V11_END */
     // ========================== HAPTICS & THEME ==========================
     function haptic() { if (navigator.vibrate) navigator.vibrate(45); }
 
@@ -3431,6 +3434,64 @@ button[data-business-entry-core] {
         d.setMinutes(d.getMinutes() - d.getTimezoneOffset());
         return d.toISOString().split('T')[0];
     };
+
+    window.aarishV98DateParts = window.aarishV98DateParts || function(value) {
+        try {
+            if (value instanceof Date) {
+                if (isNaN(value.getTime())) return null;
+                return {
+                    year: value.getFullYear(),
+                    month: value.getMonth(),
+                    day: value.getDate(),
+                    iso: value.getFullYear() + '-' + String(value.getMonth() + 1).padStart(2, '0') + '-' + String(value.getDate()).padStart(2, '0')
+                };
+            }
+    
+            var s = String(value == null ? '' : value).trim();
+            if (!s) return null;
+    
+            var m = s.match(/^(\d{4})-(\d{1,2})-(\d{1,2})(?:[T\s].*)?$/);
+            if (!m) m = s.match(/^(\d{1,2})[\/\-](\d{1,2})[\/\-](\d{4})$/);
+    
+            var y, mo, d;
+            if (m && m[1] && m[1].length === 4) {
+                y = Number(m[1]); mo = Number(m[2]); d = Number(m[3]);
+            } else if (m) {
+                d = Number(m[1]); mo = Number(m[2]); y = Number(m[3]);
+            } else {
+                var parsed = new Date(s);
+                if (isNaN(parsed.getTime())) return null;
+                y = parsed.getFullYear();
+                mo = parsed.getMonth() + 1;
+                d = parsed.getDate();
+            }
+    
+            if (!Number.isFinite(y) || !Number.isFinite(mo) || !Number.isFinite(d)) return null;
+            if (y < 2000 || y > 2100 || mo < 1 || mo > 12 || d < 1 || d > 31) return null;
+    
+            return {
+                year: y,
+                month: mo - 1,
+                day: d,
+                iso: String(y).padStart(4, '0') + '-' + String(mo).padStart(2, '0') + '-' + String(d).padStart(2, '0')
+            };
+        } catch(e) {
+            return null;
+        }
+    };
+    window.aarishV98Id = window.aarishV98Id || function(prefix) {
+        prefix = String(prefix || 'id').replace(/[^A-Za-z0-9_-]/g, '').slice(0, 16) || 'id';
+        var rnd = '';
+        try {
+            if (window.crypto && crypto.getRandomValues) {
+                var a = new Uint32Array(2);
+                crypto.getRandomValues(a);
+                rnd = Array.from(a).map(function(n) { return n.toString(36); }).join('');
+            }
+        } catch(e) {}
+        if (!rnd) rnd = Math.random().toString(36).slice(2, 12);
+        return prefix + '_' + Date.now().toString(36) + '_' + rnd;
+    };
     
     const formatDisplayDate = (iso) => iso ? new Date(iso).toLocaleDateString('en-IN', {day:'numeric', month:'short'}) : '—';
 
@@ -3502,9 +3563,8 @@ button[data-business-entry-core] {
     function filterByMonth(records) {
         if (!Array.isArray(records)) return [];
         return records.filter(r => {
-            if (!r?.date) return false;
-            const d = new Date(r.date);
-            return !isNaN(d) && d.getMonth() === selectedMonth && d.getFullYear() === selectedYear;
+            const p = window.aarishV98DateParts ? window.aarishV98DateParts(r && r.date) : null;
+            return !!p && p.month === selectedMonth && p.year === selectedYear;
         });
     }
 
@@ -3531,7 +3591,11 @@ button[data-business-entry-core] {
         auth.onAuthStateChanged((user) => {
             if (user) {
                 aarishBackendRememberUidCoreV2(user.uid);
-                currentUserUID = user.uid;
+                const __oldAiUidCoreV4 = String(currentUserUID || '');
+                const __newAiUidCoreV4 = String(user.uid || '');
+                if (!__oldAiUidCoreV4 || __oldAiUidCoreV4 !== __newAiUidCoreV4) aarishResetAiSessionCoreV4(__oldAiUidCoreV4 ? 'uid-change' : 'first-login');
+                currentUserUID = user.uid; /* AARISH_AUTH_AI_UID_RESET_CORE_V4 */
+                try { if (typeof aarishAiLoadLocalMemoryCoreV10 === 'function') aarishAiLoadLocalMemoryCoreV10('auth-login'); } catch(e) {}
                 document.getElementById('login-screen').style.display = 'none';
                 document.getElementById('main-app').classList.remove('hidden');
                 loadUserData();
@@ -3579,24 +3643,40 @@ button[data-business-entry-core] {
 
     function logout() {
     if (confirm('Are you sure you want to logout?')) {
-        auth.signOut().then(() => {
-            try { if (typeof aarishCostClearRuntimeTimersCoreV7 === "function") aarishCostClearRuntimeTimersCoreV7(); } catch(e) {}
-            if (appDataRef) appDataRef.off();
+        const logoutUid = (typeof aarishCostUidV1 === 'function') ? aarishCostUidV1() : String(currentUserUID || '');
+        auth.signOut().then(async () => {
+            try { await aarishCostPurgeLocalSessionCoreV9(logoutUid); } catch(e) {}
             aarishBackendClearUidCoreV2();
-            window.__aarishLoadUserDataTokenCoreV3 = "logout::" + Date.now();
+            window.__aarishLoadUserDataTokenCoreV3 = 'logout::' + Date.now();
             currentUserUID = null;
-
-            try {
-                if (__aarishCostDbCoreV1 && __aarishCostDbCoreV1.close) __aarishCostDbCoreV1.close();
-            } catch(e) {}
-            __aarishCostDbCoreV1 = null;
-            __aarishCostDbOpenPromiseCoreV6 = null;
+            appDataRef = null;
 
             milkDB = {}; udharDB = []; expenseDB = []; salaryDB = {}; diaryDB = []; projectDB = {};
+
+            activeMilkCustomer = null;
+            activeSalaryPerson = null;
+            activeExpenseCategory = null;
+            activeUdharPerson = null;
+            activeDiaryIndex = null;
+            activeProject = null;
+
+            window.aiChatMemory = [];
+            window.aiPendingChunks = [];
+            window.isAiPaginating = false;
+            window.__aarishAiInFlightV2 = false;
+
+            try { sessionStorage.removeItem('gemini_user_api_key_session'); } catch(e) {}
+            try { localStorage.removeItem('gemini_user_api_key'); } catch(e) {}
+            try { localStorage.removeItem('user_ai_model'); } catch(e) {}
+            try { const body = document.getElementById('gemini-chat-body'); if (body) body.innerHTML = ''; } catch(e) {}
+            try { const widget = document.getElementById('gemini-floating-widget'); if (widget) widget.style.display = 'none'; } catch(e) {}
 
             document.getElementById('main-app').classList.add('hidden');
             document.getElementById('login-screen').style.display = 'flex';
             showToast('Logout success');
+        }).catch((e) => {
+            hideLoader();
+            showToast((e && e.message) ? e.message : 'Logout failed');
         });
     }
 }
@@ -3609,6 +3689,7 @@ button[data-business-entry-core] {
 
          
 // AARISH_BACKEND_ACK_VERIFY_RAW_DIRECT_CORE_V4\n// ========================== AARISH_FIREBASE_COST_CORE_V1_START ==========================
+// AARISH_BACKEND_SURGICAL_CORE_V5
 // Single-owner low-cost Firebase core.
 // Big-file logic merged safely:
 // - V81 cache-first full read shield
@@ -3617,6 +3698,68 @@ button[data-business-entry-core] {
 // No renderer wrapper, no overlay, no repaint loop, no new script tag.
 window.__AARISH_FIREBASE_COST_CORE_V1 = true;
 window.__aarishFirebaseCostRevV81 = window.__aarishFirebaseCostRevV81 || 0;
+/* AARISH_BACKEND_CANONICAL_ID_SOCKET_CORE_V8_START */
+var __aarishCostSocketIdleTimerCoreV8 = null;
+
+function aarishBackendCanonicalListCoreV8(v) {
+    try {
+        if (Array.isArray(v)) {
+            return v.map(function(item, idx) {
+                if (item && typeof item === "object") {
+                    if (item.id === undefined || item.id === null || item.id === "") item.id = String(idx);
+                    if (item.key === undefined || item.key === null || item.key === "") item.key = String(item.id);
+                }
+                return item;
+            }).filter(Boolean);
+        }
+        if (v && typeof v === "object") {
+            return Object.keys(v).map(function(k) {
+                var item = v[k];
+                if (item && typeof item === "object") {
+                    if (item.id === undefined || item.id === null || item.id === "") item.id = String(k);
+                    if (item.key === undefined || item.key === null || item.key === "") item.key = String(k);
+                }
+                return item;
+            }).filter(Boolean);
+        }
+    } catch(e) {}
+    return [];
+}
+
+function aarishCostNextRevCoreV8() {
+    var prev = Number(window.__aarishFirebaseCostRevV81 || 0);
+    return Math.max(Date.now(), Number.isFinite(prev) ? prev + 1 : 0);
+}
+
+function aarishCostSealMegaCoreV8(mega) {
+    mega = mega && typeof mega === "object" ? mega : {};
+    var rev = aarishCostNextRevCoreV8();
+    aarishCostPutCoalescedV1(mega, "_syncMeta/rev", rev);
+    aarishCostPutCoalescedV1(mega, "_syncMeta/mode", "AARISH_FIREBASE_COST_CORE_V1");
+    aarishCostPutCoalescedV1(mega, "_syncMeta/updatedAt", aarishCostServerTimeV1());
+    return rev;
+}
+
+function aarishCostManageSocketCoreV8(forceOnline, reason) {
+    try {
+        if (typeof firebase === "undefined" || !firebase || typeof firebase.database !== "function") return;
+        if (forceOnline) {
+            clearTimeout(__aarishCostSocketIdleTimerCoreV8);
+            __aarishCostSocketIdleTimerCoreV8 = null;
+            firebase.database().goOnline();
+            return;
+        }
+        clearTimeout(__aarishCostSocketIdleTimerCoreV8);
+        __aarishCostSocketIdleTimerCoreV8 = setTimeout(function() {
+            __aarishCostSocketIdleTimerCoreV8 = null;
+            try {
+                if (__aarishCostFlushBusyV1 || window.__aarishCostPullBusyCoreV3) return;
+                firebase.database().goOffline();
+            } catch(e) {}
+        }, 5000);
+    } catch(e) {}
+}
+/* AARISH_BACKEND_CANONICAL_ID_SOCKET_CORE_V8_END */
 
 var __aarishCostDbCoreV1 = null;
 var __aarishCostFlushTimerV1 = null;
@@ -3689,7 +3832,8 @@ function aarishCostClearRuntimeTimersCoreV7() {
         "__aarishCacheSaveTimerV81",
         "__aarishCostOnlineTimerCoreV7",
         "__aarishCostFocusTimerCoreV7",
-        "__aarishCostVisibleTimerCoreV7"
+        "__aarishCostVisibleTimerCoreV7",
+        "__aarishCostSocketIdleTimerCoreV8"
     ].forEach(function(k) {
         try {
             if (window[k]) clearTimeout(window[k]);
@@ -3698,6 +3842,9 @@ function aarishCostClearRuntimeTimersCoreV7() {
     });
     try { __aarishCostFlushBusyV1 = false; } catch(e) {}
     try { __aarishFastCommitBusyCoreV4 = false; } catch(e) {}
+    try {
+        if (typeof firebase !== "undefined" && firebase && typeof firebase.database === "function") firebase.database().goOffline();
+    } catch(e) {}
 }
 
 function aarishCostSafeLocalPullAllowedCoreV7(label) {
@@ -3756,7 +3903,24 @@ function aarishCostTimeoutCoreV4(label, ms) {
     });
 }
 
+/* AARISH_AI_FIREBASE_LOCAL_ONLY_COST_CORE_V10_START */
+function aarishCostIsLocalOnlyPathCoreV10(path) {
+    try {
+        var p = String(path == null ? '' : path)
+            .replace(/^\/+/, '')
+            .replace(/\/+/g, '/')
+            .replace(/\/+$/, '');
+        if (!p) return false;
+        var first = String(p.split('/')[0] || '').trim();
+        return /^(aiChatMemory|aiPendingChunks|isAiPaginating|geminiChat|geminiMessages|geminiHistory|chatGPTMemory|llmChat|aiHub|_ai|gemini_user_api_key|user_ai_model|user_gemini_key)$/i.test(first);
+    } catch(e) { return false; }
+}
+/* AARISH_AI_FIREBASE_LOCAL_ONLY_COST_CORE_V10_END */
+
 function aarishBackendSanitizeFirebaseValueCoreV2(value, path, depth, seen) {
+    path = String(path || '');
+    if (typeof aarishCostIsLocalOnlyPathCoreV10 === 'function' && aarishCostIsLocalOnlyPathCoreV10(path)) return undefined;
+
     depth = Number(depth || 0);
     if (depth > 18) return null;
     if (value === null) return null;
@@ -3781,7 +3945,9 @@ function aarishBackendSanitizeFirebaseValueCoreV2(value, path, depth, seen) {
         var arr = [];
         for (var i = 0; i < value.length && i < 20000; i++) {
             if (!Object.prototype.hasOwnProperty.call(value, i)) continue;
-            var av = aarishBackendSanitizeFirebaseValueCoreV2(value[i], String(path || "") + "/" + i, depth + 1, seen);
+            var childPath = path ? (path + "/" + i) : String(i);
+            if (typeof aarishCostIsLocalOnlyPathCoreV10 === 'function' && aarishCostIsLocalOnlyPathCoreV10(childPath)) continue;
+            var av = aarishBackendSanitizeFirebaseValueCoreV2(value[i], childPath, depth + 1, seen);
             if (typeof av !== "undefined") arr.push(av);
         }
         seen.pop();
@@ -3790,13 +3956,15 @@ function aarishBackendSanitizeFirebaseValueCoreV2(value, path, depth, seen) {
 
     var out = {};
     Object.keys(value || {}).slice(0, 5000).forEach(function(k) {
+        var childPath = path ? (path + "/" + k) : String(k);
+        if (typeof aarishCostIsLocalOnlyPathCoreV10 === 'function' && aarishCostIsLocalOnlyPathCoreV10(childPath)) return;
         if (k === ".sv") {
-            var sv = aarishBackendSanitizeFirebaseValueCoreV2(value[k], String(path || "") + "/" + k, depth + 1, seen);
+            var sv = aarishBackendSanitizeFirebaseValueCoreV2(value[k], childPath, depth + 1, seen);
             if (typeof sv !== "undefined") out[k] = sv;
             return;
         }
         if (aarishBackendBadKeyCoreV2(k)) return;
-        var child = aarishBackendSanitizeFirebaseValueCoreV2(value[k], String(path || "") + "/" + k, depth + 1, seen);
+        var child = aarishBackendSanitizeFirebaseValueCoreV2(value[k], childPath, depth + 1, seen);
         if (typeof child !== "undefined") out[k] = child;
     });
     seen.pop();
@@ -3804,31 +3972,23 @@ function aarishBackendSanitizeFirebaseValueCoreV2(value, path, depth, seen) {
 }
 
 function aarishBackendArrayFromObjectCoreV2(v) {
-    try {
-        if (Array.isArray(v)) return v.filter(Boolean);
-        if (v && typeof v === "object") return Object.keys(v).map(function(k) {
-            var item = v[k];
-            if (item && typeof item === "object" && !item.id) item.id = k;
-            return item;
-        }).filter(Boolean);
-    } catch(e) {}
-    return [];
+    return aarishBackendCanonicalListCoreV8(v);
 }
 
 function aarishBackendNormalizeArraysCoreV2() {
     try {
-        if (typeof udharDB !== "undefined" && !Array.isArray(udharDB)) udharDB = aarishBackendArrayFromObjectCoreV2(udharDB);
-        if (typeof expenseDB !== "undefined" && !Array.isArray(expenseDB)) expenseDB = aarishBackendArrayFromObjectCoreV2(expenseDB);
-        if (typeof diaryDB !== "undefined" && !Array.isArray(diaryDB)) diaryDB = aarishBackendArrayFromObjectCoreV2(diaryDB);
+        if (typeof udharDB !== "undefined") udharDB = aarishBackendCanonicalListCoreV8(udharDB);
+        if (typeof expenseDB !== "undefined") expenseDB = aarishBackendCanonicalListCoreV8(expenseDB);
+        if (typeof diaryDB !== "undefined") diaryDB = aarishBackendCanonicalListCoreV8(diaryDB);
 
         if (typeof milkDB === "object" && milkDB) {
-            Object.keys(milkDB).forEach(function(k) { if (milkDB[k]) milkDB[k].records = aarishBackendArrayFromObjectCoreV2(milkDB[k].records); });
+            Object.keys(milkDB).forEach(function(k) { if (milkDB[k]) milkDB[k].records = aarishBackendCanonicalListCoreV8(milkDB[k].records); });
         }
         if (typeof salaryDB === "object" && salaryDB) {
-            Object.keys(salaryDB).forEach(function(k) { if (salaryDB[k]) salaryDB[k].records = aarishBackendArrayFromObjectCoreV2(salaryDB[k].records); });
+            Object.keys(salaryDB).forEach(function(k) { if (salaryDB[k]) salaryDB[k].records = aarishBackendCanonicalListCoreV8(salaryDB[k].records); });
         }
         if (typeof projectDB === "object" && projectDB) {
-            Object.keys(projectDB).forEach(function(k) { if (projectDB[k]) projectDB[k].records = aarishBackendArrayFromObjectCoreV2(projectDB[k].records); });
+            Object.keys(projectDB).forEach(function(k) { if (projectDB[k]) projectDB[k].records = aarishBackendCanonicalListCoreV8(projectDB[k].records); });
         }
     } catch(e) {}
 }
@@ -3851,6 +4011,103 @@ function aarishBackendCachedUidCoreV2() {
 
 function aarishBackendClearUidCoreV2() {
     try { localStorage.removeItem("aarish_cached_uid_v92"); } catch(e) {}
+}
+
+function aarishCostPurgeLocalSessionCoreV9(uidArg) {
+    var uid = String(uidArg || '');
+    try { if (!uid && typeof aarishCostUidV1 === 'function') uid = String(aarishCostUidV1() || ''); } catch(e) {}
+
+    try { if (typeof aarishCostClearRuntimeTimersCoreV7 === 'function') aarishCostClearRuntimeTimersCoreV7(); } catch(e) {}
+    try { if (typeof appDataRef !== 'undefined' && appDataRef) appDataRef.off(); } catch(e) {}
+    try { if (__aarishCostDbCoreV1 && __aarishCostDbCoreV1.close) __aarishCostDbCoreV1.close(); } catch(e) {}
+
+    __aarishCostDbCoreV1 = null;
+    __aarishCostDbOpenPromiseCoreV6 = null;
+    __aarishCostIdbDisabledUntilCoreV6 = Date.now() + 45000;
+    window.__aarishCostLastOutboxReadTimedOutV4 = false;
+    window.__aarishCostPullBusyCoreV3 = false;
+    window.__aarishCostVolatileOutboxCoreV3 = [];
+    window.__aarishCostCloudAckPendingCoreV4 = {};
+    window.__aarishFirebaseCostRevV81 = 0;
+    window.__aarishCacheLoadedWithoutServerRevV81 = false;
+    __aarishCostCacheLastStableJsonCoreV6 = '';
+    __aarishCostCacheSaveQueuedCoreV6 = false;
+    __aarishCostCacheSaveBusyCoreV6 = false;
+    __aarishCostFlushBusyV1 = false;
+    __aarishFastCommitBusyCoreV4 = false;
+
+    try {
+        var keys = ['aarish_cached_uid_v92'];
+        if (uid) {
+            keys.push(
+                'AARISH_APPDATA_CACHE_V81::' + uid,
+                'AARISH_OUTBOX_FALLBACK_V83::' + uid,
+                'AARISH_SYNC_LOCK_V87::' + uid,
+                'IDB_FALLBACK_AARISH_APPDATA_CACHE_V81::' + uid
+            );
+        }
+
+        for (var i = 0; i < localStorage.length; i++) {
+            var k = localStorage.key(i);
+            if (!k || !uid) continue;
+            if ((k.indexOf('::' + uid) !== -1 || k.indexOf(uid) !== -1) && /^(AARISH_APPDATA_CACHE_V81|AARISH_OUTBOX_FALLBACK_V83|AARISH_SYNC_LOCK_V87|IDB_FALLBACK_AARISH_APPDATA_CACHE_V81)/.test(k)) {
+                keys.push(k);
+            }
+        }
+
+        Array.from(new Set(keys)).forEach(function(k) { try { localStorage.removeItem(k); } catch(e) {} });
+    } catch(e) {}
+
+    return new Promise(function(resolve) {
+        var dbName = 'AARISH_FIREBASE_CACHE_DB_V81';
+        var done = false;
+        var timer = null;
+        function finish() {
+            if (done) return;
+            done = true;
+            try { if (timer) clearTimeout(timer); } catch(e) {}
+            resolve(true);
+        }
+        function deleteDb() {
+            try {
+                var del = indexedDB.deleteDatabase(dbName);
+                del.onsuccess = finish;
+                del.onerror = finish;
+                del.onblocked = finish;
+            } catch(e) { finish(); }
+        }
+
+        try {
+            if (!window.indexedDB) return finish();
+            timer = setTimeout(finish, 3600);
+
+            var openReq = indexedDB.open(dbName);
+            openReq.onsuccess = function() {
+                var db = openReq.result;
+                try {
+                    var stores = [];
+                    if (db.objectStoreNames && db.objectStoreNames.contains('kv')) stores.push('kv');
+                    if (db.objectStoreNames && db.objectStoreNames.contains('sync_queue')) stores.push('sync_queue');
+                    if (!stores.length) {
+                        try { db.close(); } catch(e) {}
+                        return deleteDb();
+                    }
+                    var tx = db.transaction(stores, 'readwrite');
+                    stores.forEach(function(storeName) {
+                        try { tx.objectStore(storeName).clear(); } catch(e) {}
+                    });
+                    tx.oncomplete = function() { try { db.close(); } catch(e) {} deleteDb(); };
+                    tx.onerror = function() { try { db.close(); } catch(e) {} deleteDb(); };
+                    tx.onabort = function() { try { db.close(); } catch(e) {} deleteDb(); };
+                } catch(e) {
+                    try { db.close(); } catch(_) {}
+                    deleteDb();
+                }
+            };
+            openReq.onerror = deleteDb;
+            openReq.onblocked = deleteDb;
+        } catch(e) { finish(); }
+    });
 }
 
 function aarishBackendActionGuardCoreV2(key, ms) {
@@ -4134,8 +4391,8 @@ async function aarishCostKvGetV1(key) {
             var req = tx.objectStore("kv").get(key);
 
             req.onsuccess = function() {
-                var v = typeof req.result === "undefined" ? null : req.result;
-                finish(v || fallbackRead());
+                if (typeof req.result === "undefined") return finish(fallbackRead());
+                finish(req.result);
             };
             req.onerror = function() { finish(fallbackRead()); };
             tx.onerror = function() { finish(fallbackRead()); };
@@ -4178,19 +4435,7 @@ async function aarishCostKvSetV1(key, value) {
 }
 
 function aarishCostSafeLoadV1(dbData) {
-    if (!dbData) return [];
-    try {
-        if (Array.isArray(dbData)) return dbData.filter(Boolean);
-        return Object.entries(dbData)
-            .filter(function(pair) { return pair[1] !== null && typeof pair[1] === "object"; })
-            .map(function(pair) {
-                var key = pair[0];
-                var val = pair[1] || {};
-                return Object.assign({}, val, { id: val.id || key });
-            });
-    } catch(e) {
-        return [];
-    }
+    return aarishBackendCanonicalListCoreV8(dbData);
 }
 
 function aarishCostSafeGroupV1(obj) {
@@ -4237,9 +4482,9 @@ function aarishCostGetStateV1() {
         milkDB: milkDB || {},
         salaryDB: salaryDB || {},
         projectDB: projectDB || {},
-        udharDB: Array.isArray(udharDB) ? udharDB : aarishBackendArrayFromObjectCoreV2(udharDB),
-        expenseDB: Array.isArray(expenseDB) ? expenseDB : aarishBackendArrayFromObjectCoreV2(expenseDB),
-        diaryDB: Array.isArray(diaryDB) ? diaryDB : aarishBackendArrayFromObjectCoreV2(diaryDB)
+        udharDB: aarishBackendCanonicalListCoreV8(udharDB),
+        expenseDB: aarishBackendCanonicalListCoreV8(expenseDB),
+        diaryDB: aarishBackendCanonicalListCoreV8(diaryDB)
     };
     return aarishBackendSanitizeFirebaseValueCoreV2(state, "appData") || state;
 }
@@ -4341,12 +4586,7 @@ function aarishCostSameUidCoreV3(uid) {
 }
 
 function aarishCostArrayByIdCoreV3(v) {
-    try {
-        if (Array.isArray(v)) return v.filter(Boolean);
-        return aarishBackendArrayFromObjectCoreV2(v);
-    } catch(e) {
-        return [];
-    }
+    return aarishBackendCanonicalListCoreV8(v);
 }
 
 function aarishCostUpsertArrayItemCoreV3(arr, id, value) {
@@ -4380,13 +4620,23 @@ function aarishCostUpsertRecordItemCoreV3(records, id, value) {
 
 function aarishCostDeleteDeepCoreV3(obj, parts) {
     try {
+        if (!obj || typeof obj !== "object" || Array.isArray(obj)) return false;
+        if (!Array.isArray(parts) || !parts.length) return false;
+
         var cur = obj;
         for (var i = 0; i < parts.length - 1; i++) {
-            if (!cur || typeof cur !== "object") return;
+            if (cur === null || typeof cur !== "object" || Array.isArray(cur)) return false;
             cur = cur[parts[i]];
         }
-        if (cur && typeof cur === "object") delete cur[parts[parts.length - 1]];
-    } catch(e) {}
+
+        if (cur === null || typeof cur !== "object" || Array.isArray(cur)) return false;
+
+        var key = parts[parts.length - 1];
+        if (!Object.prototype.hasOwnProperty.call(cur, key)) return true;
+        return delete cur[key];
+    } catch(e) {
+        return false;
+    }
 }
 
 function aarishCostApplyLocalWriteCoreV3(state, path, value) {
@@ -4658,12 +4908,7 @@ function aarishCostPickBatchV3(items) {
     for (var i = 0; i < source.length && out.length < maxItems; i++) {
         var candidate = aarishCostCloneMegaCoreV5(mega);
         aarishCostApplyItemToMegaCoreV6(candidate, source[i]);
-
-        var prev = Number(window.__aarishFirebaseCostRevV81 || 0);
-        var rev = Math.max(Date.now(), Number.isFinite(prev) ? prev + 1 : 0);
-        aarishCostPutCoalescedV1(candidate, "_syncMeta/rev", rev);
-        aarishCostPutCoalescedV1(candidate, "_syncMeta/mode", "AARISH_FIREBASE_COST_CORE_V1");
-        aarishCostPutCoalescedV1(candidate, "_syncMeta/updatedAt", aarishCostServerTimeV1());
+        aarishCostSealMegaCoreV8(candidate);
 
         var size = aarishCostJsonBytesV3(candidate);
         if (out.length && size > maxBytes) break;
@@ -4862,36 +5107,84 @@ async function aarishCostDeleteOutboxV1(ids, uidArg, opts) {
         if (db && db.objectStoreNames && db.objectStoreNames.contains("sync_queue")) {
             idbChecked = true;
 
-            idbOk = !!(await aarishCostStoreOpV1("readwrite", function(st) {
-                ids.forEach(function(id) { try { st.delete(id); } catch(e) {} });
-                return true;
-            }));
+            idbOk = await new Promise(function(resolve) {
+                var timerRef = { t: null };
+                var finish = aarishCostFinishOnceCoreV6(resolve, timerRef);
+
+                timerRef.t = setTimeout(function() {
+                    aarishCostMarkIdbUnhealthyCoreV6(9000);
+                    finish(false);
+                }, 5500);
+
+                try {
+                    var tx = db.transaction("sync_queue", "readwrite");
+                    var st = tx.objectStore("sync_queue");
+                    ids.forEach(function(id) { try { st.delete(id); } catch(e) {} });
+                    tx.oncomplete = function() { finish(true); };
+                    tx.onerror = function() { finish(false); };
+                    tx.onabort = function() { finish(false); };
+                } catch(e) {
+                    aarishCostMarkIdbUnhealthyCoreV6(9000);
+                    finish(false);
+                }
+            });
 
             if (idbOk && opts.requireIdb) {
-                var hits = await aarishCostStoreOpV1("readonly", function(st) {
+                remainingIds = await new Promise(function(resolve) {
+                    var timerRef = { t: null };
+                    var doneCount = 0;
                     var found = [];
+                    var finish = aarishCostFinishOnceCoreV6(resolve, timerRef);
 
-                    ids.forEach(function(id) {
-                        try {
-                            var req = st.get(id);
-                            req.onsuccess = function() { if (req.result) found.push(id); };
-                            req.onerror = function() { found.push(id); };
-                        } catch(e) {
-                            found.push(id);
-                        }
-                    });
+                    timerRef.t = setTimeout(function() {
+                        aarishCostMarkIdbUnhealthyCoreV6(9000);
+                        finish(ids.slice());
+                    }, 5500);
 
-                    return found;
+                    function tick() {
+                        doneCount++;
+                        if (doneCount >= ids.length) finish(found);
+                    }
+
+                    try {
+                        var tx = db.transaction("sync_queue", "readonly");
+                        var st = tx.objectStore("sync_queue");
+
+                        ids.forEach(function(id) {
+                            try {
+                                var req = st.get(id);
+                                req.onsuccess = function() {
+                                    if (req.result) found.push(id);
+                                    tick();
+                                };
+                                req.onerror = function() {
+                                    found.push(id);
+                                    tick();
+                                };
+                            } catch(e) {
+                                found.push(id);
+                                tick();
+                            }
+                        });
+
+                        tx.onerror = function() { finish(ids.slice()); };
+                        tx.onabort = function() { finish(ids.slice()); };
+                    } catch(e) {
+                        aarishCostMarkIdbUnhealthyCoreV6(9000);
+                        finish(ids.slice());
+                    }
                 });
 
-                remainingIds = Array.isArray(hits) ? hits.filter(Boolean) : [];
+                remainingIds = Array.isArray(remainingIds) ? remainingIds.filter(Boolean) : ids.slice();
                 if (remainingIds.length) idbOk = false;
             }
         } else if (opts.requireIdb) {
             idbOk = false;
+            remainingIds = ids.slice();
         }
     } catch(e) {
         idbOk = !opts.requireIdb;
+        if (opts.requireIdb) remainingIds = ids.slice();
         aarishCostMarkIdbUnhealthyCoreV6(9000);
     }
 
@@ -4924,6 +5217,7 @@ function aarishCostWritesFromActionV1(path, action, payload) {
     action = String(action || "set").toLowerCase();
 
     if (!path) return writes;
+    if (typeof aarishCostIsLocalOnlyPathCoreV10 === 'function' && aarishCostIsLocalOnlyPathCoreV10(path)) return writes;
 
     if (action === "remove" || action === "delete") {
         writes[path] = null;
@@ -4934,6 +5228,7 @@ function aarishCostWritesFromActionV1(path, action, payload) {
         Object.keys(payload).forEach(function(k) {
             var childPath = aarishCostCleanPathV1(path + "/" + k);
             if (!childPath || childPath.indexOf("_syncMeta") === 0) return;
+            if (typeof aarishCostIsLocalOnlyPathCoreV10 === 'function' && aarishCostIsLocalOnlyPathCoreV10(childPath)) return;
             var safeChild = aarishBackendSanitizeFirebaseValueCoreV2(payload[k], childPath);
             if (typeof safeChild !== "undefined") writes[childPath] = safeChild;
         });
@@ -4958,6 +5253,7 @@ function aarishCostSetDeepV1(obj, parts, value) {
 function aarishCostPutCoalescedV1(mega, path, value) {
     path = aarishCostCleanPathV1(path);
     if (!path) return;
+    if (typeof aarishCostIsLocalOnlyPathCoreV10 === 'function' && aarishCostIsLocalOnlyPathCoreV10(path)) return;
 
     var parts = path.split("/").filter(Boolean);
 
@@ -4999,12 +5295,7 @@ function aarishCostBuildMegaV1(items) {
             });
         });
 
-    var prev = Number(window.__aarishFirebaseCostRevV81 || 0);
-    var rev = Math.max(Date.now(), Number.isFinite(prev) ? prev + 1 : 0);
-    aarishCostPutCoalescedV1(mega, "_syncMeta/rev", rev);
-    aarishCostPutCoalescedV1(mega, "_syncMeta/mode", "AARISH_FIREBASE_COST_CORE_V1");
-    aarishCostPutCoalescedV1(mega, "_syncMeta/updatedAt", aarishCostServerTimeV1());
-
+    aarishCostSealMegaCoreV8(mega);
     return mega;
 }
 
@@ -5111,11 +5402,16 @@ async function aarishFirebaseLaterV48(path, action, payload, opts) {
             var directRef = aarishCostOnlineV1() ? aarishCostAppRefV1() : null;
             if (directRef && aarishCostSameUidCoreV3(uid)) {
                 var directMega = aarishCostBuildMegaV1([item]);
-                await aarishCostWithTimeoutCoreV5(
-                    directRef.update(directMega),
-                    "firebase-direct-update",
-                    18000
-                );
+                try { aarishCostManageSocketCoreV8(true, "direct-" + cleanPath); } catch(e) {}
+                try {
+                    await aarishCostWithTimeoutCoreV5(
+                        directRef.update(directMega),
+                        "firebase-direct-update",
+                        18000
+                    );
+                } finally {
+                    try { aarishCostManageSocketCoreV8(false, "direct-" + cleanPath); } catch(e) {}
+                }
                 window.__aarishFirebaseCostRevV81 = Number(directMega["_syncMeta/rev"] || Date.now());
                 await saveCacheNowCostV81("direct-" + cleanPath);
                 return { queued: false, direct: true, writes: keys.length };
@@ -5163,6 +5459,7 @@ async function aarishFirebaseBatchLaterV87(flatPayload, reason) {
         Object.keys(flatPayload || {}).forEach(function(path) {
             var clean = aarishCostCleanPathV1(path);
             if (!clean || clean.indexOf("_syncMeta") === 0) return;
+            if (typeof aarishCostIsLocalOnlyPathCoreV10 === 'function' && aarishCostIsLocalOnlyPathCoreV10(clean)) return;
 
             var safeValue = aarishBackendSanitizeFirebaseValueCoreV2(flatPayload[path], clean);
             if (typeof safeValue !== "undefined") writes[clean] = safeValue;
@@ -5191,11 +5488,16 @@ async function aarishFirebaseBatchLaterV87(flatPayload, reason) {
 
             if (directRef && aarishCostSameUidCoreV3(uid)) {
                 var directMega = aarishCostBuildMegaV1([item]);
-                await aarishCostWithTimeoutCoreV5(
-                    directRef.update(directMega),
-                    "firebase-raw-direct-update",
-                    18000
-                );
+                try { aarishCostManageSocketCoreV8(true, "raw-direct-" + String(reason || "")); } catch(e) {}
+                try {
+                    await aarishCostWithTimeoutCoreV5(
+                        directRef.update(directMega),
+                        "firebase-raw-direct-update",
+                        18000
+                    );
+                } finally {
+                    try { aarishCostManageSocketCoreV8(false, "raw-direct-" + String(reason || "")); } catch(e) {}
+                }
 
                 window.__aarishFirebaseCostRevV81 = Number(directMega["_syncMeta/rev"] || Date.now());
                 await saveCacheNowCostV81("direct-raw-batch-" + String(reason || ""));
@@ -5301,6 +5603,7 @@ async function flushFirebaseWriteOutboxV87(reason, opts) {
     }
 
     __aarishCostFlushBusyV1 = true;
+    try { aarishCostManageSocketCoreV8(true, "flush-" + String(reason || "")); } catch(e) {}
 
     try {
         if (!aarishCostSameUidCoreV3(uid)) return { ok:false, reason:"uid_changed_before_read" };
@@ -5340,11 +5643,12 @@ async function flushFirebaseWriteOutboxV87(reason, opts) {
         var mega = picked.mega;
         var ids = batch.map(function(x) { return x.id; });
         var requiresIdbAck = batch.some(function(x) { return x && x.__queueTier === "idb"; });
-        var rev = Number(mega && mega["_syncMeta/rev"] || Date.now());
+        var rev = 0;
 
         if (!batch.length || !Object.keys(mega || {}).length) return { ok:true, empty:true };
         if (!aarishCostSameUidCoreV3(uid)) return { ok:false, reason:"uid_changed_before_update" };
 
+        rev = aarishCostSealMegaCoreV8(mega);
         await aarishCostWithTimeoutCoreV5(ref.update(mega), "firebase-update", 18000);
 
         if (!aarishCostSameUidCoreV3(uid)) return { ok:false, reason:"uid_changed_after_update" };
@@ -5385,6 +5689,7 @@ async function flushFirebaseWriteOutboxV87(reason, opts) {
         return { ok: false, error: String(e && e.message ? e.message : e) };
     } finally {
         __aarishCostFlushBusyV1 = false;
+        try { aarishCostManageSocketCoreV8(false, "flush-finally-" + String(reason || "")); } catch(e) {}
         try { release(); } catch(e) {}
     }
 }
@@ -5409,14 +5714,16 @@ async function fullFirebaseSyncCostV81(reason) {
     var uid = aarishCostUidV1();
     if (!uid) return false;
 
-    try { if (typeof showLoader === "function") showLoader("ONE-TIME CLOUD SYNC..."); } catch(e) {}
+    try { aarishCostManageSocketCoreV8(true, "full-sync-" + String(reason || "")); } catch(e) {}
+    try { if (typeof showLoader === 'function') showLoader('ONE-TIME CLOUD SYNC...'); } catch(e) {}
 
-    appDataRef = database.ref("users/" + uid + "/appData");
+    try { if (appDataRef && typeof appDataRef.off === 'function') appDataRef.off(); } catch(e) {} /* AARISH_APPDATA_REF_OFF_CORE_V11 */
+    appDataRef = database.ref('users/' + uid + '/appData');
 
     try {
         var snap = await aarishCostWithTimeoutCoreV5(
-            appDataRef.once("value"),
-            "appdata-read",
+            appDataRef.once('value'),
+            'appdata-read',
             9000
         );
 
@@ -5427,9 +5734,10 @@ async function fullFirebaseSyncCostV81(reason) {
         if (!aarishCostSameUidCoreV3(uid)) return false;
 
         if (window.__aarishCostLastOutboxReadTimedOutV4) {
-            try { if (typeof hideLoader === "function") hideLoader(); } catch(_) {}
-            try { aarishCostScheduleFlushV1(4500, "full-sync-outbox-timeout"); } catch(_) {}
-            try { if (typeof showToast === "function") showToast("Local pending sync check slow hai. Data safe rahega; retry ho raha hai."); } catch(_) {}
+            try { if (typeof hideLoader === 'function') hideLoader(); } catch(_) {}
+            try { aarishCostScheduleFlushV1(4500, 'full-sync-outbox-timeout'); } catch(_) {}
+            try { if (typeof showToast === 'function') showToast('Local pending sync check slow hai. Data safe rahega; retry ho raha hai.'); } catch(_) {}
+            try { aarishCostShowAppV1(); } catch(_) {}
             return false;
         }
 
@@ -5438,23 +5746,26 @@ async function fullFirebaseSyncCostV81(reason) {
         aarishCostApplyStateV1(state);
 
         if (pendingBeforeApply && pendingBeforeApply.length) {
-            aarishCostApplyMegaToStateCoreV3(aarishCostBuildMegaV1(pendingBeforeApply), "full-sync-pending-replay");
+            aarishCostApplyMegaToStateCoreV3(aarishCostBuildMegaV1(pendingBeforeApply), 'full-sync-pending-replay');
         }
 
-        var meta = raw && raw._syncMeta && typeof raw._syncMeta === "object" ? raw._syncMeta : {};
+        var meta = raw && raw._syncMeta && typeof raw._syncMeta === 'object' ? raw._syncMeta : {};
         var rev = Number(meta.rev || 0);
         window.__aarishFirebaseCostRevV81 = Number.isFinite(rev) && rev > 0 ? rev : Date.now();
         window.__aarishCacheLoadedWithoutServerRevV81 = false;
 
-        await saveCacheNowCostV81(reason || "full-sync-atomic");
+        await saveCacheNowCostV81(reason || 'full-sync-atomic');
         aarishCostShowAppV1();
 
-        try { aarishCostScheduleFlushV1(900, "after-full-sync"); } catch(e) {}
+        try { aarishCostScheduleFlushV1(900, 'after-full-sync'); } catch(e) {}
         return true;
     } catch(e) {
-        try { if (typeof hideLoader === "function") hideLoader(); } catch(_) {}
-        try { if (typeof showToast === "function") showToast("Cloud sync failed. Cache/offline data safe rahega."); } catch(_) {}
+        try { if (typeof hideLoader === 'function') hideLoader(); } catch(_) {}
+        try { if (typeof showToast === 'function') showToast('Offline mode. Cloud sync failed.'); } catch(_) {}
+        try { aarishCostShowAppV1(); } catch(_) {}
         return false;
+    } finally {
+        try { aarishCostManageSocketCoreV8(false, "full-sync-finally-" + String(reason || "")); } catch(e) {}
     }
 }
 
@@ -5472,6 +5783,7 @@ async function aarishAutoPullCloudIfNewerV87(reason, opts) {
     window.__aarishCostPullBusyCoreV3 = true;
 
     try {
+        try { aarishCostManageSocketCoreV8(true, "pull-" + String(reason || "")); } catch(e) {}
         var uid = aarishCostUidV1();
         var ref = aarishCostAppRefV1();
         if (!uid || !ref || !aarishCostOnlineV1()) return { ok: false, reason: "not-ready" };
@@ -5525,6 +5837,7 @@ async function aarishAutoPullCloudIfNewerV87(reason, opts) {
         return { ok: false, error: String(e && e.message ? e.message : e) };
     } finally {
         window.__aarishCostPullBusyCoreV3 = false;
+        try { aarishCostManageSocketCoreV8(false, "pull-finally-" + String(reason || "")); } catch(e) {}
     }
 }
 
@@ -5594,6 +5907,7 @@ async function loadUserData() {
     window.__aarishLoadUserDataTokenCoreV3 = token;
 
     showLoader("SYNCING DATA...");
+    try { if (appDataRef && typeof appDataRef.off === 'function') appDataRef.off(); } catch(e) {} /* AARISH_APPDATA_REF_OFF_CORE_V11 */
     appDataRef = database.ref("users/" + uid + "/appData");
 
     try {
@@ -5811,28 +6125,51 @@ function updateDashboard() {
 
     filterByMonth(expenseDB).forEach(e => exp += Number(e.amount || 0));
 
-    (udharDB || []).forEach(u => {
-        if (u.type === 'credit') {
-            lenaHai += Number(u.amount);
-            udharOnlyLena += Number(u.amount);
-        } else {
-            denaHai += Number(u.amount);
-            udharOnlyDena += Number(u.amount);
+    const udharNetBalances = {};
+    const creditEntries = (typeof creditEntriesCoreV1 === 'function') ? creditEntriesCoreV1() : aarishSafeListCoreV4(udharDB);
+    creditEntries.forEach(u => {
+        const name = (typeof creditCleanNameCoreV1 === 'function') ? creditCleanNameCoreV1(u && u.name) : String((u && u.name) || '').trim();
+        if (!name) return;
+        let signedAmount = 0;
+        if (typeof creditSignedAmountCoreV1 === 'function') signedAmount = creditSignedAmountCoreV1(u);
+        else {
+            const amt = Number(u && u.amount) || 0;
+            signedAmount = String(u && u.type).toLowerCase() === 'credit' ? amt : -amt;
+        }
+        udharNetBalances[name] = (udharNetBalances[name] || 0) + signedAmount;
+    });
+
+    Object.keys(udharNetBalances).forEach(name => {
+        const net = Math.round((Number(udharNetBalances[name]) || 0) * 100) / 100;
+        if (net > 0) {
+            lenaHai += net;
+            udharOnlyLena += net;
+        } else if (net < 0) {
+            denaHai += Math.abs(net);
+            udharOnlyDena += Math.abs(net);
         }
     });
 
-    Object.values(salaryDB).forEach(s => {
+    Object.values(salaryDB || {}).forEach(s => {
         let monthTotal = 0;
         filterByMonth(s.records || []).forEach(r => monthTotal += Number(r.amount || 0));
         if (s.type === 'lene_wala') rev += monthTotal;
         else exp += monthTotal;
     });
 
-    document.getElementById('dash-lena').textContent = `₹${Math.round(lenaHai).toLocaleString('en-IN')}`;
-    document.getElementById('dash-dena').textContent = `₹${Math.round(denaHai).toLocaleString('en-IN')}`;
-    document.getElementById('dash-expenses').textContent = `₹${Math.round(exp).toLocaleString('en-IN')}`;
-    document.getElementById('dash-profit').textContent = `₹${Math.round(rev - exp).toLocaleString('en-IN')}`;
-    document.getElementById('dash-profit').style.color = (rev - exp) < 0 ? '#FF3B30' : '#34C759';
+    const dashLena = document.getElementById('dash-lena');
+    const dashDena = document.getElementById('dash-dena');
+    const dashExpenses = document.getElementById('dash-expenses');
+    const dashProfit = document.getElementById('dash-profit');
+
+    if (dashLena) dashLena.textContent = `₹${Math.round(lenaHai).toLocaleString('en-IN')}`;
+    if (dashDena) dashDena.textContent = `₹${Math.round(denaHai).toLocaleString('en-IN')}`;
+    if (dashExpenses) dashExpenses.textContent = `₹${Math.round(exp).toLocaleString('en-IN')}`;
+    if (dashProfit) {
+        dashProfit.textContent = `₹${Math.round(rev - exp).toLocaleString('en-IN')}`;
+        dashProfit.style.color = (rev - exp) < 0 ? '#FF3B30' : '#34C759';
+    }
+
     try { aarishDashboardPaintCoreV2(); } catch(e) {}
 
     const udharLenaEl = document.getElementById('udhar-total-lena');
@@ -5842,17 +6179,11 @@ function updateDashboard() {
     if (udharDenaEl) udharDenaEl.textContent = `₹${Math.round(udharOnlyDena).toLocaleString('en-IN')}`;
 
     try { aarishMilkApplyChromeCore(); } catch(e) {}
-
     try { if (typeof updateCreditBookCoreUi === 'function') updateCreditBookCoreUi(); } catch(e) {}
-
     try { if (typeof updateExpenseCoreUi === 'function') updateExpenseCoreUi(); } catch(e) {}
-
     try { if (typeof updateSalaryCoreUi === 'function') updateSalaryCoreUi(); } catch(e) {}
-
     try { if (typeof updateDiaryCoreUi === 'function') updateDiaryCoreUi(); } catch(e) {}
-
     try { if (typeof updateBusinessCoreUi === 'function') updateBusinessCoreUi(); } catch(e) {}
-
     try { if (typeof updatePartyLedgerCoreUi === 'function') updatePartyLedgerCoreUi(); } catch(e) {}
 }
 
@@ -6060,12 +6391,10 @@ function openAllBalances() {
 /* AARISH_DIARY_CORE_ENGINE_V1_START */
 function diaryEntriesCoreV1() {
     try {
-        if (Array.isArray(diaryDB)) return diaryDB.filter(Boolean);
-        if (diaryDB && typeof diaryDB === 'object') return Object.keys(diaryDB).map(k => diaryDB[k]).filter(Boolean);
+        if (typeof diaryDB !== 'undefined') return aarishBackendCanonicalListCoreV8(diaryDB);
     } catch (e) {}
     try {
-        if (Array.isArray(window.diaryDB)) return window.diaryDB.filter(Boolean);
-        if (window.diaryDB && typeof window.diaryDB === 'object') return Object.keys(window.diaryDB).map(k => window.diaryDB[k]).filter(Boolean);
+        return aarishBackendCanonicalListCoreV8(window.diaryDB);
     } catch (e) {}
     return [];
 }
@@ -6100,7 +6429,7 @@ function diaryFindEntryCoreV1(id) {
 }
 async function diaryFirebaseCoreV1(path, action, value, opts) {
     try {
-        if (typeof currentUserUID === 'undefined' || !currentUserUID) return;
+        if (typeof aarishCostUidV1 === 'function' ? !aarishCostUidV1() : (typeof currentUserUID === 'undefined' || !currentUserUID)) return false;
         if (window.aarishFirebaseLaterV48) return await window.aarishFirebaseLaterV48(path, action, value, opts || { fast: true });
         if (typeof aarishFirebaseLaterV48 === 'function') return await aarishFirebaseLaterV48(path, action, value, opts || { fast: true });
         if (typeof appDataRef !== 'undefined' && appDataRef) {
@@ -6233,37 +6562,46 @@ async function saveDiaryEntry() {
     if (!date || !content) return showToast('Please write something!');
 
     const arr = diaryEntriesCoreV1();
+    const previous = arr.map(d => d && typeof d === 'object' ? Object.assign({}, d) : d);
 
-    if (activeDiaryIndex !== null && activeDiaryIndex !== undefined) {
-        const sid = String(activeDiaryIndex);
-        const entry = arr.find(d => String(d && d.id) === sid);
-        if (!entry) return showToast('Diary page not found!');
+    try {
+        if (activeDiaryIndex !== null && activeDiaryIndex !== undefined) {
+            const sid = String(activeDiaryIndex);
+            const entry = arr.find(d => String(d && d.id) === sid);
+            if (!entry) return showToast('Diary page not found!');
 
-        entry.date = date;
-        entry.title = title;
-        entry.content = content;
-        entry.updated = Date.now();
+            entry.date = date;
+            entry.title = title;
+            entry.content = content;
+            entry.updated = Date.now();
 
-        await diaryFirebaseCoreV1(`diaryDB/${entry.id}`, 'set', entry, { fast: true });
-        activeDiaryIndex = entry.id;
-    } else {
-        const uniqueId = (window.aarishV98Id ? window.aarishV98Id('dia') : ('dia_' + Date.now() + '_' + Math.random().toString(36).slice(2, 10)));
-        const entry = { id: uniqueId, date, title, content, updated: Date.now() };
-        arr.unshift(entry);
-        setDiaryDBCoreV1(arr);
+            const result = await diaryFirebaseCoreV1(`diaryDB/${entry.id}`, 'set', entry, { fast: true });
+            await aarishMustPersistCoreV4(result, 'diary-update');
+            activeDiaryIndex = entry.id;
+        } else {
+            const uniqueId = (window.aarishV98Id ? window.aarishV98Id('dia') : ('dia_' + Date.now() + '_' + Math.random().toString(36).slice(2, 10)));
+            const entry = { id: uniqueId, date, title, content, updated: Date.now() };
+            arr.unshift(entry);
+            setDiaryDBCoreV1(arr);
 
-        await diaryFirebaseCoreV1(`diaryDB/${uniqueId}`, 'set', entry, { fast: true });
-        activeDiaryIndex = uniqueId;
+            const result = await diaryFirebaseCoreV1(`diaryDB/${uniqueId}`, 'set', entry, { fast: true });
+            await aarishMustPersistCoreV4(result, 'diary-save');
+            activeDiaryIndex = uniqueId;
+        }
+
+        closeModal('diary-entry-modal');
+        renderDiaryList();
+
+        const detailScreen = document.getElementById('diary-detail-screen');
+        if (detailScreen && detailScreen.classList.contains('active')) openDiaryDetail(activeDiaryIndex);
+
+        updateDiaryCoreUi();
+        showToast('Diary Saved!');
+    } catch(e) {
+        try { setDiaryDBCoreV1(previous); } catch(_) {}
+        try { renderDiaryList(); updateDiaryCoreUi(); } catch(_) {}
+        aarishFailSaveToastCoreV4(e);
     }
-
-    closeModal('diary-entry-modal');
-    renderDiaryList();
-
-    const detailScreen = document.getElementById('diary-detail-screen');
-    if (detailScreen && detailScreen.classList.contains('active')) openDiaryDetail(activeDiaryIndex);
-
-    updateDiaryCoreUi();
-    showToast('Diary Saved!');
 }
 
     
@@ -6338,23 +6676,32 @@ function renderDiaryList() {
 }
 
 
-  async function deleteDiary(id, goBack = false) {
+
+async function deleteDiary(id, goBack = false) {
     const entry = diaryFindEntryCoreV1(id);
     const realId = entry ? entry.id : id;
     if (!realId) return showToast('Diary page not found!');
 
     if (confirm('Delete this page permanently?')) {
-        setDiaryDBCoreV1(diaryEntriesCoreV1().filter(d => String(d && d.id) !== String(realId)));
+        const previous = diaryEntriesCoreV1().slice();
+        try {
+            setDiaryDBCoreV1(previous.filter(d => String(d && d.id) !== String(realId)));
 
-        await diaryFirebaseCoreV1(`diaryDB/${realId}`, 'remove', null, { fast: true });
+            const result = await diaryFirebaseCoreV1(`diaryDB/${realId}`, 'remove', null, { fast: true });
+            await aarishMustPersistCoreV4(result, 'diary-delete');
 
-        if (String(activeDiaryIndex) === String(realId)) activeDiaryIndex = null;
+            if (String(activeDiaryIndex) === String(realId)) activeDiaryIndex = null;
 
-        if (goBack) switchTab('diary');
-        else renderDiaryList();
+            if (goBack) switchTab('diary');
+            else renderDiaryList();
 
-        updateDiaryCoreUi();
-        showToast('Deleted!');
+            updateDiaryCoreUi();
+            showToast('Deleted!');
+        } catch(e) {
+            try { setDiaryDBCoreV1(previous); } catch(_) {}
+            try { renderDiaryList(); updateDiaryCoreUi(); } catch(_) {}
+            aarishFailSaveToastCoreV4(e);
+        }
     }
 }
 
@@ -6381,10 +6728,7 @@ function salaryDBCoreV1() {
 }
 function salaryRecordsCoreV1(person) {
     if (!person) return [];
-    const rec = person.records;
-    if (Array.isArray(rec)) return rec.filter(Boolean);
-    if (rec && typeof rec === 'object') return Object.keys(rec).map(k => rec[k]).filter(Boolean);
-    return [];
+    return aarishBackendCanonicalListCoreV8(person.records);
 }
 function salarySetRecordsCoreV1(person, records) {
     if (person) person.records = Array.isArray(records) ? records.filter(Boolean) : [];
@@ -6488,7 +6832,7 @@ function salaryFormatDateCoreV1(v) {
 }
 async function salaryFirebaseCoreV1(path, action, value, opts) {
     try {
-        if (typeof currentUserUID === 'undefined' || !currentUserUID) return;
+        if (typeof aarishCostUidV1 === 'function' ? !aarishCostUidV1() : (typeof currentUserUID === 'undefined' || !currentUserUID)) return false;
         if (window.aarishFirebaseBatchLaterV87 && action === 'batch' && value && typeof value === 'object') {
             return await window.aarishFirebaseBatchLaterV87(value, opts || 'salary-batch');
         }
@@ -6639,6 +6983,7 @@ function updateSalaryCoreUi() {
     clearTimeout(salaryPressTimer);
 }
 
+
 async function deleteSalaryPersonProfile(name) {
     name = salaryCleanNameCoreV1(name || activeSalaryPerson || '');
     const db = salaryDBCoreV1();
@@ -6653,28 +6998,36 @@ async function deleteSalaryPersonProfile(name) {
 
     try {
         const backup = { version: 'SALARY_CORE_V1', type: 'salary-profile-delete-backup', name, deletedAt: new Date().toISOString(), profile: profileBackup };
-        try { localStorage.setItem('AARISH_SALARY_DELETE_BACKUP_CORE_' + Date.now(), JSON.stringify(backup)); } catch (e) {}
-        await salaryFirebaseCoreV1('salaryDB_DELETE_BACKUP_CORE/' + Date.now(), 'set', backup, { fast: true });
+        try { aarishSaveRollingDeleteBackupCoreV4('salary', backup, 5); } catch (e) {}
+        await aarishSaveCloudDeleteBackupCoreV4('salary', backup);
     } catch (e) {}
 
-    delete salaryDB[name];
+    try {
+        delete salaryDB[name];
 
-    const payload = {};
-    payload[`salaryDB/${name}`] = null;
-    if (window.aarishFirebaseBatchLaterV87) {
-        await salaryFirebaseCoreV1('', 'batch', payload, 'delete-salary-profile-core');
-    } else {
-        await salaryFirebaseCoreV1(`salaryDB/${name}`, 'remove', null, { fast: true });
+        const payload = {};
+        payload[`salaryDB/${name}`] = null;
+        let result;
+        if (window.aarishFirebaseBatchLaterV87) {
+            result = await salaryFirebaseCoreV1('', 'batch', payload, 'delete-salary-profile-core');
+        } else {
+            result = await salaryFirebaseCoreV1(`salaryDB/${name}`, 'remove', null, { fast: true });
+        }
+        await aarishMustPersistCoreV4(result, 'salary-profile-delete');
+
+        if (activeSalaryPerson === name) activeSalaryPerson = null;
+
+        renderSalaryList();
+        updateDashboard();
+        updateSalaryCoreUi();
+
+        try { switchTab('salary'); } catch (e) {}
+        showToast('Salary profile deleted!');
+    } catch(e) {
+        try { salaryDB[name] = profileBackup; } catch(_) {}
+        try { renderSalaryList(); updateDashboard(); updateSalaryCoreUi(); } catch(_) {}
+        aarishFailSaveToastCoreV4(e);
     }
-
-    if (activeSalaryPerson === name) activeSalaryPerson = null;
-
-    renderSalaryList();
-    updateDashboard();
-    updateSalaryCoreUi();
-
-    try { switchTab('salary'); } catch (e) {}
-    showToast('Salary profile deleted!');
 }
 
 
@@ -6791,24 +7144,32 @@ async function deleteSalaryPersonProfile(name) {
     const amt = parseFloat((document.getElementById('salary-entry-amount') || {}).value);
     if (!date || !Number.isFinite(amt) || amt <= 0) return showToast('Enter valid positive amount and date');
 
-    const records = salaryRecordsCoreV1(person);
-    const existingIndex = records.findIndex(r => String(r && r.date) === String(date));
+    const previous = salaryRecordsCoreV1(person).slice();
+    const existingIndex = previous.findIndex(r => String(r && r.date) === String(date));
     if (existingIndex !== -1) return showToast('Salary for this date is already added!');
 
     const uniqueId = (window.aarishV98Id ? window.aarishV98Id('sal') : ('sal_' + Date.now() + '_' + Math.random().toString(36).slice(2, 10)));
     const newEntry = { id: uniqueId, date, amount: amt };
 
-    records.push(newEntry);
-    salarySetRecordsCoreV1(person, records);
+    try {
+        const records = previous.slice();
+        records.push(newEntry);
+        salarySetRecordsCoreV1(person, records);
 
-    await salaryFirebaseCoreV1(`salaryDB/${activeSalaryPerson}/records/${uniqueId}`, 'set', newEntry, { fast: true });
+        const result = await salaryFirebaseCoreV1(`salaryDB/${activeSalaryPerson}/records/${uniqueId}`, 'set', newEntry, { fast: true });
+        await aarishMustPersistCoreV4(result, 'salary-save');
 
-    closeModal('add-salary-entry-modal');
-    renderSalaryList();
-    if (document.getElementById('salary-detail-screen') && document.getElementById('salary-detail-screen').classList.contains('active')) renderSalaryRecords();
-    updateDashboard();
-    updateSalaryCoreUi();
-    showToast('Saved Safely!');
+        closeModal('add-salary-entry-modal');
+        renderSalaryList();
+        if (document.getElementById('salary-detail-screen') && document.getElementById('salary-detail-screen').classList.contains('active')) renderSalaryRecords();
+        updateDashboard();
+        updateSalaryCoreUi();
+        showToast('Saved Safely!');
+    } catch(e) {
+        try { salarySetRecordsCoreV1(person, previous); } catch(_) {}
+        try { renderSalaryList(); updateDashboard(); updateSalaryCoreUi(); } catch(_) {}
+        aarishFailSaveToastCoreV4(e);
+    }
 }
 
 
@@ -6877,22 +7238,31 @@ async function deleteSalaryPersonProfile(name) {
 
 
 
-    async function deleteSalarySingleEntry(id) {
+
+async function deleteSalarySingleEntry(id) {
     if (!id) return;
     if (confirm('Delete this salary entry?')) {
         const db = salaryDBCoreV1();
         const person = db[activeSalaryPerson];
         if (!person) return showToast('Salary profile not found!');
 
-        salarySetRecordsCoreV1(person, salaryRecordsCoreV1(person).filter(r => String(r && r.id) !== String(id)));
+        const previous = salaryRecordsCoreV1(person).slice();
+        try {
+            salarySetRecordsCoreV1(person, previous.filter(r => String(r && r.id) !== String(id)));
 
-        await salaryFirebaseCoreV1(`salaryDB/${activeSalaryPerson}/records/${id}`, 'remove', null, { fast: true });
+            const result = await salaryFirebaseCoreV1(`salaryDB/${activeSalaryPerson}/records/${id}`, 'remove', null, { fast: true });
+            await aarishMustPersistCoreV4(result, 'salary-entry-delete');
 
-        renderSalaryList();
-        if (document.getElementById('salary-detail-screen') && document.getElementById('salary-detail-screen').classList.contains('active')) renderSalaryRecords();
-        updateDashboard();
-        updateSalaryCoreUi();
-        showToast('Entry Deleted!');
+            renderSalaryList();
+            if (document.getElementById('salary-detail-screen') && document.getElementById('salary-detail-screen').classList.contains('active')) renderSalaryRecords();
+            updateDashboard();
+            updateSalaryCoreUi();
+            showToast('Entry Deleted!');
+        } catch(e) {
+            try { salarySetRecordsCoreV1(person, previous); } catch(_) {}
+            try { renderSalaryList(); if (document.getElementById('salary-detail-screen') && document.getElementById('salary-detail-screen').classList.contains('active')) renderSalaryRecords(); updateDashboard(); updateSalaryCoreUi(); } catch(_) {}
+            aarishFailSaveToastCoreV4(e);
+        }
     }
 }
 
@@ -6960,7 +7330,8 @@ async function addMilkCustomer() {
     return false;
 }
 
-    async function deleteMilkCustomerProfile(name) {
+
+async function deleteMilkCustomerProfile(name) {
     const customerName = String(name == null ? '' : name).trim();
 
     if (!customerName || !milkDB || !milkDB[customerName]) {
@@ -6968,31 +7339,39 @@ async function addMilkCustomer() {
     }
 
     if (confirm(`Are you sure you want to permanently delete the customer "${customerName}" and all their records?`)) {
-        delete milkDB[customerName];
+        const previous = (() => { try { return JSON.parse(JSON.stringify(milkDB[customerName])); } catch(e) { return milkDB[customerName]; } })();
+        try {
+            delete milkDB[customerName];
 
-        if (typeof window.aarishFirebaseBatchLaterV87 === 'function') {
-            const payload = {};
-            payload[`milkDB/${customerName}`] = null;
+            let result;
+            if (typeof window.aarishFirebaseBatchLaterV87 === 'function') {
+                const payload = {};
+                payload[`milkDB/${customerName}`] = null;
+                try {
+                    result = await window.aarishFirebaseBatchLaterV87(payload, 'delete-milk-profile');
+                } catch(e) {
+                    result = await aarishMilkFirebaseWriteCore(`milkDB/${customerName}`, 'remove', null, 'delete-milk-profile-batch-fallback');
+                }
+            } else {
+                result = await aarishMilkFirebaseWriteCore(`milkDB/${customerName}`, 'remove', null, 'delete-milk-profile');
+            }
+            await aarishMustPersistCoreV4(result, 'milk-profile-delete');
+
+            if (activeMilkCustomer === customerName) activeMilkCustomer = null;
+
+            renderMilkList();
+            updateDashboard();
 
             try {
-                await window.aarishFirebaseBatchLaterV87(payload, 'delete-milk-profile');
-            } catch(e) {
-                await aarishMilkFirebaseWriteCore(`milkDB/${customerName}`, 'remove', null, 'delete-milk-profile-batch-fallback');
-            }
-        } else {
-            await aarishMilkFirebaseWriteCore(`milkDB/${customerName}`, 'remove', null, 'delete-milk-profile');
+                if (typeof switchTab === 'function') switchTab('milk');
+            } catch(e) {}
+
+            showToast('Customer Deleted!');
+        } catch(e) {
+            try { milkDB[customerName] = previous; } catch(_) {}
+            try { renderMilkList(); updateDashboard(); } catch(_) {}
+            aarishFailSaveToastCoreV4(e);
         }
-
-        if (activeMilkCustomer === customerName) activeMilkCustomer = null;
-
-        renderMilkList();
-        updateDashboard();
-
-        try {
-            if (typeof switchTab === 'function') switchTab('milk');
-        } catch(e) {}
-
-        showToast('Customer Deleted!');
     }
 }
 
@@ -7004,9 +7383,7 @@ function aarishMilkNumCore(v) {
 }
 
 function aarishMilkRecordsCore(v) {
-    if (Array.isArray(v)) return v.filter(Boolean);
-    if (v && typeof v === 'object') return Object.keys(v).map(k => v[k]).filter(Boolean);
-    return [];
+    return aarishBackendCanonicalListCoreV8(v);
 }
 
 
@@ -7504,39 +7881,46 @@ function renderMilkList() {
     const customer = milkDB[activeMilkCustomer];
     const hiddenFlow = document.getElementById('milk-entry-flow')?.value;
     const flow = aarishMilkFlowCore({ flow: flowArg || hiddenFlow || 'given' }, customer);
+    const previous = aarishMilkRecordsCore(customer.records || []).slice();
 
-    if (!customer.records) customer.records = [];
-
-    const existingIndex = aarishMilkRecordsCore(customer.records).findIndex(r => String(r && r.date) === String(date) && aarishMilkFlowCore(r, customer) === flow);
+    const existingIndex = previous.findIndex(r => String(r && r.date) === String(date) && aarishMilkFlowCore(r, customer) === flow);
     if (existingIndex !== -1) return showToast((flow === 'taken' ? 'Taken' : 'Given') + ' milk entry already exists for this date. Delete old one first.');
 
     const uniqueId = (window.aarishV98Id ? window.aarishV98Id('mlk') : ('mlk_' + Date.now() + '_' + Math.random().toString(36).slice(2, 10)));
     const newEntry = { id: uniqueId, date, morning: m, evening: e, flow: flow, type: flow };
 
-    customer.records.push(newEntry);
+    try {
+        customer.records = previous.slice();
+        customer.records.push(newEntry);
 
-    await aarishMilkFirebaseWriteCore(`milkDB/${activeMilkCustomer}/records/${uniqueId}`, 'set', newEntry, 'save-milk-entry');
+        const result = await aarishMilkFirebaseWriteCore(`milkDB/${activeMilkCustomer}/records/${uniqueId}`, 'set', newEntry, 'save-milk-entry');
+        await aarishMustPersistCoreV4(result, 'milk-save');
 
-    closeModal('add-milk-entry-modal');
+        closeModal('add-milk-entry-modal');
 
-    const parts = window.aarishV98DateParts ? window.aarishV98DateParts(date) : null;
-    if (parts) {
-        selectedMonth = parts.month;
-        selectedYear = parts.year;
-    } else {
-        const d = new Date(date);
-        selectedMonth = d.getMonth();
-        selectedYear = d.getFullYear();
+        const parts = window.aarishV98DateParts ? window.aarishV98DateParts(date) : null;
+        if (parts) {
+            selectedMonth = parts.month;
+            selectedYear = parts.year;
+        } else {
+            const d = new Date(date);
+            selectedMonth = d.getMonth();
+            selectedYear = d.getFullYear();
+        }
+
+        if (document.getElementById('filter-month-milk')) document.getElementById('filter-month-milk').value = selectedMonth;
+        if (document.getElementById('filter-year-milk')) document.getElementById('filter-year-milk').value = selectedYear;
+
+        renderMilkRecords();
+        renderMilkList();
+        updateDashboard();
+
+        showToast(flow === 'taken' ? 'Taken milk saved!' : 'Given milk saved!');
+    } catch(err) {
+        try { customer.records = previous; } catch(_) {}
+        try { renderMilkRecords(); renderMilkList(); updateDashboard(); } catch(_) {}
+        aarishFailSaveToastCoreV4(err);
     }
-
-    if (document.getElementById('filter-month-milk')) document.getElementById('filter-month-milk').value = selectedMonth;
-    if (document.getElementById('filter-year-milk')) document.getElementById('filter-year-milk').value = selectedYear;
-
-    renderMilkRecords();
-    renderMilkList();
-    updateDashboard();
-
-    showToast(flow === 'taken' ? 'Taken milk saved!' : 'Given milk saved!');
 }
 
 
@@ -7544,7 +7928,8 @@ function renderMilkList() {
     
 
 
-         async function deleteMilkEntry(id) {
+
+async function deleteMilkEntry(id) {
     if (!activeMilkCustomer || !milkDB || !milkDB[activeMilkCustomer]) return;
 
     if (confirm('Are you sure you want to delete this entry?')) {
@@ -7552,19 +7937,26 @@ function renderMilkList() {
         const oldRecords = aarishMilkRecordsCore(milkDB[activeMilkCustomer].records);
         let firebaseRecordKey = targetId;
 
-        milkDB[activeMilkCustomer].records = oldRecords.filter((r, idx) => {
-            const rid = (r && r.id != null) ? r.id : ((r && r.key != null) ? r.key : idx);
-            const keep = String(rid) !== targetId;
-            if (!keep) firebaseRecordKey = String(rid);
-            return keep;
-        });
+        try {
+            milkDB[activeMilkCustomer].records = oldRecords.filter((r, idx) => {
+                const rid = (r && r.id != null) ? r.id : ((r && r.key != null) ? r.key : idx);
+                const keep = String(rid) !== targetId;
+                if (!keep) firebaseRecordKey = String(rid);
+                return keep;
+            });
 
-        await aarishMilkFirebaseWriteCore(`milkDB/${activeMilkCustomer}/records/${firebaseRecordKey}`, 'remove', null, 'delete-milk-entry');
+            const result = await aarishMilkFirebaseWriteCore(`milkDB/${activeMilkCustomer}/records/${firebaseRecordKey}`, 'remove', null, 'delete-milk-entry');
+            await aarishMustPersistCoreV4(result, 'milk-entry-delete');
 
-        renderMilkRecords();
-        renderMilkList();
-        updateDashboard();
-        showToast('Deleted!');
+            renderMilkRecords();
+            renderMilkList();
+            updateDashboard();
+            showToast('Deleted!');
+        } catch(e) {
+            try { milkDB[activeMilkCustomer].records = oldRecords; } catch(_) {}
+            try { renderMilkRecords(); renderMilkList(); updateDashboard(); } catch(_) {}
+            aarishFailSaveToastCoreV4(e);
+        }
     }
 }
 
@@ -7741,98 +8133,80 @@ async function shareDiaryBill(id) {
 
     // Function that executes the download based on the user's choice
     function executeDownload(type) {
-        const modal = document.getElementById('dynamic-download-modal');
-        if (modal) modal.remove();
-        document.getElementById('main-app').classList.remove('app-scale-down'); // Revert 3D effect
-        
-        let csv = `"AARISH DAIRY PRO - ${type.toUpperCase()} REPORT"\n`;
-        csv += `"Generated On:","${formatDisplayDate(getTodayISO())}"\n\n`;
+    const modal = document.getElementById('dynamic-download-modal');
+    if (modal) modal.remove();
+    document.getElementById('main-app').classList.remove('app-scale-down');
 
-        // 1. MILK EXCEL
-        if (type === 'all' || type === 'milk') {
-            if(type === 'all') csv += `\n"--- MILK RECORDS ---"\n`;
-            csv += `"Customer Type","Name","Date","Morning (KG)","Evening (KG)","Total (KG)","Amount (Rs)"\n`;
-            Object.keys(milkDB).forEach(name => {
-                let label = milkDB[name].type === 'dene_wala' ? 'Buyer (-)' : 'Seller (+)';
-                (milkDB[name].records || []).forEach(r => {
-                    let m = Number(r.morning) || 0; let ev = Number(r.evening) || 0; let t = m + ev;
-                    let amt = t * (milkDB[name].rate || DEFAULT_RATE);
-                    csv += `"${label}","${name}","${formatDisplayDate(r.date)}","${m}","${ev}","${t}","${amt}"\n`;
-                });
-            });
-        }
+    let csv = aarishCsvRowCoreV4([`AARISH DAIRY PRO - ${String(type || '').toUpperCase()} REPORT`]);
+    csv += aarishCsvRowCoreV4(['Generated On:', formatDisplayDate(getTodayISO())]) + '\n';
 
-        // 2. EXPENSE EXCEL
-        if (type === 'all' || type === 'expenses') {
-            if(type === 'all') csv += `\n"--- EXPENSE RECORDS ---"\n`;
-            csv += `"Date","Expense Category","Amount (Rs)"\n`;
-            (expenseDB || []).forEach(e => {
-                csv += `"${formatDisplayDate(e.date)}","${e.category}","${e.amount}"\n`;
+    if (type === 'all' || type === 'milk') {
+        if (type === 'all') csv += '\n' + aarishCsvRowCoreV4(['--- MILK RECORDS ---']);
+        csv += aarishCsvRowCoreV4(['Customer Type','Name','Date','Morning (KG)','Evening (KG)','Total (KG)','Amount (Rs)']);
+        Object.keys(milkDB || {}).forEach(name => {
+            let label = milkDB[name].type === 'dene_wala' ? 'Buyer (-)' : 'Seller (+)';
+            (milkDB[name].records || []).forEach(r => {
+                let m = Number(r.morning) || 0;
+                let ev = Number(r.evening) || 0;
+                let t = m + ev;
+                let amt = t * (milkDB[name].rate || DEFAULT_RATE);
+                csv += aarishCsvRowCoreV4([label, name, formatDisplayDate(r.date), m, ev, t, amt]);
             });
-        }
-
-        // 3. UDHAR EXCEL
-        if (type === 'all' || type === 'udhar') {
-            if(type === 'all') csv += `\n"--- CREDIT / UDHAR RECORDS ---"\n`;
-            csv += `"Entry Type","Party Name","Date","Amount (Rs)"\n`;
-            (udharDB || []).forEach(u => {
-                let label = u.type === 'credit' ? 'Given (+)' : 'Taken (-)';
-                csv += `"${label}","${u.name}","${formatDisplayDate(u.date)}","${u.amount}"\n`;
-            });
-        }
-
-        // 4. SALARY EXCEL
-        if (type === 'all' || type === 'salary') {
-            if(type === 'all') csv += `\n"--- SALARY RECORDS ---"\n`;
-            csv += `"Salary Type","Employee Name","Date","Amount (Rs)"\n`;
-            Object.keys(salaryDB).forEach(name => {
-                let label = salaryDB[name].type === 'lene_wala' ? 'Paid to Employee' : 'Received';
-                (salaryDB[name].records || []).forEach(r => {
-                    csv += `"${label}","${name}","${formatDisplayDate(r.date)}","${r.amount}"\n`;
-                });
-            });
-        }
-        
-        // 5. DIARY EXCEL
-        if (type === 'all' || type === 'diary') {
-            if(type === 'all') csv += `\n"--- PERSONAL DIARY ---"\n`;
-            csv += `"Date","Title","Diary Content"\n`;
-            (diaryDB || []).forEach(d => {
-                let safeTitle = d.title ? d.title.replace(/"/g, '""') : '';
-                let safeContent = d.content ? d.content.replace(/"/g, '""').replace(/\n/g, " | ") : '';
-                csv += `"${formatDisplayDate(d.date)}","${safeTitle}","${safeContent}"\n`;
-            });
-        }
-
-        // 6. BUSINESS HUB EXCEL (Newly Added!)
-        if (type === 'all' || type === 'projects') {
-            if(type === 'all') csv += `\n"--- BUSINESS HUB RECORDS ---"\n`;
-            csv += `"Khata Name","Date","Entry Detail","Transaction Type","Amount (Rs)"\n`;
-            Object.keys(projectDB).forEach(name => {
-                (projectDB[name].records || []).forEach(r => {
-                    let safeTitle = r.title ? r.title.replace(/"/g, '""') : '';
-                    let transType = r.color ? r.color.toUpperCase() : 'UNKNOWN';
-                    csv += `"${name}","${formatDisplayDate(r.date)}","${safeTitle}","${transType}","${r.amount}"\n`;
-                });
-            });
-        }
-
-        // File generation
-        const blob = new Blob([new Uint8Array([0xEF, 0xBB, 0xBF]), csv], { type: 'text/csv;charset=utf-8;' });
-        const url = window.URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = `Aarish_${type.toUpperCase()}_Report.csv`;
-        a.click();
-        
-        showToast("Report Downloaded Successfully! 📊");
+        });
     }
 
+    if (type === 'all' || type === 'expenses') {
+        if (type === 'all') csv += '\n' + aarishCsvRowCoreV4(['--- EXPENSE RECORDS ---']);
+        csv += aarishCsvRowCoreV4(['Date','Expense Category','Amount (Rs)']);
+        (expenseDB || []).forEach(e => csv += aarishCsvRowCoreV4([formatDisplayDate(e.date), e.category, e.amount]));
+    }
 
+    if (type === 'all' || type === 'udhar') {
+        if (type === 'all') csv += '\n' + aarishCsvRowCoreV4(['--- CREDIT / UDHAR RECORDS ---']);
+        csv += aarishCsvRowCoreV4(['Entry Type','Party Name','Date','Amount (Rs)']);
+        (udharDB || []).forEach(u => {
+            let label = u.type === 'credit' ? 'Given (+)' : 'Taken (-)';
+            csv += aarishCsvRowCoreV4([label, u.name, formatDisplayDate(u.date), u.amount]);
+        });
+    }
 
+    if (type === 'all' || type === 'salary') {
+        if (type === 'all') csv += '\n' + aarishCsvRowCoreV4(['--- SALARY RECORDS ---']);
+        csv += aarishCsvRowCoreV4(['Salary Type','Employee Name','Date','Amount (Rs)']);
+        Object.keys(salaryDB || {}).forEach(name => {
+            let label = salaryDB[name].type === 'lene_wala' ? 'Paid to Employee' : 'Received';
+            (salaryDB[name].records || []).forEach(r => csv += aarishCsvRowCoreV4([label, name, formatDisplayDate(r.date), r.amount]));
+        });
+    }
 
+    if (type === 'all' || type === 'diary') {
+        if (type === 'all') csv += '\n' + aarishCsvRowCoreV4(['--- PERSONAL DIARY ---']);
+        csv += aarishCsvRowCoreV4(['Date','Title','Diary Content']);
+        (diaryDB || []).forEach(d => csv += aarishCsvRowCoreV4([formatDisplayDate(d.date), d.title || '', d.content || '']));
+    }
 
-    
+    if (type === 'all' || type === 'projects') {
+        if (type === 'all') csv += '\n' + aarishCsvRowCoreV4(['--- BUSINESS HUB RECORDS ---']);
+        csv += aarishCsvRowCoreV4(['Khata Name','Date','Entry Detail','Transaction Type','Amount (Rs)']);
+        Object.keys(projectDB || {}).forEach(name => {
+            ((projectDB[name] && projectDB[name].records) || []).forEach(r => {
+                let transType = r.color ? String(r.color).toUpperCase() : 'UNKNOWN';
+                csv += aarishCsvRowCoreV4([name, formatDisplayDate(r.date), r.title || '', transType, r.amount]);
+            });
+        });
+    }
+
+    const blob = new Blob([new Uint8Array([0xEF, 0xBB, 0xBF]), csv], { type: 'text/csv;charset=utf-8;' });
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `Aarish_${String(type || 'all').toUpperCase()}_Report.csv`;
+    a.click();
+    setTimeout(() => { try { window.URL.revokeObjectURL(url); } catch(e) {} }, 1000);
+
+    showToast('Report Downloaded Successfully! 📊');
+}
+
     // ========================== UDHAR ==========================
     
 /* AARISH_CREDIT_BOOK_CORE_OWNER_V1_START */
@@ -7846,12 +8220,10 @@ function creditCleanZeroCoreV1(v) {
 }
 function creditEntriesCoreV1() {
     try {
-        if (Array.isArray(udharDB)) return udharDB.filter(Boolean);
-        if (udharDB && typeof udharDB === 'object') return Object.keys(udharDB).map(k => udharDB[k]).filter(Boolean);
+        if (typeof udharDB !== 'undefined') return aarishBackendCanonicalListCoreV8(udharDB);
     } catch (e) {}
     try {
-        if (Array.isArray(window.udharDB)) return window.udharDB.filter(Boolean);
-        if (window.udharDB && typeof window.udharDB === 'object') return Object.keys(window.udharDB).map(k => window.udharDB[k]).filter(Boolean);
+        return aarishBackendCanonicalListCoreV8(window.udharDB);
     } catch (e) {}
     return [];
 }
@@ -7926,7 +8298,7 @@ function creditTotalsCoreV1() {
     return { receive, pay, net: receive - pay };
 }
 async function creditFirebaseCoreV1(path, action, value, opts) {
-    const hasUid = () => (typeof currentUserUID !== 'undefined' && !!currentUserUID);
+    const hasUid = () => { let u = ''; try { if (typeof aarishCostUidV1 === 'function') u = String(aarishCostUidV1() || ''); } catch(e) {} try { if (!u && typeof currentUserUID !== 'undefined') u = String(currentUserUID || ''); } catch(e) {} try { if (!u && typeof firebase !== 'undefined' && firebase.auth && firebase.auth().currentUser) u = String(firebase.auth().currentUser.uid || ''); } catch(e) {} return !!u; };
     const noCloud = () => { try { showToast('Cloud sync unavailable. Data saved only locally. Login/refresh karke sync karein.'); } catch (_) {} };
     try {
         if (!hasUid()) { noCloud(); return false; }
@@ -8208,19 +8580,27 @@ function openUdharModal(name = null) {
     const cleanType = String(type || '').toLowerCase() === 'debit' ? 'debit' : 'credit';
     const uniqueId = (window.aarishV98Id ? window.aarishV98Id('udh') : ('udh_' + Date.now() + '_' + Math.random().toString(36).slice(2, 10)));
     const newEntry = { id: uniqueId, date, name, amount: amt, type: cleanType };
+    const previous = creditEntriesCoreV1().slice();
 
-    const next = creditEntriesCoreV1();
-    next.unshift(newEntry);
-    setUdharDBCoreV1(next);
+    try {
+        const next = previous.slice();
+        next.unshift(newEntry);
+        setUdharDBCoreV1(next);
 
-    await creditFirebaseCoreV1(`udharDB/${uniqueId}`, 'set', newEntry, { fast: true });
+        const result = await creditFirebaseCoreV1(`udharDB/${uniqueId}`, 'set', newEntry, { fast: true });
+        await aarishMustPersistCoreV4(result, 'credit-save');
 
-    closeModal('add-udhar-modal');
-    updateDashboard();
-    renderUdharList();
-    if (document.getElementById('udhar-detail-screen') && document.getElementById('udhar-detail-screen').classList.contains('active')) renderUdharRecords();
-    updateCreditBookCoreUi();
-    showToast('Saved Safely!');
+        closeModal('add-udhar-modal');
+        updateDashboard();
+        renderUdharList();
+        if (document.getElementById('udhar-detail-screen') && document.getElementById('udhar-detail-screen').classList.contains('active')) renderUdharRecords();
+        updateCreditBookCoreUi();
+        showToast('Saved Safely!');
+    } catch(e) {
+        try { setUdharDBCoreV1(previous); } catch(_) {}
+        try { updateDashboard(); renderUdharList(); updateCreditBookCoreUi(); } catch(_) {}
+        aarishFailSaveToastCoreV4(e);
+    }
 }
 
 
@@ -8283,7 +8663,8 @@ function openUdharModal(name = null) {
     function cancelUdharLongPress() { clearTimeout(udharPressTimer); }
 
 
-         async function deleteUdharPersonProfile(name) {
+
+async function deleteUdharPersonProfile(name) {
     name = creditCleanNameCoreV1(name || activeUdharPerson || '');
     if (!name) return showToast('No credit profile selected!');
     if (typeof aarishBackendActionGuardCoreV2 === 'function' && !aarishBackendActionGuardCoreV2('deleteUdharPersonProfile:' + name, 2500)) return;
@@ -8301,31 +8682,42 @@ function openUdharModal(name = null) {
             deletedAt: new Date().toISOString(),
             entries: entriesToDelete
         };
-        try { localStorage.setItem('AARISH_CREDIT_DELETE_BACKUP_CORE_' + Date.now(), JSON.stringify(backup)); } catch (e) {}
-        await creditFirebaseCoreV1('udharDB_DELETE_BACKUP_CORE/' + Date.now(), 'set', backup, { fast: true });
+        try { aarishSaveRollingDeleteBackupCoreV4('credit', backup, 5); } catch (e) {}
+        await aarishSaveCloudDeleteBackupCoreV4('credit', backup);
     } catch (e) {}
 
-    setUdharDBCoreV1(entries.filter(u => creditCleanNameCoreV1(u && u.name) !== name));
+    try {
+        setUdharDBCoreV1(entries.filter(u => creditCleanNameCoreV1(u && u.name) !== name));
 
-    const payload = {};
-    entriesToDelete.forEach(entry => {
-        if (entry && entry.id) payload[`udharDB/${entry.id}`] = null;
-    });
+        const payload = {};
+        entriesToDelete.forEach(entry => {
+            if (entry && entry.id) payload[`udharDB/${entry.id}`] = null;
+        });
 
-    if (Object.keys(payload).length) {
-        if (window.aarishFirebaseBatchLaterV87) {
-            await window.aarishFirebaseBatchLaterV87(payload, 'delete-credit-profile-core');
-        } else {
-            for (const path of Object.keys(payload)) await creditFirebaseCoreV1(path, 'remove', null, { fast: true });
+        let result = { ok: true };
+        if (Object.keys(payload).length) {
+            if (window.aarishFirebaseBatchLaterV87) {
+                result = await window.aarishFirebaseBatchLaterV87(payload, 'delete-credit-profile-core');
+            } else {
+                for (const path of Object.keys(payload)) {
+                    result = await creditFirebaseCoreV1(path, 'remove', null, { fast: true });
+                    await aarishMustPersistCoreV4(result, 'credit-profile-delete-item');
+                }
+            }
         }
-    }
+        await aarishMustPersistCoreV4(result, 'credit-profile-delete');
 
-    if (activeUdharPerson === name) activeUdharPerson = null;
-    switchTab('udhar');
-    updateDashboard();
-    renderUdharList();
-    updateCreditBookCoreUi();
-    showToast('Profile Deleted!');
+        if (activeUdharPerson === name) activeUdharPerson = null;
+        switchTab('udhar');
+        updateDashboard();
+        renderUdharList();
+        updateCreditBookCoreUi();
+        showToast('Profile Deleted!');
+    } catch(e) {
+        try { setUdharDBCoreV1(entries); } catch(_) {}
+        try { updateDashboard(); renderUdharList(); updateCreditBookCoreUi(); } catch(_) {}
+        aarishFailSaveToastCoreV4(e);
+    }
 }
 
 
@@ -8416,17 +8808,26 @@ function openUdharModal(name = null) {
 }
     
 
-       async function deleteUdhar(id) {
+
+async function deleteUdhar(id) {
     if (!id) return;
     if (confirm('Delete permanently?')) {
-        setUdharDBCoreV1(creditEntriesCoreV1().filter(u => String(u && u.id) !== String(id)));
-        await creditFirebaseCoreV1(`udharDB/${id}`, 'remove', null, { fast: true });
+        const previous = creditEntriesCoreV1().slice();
+        try {
+            setUdharDBCoreV1(previous.filter(u => String(u && u.id) !== String(id)));
+            const result = await creditFirebaseCoreV1(`udharDB/${id}`, 'remove', null, { fast: true });
+            await aarishMustPersistCoreV4(result, 'credit-entry-delete');
 
-        updateDashboard();
-        renderUdharList();
-        if (document.getElementById('udhar-detail-screen') && document.getElementById('udhar-detail-screen').classList.contains('active')) renderUdharRecords();
-        updateCreditBookCoreUi();
-        showToast('Deleted!');
+            updateDashboard();
+            renderUdharList();
+            if (document.getElementById('udhar-detail-screen') && document.getElementById('udhar-detail-screen').classList.contains('active')) renderUdharRecords();
+            updateCreditBookCoreUi();
+            showToast('Deleted!');
+        } catch(e) {
+            try { setUdharDBCoreV1(previous); } catch(_) {}
+            try { updateDashboard(); renderUdharList(); if (document.getElementById('udhar-detail-screen') && document.getElementById('udhar-detail-screen').classList.contains('active')) renderUdharRecords(); updateCreditBookCoreUi(); } catch(_) {}
+            aarishFailSaveToastCoreV4(e);
+        }
     }
 }
 
@@ -8469,12 +8870,10 @@ function expenseCleanZeroCoreV1(v) {
 }
 function expenseEntriesCoreV1() {
     try {
-        if (Array.isArray(expenseDB)) return expenseDB.filter(Boolean);
-        if (expenseDB && typeof expenseDB === 'object') return Object.keys(expenseDB).map(k => expenseDB[k]).filter(Boolean);
+        if (typeof expenseDB !== 'undefined') return aarishBackendCanonicalListCoreV8(expenseDB);
     } catch (e) {}
     try {
-        if (Array.isArray(window.expenseDB)) return window.expenseDB.filter(Boolean);
-        if (window.expenseDB && typeof window.expenseDB === 'object') return Object.keys(window.expenseDB).map(k => window.expenseDB[k]).filter(Boolean);
+        return aarishBackendCanonicalListCoreV8(window.expenseDB);
     } catch (e) {}
     return [];
 }
@@ -8571,7 +8970,7 @@ function expenseCategoryInitialCoreV1(category) {
 }
 async function expenseFirebaseCoreV1(path, action, value, opts) {
     try {
-        if (typeof currentUserUID === 'undefined' || !currentUserUID) return;
+        if (typeof aarishCostUidV1 === 'function' ? !aarishCostUidV1() : (typeof currentUserUID === 'undefined' || !currentUserUID)) return false;
         if (window.aarishFirebaseLaterV48) return await window.aarishFirebaseLaterV48(path, action, value, opts || { fast: true });
         if (typeof appDataRef !== 'undefined' && appDataRef) {
             const ref = appDataRef.child(path);
@@ -8722,19 +9121,27 @@ function updateExpenseDetailCoreUi(total) {
 
     const uniqueId = (window.aarishV98Id ? window.aarishV98Id('exp') : ('exp_' + Date.now() + '_' + Math.random().toString(36).slice(2, 10)));
     const newEntry = { id: uniqueId, date, category: cat, amount: amt };
+    const previous = expenseEntriesCoreV1().slice();
 
-    const next = expenseEntriesCoreV1();
-    next.unshift(newEntry);
-    setExpenseDBCoreV1(next);
+    try {
+        const next = previous.slice();
+        next.unshift(newEntry);
+        setExpenseDBCoreV1(next);
 
-    await expenseFirebaseCoreV1(`expenseDB/${uniqueId}`, 'set', newEntry, { fast: true });
+        const result = await expenseFirebaseCoreV1(`expenseDB/${uniqueId}`, 'set', newEntry, { fast: true });
+        await aarishMustPersistCoreV4(result, 'expense-save');
 
-    closeModal('add-expense-modal');
-    renderExpenseList();
-    if (document.getElementById('expense-detail-screen') && document.getElementById('expense-detail-screen').classList.contains('active')) renderExpenseRecords();
-    updateDashboard();
-    updateExpenseCoreUi();
-    showToast('Saved Safely!');
+        closeModal('add-expense-modal');
+        renderExpenseList();
+        if (document.getElementById('expense-detail-screen') && document.getElementById('expense-detail-screen').classList.contains('active')) renderExpenseRecords();
+        updateDashboard();
+        updateExpenseCoreUi();
+        showToast('Saved Safely!');
+    } catch(e) {
+        try { setExpenseDBCoreV1(previous); } catch(_) {}
+        try { renderExpenseList(); updateDashboard(); updateExpenseCoreUi(); } catch(_) {}
+        aarishFailSaveToastCoreV4(e);
+    }
 }
 
     
@@ -8807,6 +9214,7 @@ function updateExpenseDetailCoreUi(total) {
     clearTimeout(expensePressTimer);
 }
 
+
 async function deleteExpenseCategoryProfile(category) {
     category = expenseCleanCategoryCoreV1(category || activeExpenseCategory || '');
     if (!category) return showToast('No expense category selected!');
@@ -8827,32 +9235,43 @@ async function deleteExpenseCategoryProfile(category) {
             deletedAt: new Date().toISOString(),
             entries: entriesToDelete
         };
-        try { localStorage.setItem('AARISH_EXPENSE_DELETE_BACKUP_CORE_' + Date.now(), JSON.stringify(backup)); } catch (e) {}
-        await expenseFirebaseCoreV1('expenseDB_DELETE_BACKUP_CORE/' + Date.now(), 'set', backup, { fast: true });
+        try { aarishSaveRollingDeleteBackupCoreV4('expense', backup, 5); } catch (e) {}
+        await aarishSaveCloudDeleteBackupCoreV4('expense', backup);
     } catch (e) {}
 
-    setExpenseDBCoreV1(entries.filter(e => expenseCleanCategoryCoreV1(e && e.category) !== category));
+    try {
+        setExpenseDBCoreV1(entries.filter(e => expenseCleanCategoryCoreV1(e && e.category) !== category));
 
-    const payload = {};
-    entriesToDelete.forEach(e => {
-        if (e && e.id) payload[`expenseDB/${e.id}`] = null;
-    });
+        const payload = {};
+        entriesToDelete.forEach(e => {
+            if (e && e.id) payload[`expenseDB/${e.id}`] = null;
+        });
 
-    if (Object.keys(payload).length) {
-        if (window.aarishFirebaseBatchLaterV87) {
-            await window.aarishFirebaseBatchLaterV87(payload, 'delete-expense-category-core');
-        } else {
-            for (const path of Object.keys(payload)) await expenseFirebaseCoreV1(path, 'remove', null, { fast: true });
+        let result = { ok: true };
+        if (Object.keys(payload).length) {
+            if (window.aarishFirebaseBatchLaterV87) {
+                result = await window.aarishFirebaseBatchLaterV87(payload, 'delete-expense-category-core');
+            } else {
+                for (const path of Object.keys(payload)) {
+                    result = await expenseFirebaseCoreV1(path, 'remove', null, { fast: true });
+                    await aarishMustPersistCoreV4(result, 'expense-category-delete-item');
+                }
+            }
         }
+        await aarishMustPersistCoreV4(result, 'expense-category-delete');
+
+        if (activeExpenseCategory === category) activeExpenseCategory = null;
+
+        renderExpenseList();
+        updateDashboard();
+        updateExpenseCoreUi();
+        switchTab('expenses');
+        showToast('Expense category deleted!');
+    } catch(e) {
+        try { setExpenseDBCoreV1(entries); } catch(_) {}
+        try { renderExpenseList(); updateDashboard(); updateExpenseCoreUi(); } catch(_) {}
+        aarishFailSaveToastCoreV4(e);
     }
-
-    if (activeExpenseCategory === category) activeExpenseCategory = null;
-
-    renderExpenseList();
-    updateDashboard();
-    updateExpenseCoreUi();
-    switchTab('expenses');
-    showToast('Expense category deleted!');
 }
 
 
@@ -8918,18 +9337,27 @@ async function deleteExpenseCategoryProfile(category) {
     updateExpenseCoreUi();
 }
 
-        async function deleteExpense(id) {
+
+async function deleteExpense(id) {
     if (!id) return;
     if (confirm('Delete expense?')) {
-        setExpenseDBCoreV1(expenseEntriesCoreV1().filter(e => String(e && e.id) !== String(id)));
+        const previous = expenseEntriesCoreV1().slice();
+        try {
+            setExpenseDBCoreV1(previous.filter(e => String(e && e.id) !== String(id)));
 
-        await expenseFirebaseCoreV1(`expenseDB/${id}`, 'remove', null, { fast: true });
+            const result = await expenseFirebaseCoreV1(`expenseDB/${id}`, 'remove', null, { fast: true });
+            await aarishMustPersistCoreV4(result, 'expense-entry-delete');
 
-        renderExpenseList();
-        if (document.getElementById('expense-detail-screen') && document.getElementById('expense-detail-screen').classList.contains('active')) renderExpenseRecords();
-        updateDashboard();
-        updateExpenseCoreUi();
-        showToast('Deleted!');
+            renderExpenseList();
+            if (document.getElementById('expense-detail-screen') && document.getElementById('expense-detail-screen').classList.contains('active')) renderExpenseRecords();
+            updateDashboard();
+            updateExpenseCoreUi();
+            showToast('Deleted!');
+        } catch(e) {
+            try { setExpenseDBCoreV1(previous); } catch(_) {}
+            try { renderExpenseList(); if (document.getElementById('expense-detail-screen') && document.getElementById('expense-detail-screen').classList.contains('active')) renderExpenseRecords(); updateDashboard(); updateExpenseCoreUi(); } catch(_) {}
+            aarishFailSaveToastCoreV4(e);
+        }
     }
 }
 
@@ -8972,16 +9400,7 @@ function businessProjectDBCoreV1() {
 }
 function businessRecordsCoreV1(project) {
     if (!project) return [];
-    const rec = project.records;
-    if (Array.isArray(rec)) return rec.filter(Boolean);
-    if (rec && typeof rec === 'object') {
-        return Object.keys(rec).map(k => {
-            const r = rec[k];
-            if (r && typeof r === 'object' && !r.id) r.id = k;
-            return r;
-        }).filter(Boolean);
-    }
-    return [];
+    return aarishBackendCanonicalListCoreV8(project.records);
 }
 function businessSetRecordsCoreV1(project, records) {
     if (project) project.records = Array.isArray(records) ? records.filter(Boolean) : [];
@@ -9017,7 +9436,7 @@ function businessVarsCoreV1(color, prefix) {
     return `--${prefix}Tone:${p.tone};--${prefix}Tone2:${p.tone2};--${prefix}Tint:${p.tint};--${prefix}Border:${p.border};--${prefix}Glow:${p.glow};--${prefix}Bg1:${p.bg1};`;
 }
 async function businessFirebaseCoreV1(path, action, value, opts) {
-    const hasUid = () => (typeof currentUserUID !== 'undefined' && !!currentUserUID);
+    const hasUid = () => { let u = ''; try { if (typeof aarishCostUidV1 === 'function') u = String(aarishCostUidV1() || ''); } catch(e) {} try { if (!u && typeof currentUserUID !== 'undefined') u = String(currentUserUID || ''); } catch(e) {} try { if (!u && typeof firebase !== 'undefined' && firebase.auth && firebase.auth().currentUser) u = String(firebase.auth().currentUser.uid || ''); } catch(e) {} return !!u; };
     const noCloud = () => { try { showToast('Cloud sync unavailable. Data saved only locally. Login/refresh karke sync karein.'); } catch (_) {} };
     try {
         if (!hasUid()) { noCloud(); return false; }
@@ -9095,14 +9514,22 @@ async function saveNewProject() {
     if (!name) return showToast('Enter Name!');
     if (businessProjectDBCoreV1()[name]) return showToast('Account already exists!');
 
-    projectDB[name] = { records: [], created: Date.now(), safeKeyCore: true };
+    const newProfile = { records: [], created: Date.now(), safeKeyCore: true };
 
-    await businessFirebaseCoreV1(`projectDB/${name}`, 'set', projectDB[name], { fast: true });
+    try {
+        projectDB[name] = newProfile;
+        const result = await businessFirebaseCoreV1(`projectDB/${name}`, 'set', newProfile, { fast: true });
+        await aarishMustPersistCoreV4(result, 'business-project-create');
 
-    closeModal('add-project-modal');
-    renderProjectsList();
-    updateBusinessCoreUi();
-    showToast('Account Created!');
+        closeModal('add-project-modal');
+        renderProjectsList();
+        updateBusinessCoreUi();
+        showToast('Account Created!');
+    } catch(e) {
+        try { delete projectDB[name]; } catch(_) {}
+        try { renderProjectsList(); updateBusinessCoreUi(); } catch(_) {}
+        aarishFailSaveToastCoreV4(e);
+    }
 }
 
     
@@ -9152,35 +9579,45 @@ async function saveNewProject() {
     window.__projectFilterTimerCoreV1 = setTimeout(renderProjectsList, 180);
 }
 
-    async function deleteProject(name) {
+
+async function deleteProject(name) {
     name = businessCleanNameCoreV1(name || '');
     const db = businessProjectDBCoreV1();
 
     if (!name || !db[name]) return showToast('Business khata not found!');
     if (!confirm(`Delete account "${name}" permanently?`)) return;
 
+    const profileBackup = (() => { try { return JSON.parse(JSON.stringify(db[name])); } catch(e) { return db[name]; } })();
     try {
-        const backup = { version: 'BUSINESS_CORE_V1', type: 'business-khata-delete-backup', name, deletedAt: new Date().toISOString(), profile: db[name] };
-        try { localStorage.setItem('AARISH_BUSINESS_DELETE_BACKUP_CORE_' + Date.now(), JSON.stringify(backup)); } catch (e) {}
-        await businessFirebaseCoreV1('projectDB_DELETE_BACKUP_CORE/' + Date.now(), 'set', backup, { fast: true });
+        const backup = { version: 'BUSINESS_CORE_V1', type: 'business-khata-delete-backup', name, deletedAt: new Date().toISOString(), profile: profileBackup };
+        try { aarishSaveRollingDeleteBackupCoreV4('business', backup, 5); } catch (e) {}
+        await aarishSaveCloudDeleteBackupCoreV4('business', backup);
     } catch (e) {}
 
-    delete projectDB[name];
+    try {
+        delete projectDB[name];
 
-    const payload = {};
-    payload[`projectDB/${name}`] = null;
-    if (window.aarishFirebaseBatchLaterV87) {
-        await businessFirebaseCoreV1('', 'batch', payload, 'delete-project-profile-core');
-    } else {
-        await businessFirebaseCoreV1(`projectDB/${name}`, 'remove', null, { fast: true });
+        const payload = {};
+        payload[`projectDB/${name}`] = null;
+        let result;
+        if (window.aarishFirebaseBatchLaterV87) {
+            result = await businessFirebaseCoreV1('', 'batch', payload, 'delete-project-profile-core');
+        } else {
+            result = await businessFirebaseCoreV1(`projectDB/${name}`, 'remove', null, { fast: true });
+        }
+        await aarishMustPersistCoreV4(result, 'business-project-delete');
+
+        if (activeProject === name) activeProject = null;
+
+        renderProjectsList();
+        updateBusinessCoreUi();
+        try { switchTab('projects'); } catch (e) {}
+        showToast('Account Deleted!');
+    } catch(e) {
+        try { projectDB[name] = profileBackup; } catch(_) {}
+        try { renderProjectsList(); updateBusinessCoreUi(); } catch(_) {}
+        aarishFailSaveToastCoreV4(e);
     }
-
-    if (activeProject === name) activeProject = null;
-
-    renderProjectsList();
-    updateBusinessCoreUi();
-    try { switchTab('projects'); } catch (e) {}
-    showToast('Account Deleted!');
 }
 
     function openProjectDetail(name) {
@@ -9234,7 +9671,8 @@ async function saveNewProject() {
     updateBusinessCoreUi();
 }
 
-    async function saveProjectEntry() {
+
+async function saveProjectEntry() {
     if (typeof aarishBackendActionGuardCoreV2 === 'function' && !aarishBackendActionGuardCoreV2('saveProjectEntry', 900)) return;
 
     const db = businessProjectDBCoreV1();
@@ -9249,25 +9687,45 @@ async function saveNewProject() {
 
     const project = db[activeProject];
     const records = businessRecordsCoreV1(project);
+    const previous = records.slice();
     const uniqueId = (window.aarishV98Id ? window.aarishV98Id('prj') : ('prj_' + Date.now() + '_' + Math.random().toString(36).slice(2, 10)));
     const newEntry = { id: uniqueId, date, title, amount: amt, color: col };
 
-    records.unshift(newEntry);
-    businessSetRecordsCoreV1(project, records);
+    try {
+        records.unshift(newEntry);
+        businessSetRecordsCoreV1(project, records);
 
-    await businessFirebaseCoreV1(`projectDB/${activeProject}/records/${uniqueId}`, 'set', newEntry, { fast: true });
+        const result = await businessFirebaseCoreV1(`projectDB/${activeProject}/records/${uniqueId}`, 'set', newEntry, { fast: true });
+        await aarishMustPersistCoreV4(result, 'business-entry-save');
 
-    closeModal('add-project-entry-modal');
-    renderProjectRecords();
-    renderProjectsList();
-    updateBusinessCoreUi();
-    showToast('Saved Successfully!');
+        closeModal('add-project-entry-modal');
+        renderProjectRecords();
+        renderProjectsList();
+        updateBusinessCoreUi();
+        showToast('Saved Successfully!');
+    } catch(e) {
+        try { businessSetRecordsCoreV1(project, previous); } catch(_) {}
+        try { renderProjectRecords(); renderProjectsList(); updateBusinessCoreUi(); } catch(_) {}
+        aarishFailSaveToastCoreV4(e);
+    }
 }
 
 
     function renderProjectRecords() {
     const db = businessProjectDBCoreV1();
-    if (!activeProject || !db[activeProject]) return;
+    if (!activeProject || !db[activeProject]) {
+        try { activeProject = null; } catch(e) {}
+        try { switchTab('projects'); } catch(e) {}
+        try { renderProjectsList(); } catch(e) {}
+        try {
+            const now = Date.now();
+            if (!window.__aarishProjectMissingToastAt || now - window.__aarishProjectMissingToastAt > 4000) {
+                window.__aarishProjectMissingToastAt = now;
+                showToast('Project no longer exists.');
+            }
+        } catch(e) {}
+        return;
+    }
 
     const project = db[activeProject];
     const records = businessRecordsCoreV1(project);
@@ -9330,21 +9788,30 @@ async function saveNewProject() {
 }
 
     
-            async function deleteProjectEntry(id) {
+
+async function deleteProjectEntry(id) {
     if (!id) return showToast('Record not found!');
     if (confirm('Delete this record permanently?')) {
         const db = businessProjectDBCoreV1();
         const project = db[activeProject];
         if (!project) return showToast('Business khata not found!');
 
-        businessSetRecordsCoreV1(project, businessRecordsCoreV1(project).filter(r => String(r && r.id) !== String(id)));
+        const previous = businessRecordsCoreV1(project).slice();
+        try {
+            businessSetRecordsCoreV1(project, previous.filter(r => String(r && r.id) !== String(id)));
 
-        await businessFirebaseCoreV1(`projectDB/${activeProject}/records/${id}`, 'remove', null, { fast: true });
+            const result = await businessFirebaseCoreV1(`projectDB/${activeProject}/records/${id}`, 'remove', null, { fast: true });
+            await aarishMustPersistCoreV4(result, 'business-entry-delete');
 
-        renderProjectRecords();
-        renderProjectsList();
-        updateBusinessCoreUi();
-        showToast('Record Deleted!');
+            renderProjectRecords();
+            renderProjectsList();
+            updateBusinessCoreUi();
+            showToast('Record Deleted!');
+        } catch(e) {
+            try { businessSetRecordsCoreV1(project, previous); } catch(_) {}
+            try { renderProjectRecords(); renderProjectsList(); updateBusinessCoreUi(); } catch(_) {}
+            aarishFailSaveToastCoreV4(e);
+        }
     }
 }
 
@@ -9377,6 +9844,7 @@ async function saveNewProject() {
     }
 
        
+        /* AARISH_GEMINI_CONTEXT_LOGOUT_SW_CORE_FIX_V1 */
         /* ==================== UNIVERSAL AI LOGIC & API CALL ==================== */
     function handleGeminiIconClick() {
         if (aarishHasGeminiUserKeyCoreV2()) { 
@@ -9415,8 +9883,13 @@ async function saveNewProject() {
         openModal('gemini-key-modal'); 
     }
 
-    function toggleGeminiChat() { 
-        document.getElementById('gemini-chat-window').classList.toggle('hidden-chat'); 
+    function toggleGeminiChat() {
+        const win = document.getElementById('gemini-chat-window');
+        if (!win) return;
+        const hidden = win.classList.toggle('hidden-chat');
+        if (!hidden) {
+            try { aarishAiRenderLocalMemoryCoreV10(false); } catch(e) {}
+        }
     }
     
     // Drag & Click Logic
@@ -9466,8 +9939,7 @@ async function saveNewProject() {
     function aarishAiPlainTextForMemoryV2(value) {
         try {
             let s = String(value == null ? '' : value)
-                .replace(/<br\s*\/?>/gi, '\n')
-                .replace(/<[^>]*>/g, '');
+                .replace(/<br\s*\/?>/gi, '\n');
             if (typeof document !== 'undefined') {
                 const t = document.createElement('textarea');
                 t.innerHTML = s;
@@ -9475,7 +9947,11 @@ async function saveNewProject() {
             }
             return s.replace(/\n{3,}/g, '\n\n').trim().slice(0, 8000);
         } catch(e) {
-            return String(value == null ? '' : value).replace(/<[^>]*>/g, '').trim().slice(0, 8000);
+            return String(value == null ? '' : value)
+                .replace(/<br\s*\/?>/gi, '\n')
+                .replace(/\n{3,}/g, '\n\n')
+                .trim()
+                .slice(0, 8000);
         }
     }
     function aarishB64EncodeCoreV2(value) {
@@ -9486,14 +9962,49 @@ async function saveNewProject() {
         try { return decodeURIComponent(escape(atob(String(value || '')))); }
         catch(e) { try { return atob(String(value || '')); } catch(_) { return String(value || ''); } }
     }
-    function aarishSaveGeminiUserKeyCoreV2(key) {
-        try { localStorage.setItem('gemini_user_api_key', 'b64:' + aarishB64EncodeCoreV2(key)); } catch(e) {}
+
+function aarishSaveGeminiUserKeyCoreV2(key) {
+    try {
+        key = String(key || '').trim();
+        if (key) {
+            sessionStorage.setItem('gemini_user_api_key_session', 'b64:' + aarishB64EncodeCoreV2(key));
+        } else {
+            sessionStorage.removeItem('gemini_user_api_key_session');
+        }
+        localStorage.removeItem('gemini_user_api_key');
+    } catch(e) {}
+}
+
+function aarishReadGeminiUserKeyCoreV2() {
+    try {
+        let sessionKey = String(sessionStorage.getItem('gemini_user_api_key_session') || '').trim();
+        if (sessionKey) {
+            try {
+                if (sessionKey.indexOf('b64:') === 0) sessionKey = aarishB64DecodeCoreV2(sessionKey.slice(4));
+            } catch(e) {}
+            return String(sessionKey || '').trim();
+        }
+
+        const legacy = String(localStorage.getItem('gemini_user_api_key') || '').trim();
+        if (!legacy) return '';
+
+        let decoded = legacy;
+        try {
+            decoded = legacy.startsWith('b64:') ? aarishB64DecodeCoreV2(legacy.slice(4)) : legacy;
+        } catch(e) {}
+
+        decoded = String(decoded || '').trim();
+        if (decoded) {
+            try {
+                sessionStorage.setItem('gemini_user_api_key_session', 'b64:' + aarishB64EncodeCoreV2(decoded));
+                localStorage.removeItem('gemini_user_api_key');
+            } catch(e) {}
+        }
+        return decoded;
+    } catch(e) {
+        return '';
     }
-    function aarishReadGeminiUserKeyCoreV2() {
-        const raw = localStorage.getItem('gemini_user_api_key') || '';
-        if (!raw) return '';
-        return raw.indexOf('b64:') === 0 ? aarishB64DecodeCoreV2(raw.slice(4)) : raw;
-    }
+}
     function aarishHasGeminiUserKeyCoreV2() {
         return !!aarishReadGeminiUserKeyCoreV2();
     }
@@ -9501,6 +10012,105 @@ async function saveNewProject() {
         const m = String(model || 'gemini-1.5-flash').trim();
         return /^[A-Za-z0-9._:-]+$/.test(m) ? m : 'gemini-1.5-flash';
     }
+    /* AARISH_AI_LOCAL_MEMORY_FIREBASE_ZERO_CORE_V10_START */
+function aarishAiUidCoreV10() {
+    try { if (typeof currentUserUID !== 'undefined' && currentUserUID) return String(currentUserUID); } catch(e) {}
+    try { if (typeof auth !== 'undefined' && auth && auth.currentUser && auth.currentUser.uid) return String(auth.currentUser.uid); } catch(e) {}
+    try { if (typeof firebase !== 'undefined' && firebase.auth && firebase.auth().currentUser && firebase.auth().currentUser.uid) return String(firebase.auth().currentUser.uid); } catch(e) {}
+    try { if (typeof aarishBackendCachedUidCoreV2 === 'function') { var cached = aarishBackendCachedUidCoreV2(); if (cached) return String(cached); } } catch(e) {}
+    return 'guest';
+}
+function aarishAiLocalMemoryKeyCoreV10(uidArg) {
+    var uid = String(uidArg || aarishAiUidCoreV10() || 'guest').replace(/[^A-Za-z0-9_:\-.]/g, '_').slice(0, 160);
+    return 'AARISH_AI_LOCAL_MEMORY_V10::' + uid;
+}
+function aarishAiCompactMemoryCoreV10(srcArg) {
+    try {
+        var src = Array.isArray(srcArg) ? srcArg : (Array.isArray(window.aiChatMemory) ? window.aiChatMemory : []);
+        var clean = [];
+        src.forEach(function(msg) {
+            var role = msg && msg.role === 'model' ? 'model' : (msg && msg.role === 'user' ? 'user' : '');
+            var raw = msg && msg.parts && msg.parts[0] ? String(msg.parts[0].text || '') : '';
+            var text = (typeof aarishAiPlainTextForMemoryV2 === 'function' ? aarishAiPlainTextForMemoryV2(raw) : raw).trim().slice(0, 5000);
+            if (!role || !text) return;
+            var item = { role: role, parts: [{ text: text }] };
+            if (!clean.length) {
+                if (role === 'user') clean.push(item);
+                return;
+            }
+            var last = clean[clean.length - 1];
+            if (last && last.role === role) clean[clean.length - 1] = item;
+            else clean.push(item);
+        });
+        while (clean.length && clean[0].role !== 'user') clean.shift();
+        var trimmed = clean.slice(-8);
+        while (trimmed.length && trimmed[0].role !== 'user') trimmed.shift();
+        while (trimmed.length > 2 && JSON.stringify(trimmed).length > 28000) trimmed.shift();
+        while (trimmed.length && trimmed[0].role !== 'user') trimmed.shift();
+        window.aiChatMemory = trimmed;
+        return trimmed;
+    } catch(e) {
+        window.aiChatMemory = [];
+        return window.aiChatMemory;
+    }
+}
+function aarishAiSaveLocalMemoryCoreV10(reason) {
+    try {
+        var uid = aarishAiUidCoreV10();
+        var messages = aarishAiCompactMemoryCoreV10();
+        var payload = { v: 10, uid: uid, updatedAt: Date.now(), reason: String(reason || 'save'), messages: messages };
+        try {
+            localStorage.setItem(aarishAiLocalMemoryKeyCoreV10(uid), JSON.stringify(payload));
+            return true;
+        } catch(quotaErr) {
+            var smaller = messages.slice(-4).map(function(msg) {
+                var t = msg && msg.parts && msg.parts[0] ? String(msg.parts[0].text || '').slice(0, 2200) : '';
+                return { role: msg.role, parts: [{ text: t }] };
+            });
+            while (smaller.length && smaller[0].role !== 'user') smaller.shift();
+            localStorage.setItem(aarishAiLocalMemoryKeyCoreV10(uid), JSON.stringify({ v: 10, uid: uid, updatedAt: Date.now(), reason: 'quota-compact', messages: smaller }));
+            window.aiChatMemory = smaller;
+            return true;
+        }
+    } catch(e) { return false; }
+}
+function aarishAiLoadLocalMemoryCoreV10(reason) {
+    try {
+        var key = aarishAiLocalMemoryKeyCoreV10();
+        var raw = localStorage.getItem(key);
+        if (!raw) {
+            window.aiChatMemory = [];
+            return window.aiChatMemory;
+        }
+        var parsed = JSON.parse(raw);
+        var msgs = parsed && Array.isArray(parsed.messages) ? parsed.messages : [];
+        return aarishAiCompactMemoryCoreV10(msgs);
+    } catch(e) {
+        window.aiChatMemory = [];
+        return window.aiChatMemory;
+    }
+}
+function aarishAiForgetLocalMemoryCoreV10(uidArg) {
+    try { localStorage.removeItem(aarishAiLocalMemoryKeyCoreV10(uidArg || aarishAiUidCoreV10())); } catch(e) {}
+    try { window.aiChatMemory = []; } catch(e) {}
+}
+function aarishAiRenderLocalMemoryCoreV10(force) {
+    try {
+        var body = document.getElementById('gemini-chat-body');
+        if (!body || typeof addMsgToAI !== 'function') return;
+        var key = aarishAiLocalMemoryKeyCoreV10();
+        if (!force && window.__aarishAiRenderedMemoryKeyCoreV10 === key && body.childNodes && body.childNodes.length) return;
+        var memory = aarishAiLoadLocalMemoryCoreV10('render');
+        body.innerHTML = '';
+        memory.forEach(function(msg) {
+            var text = msg && msg.parts && msg.parts[0] ? String(msg.parts[0].text || '') : '';
+            if (text) addMsgToAI(text, msg.role === 'user' ? 'user' : 'ai');
+        });
+        window.__aarishAiRenderedMemoryKeyCoreV10 = key;
+    } catch(e) {}
+}
+/* AARISH_AI_LOCAL_MEMORY_FIREBASE_ZERO_CORE_V10_END */
+
     function aarishRemoveFailedAiTurnFromMemoryV2(userText) {
         try {
             if (!Array.isArray(window.aiChatMemory)) return;
@@ -9527,11 +10137,13 @@ async function saveNewProject() {
             });
         } catch(e) {}
     }
-    function aarishAiEscapeCoreV2(value, maxLen) {
-        const raw = String(value == null ? '' : value).slice(0, maxLen || 12000);
-        if (typeof aarishBackendEscapeHtmlCoreV2 === 'function') return aarishBackendEscapeHtmlCoreV2(raw, maxLen || 12000);
-        return raw.replace(/[&<>"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
-    }
+
+function aarishAiEscapeCoreV2(value, maxLen) {
+    let raw = String(value == null ? '' : value).slice(0, maxLen || 12000);
+    raw = raw.replace(/javascript\s*:/gi, '#:').replace(/vbscript\s*:/gi, '#:').replace(/data\s*:\s*text\/html/gi, '#:');
+    if (typeof aarishBackendEscapeHtmlCoreV2 === 'function') return aarishBackendEscapeHtmlCoreV2(raw, maxLen || 12000);
+    return raw.replace(/[&<>"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
+}
     function aarishAiFetchWithTimeoutV2(url, options, timeoutMs) {
         const ms = Math.max(8000, Number(timeoutMs || 45000));
         if (typeof AbortController === 'undefined') return fetch(url, options);
@@ -9563,6 +10175,7 @@ async function saveNewProject() {
                 window.__aarishAiTypingSafetyTimerV2 = setTimeout(function() {
                     try { const stale = document.getElementById('ai-typing-indicator'); if (stale) stale.remove(); } catch(e) {}
                     window.__aarishAiInFlightV2 = false;
+                    window.isAiPaginating = false;
                     window.__aarishAiTypingSafetyTimerV2 = null;
                     try { const icon = document.getElementById('gemini-fab-icon'); if (icon) icon.classList.remove('gemini-spinning'); } catch(e) {}
                 }, 45000);
@@ -9573,78 +10186,138 @@ async function saveNewProject() {
         } catch(e) {
             try { const el = document.getElementById('ai-typing-indicator'); if (el) el.remove(); } catch(_) {}
             window.__aarishAiInFlightV2 = false;
+            window.isAiPaginating = false;
         }
     }
 
     // 3. Smart Data Filter Engine (Month/Date/Year Detection)
     function getSmartFilteredContext(query) {
-        const q = String(query || '').toLowerCase();
-        const currentYear = new Date().getFullYear();
+    const q = String(query || '').toLowerCase();
+    const currentYear = new Date().getFullYear();
 
-        if ((q.includes('proceed') || q.includes('aage') || q.includes('next')) && window.aiPendingChunks.length > 0) {
+    const exactDateMatch = q.match(/\b(20\d{2}-\d{2}-\d{2})\b/);
+    const yearMatch = q.match(/\b(20\d{2})\b/);
+    const targetYear = yearMatch ? parseInt(yearMatch[1], 10) : currentYear;
+
+    const monthMap = {
+        0: /january|jan\b/, 1: /february|feb\b/, 2: /march|mar\b/,
+        3: /april|apr\b/, 4: /may\b/, 5: /june|jun\b/,
+        6: /july|jul\b/, 7: /august|aug\b/, 8: /september|sep\b/,
+        9: /october|oct\b/, 10: /november|nov\b/, 11: /december|dec\b/
+    };
+
+    const targetMonths = [];
+    for (let m in monthMap) {
+        if (monthMap[m].test(q)) targetMonths.push(parseInt(m, 10));
+    }
+
+    aarishAiCleanPendingChunksCoreV4();
+    const wantsProceed = aarishAiWantsProceedCoreV4(q);
+
+    if (wantsProceed) {
+        if (Array.isArray(window.aiPendingChunks) && window.aiPendingChunks.length > 0) {
+            const peek = window.aiPendingChunks[0] || {};
+            if (yearMatch && peek.yearContext && Number(peek.yearContext) !== targetYear) {
+                window.aiPendingChunks = [];
+                window.isAiPaginating = false;
+                return {
+                    data: JSON.stringify({ no_data_found: true, message: `Pending AI chunk ${peek.yearContext} ka tha, lekin query ${targetYear} maang rahi hai. Fresh year query dobara bhejo.` }),
+                    isProceed: false,
+                    hasMore: false,
+                    chunkGuardMismatch: true
+                };
+            }
+
             const nextChunk = window.aiPendingChunks.shift();
             if (window.aiPendingChunks.length === 0) window.isAiPaginating = false;
-            return { data: JSON.stringify(nextChunk), isProceed: true, hasMore: window.aiPendingChunks.length > 0 };
+
+            const payload = nextChunk && nextChunk.data ? nextChunk.data : nextChunk;
+            return {
+                data: JSON.stringify(payload),
+                isProceed: true,
+                hasMore: window.aiPendingChunks.length > 0,
+                proceedYear: nextChunk && nextChunk.yearContext ? nextChunk.yearContext : null,
+                proceedLabel: nextChunk && nextChunk.label ? nextChunk.label : 'remaining data'
+            };
         }
 
-        window.aiPendingChunks = [];
-        window.isAiPaginating = false;
-
-        let filterCondition = null;
-        let isYearlySplit = false;
-
-        const exactDateMatch = q.match(/\b(20\d{2}-\d{2}-\d{2})\b/);
-        const yearMatch = q.match(/\b(20\d{2})\b/);
-        const targetYear = yearMatch ? parseInt(yearMatch[1]) : currentYear;
-
-        const monthMap = {
-            0: /january|jan\b/, 1: /february|feb\b/, 2: /march|mar\b/,
-            3: /april|apr\b/, 4: /may\b/, 5: /june|jun\b/,
-            6: /july|jul\b/, 7: /august|aug\b/, 8: /september|sep\b/,
-            9: /october|oct\b/, 10: /november|nov\b/, 11: /december|dec\b/
+        return {
+            data: JSON.stringify({ no_pending_chunk: true, message: 'Previous pending data expire ho gaya ya available nahi hai. Year/month query dobara poochho.' }),
+            isProceed: false,
+            isYearlySplit: false,
+            hasMore: false
         };
-
-        let targetMonths = [];
-        for (let m in monthMap) {
-            if (monthMap[m].test(q)) targetMonths.push(parseInt(m));
-        }
-
-        if (exactDateMatch) {
-            const targetDate = exactDateMatch[1];
-            filterCondition = (dateStr) => dateStr === targetDate;
-        } else if (targetMonths.length > 0) {
-            filterCondition = (dateStr) => {
-                if (!dateStr) return false;
-                const d = new Date(dateStr);
-                return !isNaN(d.getTime()) && targetMonths.includes(d.getMonth()) && d.getFullYear() === targetYear;
-            };
-        } else if (yearMatch || q.includes('saal') || q.includes('year')) {
-            isYearlySplit = true;
-            filterCondition = (dateStr) => {
-                if (!dateStr) return false;
-                const d = new Date(dateStr);
-                return !isNaN(d.getTime()) && d.getFullYear() === targetYear && d.getMonth() <= 5;
-            };
-            const filterConditionPart2 = (dateStr) => {
-                if (!dateStr) return false;
-                const d = new Date(dateStr);
-                return !isNaN(d.getTime()) && d.getFullYear() === targetYear && d.getMonth() > 5;
-            };
-            window.aiPendingChunks = [applyFilterToDBs(filterConditionPart2)];
-            window.isAiPaginating = true;
-        } else {
-            const thirtyDaysAgo = new Date();
-            thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
-            filterCondition = (dateStr) => {
-                if (!dateStr) return false;
-                const d = new Date(dateStr);
-                return !isNaN(d.getTime()) && d >= thirtyDaysAgo;
-            };
-        }
-
-        const chunk1 = applyFilterToDBs(filterCondition);
-        return { data: JSON.stringify(chunk1), isProceed: false, isYearlySplit: isYearlySplit, hasMore: window.aiPendingChunks.length > 0 };
     }
+
+    window.aiPendingChunks = [];
+    window.isAiPaginating = false;
+
+    let filterCondition = null;
+    let isYearlySplit = false;
+    let chunkLabel = '';
+
+    if (exactDateMatch) {
+        const targetDate = exactDateMatch[1];
+        filterCondition = (dateStr) => {
+            const p = window.aarishV98DateParts ? window.aarishV98DateParts(dateStr) : null;
+            return !!p && p.iso === targetDate;
+        };
+    } else if (targetMonths.length > 0) {
+        filterCondition = (dateStr) => {
+            const p = window.aarishV98DateParts ? window.aarishV98DateParts(dateStr) : null;
+            return !!p && targetMonths.includes(p.month) && p.year === targetYear;
+        };
+    } else if (yearMatch || q.includes('saal') || q.includes('year')) {
+        isYearlySplit = true;
+        chunkLabel = `${targetYear} Jan-Jun`;
+        filterCondition = (dateStr) => {
+            const p = window.aarishV98DateParts ? window.aarishV98DateParts(dateStr) : null;
+            return !!p && p.year === targetYear && p.month <= 5;
+        };
+        const filterConditionPart2 = (dateStr) => {
+            const p = window.aarishV98DateParts ? window.aarishV98DateParts(dateStr) : null;
+            return !!p && p.year === targetYear && p.month > 5;
+        };
+        window.aiPendingChunks = [{
+            kind: 'yearly-part2',
+            yearContext: targetYear,
+            label: `${targetYear} Jul-Dec`,
+            createdAt: Date.now(),
+            sourceQuery: query,
+            data: applyFilterToDBs(filterConditionPart2)
+        }];
+        window.isAiPaginating = true;
+    } else if (aarishAiWantsGlobalSummaryCoreV4(q)) {
+        return {
+            data: JSON.stringify(aarishBuildAiGlobalSummaryCoreV4()),
+            isProceed: false,
+            isYearlySplit: false,
+            hasMore: false,
+            splitYear: null,
+            chunkLabel: 'All-time summary'
+        };
+    } else {
+        const cutoff = new Date();
+        cutoff.setDate(cutoff.getDate() - 30);
+        cutoff.setMinutes(cutoff.getMinutes() - cutoff.getTimezoneOffset());
+        const cutoffIso = cutoff.toISOString().split('T')[0];
+
+        filterCondition = (dateStr) => {
+            const p = window.aarishV98DateParts ? window.aarishV98DateParts(dateStr) : null;
+            return !!p && p.iso >= cutoffIso;
+        };
+    }
+
+    const chunk1 = applyFilterToDBs(filterCondition);
+    return {
+        data: JSON.stringify(chunk1),
+        isProceed: false,
+        isYearlySplit: isYearlySplit,
+        hasMore: Array.isArray(window.aiPendingChunks) && window.aiPendingChunks.length > 0,
+        splitYear: isYearlySplit ? targetYear : null,
+        chunkLabel: chunkLabel
+    };
+}
 
     // 4. Safe Database Extractor (Crash Preventer)
     function applyFilterToDBs(condition) {
@@ -9679,7 +10352,10 @@ async function saveNewProject() {
         Object.keys(safeSalaryDB || {}).forEach(n => {
             const parent = (safeSalaryDB[n] && typeof safeSalaryDB[n] === 'object') ? safeSalaryDB[n] : {};
             const recs = (parent.records || []).filter(r => r && safeCondition(r.date));
-            if (recs.length > 0) filteredSalary[n] = Object.assign({}, parent, { records: recs });
+            if (recs.length > 0) {
+                const calculatedTotal = recs.reduce((s, r) => s + (Number(r && r.amount) || 0), 0);
+                filteredSalary[n] = Object.assign({}, parent, { records: recs, calculatedTotal });
+            }
         });
         if (Object.keys(filteredSalary).length > 0) minifiedDB.salary = filteredSalary;
 
@@ -9693,118 +10369,202 @@ async function saveNewProject() {
         if (Object.keys(filteredProject).length > 0) minifiedDB.project = filteredProject;
 
         if (Object.keys(minifiedDB).length === 0) {
-            return { no_data_found: true, message: 'Selected filter ke liye matching app data nahi mila. User ko clearly batao ki data empty hai aur calculation possible nahi hai.' };
+            return { no_data_found: true, message: 'Selected filter ke liye matching app data nahi mila. Data empty hai; calculation possible nahi hai. Do not hallucinate or invent records.' };
         }
         return minifiedDB;
     }
 
     // 5. Ultimate Gemini API Caller (Future Proof & Memory Managed)
+
+function aarishAiRedactErrorCoreV11(err) {
+    try {
+        let s = String(err && err.message ? err.message : err || 'Unknown error');
+        s = s.replace(/AIza[0-9A-Za-z_-]{20,}/g, '[REDACTED_API_KEY]');
+        s = s.replace(/([?&]key=)[^\s&]+/gi, '$1[REDACTED]');
+        s = s.replace(/(x-goog-api-key\s*[:=]\s*)[^\s,;]+/gi, '$1[REDACTED]');
+        s = s.replace(/(api[_-]?key\s*[:=]\s*)[^\s,;]+/gi, '$1[REDACTED]');
+        return s.slice(0, 1000);
+    } catch(e) {
+        return 'Unknown error';
+    }
+}
+
     async function sendToGemini() {
-        if (window.__aarishAiInFlightV2) return;
+    if (window.__aarishAiInFlightV2) return;
 
-        const inputEl = document.getElementById('gemini-input');
-        const query = inputEl ? inputEl.value.trim() : '';
-        if(!query) return;
+    const inputEl = document.getElementById('gemini-input');
+    const query = inputEl ? inputEl.value.trim() : '';
+    if (!query) return;
 
-        const oldTyping = document.getElementById('ai-typing-indicator');
-        if (oldTyping) {
-            const createdAt = Number(oldTyping.getAttribute('data-created-at') || 0);
-            if (createdAt && Date.now() - createdAt <= 45000) return;
-            oldTyping.remove();
-        }
+    const oldTyping = document.getElementById('ai-typing-indicator');
+    if (oldTyping) {
+        const createdAt = Number(oldTyping.getAttribute('data-created-at') || 0);
+        if (createdAt && Date.now() - createdAt <= 45000) return;
+        oldTyping.remove();
+    }
 
-        window.__aarishAiInFlightV2 = true;
-        addMsgToAI(query, 'user');
-        if (inputEl) inputEl.value = '';
+    try { aarishAiLoadLocalMemoryCoreV10('send-start'); } catch(e) {}
 
-        const fabStar = document.getElementById('gemini-fab-icon');
-        try { if (fabStar) fabStar.classList.add('gemini-spinning'); } catch(e) {}
-        toggleTypingIndicator(true);
+    window.__aarishAiInFlightV2 = true;
+    addMsgToAI(query, 'user');
+    if (inputEl) inputEl.value = '';
 
-        const apiKey = aarishReadGeminiUserKeyCoreV2();
-        let modelName = aarishSafeGeminiModelCoreV2(localStorage.getItem('user_ai_model') || 'gemini-1.5-flash');
+    const fabStar = document.getElementById('gemini-fab-icon');
+    try { if (fabStar) fabStar.classList.add('gemini-spinning'); } catch(e) {}
+    toggleTypingIndicator(true);
 
-        if(!apiKey) {
-            try { if (fabStar) fabStar.classList.remove('gemini-spinning'); } catch(e) {}
-            toggleTypingIndicator(false);
-            window.__aarishAiInFlightV2 = false;
-            return addMsgToAI("⚠️ API Key missing hai. Key icon par click karein aur activate karein.", 'ai');
-        }
+    const apiKey = aarishReadGeminiUserKeyCoreV2();
+    const modelName = aarishSafeGeminiModelCoreV2(localStorage.getItem('user_ai_model') || 'gemini-1.5-flash');
 
-        window.aiChatMemory.push({ role: "user", parts: [{ text: query }] });
-        if (window.aiChatMemory.length > 6) window.aiChatMemory.splice(0, 2);
+    if (!apiKey) {
+        try { if (fabStar) fabStar.classList.remove('gemini-spinning'); } catch(e) {}
+        toggleTypingIndicator(false);
+        window.__aarishAiInFlightV2 = false;
+        return addMsgToAI('⚠️ API Key missing hai. Key icon par click karein aur activate karein.', 'ai');
+    }
 
-        const contextObj = getSmartFilteredContext(query);
-        let systemPrompt = `You are a helpful AI assistant for Aarish Dairy App. Analyze this exact user data carefully: ${contextObj.data}. Calculate exactly based on JSON. Reply in Hinglish, clearly and concisely. You remember the conversation context.`;
-        if (contextObj.isProceed) systemPrompt += `\nNote: This is PART 2 of the previous yearly data.`;
-        else if (contextObj.isYearlySplit) systemPrompt += `\nNote: This is ONLY PART 1. Tell user to type 'proceed' for the rest.`;
+    window.aiChatMemory = Array.isArray(window.aiChatMemory) ? window.aiChatMemory : [];
+    window.aiChatMemory.push({ role: 'user', parts: [{ text: query.slice(0, 5000) }] });
+    aarishAiCompactMemoryCoreV10();
+    aarishAiSaveLocalMemoryCoreV10('user-turn');
 
-        const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(modelName)}:generateContent?key=${encodeURIComponent(apiKey)}`;
+    const contextObj = getSmartFilteredContext(query);
+    let systemPrompt = `You are a helpful AI assistant for Aarish Dairy App. Analyze this exact user data carefully: ${contextObj.data}. Calculate exactly based on JSON. Reply in Hinglish, clearly and concisely. You remember the conversation context.`;
+    if (contextObj.isProceed) systemPrompt += `\nNote: This is PART 2 (${contextObj.proceedLabel || 'remaining data'}). Do not mix it with any earlier year.`;
+    else if (contextObj.isYearlySplit) systemPrompt += `\nNote: This is ONLY PART 1 (${contextObj.chunkLabel || 'Jan-Jun'}). Tell user to type 'proceed' for the rest.`;
 
-        try {
-            let res = await aarishAiFetchWithTimeoutV2(apiUrl, {
+    const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(modelName)}:generateContent`;
+    const authHeaders = { 'Content-Type': 'application/json', 'x-goog-api-key': apiKey };
+
+    try {
+        let res = await aarishAiFetchWithTimeoutV2(apiUrl, {
+            method: 'POST',
+            headers: authHeaders,
+            body: JSON.stringify({
+                systemInstruction: { parts: [{ text: systemPrompt }] },
+                contents: aarishAiCompactMemoryCoreV10()
+            })
+        }, 45000);
+
+        let data = {};
+        try { data = await res.json(); } catch(parseErr) { throw new Error('API JSON parse failed'); }
+        const errMsg = data && data.error ? String(data.error.message || '') : '';
+
+        if (data && data.error && (data.error.code === 400 || errMsg.includes('systemInstruction') || errMsg.includes('role'))) {
+            const legacyHistory = aarishAiCompactMemoryCoreV10().map(msg => `${msg.role.toUpperCase()}: ${msg.parts[0].text}`).join('\n');
+            res = await aarishAiFetchWithTimeoutV2(apiUrl, {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+                headers: authHeaders,
                 body: JSON.stringify({
-                    systemInstruction: { parts: [{ text: systemPrompt }] },
-                    contents: window.aiChatMemory
+                    contents: [{ parts: [{ text: systemPrompt + '\n\nConversation History:\n' + legacyHistory }] }]
                 })
             }, 45000);
-
-            let data = {};
-            try { data = await res.json(); } catch(parseErr) { throw new Error('API JSON parse failed'); }
-            const errMsg = data && data.error ? String(data.error.message || '') : '';
-
-            if (data.error && (data.error.code === 400 || errMsg.includes('systemInstruction'))) {
-                const legacyHistory = window.aiChatMemory.map(msg => `${msg.role.toUpperCase()}: ${msg.parts[0].text}`).join("\n");
-                res = await aarishAiFetchWithTimeoutV2(apiUrl, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        contents: [{ parts: [{ text: systemPrompt + "\n\nConversation History:\n" + legacyHistory }] }]
-                    })
-                }, 45000);
-                try { data = await res.json(); } catch(parseErr2) { throw new Error('API JSON parse failed'); }
-            }
-
-            if (data.error) throw new Error(data.error.message || 'Gemini API error');
-
-            const firstCandidate = data && Array.isArray(data.candidates) ? data.candidates[0] : null;
-            const candidateText = firstCandidate && firstCandidate.content && Array.isArray(firstCandidate.content.parts) && firstCandidate.content.parts[0] ? firstCandidate.content.parts[0].text : '';
-            if (!candidateText) {
-                const reason = firstCandidate && firstCandidate.finishReason ? ` Gemini status: ${firstCandidate.finishReason}` : '';
-                throw new Error('Gemini ne usable reply nahi diya.' + reason);
-            }
-
-            let finalReply = String(candidateText);
-            if (contextObj.isYearlySplit && contextObj.hasMore) {
-                finalReply += `<br><br><span style="color:#007AFF; font-size:12px; font-weight:bold;">💡 AI Hint: Ye Jan-Jun ka data tha. Aage ke liye "proceed" type karein.</span>`;
-            }
-
-            addMsgToAI(finalReply, 'ai');
-            window.aiChatMemory.push({ role: "model", parts: [{ text: aarishAiPlainTextForMemoryV2(finalReply) }] });
-            if (window.aiChatMemory.length > 6) window.aiChatMemory.splice(0, 2);
-        } catch(e) {
-            console.error("AI Error:", e);
-            addMsgToAI(`<b>Technical Error:</b> API response issue. Detail: ${e && e.message ? e.message : e}`, 'ai');
-            aarishRemoveFailedAiTurnFromMemoryV2(query);
-        } finally {
-            toggleTypingIndicator(false);
-            try { if (fabStar) fabStar.classList.remove('gemini-spinning'); } catch(e) {}
-            window.__aarishAiInFlightV2 = false;
+            try { data = await res.json(); } catch(parseErr2) { throw new Error('API JSON parse failed'); }
         }
+
+        if (data && data.error) throw new Error(data.error.message || 'Gemini API error');
+
+        const firstCandidate = data && Array.isArray(data.candidates) ? data.candidates[0] : null;
+        const candidateParts = firstCandidate && firstCandidate.content && Array.isArray(firstCandidate.content.parts) ? firstCandidate.content.parts : [];
+        const candidateText = candidateParts.map(function(part) {
+            return part && typeof part.text === 'string' ? part.text : '';
+        }).filter(Boolean).join('\n').trim();
+        if (!candidateText) {
+            const reason = firstCandidate && firstCandidate.finishReason ? ` Gemini status: ${firstCandidate.finishReason}` : '';
+            throw new Error('Gemini ne usable reply nahi diya.' + reason);
+        }
+
+        let finalReply = String(candidateText);
+        if (contextObj.isYearlySplit && contextObj.hasMore) {
+            finalReply += `\n\n**💡 AI Hint:** Ye ${contextObj.chunkLabel || 'Jan-Jun'} ka data tha. Aage ke liye **proceed** type karein.`;
+        }
+
+        addMsgToAI(finalReply, 'ai');
+        window.aiChatMemory.push({ role: 'model', parts: [{ text: aarishAiPlainTextForMemoryV2(finalReply) }] });
+        aarishAiCompactMemoryCoreV10();
+        aarishAiSaveLocalMemoryCoreV10('model-turn');
+    } catch(e) {
+        console.error('AI Error:', e);
+        addMsgToAI(`**Technical Error:** API response issue. Detail: ${aarishAiRedactErrorCoreV11(e)}`, 'ai');
+        aarishRemoveFailedAiTurnFromMemoryV2(query);
+        aarishAiCompactMemoryCoreV10();
+        aarishAiSaveLocalMemoryCoreV10('failed-turn-removed');
+    } finally {
+        toggleTypingIndicator(false);
+        try { if (fabStar) fabStar.classList.remove('gemini-spinning'); } catch(e) {}
+        window.__aarishAiInFlightV2 = false;
     }
+}
 
     function addMsgToAI(text, sender) {
     const body = document.getElementById('gemini-chat-body');
     if (!body) return;
+
     const d = document.createElement('div');
     d.className = `chat-msg chat-${sender === 'user' ? 'user' : 'ai'}`;
 
-    const escaped = aarishAiEscapeCoreV2(text, 12000);
-    d.innerHTML = escaped
-        .replace(/\*\*([^<]{1,300}?)\*\*/g, '<b>$1</b>')
-        .replace(/\n/g, '<br>');
+    const raw = String(text === undefined || text === null ? '' : text).slice(0, 12000);
+
+    const appendBoldSafe = (parent, value) => {
+        const src = String(value || '');
+        const boldRe = /\*\*([^*]{1,300}?)\*\*/g;
+        let last = 0;
+        let m;
+
+        while ((m = boldRe.exec(src)) !== null) {
+            if (m.index > last) parent.appendChild(document.createTextNode(src.slice(last, m.index)));
+
+            const b = document.createElement('b');
+            b.textContent = m[1];
+            parent.appendChild(b);
+
+            last = boldRe.lastIndex;
+        }
+
+        if (last < src.length) parent.appendChild(document.createTextNode(src.slice(last)));
+    };
+
+    const isSafeAiUrl = (url) => {
+        try {
+            const u = String(url || '').trim();
+            return /^(https?:\/\/|mailto:|tel:)/i.test(u);
+        } catch(e) {
+            return false;
+        }
+    };
+
+    raw.split(/\n/).forEach((line, lineIndex) => {
+        if (lineIndex > 0) d.appendChild(document.createElement('br'));
+
+        const linkRe = /\[([^\]\n]{1,300})\]\(([^)\s]{1,2048})\)/g;
+        let last = 0;
+        let m;
+
+        while ((m = linkRe.exec(line)) !== null) {
+            if (m.index > last) appendBoldSafe(d, line.slice(last, m.index));
+
+            const label = String(m[1] || '').trim();
+            const url = String(m[2] || '').trim();
+
+            if (label && isSafeAiUrl(url)) {
+                const a = document.createElement('a');
+                a.href = url;
+                a.target = '_blank';
+                a.rel = 'noopener noreferrer';
+                a.style.color = '#007AFF';
+                a.style.textDecoration = 'underline';
+                a.style.fontWeight = '700';
+                appendBoldSafe(a, label);
+                d.appendChild(a);
+            } else {
+                appendBoldSafe(d, m[0]);
+            }
+
+            last = linkRe.lastIndex;
+        }
+
+        if (last < line.length) appendBoldSafe(d, line.slice(last));
+    });
 
     aarishAiSanitizeUrlProtocolsV2(d);
     body.appendChild(d);
@@ -9814,6 +10574,7 @@ async function saveNewProject() {
     // Auto-show logo if key exists on app reload
     document.addEventListener('DOMContentLoaded', () => {
         if(aarishHasGeminiUserKeyCoreV2()) {
+            try { if (typeof aarishAiLoadLocalMemoryCoreV10 === 'function') aarishAiLoadLocalMemoryCoreV10('dom-ready'); } catch(e) {}
             document.getElementById('gemini-floating-widget').style.display = 'block';
         }
     });
@@ -9830,23 +10591,144 @@ async function saveNewProject() {
        
                 updateOnlineStatus(); 
 
-        const manifestString = `{"name":"Aarish Dairy Pro","short_name":"Aarish Dairy","display":"standalone","background_color":"#F5F5F7","theme_color":"#34C759","icons":[{"src":"https://cdn-icons-png.flaticon.com/512/2965/2965358.png","sizes":"512x512","type":"image/png", "purpose": "any maskable"}]}`;
+        const manifestString = `{"name":"Aarish Dairy Pro","short_name":"Aarish Dairy","start_url":"./","display":"standalone","background_color":"#F5F5F7","theme_color":"#34C759","icons":[{"src":"https://cdn-icons-png.flaticon.com/512/2965/2965358.png","sizes":"512x512","type":"image/png", "purpose": "any maskable"}]}`;
 
         const blob = new Blob([manifestString], {type: 'application/json'});
         const manifestURL = URL.createObjectURL(blob);
         const link = document.createElement('link');
         link.rel = 'manifest'; link.href = manifestURL;
         document.head.appendChild(link);
+        setTimeout(function(){ try { URL.revokeObjectURL(manifestURL); } catch(e) {} }, 10000);
         
-        const swCode = `self.addEventListener('fetch', function(e) {});`;
-        const swBlob = new Blob([swCode], {type: 'application/javascript'});
         try {
-            if ('serviceWorker' in navigator && window.URL && typeof URL.createObjectURL === 'function') {
-                const swURL = URL.createObjectURL(swBlob);
-                navigator.serviceWorker.register(swURL).catch(function(){});
+            if ('serviceWorker' in navigator && location.protocol !== 'file:') {
+                navigator.serviceWorker.register('./sw.js', { scope: './' }).then(function(){ try { console.log('Aarish SW ready'); } catch(e) {} }).catch(function(err){ try { console.warn('Offline cache unavailable:', err); } catch(e) {} });
             }
         } catch(e) {}
     };
+
+
+
+
+
+
+/* AARISH_BACKEND_CORE_SMART_FIX_V4_START */
+function aarishPersistOkCoreV4(result) {
+    if (result === true) return true;
+    if (result && typeof result === 'object') {
+        return !!(result.queued === true || result.direct === true || result.ok === true || result.cached === true || result.scheduled === true);
+    }
+    return false;
+}
+function aarishPersistReasonCoreV4(result) {
+    try {
+        if (!result) return 'no_result';
+        if (typeof result === 'string') return result.slice(0, 160);
+        return String(result.reason || result.error || result.message || 'unknown').slice(0, 160);
+    } catch(e) { return 'unknown'; }
+}
+async function aarishMustPersistCoreV4(result, label) {
+    if (aarishPersistOkCoreV4(result)) return true;
+    try { if (typeof saveCacheNowCostV81 === 'function') await saveCacheNowCostV81('persist-failed-' + String(label || 'write')); } catch(e) {}
+    throw new Error('persist_failed:' + aarishPersistReasonCoreV4(result));
+}
+function aarishFailSaveToastCoreV4(e) {
+    try { showToast('Save failed. Storage/Internet check karo.'); } catch(_) {}
+    try { console.error('Aarish persist failure:', e); } catch(_) {}
+}
+function aarishSafeListCoreV4(v) {
+    try {
+        if (Array.isArray(v)) return v.filter(Boolean);
+        if (v && typeof v === 'object') return Object.keys(v).map(k => {
+            const item = v[k];
+            if (item && typeof item === 'object' && !item.id) item.id = k;
+            return item;
+        }).filter(Boolean);
+    } catch(e) {}
+    return [];
+}
+function aarishSaveRollingDeleteBackupCoreV4(namespace, backup, maxPerNamespace) {
+    namespace = String(namespace || 'general').replace(/[^A-Za-z0-9_-]/g, '_').slice(0, 40) || 'general';
+    maxPerNamespace = Math.max(1, Math.min(10, Number(maxPerNamespace || 5)));
+    const key = 'AARISH_DELETE_BACKUPS_ROLLING_CORE_V4';
+    try {
+        let list = JSON.parse(localStorage.getItem(key) || '[]');
+        if (!Array.isArray(list)) list = [];
+        list.unshift({ namespace, savedAt: new Date().toISOString(), backup });
+        const seen = {};
+        list = list.filter(item => {
+            const ns = String(item && item.namespace || 'general');
+            seen[ns] = (seen[ns] || 0) + 1;
+            return seen[ns] <= maxPerNamespace;
+        }).slice(0, 25);
+        localStorage.setItem(key, JSON.stringify(list));
+        return true;
+    } catch(e) { return false; }
+}
+async function aarishSaveCloudDeleteBackupCoreV4(namespace, backup) {
+    try {
+        const uid = currentUserUID || (firebase && firebase.auth && firebase.auth().currentUser && firebase.auth().currentUser.uid);
+        if (!uid || !database) return false;
+        const safeNs = String(namespace || 'general').replace(/[^A-Za-z0-9_-]/g, '_').slice(0, 40) || 'general';
+        await database.ref('users/' + uid + '/deleteBackups/' + safeNs + '/' + Date.now()).set(backup);
+        return true;
+    } catch(e) { return false; }
+}
+function aarishResetAiSessionCoreV4(reason) {
+    try { window.aiChatMemory = []; } catch(e) {}
+    try { window.aiPendingChunks = []; } catch(e) {}
+    try { window.isAiPaginating = false; } catch(e) {}
+    try { window.__aarishAiInFlightV2 = false; } catch(e) {}
+    try { window.__aarishAiRenderedMemoryKeyCoreV10 = ''; } catch(e) {}
+    try { const typing = document.getElementById('ai-typing-indicator'); if (typing) typing.remove(); } catch(e) {}
+    try { const body = document.getElementById('gemini-chat-body'); if (body) body.innerHTML = ''; } catch(e) {}
+}
+function aarishAiCleanPendingChunksCoreV4() {
+    try {
+        const now = Date.now();
+        const ttl = 10 * 60 * 1000;
+        window.aiPendingChunks = (Array.isArray(window.aiPendingChunks) ? window.aiPendingChunks : [])
+            .filter(c => c && c.createdAt && now - Number(c.createdAt) <= ttl);
+    } catch(e) { window.aiPendingChunks = []; }
+}
+function aarishAiWantsProceedCoreV4(q) {
+    q = String(q || '').toLowerCase()
+        .replace(/[“”"'`]/g, '')
+        .replace(/[?!.,;:|/\\]+/g, ' ')
+        .replace(/\s+/g, ' ')
+        .trim();
+
+    if (!q) return false;
+
+    const pureProceed = /^(proceed|continue|next|next part|part 2|part two|more|remaining|aage|age|aage dikhao|age dikhao|aage batao|age batao|baaki|baki|baaki data|baki data|baaki dikhao|baki dikhao|baaki batao|baki batao|aur|aur dikhao|aur batao)$/i;
+    const explicitProceed = /^(show|send|give|tell)\s+(me\s+)?(the\s+)?(next|remaining|more|second)\s*(part|data)?$/i;
+    return pureProceed.test(q) || explicitProceed.test(q);
+}
+function aarishAiWantsGlobalSummaryCoreV4(q) {
+    q = String(q || '').toLowerCase();
+    return /\b(total|overall|lifetime|all\s*time|all|sara|saara|sab|net|balance|hisab|hisaab|kitna|kitni|poora|pura|complete)\b/i.test(q);
+}
+function aarishBuildAiGlobalSummaryCoreV4() {
+    const summary = { scope:'ALL_TIME_SUMMARY', generatedAt:new Date().toISOString(), milkCustomers:0, creditEntries:0, expenseEntries:0, salaryProfiles:0, diaryEntries:0, projectCount:0, note:'All-time app data included. Detailed calculation must use fullData records.' };
+    try { summary.milkCustomers = Object.keys(milkDB || {}).length; } catch(e) {}
+    try { summary.creditEntries = aarishSafeListCoreV4(udharDB).length; } catch(e) {}
+    try { summary.expenseEntries = aarishSafeListCoreV4(expenseDB).length; } catch(e) {}
+    try { summary.salaryProfiles = Object.keys(salaryDB || {}).length; } catch(e) {}
+    try { summary.diaryEntries = aarishSafeListCoreV4(diaryDB).length; } catch(e) {}
+    try { summary.projectCount = Object.keys(projectDB || {}).length; } catch(e) {}
+    return { summary, fullData: applyFilterToDBs(() => true) };
+}
+function aarishCsvCellCoreV4(value) {
+    let s = String(value == null ? '' : value);
+    s = s.replace(/\r?\n/g, ' ').replace(/"/g, '""');
+    if (/^[=+\-@]/.test(s.trim())) s = "'" + s;
+    return '"' + s + '"';
+}
+function aarishCsvRowCoreV4(values) {
+    return values.map(aarishCsvCellCoreV4).join(',') + '\n';
+}
+/* AARISH_BACKEND_CORE_SMART_FIX_V4_END */
+
 </script>
 
 </body>
