@@ -494,9 +494,9 @@
         .dark #gemini-draggable-logo { background: #1C1C1E; border-color: rgba(255,255,255,0.1); }
         .gemini-spinning { animation: geminiSpin 1.5s linear infinite; }
         @keyframes geminiSpin { 100% { transform: rotate(360deg); } }
-        #gemini-chat-window { position: fixed; left: 50%; top: 50%; right: auto; bottom: auto; width: min(92vw, 380px); height: min(72vh, 560px); max-height: calc(100dvh - 96px); transform: translate3d(-50%, -50%, 0); background: #fff; border-radius: 24px; box-shadow: 0 18px 54px rgba(0,0,0,0.24); display: flex; flex-direction: column; overflow: hidden; z-index: 999998; border: 1px solid rgba(155, 114, 203, 0.2); transition: transform 0.22s cubic-bezier(0.32, 0.72, 0, 1), opacity 0.22s ease; will-change: transform, opacity; }
+        #gemini-chat-window { position: fixed !important; left: 50% !important; top: 50dvh !important; right: auto !important; bottom: auto !important; width: min(92vw, 380px); height: min(64dvh, 520px); max-height: calc(100dvh - 150px); transform: translate3d(-50%, -50%, 0) !important; background: #fff; border-radius: 24px; box-shadow: 0 18px 54px rgba(0,0,0,0.24); display: flex; flex-direction: column; overflow: hidden; z-index: 999998; border: 1px solid rgba(155, 114, 203, 0.2); transition: opacity 0.18s ease; will-change: opacity; } /* AARISH_CORE_DIRECT_TABS_AI_CENTER */
         .dark #gemini-chat-window { background: #1C1C1E; border-color: rgba(255,255,255,0.1); }
-        .hidden-chat { display: none !important; opacity: 0; transform: translateY(20px); }
+        .hidden-chat { display: none !important; opacity: 0; transform: translate3d(-50%, -50%, 0) !important; } /* AARISH_CORE_HIDDEN_CHAT_CENTER_SAFE */
         .chat-msg { padding: 10px 14px; border-radius: 18px; font-size: 14px; max-width: 85%; line-height: 1.4; }
         .chat-ai { background: rgba(0,0,0,0.04); color: #000; align-self: flex-start; border-bottom-left-radius: 4px; }
         .dark .chat-ai { background: rgba(255,255,255,0.08); color: #fff; }
@@ -2652,13 +2652,16 @@ button,
 
 /* iOS-grade screen choreography */
 .screen.active {
-    animation: aarishUltraScreenEnterV3 var(--duration-normal) var(--spring-snappy) both !important;
-}
+    animation: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+} /* AARISH_CORE_DIRECT_MODULE_OPEN */
 .screen.aarish-screen-exit-v3 {
-    display: flex !important;
     pointer-events: none !important;
-    animation: aarishUltraScreenExitV3 var(--duration-fast) var(--spring-smooth) both !important;
-}
+    animation: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+} /* AARISH_CORE_NO_MODULE_EXIT_ANIM */
 @keyframes aarishUltraScreenEnterV3 {
     0%   { opacity: 0; transform: translate3d(7%, 0, 0) scale(0.982); }
     70%  { opacity: 1; transform: translate3d(-0.8%, 0, 0) scale(1.002); }
@@ -3015,27 +3018,21 @@ html.aarish-tab-switching-v31 .aarish-release-bounce-v3 {
 /* AARISH_ULTRA_CORE_MOTION_V3_END */
 
 /* AARISH_MOTION_V32_LEGACY_SLIDE_CLASH_FIX_START */
-/*
-   Core surgical update:
-   - Legacy slideIn / slideInRight are disabled above by the patcher.
-   - Browser ViewTransition is disabled in JS, so V3 CSS is the single screen engine.
-   - Do NOT suppress .list-enter anymore; cards can appear immediately and settle fast after module open.
-   - No extra overlay/wrapper/observer; Firebase/Gemini/CSV/PDF/data logic untouched.
+/* Core surgical update:
+   Module/tab switch is now direct-open. Cards keep their list-enter premium animation.
+   No overlay/wrapper/observer added; Firebase/Gemini API/CSV/PDF/data logic untouched.
 */
 html.aarish-tab-switching-v31 .screen.active {
-    animation: aarishUltraScreenEnterV3 260ms var(--spring-snappy) both !important;
-    will-change: transform, opacity !important;
+    animation: none !important;
+    opacity: 1 !important;
+    transform: none !important;
 }
-
-/* Prevent active press transform from fighting the screen during the first instant of a tab switch. */
 html.aarish-tab-switching-v31 .screen.active .glass-card:active {
     transform: none !important;
 }
-
-/* Bottom nav should change state smoothly without release-bounce fighting the tab transition. */
 html.aarish-tab-switching-v31 .bottom-nav .nav-item.aarish-release-bounce-v3,
 html.aarish-tab-switching-v31 .bottom-nav .nav-item.active {
-    animation-duration: 140ms !important;
+    animation-duration: 80ms !important;
 }
 /* AARISH_MOTION_V32_LEGACY_SLIDE_CLASH_FIX_END */
 </style>
@@ -11411,46 +11408,14 @@ function aarishCsvRowCoreV4(values) {
     function installFunctionWrappers() {
         wrapFunction('switchTab', (original) => function(tab) {
             safeHaptic(25);
-            const reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-            const useVT = false; // AARISH_V32: Browser ViewTransition disabled; V3 CSS is the single screen engine.
-            const current = qs('.screen.active');
-            const nextId = String(tab) + '-screen';
-
-            document.documentElement.classList.add('aarish-tab-switching-v31');
             clearTimeout(window.__aarishTabSwitchingTimerV31);
-            window.__aarishTabSwitchingTimerV31 = setTimeout(() => {
-                document.documentElement.classList.remove('aarish-tab-switching-v31');
-            }, 260);
+            document.documentElement.classList.remove('aarish-tab-switching-v31', 'aarish-vt-running-v3');
+            qsa('.screen.aarish-screen-exit-v3').forEach((el) => el.classList.remove('aarish-screen-exit-v3'));
 
-            // V3.1: Do NOT run CSS exit slide when ViewTransition is active.
-            // This removes the double visual jerk on bottom nav / screen switches.
-            if (!useVT && current && current.id !== nextId) {
-                current.classList.add('aarish-screen-exit-v3');
-                setTimeout(() => current.classList.remove('aarish-screen-exit-v3'), 260);
-            }
+            const result = original.apply(this, arguments);
 
-            let result;
-            const runSwitch = () => { result = original.apply(this, arguments); };
-
-            if (useVT) {
-                document.documentElement.classList.add('aarish-vt-running-v3');
-                try {
-                    const vt = document.startViewTransition(runSwitch);
-                    vt.finished.finally(() => {
-                        document.documentElement.classList.remove('aarish-vt-running-v3');
-                        clearTimeout(window.__aarishTabSwitchingTimerV31);
-                        window.__aarishTabSwitchingTimerV31 = setTimeout(() => {
-                            document.documentElement.classList.remove('aarish-tab-switching-v31');
-                        }, 120);
-                    });
-                } catch (_) {
-                    document.documentElement.classList.remove('aarish-vt-running-v3');
-                    runSwitch();
-                }
-            } else {
-                runSwitch();
-                setStagger(activeRoot());
-            }
+            // Module opens immediately; only cards/list-enter keep premium settle animation.
+            setStagger(activeRoot());
             raf2(() => { inputLabels(); installNavPill(); scanMoneyActive(); });
             return result;
         });
