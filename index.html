@@ -3843,22 +3843,93 @@ function aarishCostFallbackKeyV1() {
     return "AARISH_OUTBOX_FALLBACK_V83::" + (aarishCostUidV1() || "nouid");
 }
 
+// ========================== AARISH_BACKEND_FAANG_SYNC_PATCH_V1_START ==========================
+function aarishCostWithTimeoutCoreV5(promise, label, ms, fallback, opts) {
+    opts = opts || {};
+    var hasFallback = arguments.length >= 4 || Object.prototype.hasOwnProperty.call(opts, "fallback");
+
+    return new Promise(function(resolve, reject) {
+        var done = false;
+        var timer = setTimeout(function() {
+            if (done) return;
+            done = true;
+            try { if (typeof opts.onTimeout === "function") opts.onTimeout(); } catch(e) {}
+            var err = new Error(String(label || "operation") + "-timeout");
+            if (hasFallback) resolve(fallback);
+            else reject(err);
+        }, Math.max(1200, Number(ms || 4500)));
+
+        Promise.resolve(promise).then(function(v) {
+            if (done) return;
+            done = true;
+            clearTimeout(timer);
+            resolve(v);
+        }, function(e) {
+            if (done) return;
+            done = true;
+            clearTimeout(timer);
+            if (hasFallback) resolve(fallback);
+            else reject(e);
+        });
+    });
+}
+
+function aarishCostCloneMegaCoreV5(v) {
+    try { return JSON.parse(JSON.stringify(v || {})); } catch(e) { return {}; }
+}
+// ========================== AARISH_BACKEND_FAANG_SYNC_PATCH_V1_END ==========================
 function aarishCostOpenDbV1() {
     if (__aarishCostDbCoreV1) return Promise.resolve(__aarishCostDbCoreV1);
 
     return new Promise(function(resolve) {
-        try {
-            if (!window.indexedDB) return resolve(null);
+        var done = false;
+        var req = null;
+        var timer = setTimeout(function() {
+            if (done) return;
+            done = true;
+            try { if (req && req.result) req.result.close(); } catch(e) {}
+            resolve(null);
+        }, 5000);
 
-            var req = indexedDB.open("AARISH_FIREBASE_CACHE_DB_V81", 3);
+        function finish(db) {
+            if (done) return;
+            done = true;
+            clearTimeout(timer);
+            resolve(db || null);
+        }
+
+        try {
+            if (!window.indexedDB) return finish(null);
+
+            req = indexedDB.open("AARISH_FIREBASE_CACHE_DB_V81", 4);
 
             req.onupgradeneeded = function() {
                 var db = req.result;
-                if (!db.objectStoreNames.contains("kv")) db.createObjectStore("kv");
-                if (!db.objectStoreNames.contains("sync_queue")) db.createObjectStore("sync_queue", { keyPath: "id" });
+                var queue = null;
+
+                if (!db.objectStoreNames.contains("kv")) {
+                    db.createObjectStore("kv");
+                }
+
+                if (!db.objectStoreNames.contains("sync_queue")) {
+                    queue = db.createObjectStore("sync_queue", { keyPath: "id" });
+                } else {
+                    try { queue = req.transaction.objectStore("sync_queue"); } catch(e) {}
+                }
+
+                try {
+                    if (queue && queue.indexNames && !queue.indexNames.contains("by_uid")) {
+                        queue.createIndex("by_uid", "uid", { unique: false });
+                    }
+                } catch(e) {}
             };
 
             req.onsuccess = function() {
+                if (done) {
+                    try { req.result.close(); } catch(e) {}
+                    return;
+                }
+
                 __aarishCostDbCoreV1 = req.result;
                 try {
                     __aarishCostDbCoreV1.onversionchange = function() {
@@ -3866,17 +3937,16 @@ function aarishCostOpenDbV1() {
                         __aarishCostDbCoreV1 = null;
                     };
                 } catch(e) {}
-                resolve(req.result);
+                finish(__aarishCostDbCoreV1);
             };
 
-            req.onerror = function() { resolve(null); };
-            req.onblocked = function() { resolve(null); };
+            req.onerror = function() { finish(null); };
+            req.onblocked = function() { finish(null); };
         } catch(e) {
-            resolve(null);
+            finish(null);
         }
     });
 }
-
 async function aarishCostKvGetV1(key) {
     var db = await aarishCostOpenDbV1();
     if (!db || !db.objectStoreNames.contains("kv")) {
@@ -3888,32 +3958,34 @@ async function aarishCostKvGetV1(key) {
         }
     }
 
-    return Promise.race([
-        new Promise(function(resolve) {
-            try {
-                var done = false;
-                function finish(v) {
-                    if (done) return;
-                    done = true;
-                    resolve(v || null);
-                }
+    return new Promise(function(resolve) {
+        var done = false;
+        var timer = setTimeout(function() {
+            finish(null, true);
+        }, 4500);
 
-                var tx = db.transaction("kv", "readonly");
-                var req = tx.objectStore("kv").get(key);
-                req.onsuccess = function() { finish(req.result || null); };
-                req.onerror = function() { finish(null); };
-                tx.onerror = function() { finish(null); };
-                tx.onabort = function() { finish(null); };
-            } catch(e) {
+        function finish(v, timedOut) {
+            if (done) return;
+            done = true;
+            clearTimeout(timer);
+            if (timedOut) {
                 try { __aarishCostDbCoreV1 = null; } catch(_) {}
-                resolve(null);
             }
-        }),
-        aarishCostTimeoutCoreV4("idb-kv-get", 4500).catch(function(){
+            resolve(v || null);
+        }
+
+        try {
+            var tx = db.transaction("kv", "readonly");
+            var req = tx.objectStore("kv").get(key);
+            req.onsuccess = function() { finish(req.result || null, false); };
+            req.onerror = function() { finish(null, false); };
+            tx.onerror = function() { finish(null, false); };
+            tx.onabort = function() { finish(null, false); };
+        } catch(e) {
             try { __aarishCostDbCoreV1 = null; } catch(_) {}
-            return null;
-        })
-    ]);
+            finish(null, false);
+        }
+    });
 }
 
 async function aarishCostKvSetV1(key, value) {
@@ -3929,23 +4001,26 @@ async function aarishCostKvSetV1(key, value) {
     }
 
     return new Promise(function(resolve) {
-        try {
-            var done = false;
-            function finish(v) {
-                if (done) return;
-                done = true;
-                resolve(!!v);
-            }
+        var done = false;
+        var __kvSetTimer = null;
 
+        function finish(v) {
+            if (done) return;
+            done = true;
+            clearTimeout(__kvSetTimer);
+            resolve(!!v);
+        }
+
+        try {
             var tx = db.transaction("kv", "readwrite");
             tx.objectStore("kv").put(value, key);
             tx.oncomplete = function() { finish(true); };
             tx.onerror = function() { finish(false); };
             tx.onabort = function() { finish(false); };
 
-            setTimeout(function() { finish(false); }, 4500);
+            __kvSetTimer = setTimeout(function() { finish(false); }, 4500);
         } catch(e) {
-            resolve(false);
+            finish(false);
         }
     });
 }
@@ -4063,10 +4138,203 @@ function scheduleCacheSaveCostV81(reason) {
     } catch(e) {}
 }
 
+/* AARISH_PENDING_REPLAY_UID_GUARD_CORE_V3_START
+   Root-cause backend fix:
+   - Pending outbox is replayed into local state after cache/cloud load.
+   - UID/session is checked before async apply/delete.
+   - Fallback queue cleanup uses the UID that was actually flushed.
+   No UI/CSS/math changes.
+*/
+function aarishCostFallbackKeyForUidCoreV3(uid) {
+    uid = String(uid || "");
+    if (!uid || uid.length > 160 || /[^A-Za-z0-9:_\-\.]/.test(uid)) uid = aarishCostUidV1() || "nouid";
+    return "AARISH_OUTBOX_FALLBACK_V83::" + uid;
+}
+
+function aarishCostSameUidCoreV3(uid) {
+    uid = String(uid || "");
+    if (!uid) return false;
+    try {
+        var live = "";
+        try { live = String((typeof auth !== "undefined" && auth && auth.currentUser && auth.currentUser.uid) || ""); } catch(e) {}
+        if (!live) { try { live = String(currentUserUID || ""); } catch(e) {} }
+        if (!live) { try { live = String(firebase.auth().currentUser.uid || ""); } catch(e) {} }
+        return live === uid;
+    } catch(e) {
+        return false;
+    }
+}
+
+function aarishCostArrayByIdCoreV3(v) {
+    try {
+        if (Array.isArray(v)) return v.filter(Boolean);
+        return aarishBackendArrayFromObjectCoreV2(v);
+    } catch(e) {
+        return [];
+    }
+}
+
+function aarishCostUpsertArrayItemCoreV3(arr, id, value) {
+    id = String(id == null ? "" : id);
+    var out = aarishCostArrayByIdCoreV3(arr).filter(function(x) {
+        return String((x && x.id != null) ? x.id : "") !== id;
+    });
+
+    if (value === null) return out;
+
+    var item = aarishBackendSanitizeFirebaseValueCoreV2(value || {}, "pending/" + id) || {};
+    if (item && typeof item === "object" && !item.id) item.id = id;
+    out.unshift(item);
+    return out;
+}
+
+function aarishCostUpsertRecordItemCoreV3(records, id, value) {
+    id = String(id == null ? "" : id);
+    var out = aarishCostArrayByIdCoreV3(records).filter(function(x) {
+        var rid = (x && x.id != null) ? x.id : ((x && x.key != null) ? x.key : "");
+        return String(rid) !== id;
+    });
+
+    if (value === null) return out;
+
+    var item = aarishBackendSanitizeFirebaseValueCoreV2(value || {}, "pendingRecord/" + id) || {};
+    if (item && typeof item === "object" && !item.id) item.id = id;
+    out.push(item);
+    return out;
+}
+
+function aarishCostDeleteDeepCoreV3(obj, parts) {
+    try {
+        var cur = obj;
+        for (var i = 0; i < parts.length - 1; i++) {
+            if (!cur || typeof cur !== "object") return;
+            cur = cur[parts[i]];
+        }
+        if (cur && typeof cur === "object") delete cur[parts[parts.length - 1]];
+    } catch(e) {}
+}
+
+function aarishCostApplyLocalWriteCoreV3(state, path, value) {
+    path = aarishCostCleanPathV1(path);
+    if (!path || path.indexOf("_syncMeta") === 0) return false;
+
+    var parts = path.split("/").filter(Boolean);
+    var root = parts[0];
+    if (!root) return false;
+
+    if (root === "udharDB" || root === "expenseDB" || root === "diaryDB") {
+        if (parts.length === 2) {
+            state[root] = aarishCostUpsertArrayItemCoreV3(state[root], parts[1], value);
+            return true;
+        }
+
+        var arr = aarishCostArrayByIdCoreV3(state[root]);
+        var id = parts[1];
+        var found = false;
+        arr.forEach(function(item) {
+            if (String(item && item.id) !== String(id)) return;
+            found = true;
+            if (value === null) aarishCostDeleteDeepCoreV3(item, parts.slice(2));
+            else aarishCostSetDeepV1(item, parts.slice(2), value);
+        });
+        if (!found && value !== null) {
+            var item = { id: id };
+            aarishCostSetDeepV1(item, parts.slice(2), value);
+            arr.unshift(item);
+        }
+        state[root] = arr.filter(Boolean);
+        return true;
+    }
+
+    if (root === "milkDB" || root === "salaryDB" || root === "projectDB") {
+        state[root] = (state[root] && typeof state[root] === "object" && !Array.isArray(state[root])) ? state[root] : {};
+        var group = parts[1];
+        if (!group) return false;
+
+        if (parts.length === 2) {
+            if (value === null) delete state[root][group];
+            else {
+                state[root][group] = aarishBackendSanitizeFirebaseValueCoreV2(value || {}, path) || {};
+                if (state[root][group] && typeof state[root][group] === "object") {
+                    state[root][group].records = aarishCostArrayByIdCoreV3(state[root][group].records);
+                }
+            }
+            return true;
+        }
+
+        if (!state[root][group] || typeof state[root][group] !== "object") state[root][group] = { records: [] };
+
+        if (parts[2] === "records" && parts[3]) {
+            state[root][group].records = aarishCostUpsertRecordItemCoreV3(state[root][group].records, parts[3], value);
+            return true;
+        }
+
+        if (value === null) aarishCostDeleteDeepCoreV3(state[root][group], parts.slice(2));
+        else aarishCostSetDeepV1(state[root][group], parts.slice(2), value);
+        return true;
+    }
+
+    return false;
+}
+
+function aarishCostApplyMegaToStateCoreV3(mega, reason) {
+    try {
+        var state = aarishCostGetStateV1();
+        var changed = false;
+
+        Object.keys(mega || {}).forEach(function(path) {
+            if (aarishCostApplyLocalWriteCoreV3(state, path, mega[path])) changed = true;
+        });
+
+        if (!changed) return false;
+
+        aarishCostApplyStateV1(aarishCostNormalizeStateV1(state));
+        return true;
+    } catch(e) {
+        try { console.warn("Pending replay apply failed:", e); } catch(_) {}
+        return false;
+    }
+}
+
+function aarishCostRenderAfterStateCoreV3(reason) {
+    try { if (typeof updateDashboard === "function") updateDashboard(); } catch(e) {}
+    try { if (typeof updateActiveScreen === "function") updateActiveScreen(); } catch(e) {}
+}
+
+async function aarishCostReplayOutboxToLocalCoreV3(reason, opts) {
+    opts = opts || {};
+    try {
+        var uid = aarishCostUidV1();
+        if (!uid) return { ok:false, reason:"no_uid" };
+
+        var items = await aarishCostGetOutboxV1();
+
+        if (!aarishCostSameUidCoreV3(uid)) return { ok:false, reason:"uid_changed" };
+        if (!items.length) return { ok:true, replayed:0 };
+
+        var mega = aarishCostBuildMegaV1(items);
+        var changed = aarishCostApplyMegaToStateCoreV3(mega, reason || "pending-replay");
+
+        if (changed) {
+            await saveCacheNowCostV81("pending-replay-" + String(reason || "auto"));
+            if (opts.render !== false) aarishCostRenderAfterStateCoreV3(reason || "pending-replay");
+        }
+
+        return { ok:true, replayed:items.length, changed:!!changed };
+    } catch(e) {
+        return { ok:false, error:String(e && e.message ? e.message : e) };
+    }
+}
+/* AARISH_PENDING_REPLAY_UID_GUARD_CORE_V3_END */
+
 async function loadCacheCostV81() {
     try {
         var uid = aarishCostUidV1();
+        if (!uid) return false;
+
         var cached = await aarishCostKvGetV1(aarishCostCacheKeyV1());
+
+        if (!aarishCostSameUidCoreV3(uid)) return false;
         if (!cached || cached.uid !== uid) return false;
 
         aarishCostApplyStateV1(cached);
@@ -4079,15 +4347,23 @@ async function loadCacheCostV81() {
         window.__aarishFirebaseCostRevV81 = Number.isFinite(serverRev) && serverRev > 0 ? serverRev : 0;
         window.__aarishCacheLoadedWithoutServerRevV81 = !(serverRev > 0);
 
+        /*
+          Fatal stale-cache fix:
+          If cache write failed earlier but outbox survived, replay pending writes into RAM/cache
+          before UI opens. This does not mark them as cloud-synced; flush still owns that.
+        */
+        await aarishCostReplayOutboxToLocalCoreV3("cache-load", { render:false });
+
         return true;
     } catch(e) {
         return false;
     }
 }
 
-function aarishCostReadFallbackV1() {
+function aarishCostReadFallbackV1(uidArg) {
     try {
-        var raw = localStorage.getItem(aarishCostFallbackKeyV1());
+        var key = uidArg ? aarishCostFallbackKeyForUidCoreV3(uidArg) : aarishCostFallbackKeyV1();
+        var raw = localStorage.getItem(key);
         var arr = raw ? JSON.parse(raw) : [];
         return Array.isArray(arr) ? arr : [];
     } catch(e) {
@@ -4095,7 +4371,7 @@ function aarishCostReadFallbackV1() {
     }
 }
 
-function aarishCostWriteFallbackV1(arr) {
+function aarishCostWriteFallbackV1(arr, uidArg) {
     arr = aarishCostDedupeItemsV3(Array.isArray(arr) ? arr.filter(Boolean) : []);
 
     /*
@@ -4104,7 +4380,8 @@ function aarishCostWriteFallbackV1(arr) {
       That creates silent data loss. Now it persists the full compact queue or returns false.
     */
     try {
-        localStorage.setItem(aarishCostFallbackKeyV1(), JSON.stringify(arr));
+        var key = uidArg ? aarishCostFallbackKeyForUidCoreV3(uidArg) : aarishCostFallbackKeyV1();
+        localStorage.setItem(key, JSON.stringify(arr));
         return true;
     } catch(e) {
         try {
@@ -4189,69 +4466,70 @@ function aarishCostDedupeItemsV3(items) {
 function aarishCostJsonBytesV3(value) {
     try { return JSON.stringify(value).length; } catch(e) { return 0; }
 }
-
 function aarishCostPickBatchV3(items) {
+    var source = (items || []).filter(function(x) { return x && x.id; });
     var out = [];
     var mega = {};
     var maxItems = 160;
     var maxBytes = 750000;
 
-    for (var i = 0; i < (items || []).length && out.length < maxItems; i++) {
-        var candidate = out.concat([items[i]]);
-        var testMega = aarishCostBuildMegaV1(candidate);
-        var size = aarishCostJsonBytesV3(testMega);
+    for (var i = 0; i < source.length && out.length < maxItems; i++) {
+        var nextOut = out.concat([source[i]]);
+        var nextMega = aarishCostBuildMegaV1(nextOut);
+        var size = aarishCostJsonBytesV3(nextMega);
 
         if (out.length && size > maxBytes) break;
-        out = candidate;
-        mega = testMega;
-
+        out = nextOut;
+        mega = nextMega;
         if (size > maxBytes) break;
     }
 
-    if (!out.length && items && items.length) {
-        out = [items[0]];
+    if (!out.length && source.length) {
+        out = [source[0]];
         mega = aarishCostBuildMegaV1(out);
     }
 
     return { items: out, mega: mega };
 }
 /* AARISH_BACKEND_SURGICAL_STORAGE_SYNC_V3_END */
-
-
 async function aarishCostStoreOpV1(mode, fn) {
     var db = await aarishCostOpenDbV1();
     if (!db || !db.objectStoreNames.contains("sync_queue")) return null;
 
-    return Promise.race([
-        new Promise(function(resolve) {
-            try {
-                var done = false;
-                function finish(v) {
-                    if (done) return;
-                    done = true;
-                    resolve(v === undefined ? true : v);
-                }
-
-                var tx = db.transaction("sync_queue", mode);
-                var st = tx.objectStore("sync_queue");
-                var result = fn(st);
-                tx.oncomplete = function() { finish(result === undefined ? true : result); };
-                tx.onerror = function() { finish(null); };
-                tx.onabort = function() { finish(null); };
-            } catch(e) {
-                try { __aarishCostDbCoreV1 = null; } catch(_) {}
-                resolve(null);
-            }
-        }),
-        aarishCostTimeoutCoreV4("idb-sync-queue", 4500).catch(function() {
+    return new Promise(function(resolve) {
+        var done = false;
+        var timer = setTimeout(function() {
             try { __aarishCostDbCoreV1 = null; } catch(_) {}
-            return null;
-        })
-    ]);
-}
+            finish(null);
+        }, 4500);
 
+        function finish(v) {
+            if (done) return;
+            done = true;
+            clearTimeout(timer);
+            resolve(v === undefined ? true : v);
+        }
+
+        try {
+            var tx = db.transaction("sync_queue", mode);
+            var st = tx.objectStore("sync_queue");
+            var result = fn(st, tx);
+            tx.oncomplete = function() { finish(result === undefined ? true : result); };
+            tx.onerror = function() { finish(null); };
+            tx.onabort = function() { finish(null); };
+        } catch(e) {
+            try { __aarishCostDbCoreV1 = null; } catch(_) {}
+            finish(null);
+        }
+    });
+}
 async function aarishCostPutOutboxV1(item) {
     if (!item || !item.id) return false;
+
+    var uid = String(item.uid || aarishCostUidV1() || "");
+    if (!uid) return false;
+    item.uid = uid;
+    if (!item.createdAt) item.createdAt = Date.now();
 
     var ok = await aarishCostStoreOpV1("readwrite", function(st) {
         st.put(item);
@@ -4263,9 +4541,9 @@ async function aarishCostPutOutboxV1(item) {
         return true;
     }
 
-    var arr = aarishCostReadFallbackV1();
+    var arr = aarishCostReadFallbackV1(uid);
     arr.push(item);
-    if (aarishCostWriteFallbackV1(arr)) {
+    if (aarishCostWriteFallbackV1(arr, uid)) {
         item.__queueTier = "localStorage";
         return true;
     }
@@ -4278,10 +4556,11 @@ async function aarishCostPutOutboxV1(item) {
 
     return false;
 }
-
 async function aarishCostGetOutboxV1() {
     var uid = aarishCostUidV1();
-    var fallback = aarishCostReadFallbackV1();
+    if (!uid) return [];
+
+    var fallback = aarishCostReadFallbackV1(uid);
     var volatileItems = aarishCostVolatileGetV3();
 
     var db = await aarishCostOpenDbV1();
@@ -4290,35 +4569,49 @@ async function aarishCostGetOutboxV1() {
     }
 
     return new Promise(function(resolve) {
-        try {
-            var settled = false;
-            function finish(arr) {
-                if (settled) return;
-                settled = true;
-                resolve(aarishCostDedupeItemsV3((arr || []).concat(fallback, volatileItems)
-                    .filter(function(x) { return x && x.uid === uid; })));
-            }
+        var done = false;
+        var timer = setTimeout(function() {
+            try { __aarishCostDbCoreV1 = null; } catch(_) {}
+            finish([]);
+        }, 4500);
 
+        function finish(arr) {
+            if (done) return;
+            done = true;
+            clearTimeout(timer);
+            resolve(aarishCostDedupeItemsV3((arr || []).concat(fallback, volatileItems)
+                .filter(function(x) { return x && x.uid === uid; })));
+        }
+
+        try {
             var tx = db.transaction("sync_queue", "readonly");
-            var req = tx.objectStore("sync_queue").getAll();
+            var st = tx.objectStore("sync_queue");
+            var req = null;
+
+            try {
+                if (st.indexNames && st.indexNames.contains("by_uid") && window.IDBKeyRange) {
+                    req = st.index("by_uid").getAll(IDBKeyRange.only(uid));
+                }
+            } catch(e) { req = null; }
+
+            if (!req) req = st.getAll();
 
             req.onsuccess = function() {
                 finish(Array.isArray(req.result) ? req.result : []);
             };
-
             req.onerror = function() { finish([]); };
             tx.onerror = function() { finish([]); };
             tx.onabort = function() { finish([]); };
-
-            setTimeout(function() { finish([]); }, 4500);
         } catch(e) {
-            resolve(aarishCostDedupeItemsV3(fallback.concat(volatileItems).filter(function(x) { return x && x.uid === uid; })));
+            try { __aarishCostDbCoreV1 = null; } catch(_) {}
+            finish([]);
         }
     });
 }
-
-async function aarishCostDeleteOutboxV1(ids) {
-    ids = ids || [];
+async function aarishCostDeleteOutboxV1(ids, uidArg) {
+    ids = Array.isArray(ids) ? ids.filter(Boolean) : [];
+    var uid = String(uidArg || aarishCostUidV1() || "");
+    if (!ids.length) return;
 
     await aarishCostStoreOpV1("readwrite", function(st) {
         ids.forEach(function(id) {
@@ -4327,10 +4620,10 @@ async function aarishCostDeleteOutboxV1(ids) {
         return true;
     });
 
-    var keep = aarishCostReadFallbackV1().filter(function(x) {
+    var keep = aarishCostReadFallbackV1(uid).filter(function(x) {
         return ids.indexOf(x && x.id) === -1;
     });
-    aarishCostWriteFallbackV1(keep);
+    aarishCostWriteFallbackV1(keep, uid);
     aarishCostVolatileDeleteV3(ids);
 }
 
@@ -4402,20 +4695,21 @@ function aarishCostPutCoalescedV1(mega, path, value) {
 
     mega[path] = value;
 }
-
 function aarishCostBuildMegaV1(items) {
     var mega = {};
 
     (items || []).slice()
+        .filter(function(item) { return item && item.id; })
         .sort(function(a,b) { return Number(a.createdAt || 0) - Number(b.createdAt || 0); })
         .forEach(function(item) {
             var writes = item.writes || aarishCostWritesFromActionV1(item.path, item.action, item.payload);
-            Object.keys(writes).forEach(function(path) {
+            Object.keys(writes || {}).forEach(function(path) {
                 aarishCostPutCoalescedV1(mega, path, writes[path]);
             });
         });
 
-    var rev = Date.now();
+    var prev = Number(window.__aarishFirebaseCostRevV81 || 0);
+    var rev = Math.max(Date.now(), Number.isFinite(prev) ? prev + 1 : 0);
     aarishCostPutCoalescedV1(mega, "_syncMeta/rev", rev);
     aarishCostPutCoalescedV1(mega, "_syncMeta/mode", "AARISH_FIREBASE_COST_CORE_V1");
     aarishCostPutCoalescedV1(mega, "_syncMeta/updatedAt", aarishCostServerTimeV1());
@@ -4438,7 +4732,6 @@ function aarishCostScheduleFlushV1(delay, reason) {
         }
     } catch(e) {}
 }
-
 async function aarishFirebaseLaterV48(path, action, payload, opts) {
     opts = opts || {};
 
@@ -4472,13 +4765,14 @@ async function aarishFirebaseLaterV48(path, action, payload, opts) {
 
         if (!ok) {
             var directRef = aarishCostOnlineV1() ? aarishCostAppRefV1() : null;
-            if (directRef) {
+            if (directRef && aarishCostSameUidCoreV3(uid)) {
                 var directMega = aarishCostBuildMegaV1([item]);
-                await Promise.race([
+                await aarishCostWithTimeoutCoreV5(
                     directRef.update(directMega),
-                    aarishCostTimeoutCoreV4("firebase-direct-update", 18000)
-                ]);
-                window.__aarishFirebaseCostRevV81 = Date.now();
+                    "firebase-direct-update",
+                    18000
+                );
+                window.__aarishFirebaseCostRevV81 = Number(directMega["_syncMeta/rev"] || Date.now());
                 await saveCacheNowCostV81("direct-" + cleanPath);
                 return { queued: false, direct: true, writes: keys.length };
             }
@@ -4543,12 +4837,10 @@ window.aarishFirebaseBatchLaterV87 = aarishFirebaseBatchLaterV87;
 function aarishCostLockKeyV1() {
     return "AARISH_SYNC_LOCK_V87::" + (aarishCostUidV1() || "nouid");
 }
-
 function aarishCostAcquireLockV1() {
     var key = aarishCostLockKeyV1();
     var owner = "tab_" + Date.now() + "_" + Math.random().toString(36).slice(2, 10);
-    var ttl = 60000;
-    var beat = null;
+    var ttl = 45000;
 
     try {
         var oldRaw = localStorage.getItem(key);
@@ -4557,32 +4849,16 @@ function aarishCostAcquireLockV1() {
             if (old && Number(old.expiresAt || 0) > Date.now() && old.owner !== owner) return null;
         }
 
-        function writeLock() {
-            localStorage.setItem(key, JSON.stringify({
-                owner: owner,
-                createdAt: Date.now(),
-                expiresAt: Date.now() + ttl
-            }));
-        }
-
-        writeLock();
+        localStorage.setItem(key, JSON.stringify({
+            owner: owner,
+            createdAt: Date.now(),
+            expiresAt: Date.now() + ttl
+        }));
 
         var check = JSON.parse(localStorage.getItem(key) || "{}");
         if (!check || check.owner !== owner) return null;
 
-        beat = setInterval(function() {
-            try {
-                var cur = JSON.parse(localStorage.getItem(key) || "{}");
-                if (!cur || cur.owner !== owner) {
-                    clearInterval(beat);
-                    return;
-                }
-                writeLock();
-            } catch(e) {}
-        }, 15000);
-
         return function release() {
-            try { clearInterval(beat); } catch(e) {}
             try {
                 var cur = JSON.parse(localStorage.getItem(key) || "{}");
                 if (cur && cur.owner === owner) localStorage.removeItem(key);
@@ -4592,7 +4868,6 @@ function aarishCostAcquireLockV1() {
         return function noop() {};
     }
 }
-
 async function flushFirebaseWriteOutboxV87(reason, opts) {
     opts = opts || {};
 
@@ -4600,10 +4875,17 @@ async function flushFirebaseWriteOutboxV87(reason, opts) {
         try { aarishCostScheduleFlushV1(2500, "busy-reschedule"); } catch(e) {}
         return { ok: false, locked: true };
     }
-    if (!aarishCostUidV1()) return { ok: false, reason: "no_uid" };
+
+    var uid = aarishCostUidV1();
+    if (!uid) return { ok: false, reason: "no_uid" };
     if (!aarishCostOnlineV1() && !opts.force) return { ok: false, offline: true };
 
-    var ref = aarishCostAppRefV1();
+    var ref = null;
+    try {
+        ref = (typeof database !== "undefined" && database && database.ref) ? database.ref("users/" + uid + "/appData") : aarishCostAppRefV1();
+    } catch(e) {
+        ref = aarishCostAppRefV1();
+    }
     if (!ref) return { ok: false, reason: "no_ref" };
 
     var release = aarishCostAcquireLockV1();
@@ -4615,7 +4897,11 @@ async function flushFirebaseWriteOutboxV87(reason, opts) {
     __aarishCostFlushBusyV1 = true;
 
     try {
+        if (!aarishCostSameUidCoreV3(uid)) return { ok:false, reason:"uid_changed_before_read" };
+
         var items = await aarishCostGetOutboxV1();
+
+        if (!aarishCostSameUidCoreV3(uid)) return { ok:false, reason:"uid_changed_after_read" };
 
         if (!items.length) {
             clearTimeout(__aarishCostFlushHardTimerV1);
@@ -4629,16 +4915,20 @@ async function flushFirebaseWriteOutboxV87(reason, opts) {
         var ids = batch.map(function(x) { return x.id; });
         var rev = Number(mega && mega["_syncMeta/rev"] || Date.now());
 
-        await Promise.race([
+        if (!batch.length || !Object.keys(mega || {}).length) return { ok:true, empty:true };
+        if (!aarishCostSameUidCoreV3(uid)) return { ok:false, reason:"uid_changed_before_update" };
+
+        await aarishCostWithTimeoutCoreV5(
             ref.update(mega),
-            new Promise(function(_, reject) {
-                setTimeout(function(){ reject(new Error("firebase-update-timeout")); }, 22000);
-            })
-        ]);
+            "firebase-update",
+            22000
+        );
+
+        if (!aarishCostSameUidCoreV3(uid)) return { ok:false, reason:"uid_changed_after_update" };
 
         window.__aarishFirebaseCostRevV81 = Number.isFinite(rev) && rev > 0 ? rev : Date.now();
 
-        await aarishCostDeleteOutboxV1(ids);
+        await aarishCostDeleteOutboxV1(ids, uid);
         await saveCacheNowCostV81("flush-" + String(reason || ""));
 
         if (items.length > batch.length) {
@@ -4675,7 +4965,6 @@ async function aarishOutboxStatusV83() {
 
 window.aarishOutboxStatusV83 = aarishOutboxStatusV83;
 window.aarishSyncGuardStatusV87 = aarishOutboxStatusV83;
-
 async function fullFirebaseSyncCostV81(reason) {
     var uid = aarishCostUidV1();
     if (!uid) return false;
@@ -4685,17 +4974,13 @@ async function fullFirebaseSyncCostV81(reason) {
     appDataRef = database.ref("users/" + uid + "/appData");
 
     try {
-        /*
-          Atomic cloud load:
-          Read /appData once, then normalize locally.
-          This prevents mixed cloud revisions during reconnect or multi-device sync.
-        */
-        var snap = await Promise.race([
+        var snap = await aarishCostWithTimeoutCoreV5(
             appDataRef.once("value"),
-            new Promise(function(_, reject) {
-                setTimeout(function(){ reject(new Error("appdata-timeout")); }, 9000);
-            })
-        ]);
+            "appdata-read",
+            9000
+        );
+
+        if (!aarishCostSameUidCoreV3(uid)) return false;
 
         var raw = (snap && snap.val && snap.val()) || {};
         var state = aarishCostNormalizeStateV1(raw);
@@ -4705,6 +4990,10 @@ async function fullFirebaseSyncCostV81(reason) {
         var rev = Number(meta.rev || 0);
         window.__aarishFirebaseCostRevV81 = Number.isFinite(rev) && rev > 0 ? rev : Date.now();
         window.__aarishCacheLoadedWithoutServerRevV81 = false;
+
+        await aarishCostReplayOutboxToLocalCoreV3("after-cloud-pull", { render:false });
+
+        if (!aarishCostSameUidCoreV3(uid)) return false;
 
         await saveCacheNowCostV81(reason || "full-sync-atomic");
         aarishCostShowAppV1();
@@ -4722,7 +5011,6 @@ window.fullFirebaseSyncCostV81 = fullFirebaseSyncCostV81;
 window.aarishForceFullFirebaseSyncV81 = function() {
     return fullFirebaseSyncCostV81("manual-force-sync");
 };
-
 async function aarishAutoPullCloudIfNewerV87(reason, opts) {
     opts = opts || {};
 
@@ -4757,10 +5045,15 @@ async function aarishAutoPullCloudIfNewerV87(reason, opts) {
             };
         }
 
-        var snap = await Promise.race([
+        if (!aarishCostSameUidCoreV3(uid)) return { ok:false, reason:"uid_changed_before_meta" };
+
+        var snap = await aarishCostWithTimeoutCoreV5(
             ref.child("_syncMeta/rev").once("value"),
-            new Promise(function(_, reject) { setTimeout(function(){ reject(new Error("meta-timeout")); }, 6500); })
-        ]);
+            "meta-timeout",
+            6500
+        );
+
+        if (!aarishCostSameUidCoreV3(uid)) return { ok:false, reason:"uid_changed_after_meta" };
 
         var cloudRev = Number(snap.val() || 0);
         var localRev = Number(window.__aarishFirebaseCostRevV81 || 0);
@@ -4832,13 +5125,24 @@ installFirebaseCostCoreV1();
 
 
 async function loadUserData() {
+    var uid = aarishCostUidV1();
+    if (!uid) {
+        try { hideLoader(); } catch(e) {}
+        return;
+    }
+
+    var token = uid + "::" + Date.now() + "::" + Math.random().toString(36).slice(2);
+    window.__aarishLoadUserDataTokenCoreV3 = token;
+
     showLoader("SYNCING DATA...");
-    appDataRef = database.ref(`users/${currentUserUID}/appData`);
+    appDataRef = database.ref("users/" + uid + "/appData");
 
     try {
         installFirebaseCostCoreV1();
 
         const hasCache = await loadCacheCostV81();
+
+        if (window.__aarishLoadUserDataTokenCoreV3 !== token || !aarishCostSameUidCoreV3(uid)) return;
 
         if (hasCache) {
             aarishCostShowAppV1();
@@ -4846,7 +5150,9 @@ async function loadUserData() {
 
             clearTimeout(__aarishCostMetaCheckTimerV1);
             __aarishCostMetaCheckTimerV1 = setTimeout(function() {
-                aarishAutoPullCloudIfNewerV87("cache-boot-meta", { force: true });
+                if (window.__aarishLoadUserDataTokenCoreV3 === token && aarishCostSameUidCoreV3(uid)) {
+                    aarishAutoPullCloudIfNewerV87("cache-boot-meta", { force: true });
+                }
             }, 1700);
 
             return;
@@ -4855,7 +5161,9 @@ async function loadUserData() {
         await fullFirebaseSyncCostV81("first-open-no-cache");
     } catch(e) {
         console.warn("Aarish cost-core load failed, falling back to one-time Firebase sync:", e);
-        await fullFirebaseSyncCostV81("fallback-after-cost-core-error");
+        if (window.__aarishLoadUserDataTokenCoreV3 === token && aarishCostSameUidCoreV3(uid)) {
+            await fullFirebaseSyncCostV81("fallback-after-cost-core-error");
+        }
     }
 }
 
