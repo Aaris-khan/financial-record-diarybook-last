@@ -494,7 +494,7 @@
         .dark #gemini-draggable-logo { background: #1C1C1E; border-color: rgba(255,255,255,0.1); }
         .gemini-spinning { animation: geminiSpin 1.5s linear infinite; }
         @keyframes geminiSpin { 100% { transform: rotate(360deg); } }
-        #gemini-chat-window { position: fixed; bottom: 150px; right: 20px; width: 330px; height: 440px; background: #fff; border-radius: 24px; box-shadow: 0 10px 40px rgba(0,0,0,0.2); display: flex; flex-direction: column; overflow: hidden; z-index: 999998; border: 1px solid rgba(155, 114, 203, 0.2); transition: 0.3s; }
+        #gemini-chat-window { position: fixed; left: 50%; top: 50%; right: auto; bottom: auto; width: min(92vw, 380px); height: min(72vh, 560px); max-height: calc(100dvh - 96px); transform: translate3d(-50%, -50%, 0); background: #fff; border-radius: 24px; box-shadow: 0 18px 54px rgba(0,0,0,0.24); display: flex; flex-direction: column; overflow: hidden; z-index: 999998; border: 1px solid rgba(155, 114, 203, 0.2); transition: transform 0.22s cubic-bezier(0.32, 0.72, 0, 1), opacity 0.22s ease; will-change: transform, opacity; }
         .dark #gemini-chat-window { background: #1C1C1E; border-color: rgba(255,255,255,0.1); }
         .hidden-chat { display: none !important; opacity: 0; transform: translateY(20px); }
         .chat-msg { padding: 10px 14px; border-radius: 18px; font-size: 14px; max-width: 85%; line-height: 1.4; }
@@ -2672,13 +2672,13 @@ button,
 /* Linear-style list entrance; delay set by JS only on visible active screen. */
 .list-enter {
     opacity: 0;
-    transform: translate3d(10px, 18px, 0) scale(0.968);
-    animation: aarishUltraListEnterV3 480ms var(--spring-bounce) forwards !important;
+    transform: translate3d(6px, 10px, 0) scale(0.985);
+    animation: aarishUltraListEnterV3 320ms var(--spring-snappy) forwards !important;
     animation-delay: var(--aarish-stagger, 0ms) !important;
 }
 @keyframes aarishUltraListEnterV3 {
-    0%   { opacity: 0; transform: translate3d(10px, 18px, 0) scale(0.968); }
-    68%  { opacity: 1; transform: translate3d(-1px, -2px, 0) scale(1.006); }
+    0%   { opacity: 0; transform: translate3d(6px, 10px, 0) scale(0.985); }
+    58%  { opacity: 1; transform: translate3d(0, -1px, 0) scale(1.003); }
     100% { opacity: 1; transform: translate3d(0, 0, 0) scale(1); }
 }
 
@@ -3016,47 +3016,27 @@ html.aarish-tab-switching-v31 .aarish-release-bounce-v3 {
 
 /* AARISH_MOTION_V32_LEGACY_SLIDE_CLASH_FIX_START */
 /*
-   Fix: one motion owner during tab switches.
+   Core surgical update:
    - Legacy slideIn / slideInRight are disabled above by the patcher.
-   - Browser ViewTransition is disabled in JS, so V3 CSS handles screen motion.
-   - During a tab switch, list/card enter animations are suppressed so they don't fight the screen transition.
-   Firebase/Gemini/CSV/PDF/data logic untouched.
+   - Browser ViewTransition is disabled in JS, so V3 CSS is the single screen engine.
+   - Do NOT suppress .list-enter anymore; cards can appear immediately and settle fast after module open.
+   - No extra overlay/wrapper/observer; Firebase/Gemini/CSV/PDF/data logic untouched.
 */
-html.aarish-tab-switching-v31 .screen.active .list-enter,
-html.aarish-tab-switching-v31 .screen.active .list-enter *,
-html.aarish-vt-running-v3 .screen.active .list-enter,
-html.aarish-vt-running-v3 .screen.active .list-enter *,
-.screen.aarish-screen-exit-v3 .list-enter,
-.screen.aarish-screen-exit-v3 .list-enter * {
-    animation: none !important;
-    transition: none !important;
-}
-
-html.aarish-tab-switching-v31 .screen.active .list-enter,
-html.aarish-vt-running-v3 .screen.active .list-enter,
-.screen.aarish-screen-exit-v3 .list-enter {
-    opacity: 1 !important;
-    transform: none !important;
-}
-
-/* Keep only V3 screen choreography during tab switch. */
 html.aarish-tab-switching-v31 .screen.active {
-    animation: aarishUltraScreenEnterV3 var(--duration-normal) var(--spring-snappy) both !important;
+    animation: aarishUltraScreenEnterV3 260ms var(--spring-snappy) both !important;
     will-change: transform, opacity !important;
 }
 
-/* Prevent lingering active transforms from nested cards while the screen itself is moving. */
+/* Prevent active press transform from fighting the screen during the first instant of a tab switch. */
 html.aarish-tab-switching-v31 .screen.active .glass-card:active {
     transform: none !important;
 }
 
-/* Bottom nav should change state smoothly without release bounce fighting the tab transition. */
+/* Bottom nav should change state smoothly without release-bounce fighting the tab transition. */
 html.aarish-tab-switching-v31 .bottom-nav .nav-item.aarish-release-bounce-v3,
 html.aarish-tab-switching-v31 .bottom-nav .nav-item.active {
-    animation-duration: 180ms !important;
+    animation-duration: 140ms !important;
 }
-
-*/
 /* AARISH_MOTION_V32_LEGACY_SLIDE_CLASH_FIX_END */
 </style>
 
@@ -11255,9 +11235,7 @@ function aarishCsvRowCoreV4(values) {
     function setStagger(root = activeRoot()) {
         const items = qsa('.list-enter', root).slice(0, 80);
         items.forEach((el, index) => {
-            if (!el.style.getPropertyValue('--aarish-stagger')) {
-                el.style.setProperty('--aarish-stagger', Math.min(index * 35, 400) + 'ms');
-            }
+            el.style.setProperty('--aarish-stagger', Math.min(index * 16, 140) + 'ms');
         });
     }
 
@@ -11442,7 +11420,7 @@ function aarishCsvRowCoreV4(values) {
             clearTimeout(window.__aarishTabSwitchingTimerV31);
             window.__aarishTabSwitchingTimerV31 = setTimeout(() => {
                 document.documentElement.classList.remove('aarish-tab-switching-v31');
-            }, 520);
+            }, 260);
 
             // V3.1: Do NOT run CSS exit slide when ViewTransition is active.
             // This removes the double visual jerk on bottom nav / screen switches.
@@ -11471,9 +11449,9 @@ function aarishCsvRowCoreV4(values) {
                 }
             } else {
                 runSwitch();
+                setStagger(activeRoot());
             }
-
-            raf2(() => { setStagger(); inputLabels(); installNavPill(); scanMoneyActive(); });
+            raf2(() => { inputLabels(); installNavPill(); scanMoneyActive(); });
             return result;
         });
 
@@ -11528,7 +11506,8 @@ function aarishCsvRowCoreV4(values) {
                 const root = activeRoot();
                 const before = flipSnapshot(root);
                 const result = original.apply(this, arguments);
-                raf2(() => { setStagger(root); flipPlay(before, activeRoot()); scanMoneyActive(); });
+                setStagger(activeRoot());
+                raf2(() => { flipPlay(before, activeRoot()); scanMoneyActive(); });
                 return result;
             });
         });
