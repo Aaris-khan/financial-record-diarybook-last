@@ -110,18 +110,12 @@
 
         /* Smooth Screen Transitions */
         .screen { display: none; flex-direction: column; height: 100vh; height: 100dvh; overflow-y: auto; padding-bottom: 120px; position: relative; z-index: 2; }
-        .screen.active { display: flex; animation: slideIn 0.4s cubic-bezier(0.32, 0.72, 0, 1); }
-        @keyframes slideIn { from { opacity: 0; transform: translateX(20px); } to { opacity: 1; transform: translateX(0); } }
+        .screen.active { display: flex; } /* AARISH_LEGACY_SCREEN_SLIDE_DISABLED_V32: V3 owns screen motion */
+        /* AARISH_LEGACY_SCREEN_KEYFRAMES_DISABLED_V32 */
         
                 /* 2. PREMIUM SIDE-SLIDE ANIMATION */
-        .list-enter {
-            animation: slideInRight 0.45s cubic-bezier(0.25, 1, 0.5, 1) forwards;
-            opacity: 0;
-            transform: translateX(40px);
-        }
-        @keyframes slideInRight {
-            to { opacity: 1; transform: translateX(0); }
-        }
+        .list-enter { /* AARISH_LEGACY_LIST_SLIDE_DISABLED_V32: V3 owns list motion */ }
+        /* AARISH_LEGACY_LIST_KEYFRAMES_DISABLED_V32 */
 
 
         /* Advanced Frosted Glass Cards + Premium Active Glow */
@@ -3019,6 +3013,51 @@ html.aarish-tab-switching-v31 .aarish-release-bounce-v3 {
 }
 /* AARISH_MOTION_V31_DOUBLE_JERK_HOTFIX_CSS_END */
 /* AARISH_ULTRA_CORE_MOTION_V3_END */
+
+/* AARISH_MOTION_V32_LEGACY_SLIDE_CLASH_FIX_START */
+/*
+   Fix: one motion owner during tab switches.
+   - Legacy slideIn / slideInRight are disabled above by the patcher.
+   - Browser ViewTransition is disabled in JS, so V3 CSS handles screen motion.
+   - During a tab switch, list/card enter animations are suppressed so they don't fight the screen transition.
+   Firebase/Gemini/CSV/PDF/data logic untouched.
+*/
+html.aarish-tab-switching-v31 .screen.active .list-enter,
+html.aarish-tab-switching-v31 .screen.active .list-enter *,
+html.aarish-vt-running-v3 .screen.active .list-enter,
+html.aarish-vt-running-v3 .screen.active .list-enter *,
+.screen.aarish-screen-exit-v3 .list-enter,
+.screen.aarish-screen-exit-v3 .list-enter * {
+    animation: none !important;
+    transition: none !important;
+}
+
+html.aarish-tab-switching-v31 .screen.active .list-enter,
+html.aarish-vt-running-v3 .screen.active .list-enter,
+.screen.aarish-screen-exit-v3 .list-enter {
+    opacity: 1 !important;
+    transform: none !important;
+}
+
+/* Keep only V3 screen choreography during tab switch. */
+html.aarish-tab-switching-v31 .screen.active {
+    animation: aarishUltraScreenEnterV3 var(--duration-normal) var(--spring-snappy) both !important;
+    will-change: transform, opacity !important;
+}
+
+/* Prevent lingering active transforms from nested cards while the screen itself is moving. */
+html.aarish-tab-switching-v31 .screen.active .glass-card:active {
+    transform: none !important;
+}
+
+/* Bottom nav should change state smoothly without release bounce fighting the tab transition. */
+html.aarish-tab-switching-v31 .bottom-nav .nav-item.aarish-release-bounce-v3,
+html.aarish-tab-switching-v31 .bottom-nav .nav-item.active {
+    animation-duration: 180ms !important;
+}
+
+*/
+/* AARISH_MOTION_V32_LEGACY_SLIDE_CLASH_FIX_END */
 </style>
 
      
@@ -11395,7 +11434,7 @@ function aarishCsvRowCoreV4(values) {
         wrapFunction('switchTab', (original) => function(tab) {
             safeHaptic(25);
             const reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-            const useVT = !!(document.startViewTransition && !reduceMotion);
+            const useVT = false; // AARISH_V32: Browser ViewTransition disabled; V3 CSS is the single screen engine.
             const current = qs('.screen.active');
             const nextId = String(tab) + '-screen';
 
