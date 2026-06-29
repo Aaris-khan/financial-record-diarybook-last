@@ -2581,6 +2581,427 @@ button[data-business-entry-core] {
   }
 }
 /* AARISH_NET_CARD_TONE_PARITY_V13_END */
+
+/* AARISH_ULTRA_CORE_MOTION_V3_START */
+:root {
+    --spring-bounce:     cubic-bezier(0.34, 1.56, 0.64, 1);
+    --spring-smooth:     cubic-bezier(0.25, 1.0, 0.5, 1);
+    --spring-snappy:     cubic-bezier(0.32, 0.72, 0.0, 1);
+    --spring-gentle:     cubic-bezier(0.4, 0.0, 0.2, 1);
+    --spring-overshoot:  cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    --duration-instant:  120ms;
+    --duration-fast:     240ms;
+    --duration-normal:   380ms;
+    --duration-slow:     520ms;
+}
+
+/* Core rule: never overwrite layout-critical transforms like bottom-nav translateX(-50%). */
+.screen,
+.glass-card,
+.modal-content,
+#toast,
+#global-loader,
+#gemini-draggable-logo,
+.nav-item,
+.btn-primary,
+.btn-ios-share,
+.btn-ios-add,
+.action-btn,
+button,
+.input-box,
+.table-custom tr,
+.list-enter {
+    backface-visibility: hidden !important;
+    -webkit-backface-visibility: hidden !important;
+    -webkit-font-smoothing: antialiased;
+}
+
+.screen {
+    contain: layout style !important;
+    scroll-behavior: smooth !important;
+    overscroll-behavior: contain !important;
+    -webkit-overflow-scrolling: touch !important;
+}
+
+.glass-card {
+    /* V3 safety: no preserve-3d and no overflow:hidden on cards; Safari/Android glass blur + edge badges stay safe. */
+    contain: layout style !important;
+    position: relative !important;
+    transition:
+        transform var(--duration-fast) var(--spring-snappy),
+        box-shadow var(--duration-normal) var(--spring-smooth),
+        opacity var(--duration-fast) var(--spring-smooth),
+        border-color var(--duration-normal) var(--spring-smooth),
+        background-color var(--duration-normal) var(--spring-smooth) !important;
+}
+
+.glass-card:active {
+    transform: scale(0.968) !important;
+}
+
+.bottom-nav {
+    contain: layout style !important;
+    transform: translateX(-50%) translateZ(0) !important;
+    will-change: scroll-position;
+}
+
+.app-container {
+    transition:
+        transform var(--duration-normal) var(--spring-snappy),
+        border-radius var(--duration-normal) var(--spring-snappy),
+        opacity var(--duration-fast) var(--spring-smooth),
+        filter var(--duration-normal) var(--spring-snappy) !important;
+}
+.app-scale-down {
+    filter: brightness(0.86) saturate(0.96) !important;
+}
+
+/* iOS-grade screen choreography */
+.screen.active {
+    animation: aarishUltraScreenEnterV3 var(--duration-normal) var(--spring-snappy) both !important;
+}
+.screen.aarish-screen-exit-v3 {
+    display: flex !important;
+    pointer-events: none !important;
+    animation: aarishUltraScreenExitV3 var(--duration-fast) var(--spring-smooth) both !important;
+}
+@keyframes aarishUltraScreenEnterV3 {
+    0%   { opacity: 0; transform: translate3d(7%, 0, 0) scale(0.982); }
+    70%  { opacity: 1; transform: translate3d(-0.8%, 0, 0) scale(1.002); }
+    100% { opacity: 1; transform: translate3d(0, 0, 0) scale(1); }
+}
+@keyframes aarishUltraScreenExitV3 {
+    0%   { opacity: 1; transform: translate3d(0, 0, 0) scale(1); }
+    100% { opacity: 0.62; transform: translate3d(-3.5%, 0, 0) scale(0.97); }
+}
+
+/* Linear-style list entrance; delay set by JS only on visible active screen. */
+.list-enter {
+    opacity: 0;
+    transform: translate3d(10px, 18px, 0) scale(0.968);
+    animation: aarishUltraListEnterV3 480ms var(--spring-bounce) forwards !important;
+    animation-delay: var(--aarish-stagger, 0ms) !important;
+}
+@keyframes aarishUltraListEnterV3 {
+    0%   { opacity: 0; transform: translate3d(10px, 18px, 0) scale(0.968); }
+    68%  { opacity: 1; transform: translate3d(-1px, -2px, 0) scale(1.006); }
+    100% { opacity: 1; transform: translate3d(0, 0, 0) scale(1); }
+}
+
+/* Button physics: feedback without permanent transform clobber. */
+.btn-primary,
+.btn-ios-share,
+.btn-ios-add,
+.action-btn,
+button {
+    transition:
+        transform var(--duration-fast) var(--spring-snappy),
+        opacity var(--duration-fast) var(--spring-smooth),
+        box-shadow var(--duration-normal) var(--spring-smooth),
+        background-color var(--duration-normal) var(--spring-smooth),
+        border-color var(--duration-normal) var(--spring-smooth) !important;
+}
+.btn-primary:active,
+.btn-ios-share:active,
+.btn-ios-add:active,
+.action-btn:active,
+button:active {
+    transform: translate3d(0, 1px, 0) scale(0.94) !important;
+    transition-duration: 80ms !important;
+    transition-timing-function: var(--spring-snappy) !important;
+}
+.aarish-release-bounce-v3 {
+    animation: aarishUltraReleaseBounceV3 var(--duration-normal) var(--spring-bounce) both !important;
+}
+@keyframes aarishUltraReleaseBounceV3 {
+    0%   { transform: translate3d(0, 1px, 0) scale(0.94); }
+    55%  { transform: translate3d(0, -1px, 0) scale(1.032); }
+    100% { transform: translate3d(0, 0, 0) scale(1); }
+}
+
+/* Tap ripple: does not change card color/gradient, only transient light overlay. */
+.aarish-ripple-v3 {
+    position: absolute !important;
+    left: var(--aarish-ripple-x, 50%);
+    top: var(--aarish-ripple-y, 50%);
+    width: var(--aarish-ripple-size, 120px);
+    height: var(--aarish-ripple-size, 120px);
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.35);
+    pointer-events: none;
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0);
+    animation: aarishUltraRippleV3 600ms var(--spring-smooth) forwards;
+    mix-blend-mode: overlay;
+    z-index: 1;
+}
+.glass-card > * { position: relative; z-index: 2; }
+@keyframes aarishUltraRippleV3 {
+    0%   { opacity: 0.86; transform: translate(-50%, -50%) scale(0); }
+    62%  { opacity: 0.30; }
+    100% { opacity: 0; transform: translate(-50%, -50%) scale(2.5); }
+}
+
+/* Nav: icon pop + sliding indicator, exact existing colors preserved. */
+.nav-item { position: relative; z-index: 2; }
+.nav-item.active { animation: aarishUltraNavLabelV3 var(--duration-normal) var(--spring-smooth) both; }
+.nav-item.active i { animation: aarishUltraNavIconV3 460ms var(--spring-bounce) both; }
+.aarish-nav-pill-v3 {
+    position: absolute;
+    left: 0;
+    bottom: calc(7px + env(safe-area-inset-bottom));
+    height: 4px;
+    width: 34px;
+    border-radius: 999px;
+    background: rgba(0, 122, 255, 0.22);
+    box-shadow: 0 0 18px rgba(0, 122, 255, 0.28);
+    transform: translate3d(18px, 0, 0);
+    transition: transform var(--duration-normal) var(--spring-snappy), width var(--duration-normal) var(--spring-snappy), opacity var(--duration-fast) var(--spring-smooth);
+    pointer-events: none;
+    z-index: 1;
+    opacity: 0.9;
+}
+@keyframes aarishUltraNavIconV3 {
+    0%   { opacity: 0; transform: translate3d(0, 4px, 0) scale(0.70); }
+    54%  { opacity: 1; transform: translate3d(0, -2px, 0) scale(1.20); }
+    100% { opacity: 1; transform: translate3d(0, 0, 0) scale(1); }
+}
+@keyframes aarishUltraNavLabelV3 {
+    0%   { opacity: 0.78; transform: translate3d(0, 4px, 0); }
+    60%  { opacity: 1; transform: translate3d(0, -4px, 0); }
+    100% { opacity: 1; transform: translate3d(0, -3px, 0); }
+}
+
+/* Gemini FAB: disabled while dragging/spinning; keeps original drag logic. */
+#gemini-draggable-logo:not(.gemini-spinning):not(.aarish-fab-dragging-v3) {
+    animation: aarishUltraFabFloatV3 3s var(--spring-gentle) infinite;
+    transition: box-shadow var(--duration-normal) var(--spring-smooth), opacity var(--duration-fast) var(--spring-smooth) !important;
+}
+#gemini-draggable-logo.aarish-fab-tap-v3 {
+    animation: aarishUltraFabTapV3 520ms var(--spring-bounce) both !important;
+}
+@keyframes aarishUltraFabFloatV3 {
+    0%, 100% { transform: translate3d(0, 0, 0); }
+    50%      { transform: translate3d(0, -3px, 0); }
+}
+@keyframes aarishUltraFabTapV3 {
+    0%   { transform: scale(0.88); }
+    52%  { transform: scale(1.08); }
+    100% { transform: scale(1); }
+}
+
+.aarish-delete-shake-v3 { animation: aarishUltraDeleteShakeV3 260ms var(--spring-snappy) both !important; }
+@keyframes aarishUltraDeleteShakeV3 {
+    0%, 100% { transform: translate3d(0, 0, 0); }
+    18%      { transform: translate3d(-4px, 0, 0); }
+    36%      { transform: translate3d(4px, 0, 0); }
+    54%      { transform: translate3d(-4px, 0, 0); }
+    72%      { transform: translate3d(4px, 0, 0); }
+}
+
+.input-box {
+    transition: transform 280ms var(--spring-smooth), background-color 280ms var(--spring-smooth), border-color 280ms var(--spring-smooth), box-shadow 280ms var(--spring-smooth), color 280ms var(--spring-smooth) !important;
+}
+.input-box:focus { transform: translate3d(0, -1px, 0); }
+.aarish-input-wrap-v3 { position: relative !important; }
+.aarish-input-wrap-v3::after {
+    content: attr(data-aarish-label);
+    position: absolute;
+    left: 18px;
+    top: 5px;
+    max-width: calc(100% - 36px);
+    pointer-events: none;
+    opacity: 0;
+    transform: translate3d(0, 8px, 0) scale(1);
+    transform-origin: left center;
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 0.02em;
+    color: currentColor;
+    filter: blur(4px);
+    transition: transform 280ms var(--spring-smooth), opacity 220ms var(--spring-smooth), filter 280ms var(--spring-smooth);
+    z-index: 4;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.aarish-input-wrap-v3:focus-within::after {
+    opacity: 0.72;
+    filter: blur(0);
+    transform: translate3d(0, -12px, 0) scale(0.85);
+}
+
+#toast { transition: none !important; will-change: transform, opacity, filter; }
+#toast.show:not(.aarish-toast-out-v3) { animation: aarishUltraToastInV3 480ms var(--spring-bounce) both !important; }
+#toast.show.aarish-toast-out-v3 { animation: aarishUltraToastOutV3 320ms var(--spring-smooth) both !important; }
+@keyframes aarishUltraToastInV3 {
+    0%   { opacity: 0; filter: blur(8px); transform: translateX(-50%) translateY(-120%) scale(0.85); }
+    64%  { opacity: 1; filter: blur(0); transform: translateX(-50%) translateY(8px) scale(1.04); }
+    100% { opacity: 1; filter: blur(0); transform: translateX(-50%) translateY(0) scale(1); }
+}
+@keyframes aarishUltraToastOutV3 {
+    0%   { opacity: 1; filter: blur(0); transform: translateX(-50%) translateY(0) scale(1); }
+    100% { opacity: 0; filter: blur(4px); transform: translateX(-50%) translateY(-120%) scale(0.90); }
+}
+
+.modal-overlay {
+    transition: opacity 200ms var(--spring-smooth), backdrop-filter 280ms var(--spring-smooth), -webkit-backdrop-filter 280ms var(--spring-smooth) !important;
+}
+.modal-overlay.aarish-modal-visible-v3,
+.modal-overlay[style*="display: flex"] {
+    backdrop-filter: blur(12px) !important;
+    -webkit-backdrop-filter: blur(12px) !important;
+}
+.modal-content { animation: aarishUltraModalInV3 var(--duration-normal) var(--spring-snappy) both !important; }
+.modal-overlay.aarish-modal-closing-v3 .modal-content { animation: aarishUltraModalOutV3 var(--duration-fast) var(--spring-smooth) both !important; }
+@keyframes aarishUltraModalInV3 {
+    0%   { opacity: 0; transform: translate3d(0, 100%, 0) scale(0.98); }
+    78%  { opacity: 1; transform: translate3d(0, -1.5%, 0) scale(1.002); }
+    100% { opacity: 1; transform: translate3d(0, 0, 0) scale(1); }
+}
+@keyframes aarishUltraModalOutV3 {
+    0%   { opacity: 1; transform: translate3d(0, 0, 0) scale(1); }
+    100% { opacity: 0; transform: translate3d(0, 14%, 0) scale(0.98); }
+}
+
+.list-enter[class*="opacity-50"] > div:first-child,
+.aarish-empty-state-icon-v3 {
+    animation: aarishUltraEmptyIconV3 620ms var(--spring-bounce) both, aarishUltraEmptyPulseV3 2.8s var(--spring-smooth) 720ms infinite;
+}
+.list-enter[class*="opacity-50"] p { animation: aarishUltraEmptyTextV3 520ms var(--spring-smooth) 80ms both; }
+@keyframes aarishUltraEmptyIconV3 {
+    0% { opacity: 0; transform: scale(0); }
+    64% { opacity: 1; transform: scale(1.10); }
+    100% { opacity: 1; transform: scale(1); }
+}
+@keyframes aarishUltraEmptyTextV3 {
+    0% { opacity: 0; transform: translate3d(0, 10px, 0); }
+    100% { opacity: 1; transform: translate3d(0, 0, 0); }
+}
+@keyframes aarishUltraEmptyPulseV3 {
+    0%, 100% { box-shadow: 0 0 0 rgba(0, 122, 255, 0); }
+    50% { box-shadow: 0 0 28px rgba(0, 122, 255, 0.14); }
+}
+
+/* Liquid loader keeps #007AFF as requested and original spinner remains fallback. */
+#global-loader .spinner {
+    border: 0 !important;
+    width: 54px !important;
+    height: 54px !important;
+    border-radius: 42% 58% 54% 46% / 46% 44% 56% 54% !important;
+    background: #007AFF !important;
+    box-shadow: 0 14px 42px rgba(0, 122, 255, 0.30), inset 0 1px 0 rgba(255, 255, 255, 0.35) !important;
+    animation: aarishUltraLiquidBlobV3 1.4s var(--spring-smooth) infinite !important;
+    position: relative;
+    overflow: hidden;
+}
+#global-loader .spinner::after {
+    content: "";
+    position: absolute;
+    inset: 8px 10px auto auto;
+    width: 14px;
+    height: 14px;
+    border-radius: 999px;
+    background: rgba(255,255,255,0.38);
+    filter: blur(1px);
+}
+@keyframes aarishUltraLiquidBlobV3 {
+    0%, 100% { transform: rotate(0deg) scale(1); border-radius: 42% 58% 54% 46% / 46% 44% 56% 54%; }
+    50% { transform: rotate(180deg) scale(1.06); border-radius: 58% 42% 44% 56% / 55% 58% 42% 45%; }
+}
+
+.aarish-skeleton-layer-v3 {
+    position: absolute;
+    inset: 88px 18px 130px 18px;
+    z-index: 3;
+    pointer-events: none;
+    display: grid;
+    align-content: start;
+    gap: 14px;
+    opacity: 0;
+    animation: aarishUltraSkeletonInV3 260ms var(--spring-smooth) forwards;
+}
+.aarish-skeleton-card-v3 {
+    height: 86px;
+    border-radius: 24px;
+    background: linear-gradient(90deg, rgba(142,142,147,0.10) 0%, rgba(142,142,147,0.20) 42%, rgba(142,142,147,0.10) 84%);
+    background-size: 220% 100%;
+    animation: aarishUltraSkeletonShimmerV3 1.4s linear infinite;
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+}
+@keyframes aarishUltraSkeletonInV3 { to { opacity: 1; } }
+@keyframes aarishUltraSkeletonShimmerV3 { from { background-position: 120% 0; } to { background-position: -120% 0; } }
+
+.ambient-glow,
+.ambient-glow-2 {
+    transition: transform 1.2s var(--spring-smooth), filter var(--duration-slow) var(--spring-smooth), opacity var(--duration-slow) var(--spring-smooth) !important;
+}
+
+@media (hover: hover) and (pointer: fine) {
+    .aarish-magnetic-v3 {
+        transform: translate3d(var(--aarish-mx, 0px), var(--aarish-my, 0px), 0) !important;
+    }
+}
+
+
+/* Optional View Transitions API: used only where supported; falls back to existing screen animation. */
+::view-transition-old(root),
+::view-transition-new(root) {
+    animation-duration: 280ms;
+    animation-timing-function: var(--spring-snappy);
+}
+html.aarish-vt-running-v3 .screen.active {
+    animation: none !important;
+}
+
+/* Modern CSS entry hints: safe no-op on unsupported browsers. */
+@supports (transition-behavior: allow-discrete) {
+    .modal-overlay.aarish-modal-visible-v3 {
+        @starting-style {
+            opacity: 0;
+            backdrop-filter: blur(0px);
+            -webkit-backdrop-filter: blur(0px);
+        }
+    }
+    #toast.show:not(.aarish-toast-out-v3) {
+        @starting-style {
+            opacity: 0;
+            filter: blur(8px);
+            transform: translateX(-50%) translateY(-120%) scale(0.85);
+        }
+    }
+}
+
+/* Scroll-driven depth is feature-gated; it never runs on older Android WebViews. */
+@supports (animation-timeline: view()) {
+    .screen.active .glass-card:not(.list-enter) {
+        animation: aarishUltraScrollDepthV3 linear both;
+        animation-timeline: view();
+        animation-range: entry 0% cover 22%;
+    }
+    @keyframes aarishUltraScrollDepthV3 {
+        0% { opacity: 0.84; transform: translate3d(0, 8px, 0) scale(0.992); }
+        100% { opacity: 1; transform: translate3d(0, 0, 0) scale(1); }
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .screen.active,
+    .screen.aarish-screen-exit-v3,
+    .list-enter,
+    #toast.show,
+    .modal-content,
+    #gemini-draggable-logo,
+    .aarish-ripple-v3,
+    .aarish-release-bounce-v3,
+    .aarish-delete-shake-v3 {
+        animation-duration: 1ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 1ms !important;
+    }
+}
+/* AARISH_ULTRA_CORE_MOTION_V3_END */
 </style>
 
      
@@ -10731,5 +11152,412 @@ function aarishCsvRowCoreV4(values) {
 
 </script>
 
+
+<script>
+/* AARISH_ULTRA_CORE_MOTION_JS_V3_START */
+(function () {
+    "use strict";
+    if (window.__AARISH_ULTRA_CORE_MOTION_V3__) return;
+    window.__AARISH_ULTRA_CORE_MOTION_V3__ = true;
+
+    const qs = (sel, root = document) => root.querySelector(sel);
+    const qsa = (sel, root = document) => Array.from(root.querySelectorAll(sel));
+    const raf2 = (fn) => requestAnimationFrame(() => requestAnimationFrame(fn));
+    const idle = (fn) => (window.requestIdleCallback ? requestIdleCallback(fn, { timeout: 700 }) : setTimeout(fn, 80));
+
+    let lastHapticAt = 0;
+    function safeHaptic(pattern) {
+        const now = Date.now();
+        if (now - lastHapticAt < 95) return;
+        lastHapticAt = now;
+        try {
+            if (typeof window.haptic === "function") window.haptic();
+            else if (navigator.vibrate) navigator.vibrate(pattern || 28);
+        } catch (_) {}
+    }
+
+    function activeRoot() {
+        return qs('.screen.active') || document.body;
+    }
+
+    function setStagger(root = activeRoot()) {
+        const items = qsa('.list-enter', root).slice(0, 80);
+        items.forEach((el, index) => {
+            if (!el.style.getPropertyValue('--aarish-stagger')) {
+                el.style.setProperty('--aarish-stagger', Math.min(index * 35, 400) + 'ms');
+            }
+        });
+    }
+
+    function inputLabels(root = activeRoot()) {
+        qsa('input.input-box, textarea.input-box, select.input-box', root).forEach((input) => {
+            const label = input.getAttribute('placeholder') || input.getAttribute('aria-label') || input.getAttribute('name') || '';
+            if (!label) return;
+            const wrap = input.closest('.relative') || input.parentElement;
+            if (!wrap) return;
+            wrap.classList.add('aarish-input-wrap-v3');
+            if (!wrap.getAttribute('data-aarish-label')) wrap.setAttribute('data-aarish-label', label);
+        });
+    }
+
+    function installNavPill() {
+        const nav = qs('.bottom-nav');
+        if (!nav) return;
+        let pill = qs('.aarish-nav-pill-v3', nav);
+        if (!pill) {
+            pill = document.createElement('div');
+            pill.className = 'aarish-nav-pill-v3';
+            nav.insertBefore(pill, nav.firstChild);
+        }
+        const sync = () => {
+            const active = qs('.nav-item.active', nav);
+            if (!active) { pill.style.opacity = '0'; return; }
+            const x = active.offsetLeft + Math.max(8, (active.offsetWidth - 34) / 2);
+            pill.style.opacity = '0.9';
+            pill.style.width = Math.min(42, Math.max(30, active.offsetWidth * 0.52)) + 'px';
+            pill.style.transform = 'translate3d(' + x + 'px, 0, 0)';
+        };
+        sync();
+        window.addEventListener('resize', sync, { passive: true });
+        nav.addEventListener('scroll', sync, { passive: true });
+        new MutationObserver(sync).observe(nav, { subtree: true, attributes: true, attributeFilter: ['class'] });
+    }
+
+    function ripple(card, ev) {
+        if (!card || card.closest('.aarish-no-ripple')) return;
+        const rect = card.getBoundingClientRect();
+        const p = ev.touches && ev.touches[0] ? ev.touches[0] : ev;
+        const x = (p.clientX || rect.left + rect.width / 2) - rect.left;
+        const y = (p.clientY || rect.top + rect.height / 2) - rect.top;
+        const size = Math.max(rect.width, rect.height) * 1.15;
+        const r = document.createElement('span');
+        r.className = 'aarish-ripple-v3';
+        r.style.setProperty('--aarish-ripple-x', x + 'px');
+        r.style.setProperty('--aarish-ripple-y', y + 'px');
+        r.style.setProperty('--aarish-ripple-size', size + 'px');
+        card.appendChild(r);
+        r.addEventListener('animationend', () => r.remove(), { once: true });
+    }
+
+    function bounce(el) {
+        if (!el || el.disabled) return;
+        el.classList.remove('aarish-release-bounce-v3');
+        void el.offsetWidth;
+        el.classList.add('aarish-release-bounce-v3');
+        setTimeout(() => el.classList.remove('aarish-release-bounce-v3'), 430);
+    }
+
+    function isDeleteButton(el) {
+        return !!(el && el.closest(".action-btn, [data-credit-delete-core], [data-expense-delete-core], [data-salary-delete-core], [data-business-delete-core], [id*='delete'], [onclick*='delete'], [onclick*='Delete']"));
+    }
+
+    function ambient(ev) {
+        const g1 = qs('.ambient-glow');
+        const g2 = qs('.ambient-glow-2');
+        if (!g1 && !g2) return;
+        const x = ev.clientX || window.innerWidth / 2;
+        const y = ev.clientY || window.innerHeight / 2;
+        const nx = (x / Math.max(1, window.innerWidth) - 0.5) * 42;
+        const ny = (y / Math.max(1, window.innerHeight) - 0.5) * 42;
+        if (g1) g1.style.transform = 'translate3d(' + nx.toFixed(1) + 'px,' + ny.toFixed(1) + 'px,0)';
+        if (g2) g2.style.transform = 'translate3d(' + (-nx * 0.72).toFixed(1) + 'px,' + (-ny * 0.72).toFixed(1) + 'px,0)';
+    }
+
+    function installTapLayer() {
+        document.addEventListener('pointerdown', (ev) => {
+            const target = ev.target;
+            const button = target && target.closest('button, .btn-primary, .btn-ios-share, .btn-ios-add, .action-btn, .nav-item');
+            const card = target && target.closest('.glass-card');
+            const del = isDeleteButton(target) && target.closest('button, .action-btn, [id*="delete"], [onclick*="delete"], [onclick*="Delete"]');
+            if (button) safeHaptic(25);
+            if (card) ripple(card, ev);
+            if (del) {
+                const icon = del.querySelector('i') || del;
+                icon.classList.remove('aarish-delete-shake-v3');
+                void icon.offsetWidth;
+                icon.classList.add('aarish-delete-shake-v3');
+                setTimeout(() => icon.classList.remove('aarish-delete-shake-v3'), 300);
+            }
+            ambient(ev);
+        }, { capture: true, passive: true });
+
+        document.addEventListener('pointerup', (ev) => {
+            const button = ev.target && ev.target.closest('button, .btn-primary, .btn-ios-share, .btn-ios-add, .action-btn, .nav-item');
+            if (button) bounce(button);
+        }, { capture: true, passive: true });
+
+        const fab = qs('#gemini-draggable-logo');
+        if (fab) {
+            let downAt = 0;
+            fab.addEventListener('touchstart', () => { downAt = Date.now(); fab.classList.add('aarish-fab-dragging-v3'); }, { passive: true });
+            fab.addEventListener('touchend', () => {
+                fab.classList.remove('aarish-fab-dragging-v3');
+                if (Date.now() - downAt < 170) {
+                    fab.classList.remove('aarish-fab-tap-v3');
+                    void fab.offsetWidth;
+                    fab.classList.add('aarish-fab-tap-v3');
+                    setTimeout(() => fab.classList.remove('aarish-fab-tap-v3'), 560);
+                }
+            }, { passive: true });
+        }
+    }
+
+    function wrapFunction(name, wrapper) {
+        const original = window[name];
+        if (typeof original !== 'function' || original.__aarishUltraMotionWrappedV3) return false;
+        const wrapped = wrapper(original);
+        wrapped.__aarishUltraMotionWrappedV3 = true;
+        wrapped.__aarishOriginal = original;
+        window[name] = wrapped;
+        return true;
+    }
+
+    function flipSnapshot(root = activeRoot()) {
+        const map = new Map();
+        qsa('.glass-card, .list-enter, .table-custom tr', root).slice(0, 120).forEach((el) => {
+            if (!el.isConnected) return;
+            const r = el.getBoundingClientRect();
+            if (r.width < 2 || r.height < 2) return;
+            const key = (el.getAttribute('data-id') || el.id || el.textContent || '').replace(/\s+/g, ' ').trim().slice(0, 110);
+            if (key && !map.has(key)) map.set(key, r);
+        });
+        return map;
+    }
+
+    function flipPlay(before, root = activeRoot()) {
+        if (!before || !before.size || !('animate' in Element.prototype)) return;
+        qsa('.glass-card, .list-enter, .table-custom tr', root).slice(0, 120).forEach((el) => {
+            const key = (el.getAttribute('data-id') || el.id || el.textContent || '').replace(/\s+/g, ' ').trim().slice(0, 110);
+            const old = before.get(key);
+            if (!old) return;
+            const now = el.getBoundingClientRect();
+            const dx = old.left - now.left;
+            const dy = old.top - now.top;
+            if (Math.abs(dx) < 1 && Math.abs(dy) < 1) return;
+            try {
+                el.animate([
+                    { transform: 'translate3d(' + dx + 'px,' + dy + 'px,0)', opacity: 0.86 },
+                    { transform: 'translate3d(0,0,0)', opacity: 1 }
+                ], { duration: 380, easing: 'cubic-bezier(0.32,0.72,0,1)', fill: 'both' });
+            } catch (_) {}
+        });
+    }
+
+    const renderNames = [
+        'renderMilkList','renderMilkRecords','renderUdharList','renderUdharRecords',
+        'renderExpenseList','renderExpenseRecords','renderSalaryList','renderSalaryRecords',
+        'renderDiaryList','renderProjectsList','renderProjectRecords','renderDashboardBalances',
+        'updateDashboard','updateBusinessCoreUi','updateDiaryCoreUi','updateExpenseCoreUi',
+        'updateExpenseDetailCoreUi','updateSalaryCoreUi','updateActiveScreen',
+        'filterDiaryList','filterMilkList','filterProjectList','filterSalaryList','filterUdharList'
+    ];
+
+    function installFunctionWrappers() {
+        wrapFunction('switchTab', (original) => function(tab) {
+            const current = qs('.screen.active');
+            if (current && current.id !== String(tab) + '-screen') {
+                current.classList.add('aarish-screen-exit-v3');
+                setTimeout(() => current.classList.remove('aarish-screen-exit-v3'), 260);
+            }
+            safeHaptic(25);
+            let result;
+            const runSwitch = () => { result = original.apply(this, arguments); };
+            const reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+            if (document.startViewTransition && !reduceMotion) {
+                document.documentElement.classList.add('aarish-vt-running-v3');
+                try {
+                    const vt = document.startViewTransition(runSwitch);
+                    vt.finished.finally(() => document.documentElement.classList.remove('aarish-vt-running-v3'));
+                } catch (_) {
+                    document.documentElement.classList.remove('aarish-vt-running-v3');
+                    runSwitch();
+                }
+            } else {
+                runSwitch();
+            }
+            raf2(() => { setStagger(); inputLabels(); installNavPill(); scanMoneyActive(); });
+            return result;
+        });
+
+        wrapFunction('openModal', (original) => function(id) {
+            safeHaptic(32);
+            const result = original.apply(this, arguments);
+            const modal = document.getElementById(id);
+            if (modal) {
+                modal.classList.remove('aarish-modal-closing-v3');
+                modal.classList.add('aarish-modal-visible-v3');
+                raf2(() => inputLabels(modal));
+            }
+            return result;
+        });
+
+        wrapFunction('closeModal', (original) => function(id) {
+            const modal = document.getElementById(id);
+            if (modal) {
+                modal.classList.add('aarish-modal-closing-v3');
+                modal.classList.remove('aarish-modal-visible-v3');
+                setTimeout(() => modal.classList.remove('aarish-modal-closing-v3'), 430);
+            }
+            return original.apply(this, arguments);
+        });
+
+        wrapFunction('showToast', (original) => function(msg) {
+            const result = original.apply(this, arguments);
+            safeHaptic(20);
+            const toast = qs('#toast');
+            if (toast) {
+                toast.classList.remove('aarish-toast-out-v3');
+                clearTimeout(window.__aarishUltraToastExitTimerV3);
+                window.__aarishUltraToastExitTimerV3 = setTimeout(() => {
+                    if (toast.classList.contains('show')) toast.classList.add('aarish-toast-out-v3');
+                }, 1800);
+            }
+            return result;
+        });
+
+        wrapFunction('showLoader', (original) => function() {
+            const result = original.apply(this, arguments);
+            showSkeletons();
+            return result;
+        });
+        wrapFunction('hideLoader', (original) => function() {
+            hideSkeletons();
+            return original.apply(this, arguments);
+        });
+
+        renderNames.forEach((name) => {
+            wrapFunction(name, (original) => function() {
+                const root = activeRoot();
+                const before = flipSnapshot(root);
+                const result = original.apply(this, arguments);
+                raf2(() => { setStagger(root); flipPlay(before, activeRoot()); scanMoneyActive(); });
+                return result;
+            });
+        });
+    }
+
+    function showSkeletons() {
+        const root = activeRoot();
+        if (!root || qs('.aarish-skeleton-layer-v3', root)) return;
+        const layer = document.createElement('div');
+        layer.className = 'aarish-skeleton-layer-v3';
+        layer.innerHTML = '<div class="aarish-skeleton-card-v3"></div><div class="aarish-skeleton-card-v3"></div><div class="aarish-skeleton-card-v3"></div><div class="aarish-skeleton-card-v3"></div>';
+        root.appendChild(layer);
+    }
+    function hideSkeletons() {
+        qsa('.aarish-skeleton-layer-v3').forEach((layer) => {
+            layer.style.opacity = '0';
+            setTimeout(() => layer.remove(), 220);
+        });
+    }
+
+    const moneyRe = /₹\s*[-+]?\d[\d,]*(?:\.\d+)?/;
+    function parseMoney(token) {
+        const n = Number(String(token).replace(/[₹,\s]/g, ''));
+        return Number.isFinite(n) ? n : null;
+    }
+    function formatLike(token, value) {
+        const hasDecimal = /\.\d+/.test(token);
+        const raw = hasDecimal ? value.toFixed(2) : String(Math.round(value));
+        const parts = raw.split('.');
+        parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+        return '₹' + parts.join('.');
+    }
+    function animateAmount(el) {
+        if (!el || el.nodeType !== 1 || el.children.length > 2) return;
+        if (el.__aarishMoneyAnimatingV3) return;
+        if (el.closest && el.closest('input, textarea, select, [contenteditable="true"]')) return;
+        const text = el.textContent || '';
+        const match = text.match(moneyRe);
+        if (!match) return;
+        const token = match[0];
+        const next = parseMoney(token);
+        if (next === null) return;
+        const prev = el.__aarishMoneyV3;
+        el.__aarishMoneyV3 = next;
+        if (prev === undefined || Math.abs(prev - next) < 0.01) return;
+        const full = text;
+        const start = prev;
+        const delta = next - start;
+        const startTime = performance.now();
+        function ease(t) { return 1 - Math.pow(1 - t, 3); }
+        function step(now) {
+            const t = Math.min(1, (now - startTime) / 800);
+            el.textContent = full.replace(token, formatLike(token, start + delta * ease(t)));
+            if (t < 1) requestAnimationFrame(step);
+            else { el.textContent = full.replace(token, formatLike(token, next)); el.__aarishMoneyV3 = next; el.__aarishMoneyAnimatingV3 = false; }
+        }
+        el.__aarishMoneyAnimatingV3 = true;
+        requestAnimationFrame(step);
+    }
+    let moneyScheduled = false;
+    function scanMoneyActive() {
+        if (moneyScheduled) return;
+        moneyScheduled = true;
+        idle(() => {
+            moneyScheduled = false;
+            qsa('h1,h2,h3,h4,p,span,td', activeRoot()).slice(0, 220).forEach(animateAmount);
+        });
+    }
+
+    function installObserver() {
+        let scheduled = false;
+        const obs = new MutationObserver(() => {
+            if (scheduled) return;
+            scheduled = true;
+            requestAnimationFrame(() => {
+                scheduled = false;
+                setStagger();
+                inputLabels();
+                scanMoneyActive();
+            });
+        });
+        obs.observe(document.body, { childList: true, subtree: true });
+    }
+
+    function installMagnetic() {
+        if (!window.matchMedia || !window.matchMedia('(hover: hover) and (pointer: fine)').matches) return;
+        let last = 0;
+        document.addEventListener('mousemove', (ev) => {
+            const now = performance.now();
+            if (now - last < 32) return;
+            last = now;
+            qsa('button, .btn-primary, .btn-ios-share, .btn-ios-add, .action-btn').slice(0, 80).forEach((el) => {
+                if (el.disabled) return;
+                const r = el.getBoundingClientRect();
+                const dx = ev.clientX - (r.left + r.width / 2);
+                const dy = ev.clientY - (r.top + r.height / 2);
+                const dist = Math.hypot(dx, dy);
+                if (dist < 90) {
+                    el.classList.add('aarish-magnetic-v3');
+                    el.style.setProperty('--aarish-mx', Math.max(-6, Math.min(6, dx * 0.08)).toFixed(2) + 'px');
+                    el.style.setProperty('--aarish-my', Math.max(-6, Math.min(6, dy * 0.08)).toFixed(2) + 'px');
+                } else if (el.classList.contains('aarish-magnetic-v3')) {
+                    el.style.setProperty('--aarish-mx', '0px');
+                    el.style.setProperty('--aarish-my', '0px');
+                    setTimeout(() => el.classList.remove('aarish-magnetic-v3'), 180);
+                }
+            });
+        }, { passive: true });
+    }
+
+    function boot() {
+        setStagger(document);
+        inputLabels(document);
+        installNavPill();
+        installTapLayer();
+        installFunctionWrappers();
+        installObserver();
+        installMagnetic();
+        scanMoneyActive();
+        setTimeout(installFunctionWrappers, 250);
+        setTimeout(() => { setStagger(); inputLabels(); installNavPill(); scanMoneyActive(); }, 450);
+    }
+
+    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot, { once: true });
+    else boot();
+})();
+/* AARISH_ULTRA_CORE_MOTION_JS_V3_END */
+</script>
 </body>
 </html>
