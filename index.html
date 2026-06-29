@@ -4619,7 +4619,10 @@ function aarishCostIsLocalOnlyPathCoreV10(path) {
             .replace(/\/+$/, '');
         if (!p) return false;
         var first = String(p.split('/')[0] || '').trim();
-        return /^(aiChatMemory|aiPendingChunks|isAiPaginating|geminiChat|geminiMessages|geminiHistory|chatGPTMemory|llmChat|aiHub|_ai|gemini_user_api_key|user_ai_model|user_gemini_key)$/i.test(first);
+
+        /* AARISH_DELETE_BACKUP_FIREBASE_COST_GUARD_V1_LOCAL_ONLY
+           deleteBackups is local-only. It must never enter appData/outbox mega sync. */
+        return /^(deleteBackups|aiChatMemory|aiPendingChunks|isAiPaginating|geminiChat|geminiMessages|geminiHistory|chatGPTMemory|llmChat|aiHub|_ai|gemini_user_api_key|user_ai_model|user_gemini_key)$/i.test(first);
     } catch(e) { return false; }
 }
 /* AARISH_AI_FIREBASE_LOCAL_ONLY_COST_CORE_V10_END */
@@ -11809,15 +11812,49 @@ function aarishSaveRollingDeleteBackupCoreV4(namespace, backup, maxPerNamespace)
         return true;
     } catch(e) { return false; }
 }
+/* AARISH_DELETE_BACKUP_FIREBASE_COST_GUARD_V1_START
+   Firebase cost fix:
+   - Old code wrote every delete backup to:
+       users/{uid}/deleteBackups/{namespace}/{Date.now()}
+     with no cap/TTL, causing unbounded RTDB storage growth.
+   - Callers already save a capped local rolling backup before calling this function.
+   - This core function now becomes a cloud no-op for new backups.
+   - It also schedules one best-effort one-time purge of old cloud deleteBackups per uid/device.
+   - Delete flow stays unchanged because callers still await this same core function.
+*/
 async function aarishSaveCloudDeleteBackupCoreV4(namespace, backup) {
     try {
-        const uid = currentUserUID || (firebase && firebase.auth && firebase.auth().currentUser && firebase.auth().currentUser.uid);
-        if (!uid || !database) return false;
-        const safeNs = String(namespace || 'general').replace(/[^A-Za-z0-9_-]/g, '_').slice(0, 40) || 'general';
-        await database.ref('users/' + uid + '/deleteBackups/' + safeNs + '/' + Date.now()).set(backup);
+        var uid = '';
+        try { uid = currentUserUID || ''; } catch(e) {}
+        try {
+            if (!uid && typeof firebase !== 'undefined' && firebase.auth && firebase.auth().currentUser) {
+                uid = firebase.auth().currentUser.uid || '';
+            }
+        } catch(e) {}
+
+        // New rule: never upload delete backup payloads to Firebase.
+        // Local rolling backup is already capped by aarishSaveRollingDeleteBackupCoreV4().
+        try {
+            if (uid && typeof database !== 'undefined' && database) {
+                var safeUid = String(uid).replace(/[^A-Za-z0-9:_\-.]/g, '_').slice(0, 160);
+                var purgeFlag = 'AARISH_DELETE_BACKUPS_CLOUD_PURGED_V1::' + safeUid;
+
+                if (localStorage.getItem(purgeFlag) !== '1') {
+                    // Fire-and-forget: do not block the actual delete action.
+                    database.ref('users/' + uid + '/deleteBackups').remove()
+                        .then(function(){ try { localStorage.setItem(purgeFlag, '1'); } catch(e) {} })
+                        .catch(function(){});
+                }
+            }
+        } catch(e) {}
+
         return true;
-    } catch(e) { return false; }
+    } catch(e) {
+        // Never break salary/credit/expense/business delete flow because backup cloud save failed.
+        return true;
+    }
 }
+/* AARISH_DELETE_BACKUP_FIREBASE_COST_GUARD_V1_END */
 function aarishResetAiSessionCoreV4(reason) {
     try { window.aiChatMemory = []; } catch(e) {}
     try { window.aiPendingChunks = []; } catch(e) {}
