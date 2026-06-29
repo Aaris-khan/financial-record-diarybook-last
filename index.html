@@ -3580,12 +3580,20 @@ button[data-business-entry-core] {
     function logout() {
     if (confirm('Are you sure you want to logout?')) {
         auth.signOut().then(() => {
+            try { if (typeof aarishCostClearRuntimeTimersCoreV7 === "function") aarishCostClearRuntimeTimersCoreV7(); } catch(e) {}
             if (appDataRef) appDataRef.off();
             aarishBackendClearUidCoreV2();
+            window.__aarishLoadUserDataTokenCoreV3 = "logout::" + Date.now();
             currentUserUID = null;
-            
+
+            try {
+                if (__aarishCostDbCoreV1 && __aarishCostDbCoreV1.close) __aarishCostDbCoreV1.close();
+            } catch(e) {}
+            __aarishCostDbCoreV1 = null;
+            __aarishCostDbOpenPromiseCoreV6 = null;
+
             milkDB = {}; udharDB = []; expenseDB = []; salaryDB = {}; diaryDB = []; projectDB = {};
-            
+
             document.getElementById('main-app').classList.add('hidden');
             document.getElementById('login-screen').style.display = 'flex';
             showToast('Logout success');
@@ -3600,7 +3608,7 @@ button[data-business-entry-core] {
 
 
          
-// ========================== AARISH_FIREBASE_COST_CORE_V1_START ==========================
+// AARISH_BACKEND_ACK_VERIFY_RAW_DIRECT_CORE_V4\n// ========================== AARISH_FIREBASE_COST_CORE_V1_START ==========================
 // Single-owner low-cost Firebase core.
 // Big-file logic merged safely:
 // - V81 cache-first full read shield
@@ -3615,6 +3623,93 @@ var __aarishCostFlushTimerV1 = null;
 var __aarishCostFlushHardTimerV1 = null;
 var __aarishCostFlushBusyV1 = false;
 var __aarishCostMetaCheckTimerV1 = null;
+// AARISH_BACKEND_FAANG_CORE_V6_GLOBALS_START
+var __aarishCostDbOpenPromiseCoreV6 = null;
+var __aarishCostIdbDisabledUntilCoreV6 = 0;
+var __aarishCostCacheSaveBusyCoreV6 = false;
+var __aarishCostCacheSaveQueuedCoreV6 = false;
+var __aarishCostCacheLastStableJsonCoreV6 = "";
+var __aarishCostLastFlushAtCoreV6 = 0;
+// AARISH_BACKEND_FAANG_CORE_V6_GLOBALS_END
+
+// AARISH_BACKEND_SURGICAL_SYNC_CORE_V7_START
+var __aarishCostOnlineTimerCoreV7 = null;
+var __aarishCostFocusTimerCoreV7 = null;
+var __aarishCostVisibleTimerCoreV7 = null;
+var __aarishCostFlushBackoffCoreV7 = 0;
+var __aarishCostLastStorageToastCoreV7 = 0;
+
+function aarishCostSetTimerCoreV7(slot, fn, ms) {
+    try {
+        if (slot && window[slot]) clearTimeout(window[slot]);
+        var id = setTimeout(function() {
+            if (slot) window[slot] = null;
+            try { fn(); } catch(e) {}
+        }, Math.max(0, Number(ms || 0)));
+        if (slot) window[slot] = id;
+        return id;
+    } catch(e) {
+        return null;
+    }
+}
+
+function aarishCostFireAndForgetCoreV7(label, fn) {
+    try {
+        Promise.resolve().then(function() {
+            if (typeof fn === "function") return fn();
+        }).catch(function(e) {
+            try { console.warn("Aarish backend async:", label, e); } catch(_) {}
+        });
+    } catch(e) {}
+}
+
+function aarishCostQueueHasDeleteCoreV7(writes) {
+    try {
+        return Object.keys(writes || {}).some(function(k) { return writes[k] === null; });
+    } catch(e) {
+        return false;
+    }
+}
+
+function aarishCostStorageToastCoreV7(msg, gap) {
+    try {
+        var now = Date.now();
+        if (now - Number(__aarishCostLastStorageToastCoreV7 || 0) > Math.max(5000, Number(gap || 15000))) {
+            __aarishCostLastStorageToastCoreV7 = now;
+            aarishCostToastV1(msg);
+        }
+    } catch(e) {}
+}
+
+function aarishCostClearRuntimeTimersCoreV7() {
+    [
+        "__aarishCostFlushTimerV1",
+        "__aarishCostFlushHardTimerV1",
+        "__aarishCostMetaCheckTimerV1",
+        "__aarishCacheSaveTimerV81",
+        "__aarishCostOnlineTimerCoreV7",
+        "__aarishCostFocusTimerCoreV7",
+        "__aarishCostVisibleTimerCoreV7"
+    ].forEach(function(k) {
+        try {
+            if (window[k]) clearTimeout(window[k]);
+            window[k] = null;
+        } catch(e) {}
+    });
+    try { __aarishCostFlushBusyV1 = false; } catch(e) {}
+    try { __aarishFastCommitBusyCoreV4 = false; } catch(e) {}
+}
+
+function aarishCostSafeLocalPullAllowedCoreV7(label) {
+    if (window.__aarishCostLastOutboxReadTimedOutV4) {
+        try { aarishCostScheduleFlushV1(4500, "skip-pull-outbox-timeout-" + String(label || "")); } catch(e) {}
+        return false;
+    }
+    return true;
+}
+// AARISH_BACKEND_SURGICAL_SYNC_CORE_V7_END
+
+
 
 
 // ========================== AARISH_BACKEND_HARDENING_CORE_V2_START ==========================
@@ -3878,38 +3973,94 @@ function aarishCostCloneMegaCoreV5(v) {
     try { return JSON.parse(JSON.stringify(v || {})); } catch(e) { return {}; }
 }
 // ========================== AARISH_BACKEND_FAANG_SYNC_PATCH_V1_END ==========================
-function aarishCostOpenDbV1() {
-    if (__aarishCostDbCoreV1) return Promise.resolve(__aarishCostDbCoreV1);
+// AARISH_BACKEND_FAANG_CORE_V6_HELPERS_START
+function aarishCostMarkIdbUnhealthyCoreV6(ms) {
+    try { if (__aarishCostDbCoreV1 && __aarishCostDbCoreV1.close) __aarishCostDbCoreV1.close(); } catch(e) {}
+    __aarishCostDbCoreV1 = null;
+    __aarishCostDbOpenPromiseCoreV6 = null;
+    __aarishCostIdbDisabledUntilCoreV6 = Date.now() + Math.max(2500, Number(ms || 12000));
+}
 
-    return new Promise(function(resolve) {
-        var done = false;
+function aarishCostLocalStorageGetJsonCoreV6(key) {
+    try {
+        var raw = localStorage.getItem(String(key || ""));
+        return raw ? JSON.parse(raw) : null;
+    } catch(e) {
+        return null;
+    }
+}
+
+function aarishCostLocalStorageSetJsonCoreV6(key, value) {
+    try {
+        localStorage.setItem(String(key || ""), JSON.stringify(value));
+        return true;
+    } catch(e) {
+        return false;
+    }
+}
+
+function aarishCostFinishOnceCoreV6(resolve, timerRef, onFinish) {
+    var done = false;
+    return function(value) {
+        if (done) return;
+        done = true;
+        try { if (timerRef && timerRef.t) clearTimeout(timerRef.t); } catch(e) {}
+        try { if (typeof onFinish === "function") onFinish(value); } catch(e) {}
+        resolve(value);
+    };
+}
+
+function aarishCostStableCacheJsonCoreV6(uid, serverRev, state) {
+    try {
+        return JSON.stringify(Object.assign({ uid: uid, serverRev: Number(serverRev || 0) }, state || {}));
+    } catch(e) {
+        return "";
+    }
+}
+
+function aarishCostApplyItemToMegaCoreV6(mega, item) {
+    var writes = item && (item.writes || aarishCostWritesFromActionV1(item.path, item.action, item.payload));
+    Object.keys(writes || {}).forEach(function(path) {
+        aarishCostPutCoalescedV1(mega, path, writes[path]);
+    });
+    return mega;
+}
+// AARISH_BACKEND_FAANG_CORE_V6_HELPERS_END
+
+function aarishCostOpenDbV1() {
+    if (Date.now() < Number(__aarishCostIdbDisabledUntilCoreV6 || 0)) return Promise.resolve(null);
+    if (__aarishCostDbCoreV1) return Promise.resolve(__aarishCostDbCoreV1);
+    if (__aarishCostDbOpenPromiseCoreV6) return __aarishCostDbOpenPromiseCoreV6;
+
+    __aarishCostDbOpenPromiseCoreV6 = new Promise(function(resolve) {
         var req = null;
-        var timer = setTimeout(function() {
-            if (done) return;
-            done = true;
-            try { if (req && req.result) req.result.close(); } catch(e) {}
-            resolve(null);
-        }, 5000);
+        var done = false;
+        var timerRef = { t: null };
 
         function finish(db) {
             if (done) return;
             done = true;
-            clearTimeout(timer);
+            try { if (timerRef.t) clearTimeout(timerRef.t); } catch(e) {}
+            __aarishCostDbOpenPromiseCoreV6 = null;
             resolve(db || null);
         }
+
+        timerRef.t = setTimeout(function() {
+            try { if (req && req.result && req.result.close) req.result.close(); } catch(e) {}
+            aarishCostMarkIdbUnhealthyCoreV6(12000);
+            finish(null);
+        }, 5200);
 
         try {
             if (!window.indexedDB) return finish(null);
 
-            req = indexedDB.open("AARISH_FIREBASE_CACHE_DB_V81", 4);
+            req = indexedDB.open("AARISH_FIREBASE_CACHE_DB_V81", 5);
 
             req.onupgradeneeded = function() {
                 var db = req.result;
                 var queue = null;
 
-                if (!db.objectStoreNames.contains("kv")) {
-                    db.createObjectStore("kv");
-                }
+                if (!db.objectStoreNames.contains("kv")) db.createObjectStore("kv");
 
                 if (!db.objectStoreNames.contains("sync_queue")) {
                     queue = db.createObjectStore("sync_queue", { keyPath: "id" });
@@ -3922,105 +4073,106 @@ function aarishCostOpenDbV1() {
                         queue.createIndex("by_uid", "uid", { unique: false });
                     }
                 } catch(e) {}
+
+                try {
+                    if (queue && queue.indexNames && !queue.indexNames.contains("by_uid_created")) {
+                        queue.createIndex("by_uid_created", ["uid", "createdAt"], { unique: false });
+                    }
+                } catch(e) {}
             };
 
             req.onsuccess = function() {
                 if (done) {
-                    try { req.result.close(); } catch(e) {}
+                    try { if (req.result && req.result.close) req.result.close(); } catch(e) {}
                     return;
                 }
 
-                __aarishCostDbCoreV1 = req.result;
+                var db = req.result;
+                __aarishCostDbCoreV1 = db;
+
                 try {
-                    __aarishCostDbCoreV1.onversionchange = function() {
-                        try { __aarishCostDbCoreV1.close(); } catch(e) {}
+                    db.onversionchange = function() {
+                        try { db.close(); } catch(e) {}
                         __aarishCostDbCoreV1 = null;
                     };
+                    db.onclose = function() { __aarishCostDbCoreV1 = null; };
+                    db.onerror = function() { __aarishCostDbCoreV1 = null; };
                 } catch(e) {}
-                finish(__aarishCostDbCoreV1);
+
+                finish(db);
             };
 
-            req.onerror = function() { finish(null); };
-            req.onblocked = function() { finish(null); };
+            req.onerror = function() { aarishCostMarkIdbUnhealthyCoreV6(8000); finish(null); };
+            req.onblocked = function() { aarishCostMarkIdbUnhealthyCoreV6(8000); finish(null); };
         } catch(e) {
+            aarishCostMarkIdbUnhealthyCoreV6(8000);
             finish(null);
         }
     });
+
+    return __aarishCostDbOpenPromiseCoreV6;
 }
 async function aarishCostKvGetV1(key) {
+    key = String(key || "");
+    var fallbackKey = "IDB_FALLBACK_" + key;
+    var fallbackRead = function() { return aarishCostLocalStorageGetJsonCoreV6(fallbackKey); };
+
     var db = await aarishCostOpenDbV1();
-    if (!db || !db.objectStoreNames.contains("kv")) {
-        try {
-            var raw = localStorage.getItem("IDB_FALLBACK_" + key);
-            return raw ? JSON.parse(raw) : null;
-        } catch(e) {
-            return null;
-        }
-    }
+    if (!db || !db.objectStoreNames || !db.objectStoreNames.contains("kv")) return fallbackRead();
 
     return new Promise(function(resolve) {
-        var done = false;
-        var timer = setTimeout(function() {
-            finish(null, true);
-        }, 4500);
+        var timerRef = { t: null };
+        var finish = aarishCostFinishOnceCoreV6(resolve, timerRef);
 
-        function finish(v, timedOut) {
-            if (done) return;
-            done = true;
-            clearTimeout(timer);
-            if (timedOut) {
-                try { __aarishCostDbCoreV1 = null; } catch(_) {}
-            }
-            resolve(v || null);
-        }
+        timerRef.t = setTimeout(function() {
+            aarishCostMarkIdbUnhealthyCoreV6(9000);
+            finish(fallbackRead());
+        }, 5200);
 
         try {
             var tx = db.transaction("kv", "readonly");
             var req = tx.objectStore("kv").get(key);
-            req.onsuccess = function() { finish(req.result || null, false); };
-            req.onerror = function() { finish(null, false); };
-            tx.onerror = function() { finish(null, false); };
-            tx.onabort = function() { finish(null, false); };
+
+            req.onsuccess = function() {
+                var v = typeof req.result === "undefined" ? null : req.result;
+                finish(v || fallbackRead());
+            };
+            req.onerror = function() { finish(fallbackRead()); };
+            tx.onerror = function() { finish(fallbackRead()); };
+            tx.onabort = function() { finish(fallbackRead()); };
         } catch(e) {
-            try { __aarishCostDbCoreV1 = null; } catch(_) {}
-            finish(null, false);
+            aarishCostMarkIdbUnhealthyCoreV6(9000);
+            finish(fallbackRead());
         }
     });
 }
 
 async function aarishCostKvSetV1(key, value) {
+    key = String(key || "");
+    var fallbackKey = "IDB_FALLBACK_" + key;
+    var fallbackWrite = function() { return aarishCostLocalStorageSetJsonCoreV6(fallbackKey, value); };
+
     var db = await aarishCostOpenDbV1();
-    if (!db || !db.objectStoreNames.contains("kv")) {
-        try {
-            localStorage.setItem("IDB_FALLBACK_" + key, JSON.stringify(value));
-            return true;
-        } catch(e) {
-            try { console.warn("Aarish cache fallback write failed:", e); } catch(_) {}
-            return false;
-        }
-    }
+    if (!db || !db.objectStoreNames || !db.objectStoreNames.contains("kv")) return fallbackWrite();
 
     return new Promise(function(resolve) {
-        var done = false;
-        var __kvSetTimer = null;
+        var timerRef = { t: null };
+        var finish = aarishCostFinishOnceCoreV6(resolve, timerRef);
 
-        function finish(v) {
-            if (done) return;
-            done = true;
-            clearTimeout(__kvSetTimer);
-            resolve(!!v);
-        }
+        timerRef.t = setTimeout(function() {
+            aarishCostMarkIdbUnhealthyCoreV6(9000);
+            finish(fallbackWrite());
+        }, 5500);
 
         try {
             var tx = db.transaction("kv", "readwrite");
             tx.objectStore("kv").put(value, key);
             tx.oncomplete = function() { finish(true); };
-            tx.onerror = function() { finish(false); };
-            tx.onabort = function() { finish(false); };
-
-            __kvSetTimer = setTimeout(function() { finish(false); }, 4500);
+            tx.onerror = function() { finish(fallbackWrite()); };
+            tx.onabort = function() { finish(fallbackWrite()); };
         } catch(e) {
-            finish(false);
+            aarishCostMarkIdbUnhealthyCoreV6(9000);
+            finish(fallbackWrite());
         }
     });
 }
@@ -4112,20 +4264,43 @@ function aarishCostShowAppV1() {
 }
 
 async function saveCacheNowCostV81(reason) {
+    if (__aarishCostCacheSaveBusyCoreV6) {
+        __aarishCostCacheSaveQueuedCoreV6 = true;
+        return true;
+    }
+
+    __aarishCostCacheSaveBusyCoreV6 = true;
+
     try {
         var uid = aarishCostUidV1();
         if (!uid) return false;
 
-        var payload = Object.assign({}, aarishCostGetStateV1(), {
+        var state = aarishCostGetStateV1();
+        var serverRev = Number(window.__aarishFirebaseCostRevV81 || 0);
+        var stableJson = aarishCostStableCacheJsonCoreV6(uid, serverRev, state);
+
+        if (stableJson && stableJson === __aarishCostCacheLastStableJsonCoreV6 && String(reason || "").indexOf("force") === -1) {
+            return true;
+        }
+
+        var payload = Object.assign({}, state, {
             uid: uid,
             savedAt: Date.now(),
-            serverRev: Number(window.__aarishFirebaseCostRevV81 || 0),
+            serverRev: serverRev,
             reason: reason || "auto"
         });
 
-        return await aarishCostKvSetV1(aarishCostCacheKeyV1(), payload);
+        var ok = await aarishCostKvSetV1(aarishCostCacheKeyV1(), payload);
+        if (ok && stableJson) __aarishCostCacheLastStableJsonCoreV6 = stableJson;
+        return !!ok;
     } catch(e) {
         return false;
+    } finally {
+        __aarishCostCacheSaveBusyCoreV6 = false;
+        if (__aarishCostCacheSaveQueuedCoreV6) {
+            __aarishCostCacheSaveQueuedCoreV6 = false;
+            try { setTimeout(function() { saveCacheNowCostV81("queued-cache-save"); }, 80); } catch(e) {}
+        }
     }
 }
 
@@ -4134,7 +4309,7 @@ function scheduleCacheSaveCostV81(reason) {
         clearTimeout(window.__aarishCacheSaveTimerV81);
         window.__aarishCacheSaveTimerV81 = setTimeout(function() {
             saveCacheNowCostV81(reason || "debounced");
-        }, 450);
+        }, 520);
     } catch(e) {}
 }
 
@@ -4310,6 +4485,12 @@ async function aarishCostReplayOutboxToLocalCoreV3(reason, opts) {
         var items = await aarishCostGetOutboxV1();
 
         if (!aarishCostSameUidCoreV3(uid)) return { ok:false, reason:"uid_changed" };
+
+        if (window.__aarishCostLastOutboxReadTimedOutV4) {
+            try { aarishCostScheduleFlushV1(4500, "replay-outbox-timeout"); } catch(e) {}
+            return { ok:false, outboxReadTimedOut:true };
+        }
+
         if (!items.length) return { ok:true, replayed:0 };
 
         var mega = aarishCostBuildMegaV1(items);
@@ -4467,20 +4648,29 @@ function aarishCostJsonBytesV3(value) {
     try { return JSON.stringify(value).length; } catch(e) { return 0; }
 }
 function aarishCostPickBatchV3(items) {
-    var source = (items || []).filter(function(x) { return x && x.id; });
+    var source = (items || []).filter(function(x) { return x && x.id; })
+        .sort(function(a,b) { return Number(a.createdAt || 0) - Number(b.createdAt || 0); });
     var out = [];
     var mega = {};
-    var maxItems = 160;
-    var maxBytes = 750000;
+    var maxItems = 180;
+    var maxBytes = 760000;
 
     for (var i = 0; i < source.length && out.length < maxItems; i++) {
-        var nextOut = out.concat([source[i]]);
-        var nextMega = aarishCostBuildMegaV1(nextOut);
-        var size = aarishCostJsonBytesV3(nextMega);
+        var candidate = aarishCostCloneMegaCoreV5(mega);
+        aarishCostApplyItemToMegaCoreV6(candidate, source[i]);
 
+        var prev = Number(window.__aarishFirebaseCostRevV81 || 0);
+        var rev = Math.max(Date.now(), Number.isFinite(prev) ? prev + 1 : 0);
+        aarishCostPutCoalescedV1(candidate, "_syncMeta/rev", rev);
+        aarishCostPutCoalescedV1(candidate, "_syncMeta/mode", "AARISH_FIREBASE_COST_CORE_V1");
+        aarishCostPutCoalescedV1(candidate, "_syncMeta/updatedAt", aarishCostServerTimeV1());
+
+        var size = aarishCostJsonBytesV3(candidate);
         if (out.length && size > maxBytes) break;
-        out = nextOut;
-        mega = nextMega;
+
+        out.push(source[i]);
+        mega = candidate;
+
         if (size > maxBytes) break;
     }
 
@@ -4494,31 +4684,27 @@ function aarishCostPickBatchV3(items) {
 /* AARISH_BACKEND_SURGICAL_STORAGE_SYNC_V3_END */
 async function aarishCostStoreOpV1(mode, fn) {
     var db = await aarishCostOpenDbV1();
-    if (!db || !db.objectStoreNames.contains("sync_queue")) return null;
+    if (!db || !db.objectStoreNames || !db.objectStoreNames.contains("sync_queue")) return null;
 
     return new Promise(function(resolve) {
-        var done = false;
-        var timer = setTimeout(function() {
-            try { __aarishCostDbCoreV1 = null; } catch(_) {}
-            finish(null);
-        }, 4500);
+        var result;
+        var timerRef = { t: null };
+        var finish = aarishCostFinishOnceCoreV6(resolve, timerRef);
 
-        function finish(v) {
-            if (done) return;
-            done = true;
-            clearTimeout(timer);
-            resolve(v === undefined ? true : v);
-        }
+        timerRef.t = setTimeout(function() {
+            aarishCostMarkIdbUnhealthyCoreV6(9000);
+            finish(null);
+        }, 5500);
 
         try {
             var tx = db.transaction("sync_queue", mode);
             var st = tx.objectStore("sync_queue");
-            var result = fn(st, tx);
+            result = fn(st, tx);
             tx.oncomplete = function() { finish(result === undefined ? true : result); };
             tx.onerror = function() { finish(null); };
             tx.onabort = function() { finish(null); };
         } catch(e) {
-            try { __aarishCostDbCoreV1 = null; } catch(_) {}
+            aarishCostMarkIdbUnhealthyCoreV6(9000);
             finish(null);
         }
     });
@@ -4558,73 +4744,178 @@ async function aarishCostPutOutboxV1(item) {
 }
 async function aarishCostGetOutboxV1() {
     var uid = aarishCostUidV1();
+    window.__aarishCostLastOutboxReadTimedOutV4 = false;
     if (!uid) return [];
 
-    var fallback = aarishCostReadFallbackV1(uid);
-    var volatileItems = aarishCostVolatileGetV3();
-
-    var db = await aarishCostOpenDbV1();
-    if (!db || !db.objectStoreNames.contains("sync_queue")) {
-        return aarishCostDedupeItemsV3(fallback.concat(volatileItems).filter(function(x) { return x && x.uid === uid; }));
+    function tagTier(list, tier) {
+        return (Array.isArray(list) ? list : []).map(function(x) {
+            if (!x || typeof x !== "object") return x;
+            var y = Object.assign({}, x);
+            if (!y.__queueTier) y.__queueTier = tier;
+            return y;
+        });
     }
 
-    return new Promise(function(resolve) {
-        var done = false;
-        var timer = setTimeout(function() {
-            try { __aarishCostDbCoreV1 = null; } catch(_) {}
-            finish([]);
-        }, 4500);
+    var fallback = tagTier(aarishCostReadFallbackV1(uid), "localStorage");
+    var volatileItems = tagTier(aarishCostVolatileGetV3(), "ram");
 
-        function finish(arr) {
-            if (done) return;
-            done = true;
-            clearTimeout(timer);
-            resolve(aarishCostDedupeItemsV3((arr || []).concat(fallback, volatileItems)
-                .filter(function(x) { return x && x.uid === uid; })));
-        }
+    function merge(idbItems) {
+        return aarishCostDedupeItemsV3(tagTier(idbItems || [], "idb").concat(fallback, volatileItems)
+            .filter(function(x) { return x && x.uid === uid; }));
+    }
+
+    var db = await aarishCostOpenDbV1();
+    if (!db || !db.objectStoreNames || !db.objectStoreNames.contains("sync_queue")) return merge([]);
+
+    return new Promise(function(resolve) {
+        var timerRef = { t: null };
+        var finish = aarishCostFinishOnceCoreV6(resolve, timerRef);
+
+        timerRef.t = setTimeout(function() {
+            window.__aarishCostLastOutboxReadTimedOutV4 = true;
+            aarishCostMarkIdbUnhealthyCoreV6(9000);
+            finish(merge([]));
+        }, 5200);
 
         try {
             var tx = db.transaction("sync_queue", "readonly");
             var st = tx.objectStore("sync_queue");
             var req = null;
+            var usedCursor = false;
+
+            function ok(arr) {
+                window.__aarishCostLastOutboxReadTimedOutV4 = false;
+                finish(merge(Array.isArray(arr) ? arr : []));
+            }
+
+            function cursorRead(indexOrStore, range) {
+                usedCursor = true;
+                var out = [];
+                var curReq = range ? indexOrStore.openCursor(range) : indexOrStore.openCursor();
+                curReq.onsuccess = function() {
+                    var cursor = curReq.result;
+                    if (!cursor) return ok(out);
+                    var v = cursor.value;
+                    if (v && v.uid === uid) out.push(v);
+                    cursor.continue();
+                };
+                curReq.onerror = function() { finish(merge([])); };
+            }
 
             try {
-                if (st.indexNames && st.indexNames.contains("by_uid") && window.IDBKeyRange) {
-                    req = st.index("by_uid").getAll(IDBKeyRange.only(uid));
+                if (st.indexNames && st.indexNames.contains("by_uid_created") && window.IDBKeyRange) {
+                    var upper = Date.now() + 315360000000;
+                    var range = IDBKeyRange.bound([uid, 0], [uid, upper]);
+                    var idx = st.index("by_uid_created");
+                    if (idx.getAll) req = idx.getAll(range);
+                    else cursorRead(idx, range);
                 }
             } catch(e) { req = null; }
 
-            if (!req) req = st.getAll();
+            if (!req && !usedCursor) {
+                try {
+                    if (st.indexNames && st.indexNames.contains("by_uid") && window.IDBKeyRange) {
+                        var idx2 = st.index("by_uid");
+                        var range2 = IDBKeyRange.only(uid);
+                        if (idx2.getAll) req = idx2.getAll(range2);
+                        else cursorRead(idx2, range2);
+                    }
+                } catch(e) { req = null; }
+            }
 
-            req.onsuccess = function() {
-                finish(Array.isArray(req.result) ? req.result : []);
-            };
-            req.onerror = function() { finish([]); };
-            tx.onerror = function() { finish([]); };
-            tx.onabort = function() { finish([]); };
+            if (!req && !usedCursor) {
+                if (st.getAll) req = st.getAll();
+                else cursorRead(st, null);
+            }
+
+            if (req) {
+                req.onsuccess = function() {
+                    var arr = Array.isArray(req.result) ? req.result : [];
+                    ok(arr.filter(function(x) { return x && x.uid === uid; }));
+                };
+                req.onerror = function() { finish(merge([])); };
+            }
+
+            tx.onerror = function() { finish(merge([])); };
+            tx.onabort = function() { finish(merge([])); };
         } catch(e) {
-            try { __aarishCostDbCoreV1 = null; } catch(_) {}
-            finish([]);
+            aarishCostMarkIdbUnhealthyCoreV6(9000);
+            finish(merge([]));
         }
     });
 }
-async function aarishCostDeleteOutboxV1(ids, uidArg) {
+async function aarishCostDeleteOutboxV1(ids, uidArg, opts) {
+    opts = opts || {};
     ids = Array.isArray(ids) ? ids.filter(Boolean) : [];
+    ids = Array.from(new Set(ids.map(function(id) { return String(id); }))).filter(Boolean);
+
     var uid = String(uidArg || aarishCostUidV1() || "");
-    if (!ids.length) return;
+    if (!ids.length) return { ok: true, deleted: 0, idbOk: true, fallbackOk: true };
 
-    await aarishCostStoreOpV1("readwrite", function(st) {
-        ids.forEach(function(id) {
-            try { st.delete(id); } catch(e) {}
+    var idbOk = true;
+    var idbChecked = false;
+    var remainingIds = [];
+
+    try {
+        var db = await aarishCostOpenDbV1();
+
+        if (db && db.objectStoreNames && db.objectStoreNames.contains("sync_queue")) {
+            idbChecked = true;
+
+            idbOk = !!(await aarishCostStoreOpV1("readwrite", function(st) {
+                ids.forEach(function(id) { try { st.delete(id); } catch(e) {} });
+                return true;
+            }));
+
+            if (idbOk && opts.requireIdb) {
+                var hits = await aarishCostStoreOpV1("readonly", function(st) {
+                    var found = [];
+
+                    ids.forEach(function(id) {
+                        try {
+                            var req = st.get(id);
+                            req.onsuccess = function() { if (req.result) found.push(id); };
+                            req.onerror = function() { found.push(id); };
+                        } catch(e) {
+                            found.push(id);
+                        }
+                    });
+
+                    return found;
+                });
+
+                remainingIds = Array.isArray(hits) ? hits.filter(Boolean) : [];
+                if (remainingIds.length) idbOk = false;
+            }
+        } else if (opts.requireIdb) {
+            idbOk = false;
+        }
+    } catch(e) {
+        idbOk = !opts.requireIdb;
+        aarishCostMarkIdbUnhealthyCoreV6(9000);
+    }
+
+    var fallbackOk = true;
+
+    try {
+        var keep = aarishCostReadFallbackV1(uid).filter(function(x) {
+            return ids.indexOf(String(x && x.id)) === -1;
         });
-        return true;
-    });
+        fallbackOk = aarishCostWriteFallbackV1(keep, uid);
+    } catch(e) {
+        fallbackOk = false;
+    }
 
-    var keep = aarishCostReadFallbackV1(uid).filter(function(x) {
-        return ids.indexOf(x && x.id) === -1;
-    });
-    aarishCostWriteFallbackV1(keep, uid);
-    aarishCostVolatileDeleteV3(ids);
+    try { aarishCostVolatileDeleteV3(ids); } catch(e) {}
+
+    return {
+        ok: idbOk !== false && fallbackOk !== false,
+        deleted: ids.length,
+        idbOk: idbOk,
+        idbChecked: idbChecked,
+        fallbackOk: fallbackOk,
+        remainingIds: remainingIds
+    };
 }
 
 function aarishCostWritesFromActionV1(path, action, payload) {
@@ -4720,15 +5011,20 @@ function aarishCostBuildMegaV1(items) {
 function aarishCostScheduleFlushV1(delay, reason) {
     try {
         clearTimeout(__aarishCostFlushTimerV1);
+
+        var ms = Math.max(180, Number(delay || 35000));
+        if (__aarishCostFlushBusyV1) ms = Math.max(ms, 1200);
+
         __aarishCostFlushTimerV1 = setTimeout(function() {
+            __aarishCostFlushTimerV1 = null;
             flushFirebaseWriteOutboxV87(reason || "timer", { force: false });
-        }, Math.max(120, Number(delay || 35000)));
+        }, ms);
 
         if (!__aarishCostFlushHardTimerV1) {
             __aarishCostFlushHardTimerV1 = setTimeout(function() {
                 __aarishCostFlushHardTimerV1 = null;
                 flushFirebaseWriteOutboxV87("hard-max-wait", { force: true });
-            }, 120000);
+            }, 90000);
         }
     } catch(e) {}
 }
@@ -4832,13 +5128,14 @@ async function aarishFirebaseLaterV48(path, action, payload, opts) {
         scheduleCacheSaveCostV81("queued-" + item.path);
 
         var actionLower = String(action || "").toLowerCase();
-        var urgent = actionLower === "remove" || actionLower === "delete" || opts.fast;
+        var destructive = actionLower === "remove" || actionLower === "delete" || aarishCostQueueHasDeleteCoreV7(writes);
+        var delay = destructive ? 220 : (opts.fast ? 1100 : 35000);
+        aarishCostScheduleFlushV1(delay, destructive ? "urgent-delete-core-v7" : (opts.fast ? "fast-batch-core-v7" : "idle-batch"));
 
-        aarishCostScheduleFlushV1(urgent ? 220 : 35000, urgent ? "urgent-core-v4" : "idle-batch");
-
-        var fastCommit = null;
-        if (urgent && typeof aarishBackendFastCloudCommitCoreV4 === "function") {
-            fastCommit = await aarishBackendFastCloudCommitCoreV4(actionLower + "-" + cleanPath, { force: false, delay: 60 });
+        if (destructive && typeof aarishBackendFastCloudCommitCoreV4 === "function") {
+            aarishCostFireAndForgetCoreV7("urgent-delete-fast-commit", function() {
+                return aarishBackendFastCloudCommitCoreV4(actionLower + "-" + cleanPath, { force: false, delay: 80 });
+            });
         }
 
         return {
@@ -4846,7 +5143,8 @@ async function aarishFirebaseLaterV48(path, action, payload, opts) {
             id: item.id,
             writes: keys.length,
             tier: item.__queueTier || "unknown",
-            fastCommit: fastCommit
+            scheduled: true,
+            destructive: destructive
         };
     } catch(e) {
         aarishCostToastV1("Local sync queue issue!");
@@ -4888,15 +5186,38 @@ async function aarishFirebaseBatchLaterV87(flatPayload, reason) {
 
         var ok = await aarishCostPutOutboxV1(item);
 
-        scheduleCacheSaveCostV81("raw-batch-" + String(reason || ""));
-        aarishCostScheduleFlushV1(220, "raw-batch-core-v4");
+        if (!ok) {
+            var directRef = aarishCostOnlineV1() ? aarishCostAppRefV1() : null;
 
-        var fastCommit = null;
-        if (ok && typeof aarishBackendFastCloudCommitCoreV4 === "function") {
-            fastCommit = await aarishBackendFastCloudCommitCoreV4("raw-batch-" + String(reason || ""), { force: false, delay: 60 });
+            if (directRef && aarishCostSameUidCoreV3(uid)) {
+                var directMega = aarishCostBuildMegaV1([item]);
+                await aarishCostWithTimeoutCoreV5(
+                    directRef.update(directMega),
+                    "firebase-raw-direct-update",
+                    18000
+                );
+
+                window.__aarishFirebaseCostRevV81 = Number(directMega["_syncMeta/rev"] || Date.now());
+                await saveCacheNowCostV81("direct-raw-batch-" + String(reason || ""));
+                return { queued: false, direct: true, items: keys.length };
+            }
+
+            aarishCostToastV1("Sync queue full. Internet connect karo; app close mat karo.");
+            return { queued: false, reason: "queue_full", items: keys.length };
         }
 
-        return { queued: !!ok, items: keys.length, fastCommit: fastCommit };
+        scheduleCacheSaveCostV81("raw-batch-" + String(reason || ""));
+
+        var destructive = aarishCostQueueHasDeleteCoreV7(writes);
+        aarishCostScheduleFlushV1(destructive ? 220 : 900, destructive ? "raw-delete-batch-core-v7" : "raw-batch-core-v7");
+
+        if (destructive && typeof aarishBackendFastCloudCommitCoreV4 === "function") {
+            aarishCostFireAndForgetCoreV7("raw-delete-fast-commit", function() {
+                return aarishBackendFastCloudCommitCoreV4("raw-batch-" + String(reason || ""), { force: false, delay: 80 });
+            });
+        }
+
+        return { queued: true, items: keys.length, tier: item.__queueTier || "unknown", scheduled: true, destructive: destructive };
     } catch(e) {
         return { queued: false, error: String(e && e.message ? e.message : e) };
     }
@@ -4943,25 +5264,39 @@ async function flushFirebaseWriteOutboxV87(reason, opts) {
     opts = opts || {};
 
     if (__aarishCostFlushBusyV1) {
-        try { aarishCostScheduleFlushV1(2500, "busy-reschedule"); } catch(e) {}
+        try { aarishCostScheduleFlushV1(1600, "busy-reschedule"); } catch(e) {}
         return { ok: false, locked: true };
     }
 
     var uid = aarishCostUidV1();
     if (!uid) return { ok: false, reason: "no_uid" };
-    if (!aarishCostOnlineV1() && !opts.force) return { ok: false, offline: true };
+
+    if (!aarishCostOnlineV1()) {
+        try { aarishCostScheduleFlushV1(12000, "offline-wait"); } catch(e) {}
+        return { ok: false, offline: true };
+    }
+
+    if (!opts.force && Date.now() - Number(__aarishCostLastFlushAtCoreV6 || 0) < 900) {
+        try { aarishCostScheduleFlushV1(1200, "flush-throttle"); } catch(e) {}
+        return { ok:false, throttled:true };
+    }
+
+    __aarishCostLastFlushAtCoreV6 = Date.now();
 
     var ref = null;
+
     try {
         ref = (typeof database !== "undefined" && database && database.ref) ? database.ref("users/" + uid + "/appData") : aarishCostAppRefV1();
     } catch(e) {
         ref = aarishCostAppRefV1();
     }
+
     if (!ref) return { ok: false, reason: "no_ref" };
 
     var release = aarishCostAcquireLockV1();
+
     if (!release) {
-        try { aarishCostScheduleFlushV1(3000, "cross-tab-busy"); } catch(e) {}
+        try { aarishCostScheduleFlushV1(2200, "cross-tab-busy"); } catch(e) {}
         return { ok: false, locked: true, reason: "cross-tab-busy" };
     }
 
@@ -4970,13 +5305,33 @@ async function flushFirebaseWriteOutboxV87(reason, opts) {
     try {
         if (!aarishCostSameUidCoreV3(uid)) return { ok:false, reason:"uid_changed_before_read" };
 
+        window.__aarishCostCloudAckPendingCoreV4 = window.__aarishCostCloudAckPendingCoreV4 || {};
+        var pendingAck = window.__aarishCostCloudAckPendingCoreV4[uid];
+
+        if (pendingAck && Array.isArray(pendingAck.ids) && pendingAck.ids.length) {
+            var preAck = await aarishCostDeleteOutboxV1(pendingAck.ids, uid, { requireIdb: !!pendingAck.requireIdb });
+
+            if (preAck && preAck.ok) {
+                delete window.__aarishCostCloudAckPendingCoreV4[uid];
+            } else {
+                aarishCostScheduleFlushV1(2600, "ack-retry-before-resend");
+                return { ok:false, ackPending:true, ack:preAck || null };
+            }
+        }
+
         var items = await aarishCostGetOutboxV1();
 
         if (!aarishCostSameUidCoreV3(uid)) return { ok:false, reason:"uid_changed_after_read" };
 
+        if (window.__aarishCostLastOutboxReadTimedOutV4) {
+            aarishCostScheduleFlushV1(4500, "outbox-read-timeout");
+            return { ok:false, outboxReadTimedOut:true };
+        }
+
         if (!items.length) {
             clearTimeout(__aarishCostFlushHardTimerV1);
             __aarishCostFlushHardTimerV1 = null;
+            __aarishCostFlushBackoffCoreV7 = 0;
             return { ok: true, empty: true };
         }
 
@@ -4984,35 +5339,49 @@ async function flushFirebaseWriteOutboxV87(reason, opts) {
         var batch = picked.items;
         var mega = picked.mega;
         var ids = batch.map(function(x) { return x.id; });
+        var requiresIdbAck = batch.some(function(x) { return x && x.__queueTier === "idb"; });
         var rev = Number(mega && mega["_syncMeta/rev"] || Date.now());
 
         if (!batch.length || !Object.keys(mega || {}).length) return { ok:true, empty:true };
         if (!aarishCostSameUidCoreV3(uid)) return { ok:false, reason:"uid_changed_before_update" };
 
-        await aarishCostWithTimeoutCoreV5(
-            ref.update(mega),
-            "firebase-update",
-            22000
-        );
+        await aarishCostWithTimeoutCoreV5(ref.update(mega), "firebase-update", 18000);
 
         if (!aarishCostSameUidCoreV3(uid)) return { ok:false, reason:"uid_changed_after_update" };
 
         window.__aarishFirebaseCostRevV81 = Number.isFinite(rev) && rev > 0 ? rev : Date.now();
 
-        await aarishCostDeleteOutboxV1(ids, uid);
-        await saveCacheNowCostV81("flush-" + String(reason || ""));
+        window.__aarishCostCloudAckPendingCoreV4[uid] = {
+            ids: ids,
+            requireIdb: requiresIdbAck,
+            rev: window.__aarishFirebaseCostRevV81,
+            createdAt: Date.now()
+        };
+
+        var ack = await aarishCostDeleteOutboxV1(ids, uid, { requireIdb: requiresIdbAck });
+
+        if (!ack || !ack.ok) {
+            aarishCostScheduleFlushV1(2600, "cloud-sent-ack-pending");
+            return { ok: true, sent: ids.length, ackPending: true, ack: ack || null, remaining: Math.max(0, items.length - batch.length) };
+        }
+
+        delete window.__aarishCostCloudAckPendingCoreV4[uid];
+        __aarishCostFlushBackoffCoreV7 = 0;
+
+        try { await saveCacheNowCostV81("flush-" + String(reason || "")); } catch(e) {}
 
         if (items.length > batch.length) {
-            aarishCostScheduleFlushV1(900, "more-pending");
+            aarishCostScheduleFlushV1(800, "more-pending");
         } else {
             clearTimeout(__aarishCostFlushHardTimerV1);
             __aarishCostFlushHardTimerV1 = null;
         }
 
-        return { ok: true, sent: ids.length, remaining: Math.max(0, items.length - batch.length) };
+        return { ok: true, sent: ids.length, remaining: Math.max(0, items.length - batch.length), ack: ack };
     } catch(e) {
-        aarishCostScheduleFlushV1(10000 + Math.floor(Math.random() * 3000), "retry");
-        aarishCostToastV1("Pending sync saved. Internet check karo.");
+        __aarishCostFlushBackoffCoreV7 = Math.min(60000, Math.max(3500, Number(__aarishCostFlushBackoffCoreV7 || 0) ? Number(__aarishCostFlushBackoffCoreV7) * 1.7 : 5000));
+        aarishCostScheduleFlushV1(__aarishCostFlushBackoffCoreV7 + Math.floor(Math.random() * 1800), "retry");
+        aarishCostStorageToastCoreV7("Pending sync saved. Internet check karo.", 18000);
         return { ok: false, error: String(e && e.message ? e.message : e) };
     } finally {
         __aarishCostFlushBusyV1 = false;
@@ -5053,23 +5422,34 @@ async function fullFirebaseSyncCostV81(reason) {
 
         if (!aarishCostSameUidCoreV3(uid)) return false;
 
+        var pendingBeforeApply = await aarishCostGetOutboxV1();
+
+        if (!aarishCostSameUidCoreV3(uid)) return false;
+
+        if (window.__aarishCostLastOutboxReadTimedOutV4) {
+            try { if (typeof hideLoader === "function") hideLoader(); } catch(_) {}
+            try { aarishCostScheduleFlushV1(4500, "full-sync-outbox-timeout"); } catch(_) {}
+            try { if (typeof showToast === "function") showToast("Local pending sync check slow hai. Data safe rahega; retry ho raha hai."); } catch(_) {}
+            return false;
+        }
+
         var raw = (snap && snap.val && snap.val()) || {};
         var state = aarishCostNormalizeStateV1(raw);
         aarishCostApplyStateV1(state);
+
+        if (pendingBeforeApply && pendingBeforeApply.length) {
+            aarishCostApplyMegaToStateCoreV3(aarishCostBuildMegaV1(pendingBeforeApply), "full-sync-pending-replay");
+        }
 
         var meta = raw && raw._syncMeta && typeof raw._syncMeta === "object" ? raw._syncMeta : {};
         var rev = Number(meta.rev || 0);
         window.__aarishFirebaseCostRevV81 = Number.isFinite(rev) && rev > 0 ? rev : Date.now();
         window.__aarishCacheLoadedWithoutServerRevV81 = false;
 
-        await aarishCostReplayOutboxToLocalCoreV3("after-cloud-pull", { render:false });
-
-        if (!aarishCostSameUidCoreV3(uid)) return false;
-
         await saveCacheNowCostV81(reason || "full-sync-atomic");
         aarishCostShowAppV1();
 
-        try { aarishCostScheduleFlushV1(1200, "after-full-sync"); } catch(e) {}
+        try { aarishCostScheduleFlushV1(900, "after-full-sync"); } catch(e) {}
         return true;
     } catch(e) {
         try { if (typeof hideLoader === "function") hideLoader(); } catch(_) {}
@@ -5106,8 +5486,12 @@ async function aarishAutoPullCloudIfNewerV87(reason, opts) {
         var flushResult = await flushFirebaseWriteOutboxV87("before-meta-check", { force: !!opts.force });
         var pendingAfterFlush = await aarishCostGetOutboxV1();
 
+        if (!aarishCostSafeLocalPullAllowedCoreV7("auto-pull")) {
+            return { ok:false, skipped:"outbox-read-timeout", flushOk: !!(flushResult && flushResult.ok) };
+        }
+
         if (pendingAfterFlush.length) {
-            aarishCostScheduleFlushV1(5000, "pending-before-pull");
+            aarishCostScheduleFlushV1(4000, "pending-before-pull");
             return {
                 ok: true,
                 skipped: "local-pending-writes",
@@ -5153,7 +5537,7 @@ function installFirebaseCostCoreV1() {
 
     try {
         window.addEventListener("online", function() {
-            setTimeout(function() {
+            aarishCostSetTimerCoreV7("__aarishCostOnlineTimerCoreV7", function() {
                 flushFirebaseWriteOutboxV87("online", { force: true });
                 aarishAutoPullCloudIfNewerV87("online", { force: true });
             }, 700);
@@ -5162,7 +5546,7 @@ function installFirebaseCostCoreV1() {
 
     try {
         window.addEventListener("focus", function() {
-            setTimeout(function() {
+            aarishCostSetTimerCoreV7("__aarishCostFocusTimerCoreV7", function() {
                 flushFirebaseWriteOutboxV87("focus", { force: false });
                 aarishAutoPullCloudIfNewerV87("focus", { force: false });
             }, 1000);
@@ -5175,7 +5559,7 @@ function installFirebaseCostCoreV1() {
                 flushFirebaseWriteOutboxV87("hidden", { force: false });
                 saveCacheNowCostV81("hidden");
             } else {
-                setTimeout(function() {
+                aarishCostSetTimerCoreV7("__aarishCostVisibleTimerCoreV7", function() {
                     flushFirebaseWriteOutboxV87("visible", { force: false });
                     aarishAutoPullCloudIfNewerV87("visible", { force: false });
                 }, 1000);
@@ -5190,6 +5574,10 @@ function installFirebaseCostCoreV1() {
         }, { passive: true });
     } catch(e) {}
 }
+
+// AARISH_BACKEND_FAANG_CORE_V6_START
+window.__AARISH_BACKEND_FAANG_CORE_V6 = true;
+// AARISH_BACKEND_FAANG_CORE_V6_END
 
 installFirebaseCostCoreV1();
 // ========================== AARISH_FIREBASE_COST_CORE_V1_END ==========================
