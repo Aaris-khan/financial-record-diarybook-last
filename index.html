@@ -2975,7 +2975,7 @@ html.aarish-vt-running-v3 .screen.active {
 
 /* Scroll-driven depth is feature-gated; it never runs on older Android WebViews. */
 @supports (animation-timeline: view()) {
-    .screen.active .glass-card:not(.list-enter) {
+    html:not(.aarish-tab-switching-v31):not(.aarish-vt-running-v3) .screen.active .glass-card:not(.list-enter) {
         animation: aarishUltraScrollDepthV3 linear both;
         animation-timeline: view();
         animation-range: entry 0% cover 22%;
@@ -3001,6 +3001,23 @@ html.aarish-vt-running-v3 .screen.active {
         transition-duration: 1ms !important;
     }
 }
+/* AARISH_MOTION_V31_DOUBLE_JERK_HOTFIX_CSS_START */
+/* V3.1: During tab switch, do not let scroll-depth/card animation fight screen transition. */
+html.aarish-tab-switching-v31 .screen.active .glass-card:not(.list-enter),
+html.aarish-vt-running-v3 .screen.active .glass-card:not(.list-enter) {
+    animation: none !important;
+}
+
+/* V3.1: bottom nav already has its own icon/pill animation; release bounce on nav caused double-snap. */
+.bottom-nav .nav-item.aarish-release-bounce-v3 {
+    animation: none !important;
+}
+
+/* V3.1: keep active card press, but stop accidental duplicate animation while switching screens. */
+html.aarish-tab-switching-v31 .aarish-release-bounce-v3 {
+    animation: none !important;
+}
+/* AARISH_MOTION_V31_DOUBLE_JERK_HOTFIX_CSS_END */
 /* AARISH_ULTRA_CORE_MOTION_V3_END */
 </style>
 
@@ -11165,15 +11182,31 @@ function aarishCsvRowCoreV4(values) {
     const raf2 = (fn) => requestAnimationFrame(() => requestAnimationFrame(fn));
     const idle = (fn) => (window.requestIdleCallback ? requestIdleCallback(fn, { timeout: 700 }) : setTimeout(fn, 80));
 
+    /* AARISH_MOTION_V31_DOUBLE_JERK_HOTFIX_JS */
+    // V3.1 global haptic gate:
+    // Old inline onclick="haptic(); ..." and V3 pointerdown haptic now share ONE debounce.
     let lastHapticAt = 0;
-    function safeHaptic(pattern) {
+    const aarishOriginalHapticV31 = (typeof window.haptic === "function") ? window.haptic.bind(window) : null;
+
+    window.haptic = function aarishHapticGateV31(pattern) {
         const now = Date.now();
-        if (now - lastHapticAt < 95) return;
+        if (now - lastHapticAt < 220) return false;
         lastHapticAt = now;
         try {
-            if (typeof window.haptic === "function") window.haptic();
-            else if (navigator.vibrate) navigator.vibrate(pattern || 28);
+            if (aarishOriginalHapticV31) {
+                aarishOriginalHapticV31(pattern);
+                return true;
+            }
+            if (navigator.vibrate) {
+                navigator.vibrate(pattern || 32);
+                return true;
+            }
         } catch (_) {}
+        return false;
+    };
+
+    function safeHaptic(pattern) {
+        try { window.haptic(pattern || 28); } catch (_) {}
     }
 
     function activeRoot() {
@@ -11282,8 +11315,8 @@ function aarishCsvRowCoreV4(values) {
         }, { capture: true, passive: true });
 
         document.addEventListener('pointerup', (ev) => {
-            const button = ev.target && ev.target.closest('button, .btn-primary, .btn-ios-share, .btn-ios-add, .action-btn, .nav-item');
-            if (button) bounce(button);
+            const button = ev.target && ev.target.closest('button, .btn-primary, .btn-ios-share, .btn-ios-add, .action-btn');
+            if (button && !button.closest('.bottom-nav .nav-item')) bounce(button);
         }, { capture: true, passive: true });
 
         const fab = qs('#gemini-draggable-logo');
@@ -11344,30 +11377,55 @@ function aarishCsvRowCoreV4(values) {
     }
 
     const renderNames = [
-        'renderMilkList','renderMilkRecords','renderUdharList','renderUdharRecords',
-        'renderExpenseList','renderExpenseRecords','renderSalaryList','renderSalaryRecords',
-        'renderDiaryList','renderProjectsList','renderProjectRecords','renderDashboardBalances',
-        'updateDashboard','updateBusinessCoreUi','updateDiaryCoreUi','updateExpenseCoreUi',
-        'updateExpenseDetailCoreUi','updateSalaryCoreUi','updateActiveScreen',
-        'filterDiaryList','filterMilkList','filterProjectList','filterSalaryList','filterUdharList'
+        'renderMilkList',
+        'renderMilkRecords',
+        'renderUdharList',
+        'renderUdharRecords',
+        'renderExpenseList',
+        'renderExpenseRecords',
+        'renderSalaryList',
+        'renderSalaryRecords',
+        'renderDiaryList',
+        'renderProjectsList',
+        'renderProjectRecords',
+        'renderDashboardBalances'
     ];
 
     function installFunctionWrappers() {
         wrapFunction('switchTab', (original) => function(tab) {
+            safeHaptic(25);
+            const reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+            const useVT = !!(document.startViewTransition && !reduceMotion);
             const current = qs('.screen.active');
-            if (current && current.id !== String(tab) + '-screen') {
+            const nextId = String(tab) + '-screen';
+
+            document.documentElement.classList.add('aarish-tab-switching-v31');
+            clearTimeout(window.__aarishTabSwitchingTimerV31);
+            window.__aarishTabSwitchingTimerV31 = setTimeout(() => {
+                document.documentElement.classList.remove('aarish-tab-switching-v31');
+            }, 520);
+
+            // V3.1: Do NOT run CSS exit slide when ViewTransition is active.
+            // This removes the double visual jerk on bottom nav / screen switches.
+            if (!useVT && current && current.id !== nextId) {
                 current.classList.add('aarish-screen-exit-v3');
                 setTimeout(() => current.classList.remove('aarish-screen-exit-v3'), 260);
             }
-            safeHaptic(25);
+
             let result;
             const runSwitch = () => { result = original.apply(this, arguments); };
-            const reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-            if (document.startViewTransition && !reduceMotion) {
+
+            if (useVT) {
                 document.documentElement.classList.add('aarish-vt-running-v3');
                 try {
                     const vt = document.startViewTransition(runSwitch);
-                    vt.finished.finally(() => document.documentElement.classList.remove('aarish-vt-running-v3'));
+                    vt.finished.finally(() => {
+                        document.documentElement.classList.remove('aarish-vt-running-v3');
+                        clearTimeout(window.__aarishTabSwitchingTimerV31);
+                        window.__aarishTabSwitchingTimerV31 = setTimeout(() => {
+                            document.documentElement.classList.remove('aarish-tab-switching-v31');
+                        }, 120);
+                    });
                 } catch (_) {
                     document.documentElement.classList.remove('aarish-vt-running-v3');
                     runSwitch();
@@ -11375,11 +11433,12 @@ function aarishCsvRowCoreV4(values) {
             } else {
                 runSwitch();
             }
+
             raf2(() => { setStagger(); inputLabels(); installNavPill(); scanMoneyActive(); });
             return result;
         });
 
-        wrapFunction('openModal', (original) => function(id) {
+        wrapFunction('openModal' , (original) => function(id) {
             safeHaptic(32);
             const result = original.apply(this, arguments);
             const modal = document.getElementById(id);
