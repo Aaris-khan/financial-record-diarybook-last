@@ -4119,6 +4119,7 @@ window.__AARISH_BACKEND_TITANIUM_CORE_V11 = true;
             window.isAiPaginating = false;
             window.__aarishAiInFlightV2 = false;
 
+            try { if (typeof aarishClearGeminiUserKeyCoreV3 === 'function') aarishClearGeminiUserKeyCoreV3(); } catch(e) {}
             try { sessionStorage.removeItem('gemini_user_api_key_session'); } catch(e) {}
             try { localStorage.removeItem('gemini_user_api_key'); } catch(e) {}
             try { localStorage.removeItem('user_ai_model'); } catch(e) {}
@@ -10417,51 +10418,139 @@ async function deleteProjectEntry(id) {
         catch(e) { try { return atob(String(value || '')); } catch(_) { return String(value || ''); } }
     }
 
+/* AARISH_GEMINI_KEY_DEVICE_PERSIST_CORE_V3_START
+   Device-local persistence for user's own Gemini API key.
+   Why: old code stored only in sessionStorage, so key disappeared after app/browser close.
+   Security boundary:
+   - Not saved to Firebase.
+   - Not hardcoded in GitHub/source.
+   - Persisted only in this browser/device origin.
+   - Browser storage is not hacker-proof against XSS/device compromise.
+   - True production security = backend proxy + Secret Manager.
+*/
+function aarishGeminiKeyUidCoreV3() {
+    try { if (typeof currentUserUID !== 'undefined' && currentUserUID) return String(currentUserUID); } catch(e) {}
+    try { if (typeof auth !== 'undefined' && auth && auth.currentUser && auth.currentUser.uid) return String(auth.currentUser.uid); } catch(e) {}
+    try { if (typeof firebase !== 'undefined' && firebase.auth && firebase.auth().currentUser && firebase.auth().currentUser.uid) return String(firebase.auth().currentUser.uid); } catch(e) {}
+    return 'guest';
+}
+
+function aarishGeminiKeyStorageNameCoreV3(uidArg) {
+    var uid = String(uidArg || aarishGeminiKeyUidCoreV3() || 'guest')
+        .replace(/[^A-Za-z0-9_:\-.]/g, '_')
+        .slice(0, 160);
+    return 'AARISH_GEMINI_USER_API_KEY_DEVICE_V3::' + uid;
+}
+
+function aarishGeminiKeyPackCoreV3(key) {
+    try {
+        return 'b64json:' + aarishB64EncodeCoreV2(JSON.stringify({
+            v: 3,
+            t: Date.now(),
+            host: (location && location.host) ? String(location.host).slice(0, 120) : '',
+            key: String(key || '').trim()
+        }));
+    } catch(e) {
+        return 'b64:' + aarishB64EncodeCoreV2(String(key || '').trim());
+    }
+}
+
+function aarishGeminiKeyUnpackCoreV3(raw) {
+    try {
+        raw = String(raw || '').trim();
+        if (!raw) return '';
+        if (raw.indexOf('b64json:') === 0) {
+            var obj = JSON.parse(aarishB64DecodeCoreV2(raw.slice(8)) || '{}');
+            return String(obj && obj.key ? obj.key : '').trim();
+        }
+        if (raw.indexOf('b64:') === 0) return String(aarishB64DecodeCoreV2(raw.slice(4)) || '').trim();
+        return raw.trim();
+    } catch(e) {
+        return '';
+    }
+}
+
 function aarishSaveGeminiUserKeyCoreV2(key) {
     try {
         key = String(key || '').trim();
+        var uid = aarishGeminiKeyUidCoreV3();
+        var storageKey = aarishGeminiKeyStorageNameCoreV3(uid);
+
         if (key) {
-            sessionStorage.setItem('gemini_user_api_key_session', 'b64:' + aarishB64EncodeCoreV2(key));
+            var packed = aarishGeminiKeyPackCoreV3(key);
+
+            // Fast current-tab cache
+            sessionStorage.setItem('gemini_user_api_key_session', packed);
+
+            // Persistent device-local storage, scoped by current user when possible
+            localStorage.setItem(storageKey, packed);
+
+            // If auth is not ready yet, keep a guest fallback so reload does not ask again
+            if (uid !== 'guest') {
+                try { localStorage.removeItem(aarishGeminiKeyStorageNameCoreV3('guest')); } catch(e) {}
+            } else {
+                localStorage.setItem(aarishGeminiKeyStorageNameCoreV3('guest'), packed);
+            }
         } else {
             sessionStorage.removeItem('gemini_user_api_key_session');
+            localStorage.removeItem(storageKey);
+            localStorage.removeItem(aarishGeminiKeyStorageNameCoreV3('guest'));
         }
+
+        // Remove older unsafe/simple legacy key name
         localStorage.removeItem('gemini_user_api_key');
     } catch(e) {}
 }
 
 function aarishReadGeminiUserKeyCoreV2() {
     try {
-        let sessionKey = String(sessionStorage.getItem('gemini_user_api_key_session') || '').trim();
-        if (sessionKey) {
-            try {
-                if (sessionKey.indexOf('b64:') === 0) sessionKey = aarishB64DecodeCoreV2(sessionKey.slice(4));
-            } catch(e) {}
-            return String(sessionKey || '').trim();
+        // 1) Current-tab cache
+        var sessionKey = String(sessionStorage.getItem('gemini_user_api_key_session') || '').trim();
+        var decoded = aarishGeminiKeyUnpackCoreV3(sessionKey);
+        if (decoded) return decoded;
+
+        // 2) Persistent current-user key
+        var uid = aarishGeminiKeyUidCoreV3();
+        var names = [
+            aarishGeminiKeyStorageNameCoreV3(uid),
+            aarishGeminiKeyStorageNameCoreV3('guest'),
+            'gemini_user_api_key' // legacy migration only
+        ];
+
+        for (var i = 0; i < names.length; i++) {
+            var raw = '';
+            try { raw = String(localStorage.getItem(names[i]) || '').trim(); } catch(e) {}
+            decoded = aarishGeminiKeyUnpackCoreV3(raw);
+            if (decoded) {
+                try {
+                    var packed = aarishGeminiKeyPackCoreV3(decoded);
+                    sessionStorage.setItem('gemini_user_api_key_session', packed);
+                    localStorage.setItem(aarishGeminiKeyStorageNameCoreV3(uid), packed);
+                    if (names[i] === 'gemini_user_api_key') localStorage.removeItem('gemini_user_api_key');
+                } catch(e) {}
+                return decoded;
+            }
         }
 
-        const legacy = String(localStorage.getItem('gemini_user_api_key') || '').trim();
-        if (!legacy) return '';
-
-        let decoded = legacy;
-        try {
-            decoded = legacy.startsWith('b64:') ? aarishB64DecodeCoreV2(legacy.slice(4)) : legacy;
-        } catch(e) {}
-
-        decoded = String(decoded || '').trim();
-        if (decoded) {
-            try {
-                sessionStorage.setItem('gemini_user_api_key_session', 'b64:' + aarishB64EncodeCoreV2(decoded));
-                localStorage.removeItem('gemini_user_api_key');
-            } catch(e) {}
-        }
-        return decoded;
+        return '';
     } catch(e) {
         return '';
     }
 }
-    function aarishHasGeminiUserKeyCoreV2() {
-        return !!aarishReadGeminiUserKeyCoreV2();
-    }
+
+function aarishClearGeminiUserKeyCoreV3() {
+    try {
+        sessionStorage.removeItem('gemini_user_api_key_session');
+        localStorage.removeItem(aarishGeminiKeyStorageNameCoreV3(aarishGeminiKeyUidCoreV3()));
+        localStorage.removeItem(aarishGeminiKeyStorageNameCoreV3('guest'));
+        localStorage.removeItem('gemini_user_api_key');
+    } catch(e) {}
+}
+
+function aarishHasGeminiUserKeyCoreV2() {
+    return !!aarishReadGeminiUserKeyCoreV2();
+}
+/* AARISH_GEMINI_KEY_DEVICE_PERSIST_CORE_V3_END */
     function aarishSafeGeminiModelCoreV2(model) {
         const m = String(model || 'gemini-1.5-flash').trim();
         return /^[A-Za-z0-9._:-]+$/.test(m) ? m : 'gemini-1.5-flash';
