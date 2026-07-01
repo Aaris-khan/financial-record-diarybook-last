@@ -1,51 +1,423 @@
 <!DOCTYPE html>
-<html lang="en-IN">
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Aarish Dairy Pro — Doodh Hisab, Udhar Khata Book & Business Kit</title>
-<meta name="description" content="Aarish Dairy Pro is a free doodh hisab, udhar khata book and custom business kit app for milk records, daily kharcha record, salary register, personal diary and business ledger.">
-<meta name="robots" content="index,follow">
+<title>About Aarish Dairy Pro — Doodh Hisab, Credit Book & Business Ledger</title>
+<meta name="description" content="Learn about Aarish Dairy Pro, a free PWA for doodh hisab, milk record, credit book, udhar khata book, hisab kitab, salary register and business ledger.">
+<meta name="author" content="Aarish Khan">
+<meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1">
 <link rel="canonical" href="https://aaris-khan.github.io/financial-record-diarybook-last/about.html">
+<link rel="manifest" href="./manifest.webmanifest">
+<meta property="og:title" content="About Aarish Dairy Pro — Doodh Hisab, Credit Book & Business Ledger">
+<meta property="og:description" content="Learn about Aarish Dairy Pro, a free PWA for doodh hisab, milk record, credit book, udhar khata book, hisab kitab, salary register and business ledger.">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://aaris-khan.github.io/financial-record-diarybook-last/about.html">
+<meta property="og:site_name" content="Aarish Dairy Pro">
+<meta property="og:image" content="https://aaris-khan.github.io/financial-record-diarybook-last/og-image.svg">
+<meta property="og:image:alt" content="Aarish Dairy Pro doodh hisab, credit book, udhar khata book and milk record app">
+<meta property="og:image:type" content="image/svg+xml">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="About Aarish Dairy Pro — Doodh Hisab, Credit Book & Business Ledger">
+<meta name="twitter:description" content="Learn about Aarish Dairy Pro, a free PWA for doodh hisab, milk record, credit book, udhar khata book, hisab kitab, salary register and business ledger.">
+<meta name="twitter:image" content="https://aaris-khan.github.io/financial-record-diarybook-last/og-image.svg">
 <style>
-body{margin:0;padding:24px;font-family:Inter,Arial,sans-serif;background:#000;color:#fff;line-height:1.7}
-main{max-width:850px;margin:auto}
-.card{background:#111827;border:1px solid rgba(255,255,255,.12);border-radius:24px;padding:24px;box-shadow:0 12px 40px rgba(0,0,0,.45)}
-h1{margin-top:0;font-size:34px;line-height:1.2}
-.chips{display:flex;flex-wrap:wrap;gap:10px;margin:20px 0}
-.chips span{padding:8px 12px;border-radius:999px;background:#1f2937;font-weight:700}
-a{color:#60a5fa;font-weight:800}
+:root{
+  color-scheme: dark;
+  --bg:#030712;
+  --card:#111827;
+  --text:#f9fafb;
+  --muted:#cbd5e1;
+  --blue:#60a5fa;
+  --border:rgba(255,255,255,.12);
+}
+*{box-sizing:border-box}
+body{
+  margin:0;
+  padding:24px;
+  font-family:Inter,Arial,sans-serif;
+  background:
+    radial-gradient(circle at 0% 0%, rgba(52,211,153,.12), transparent 35%),
+    radial-gradient(circle at 100% 100%, rgba(96,165,250,.12), transparent 38%),
+    var(--bg);
+  color:var(--text);
+  line-height:1.72;
+}
+main{max-width:920px;margin:auto}
+.card{
+  background:rgba(17,24,39,.92);
+  border:1px solid var(--border);
+  border-radius:26px;
+  padding:24px;
+  box-shadow:0 18px 60px rgba(0,0,0,.45);
+}
+h1{font-size:34px;line-height:1.15;margin:0 0 12px}
+h2{font-size:23px;margin:30px 0 10px}
+p{color:var(--muted);font-size:16px}
+a{color:var(--blue);font-weight:800;text-decoration:none}
+a:hover{text-decoration:underline}
+.chips{display:flex;flex-wrap:wrap;gap:10px;margin:18px 0}
+.chips span{
+  padding:8px 12px;
+  border-radius:999px;
+  background:rgba(31,41,55,.95);
+  border:1px solid var(--border);
+  font-weight:800;
+  color:#fff;
+}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px}
+.box{
+  background:rgba(31,41,55,.72);
+  border:1px solid var(--border);
+  border-radius:18px;
+  padding:16px;
+}
+.small{font-size:14px;color:#94a3b8}
+nav{display:flex;flex-wrap:wrap;gap:10px;margin:18px 0 24px}
+nav a{
+  background:rgba(96,165,250,.10);
+  border:1px solid rgba(96,165,250,.25);
+  border-radius:999px;
+  padding:8px 12px;
+}
+ol,ul{color:var(--muted)}
+strong{color:#fff}
+footer{margin-top:28px;color:#94a3b8;font-size:13px}
 </style>
+<script type="application/ld+json">
+[
+  {
+    "@context": "https://schema.org",
+    "@type": "AboutPage",
+    "name": "About Aarish Dairy Pro",
+    "url": "https://aaris-khan.github.io/financial-record-diarybook-last/about.html",
+    "description": "Aarish Dairy Pro is a free PWA for doodh hisab, milk record, credit book, udhar khata book, daily expenses, salary register, personal diary and small business ledger.",
+    "isPartOf": {
+      "@type": "WebSite",
+      "name": "Aarish Dairy Pro",
+      "url": "https://aaris-khan.github.io/financial-record-diarybook-last/"
+    },
+    "author": {
+      "@type": "Person",
+      "name": "Aarish Khan",
+      "alternateName": [
+        "Aaris Khan",
+        "Aaris-khan",
+        "Aarish"
+      ],
+      "url": "https://github.com/Aaris-khan",
+      "sameAs": [
+        "https://github.com/Aaris-khan"
+      ]
+    },
+    "inLanguage": [
+      "en",
+      "hi"
+    ]
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {
+        "@type": "ListItem",
+        "position": 1,
+        "name": "Home",
+        "item": "https://aaris-khan.github.io/financial-record-diarybook-last/"
+      },
+      {
+        "@type": "ListItem",
+        "position": 2,
+        "name": "About Aarish Dairy Pro",
+        "item": "https://aaris-khan.github.io/financial-record-diarybook-last/about.html"
+      }
+    ]
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "name": "Aarish Dairy Pro",
+    "alternateName": [
+      "Aarish Dairy Pro",
+      "Aarish Dairy",
+      "Aarish Diary",
+      "Aaris Dairy",
+      "Aaris Diary",
+      "Aarish Financial Diary",
+      "Aaris Financial Diary",
+      "Aarish Dairy Financial",
+      "Aaris Dairy Financial",
+      "Doodh Hisab App",
+      "Doodh Ka Hisab",
+      "Milk Record App",
+      "Milk Record App India",
+      "Dairy Hisab Kitab",
+      "Dairy Ledger App"
+    ],
+    "url": "https://aaris-khan.github.io/financial-record-diarybook-last/",
+    "description": "Aarish Dairy Pro is a free PWA for doodh hisab, milk record, credit book, udhar khata book, daily expenses, salary register, personal diary and small business ledger. Aarish Dairy Pro is made for users across India and for Hindi or English-speaking users internationally who need a simple daily hisab kitab, milk record, credit book or business ledger app.",
+    "publisher": {
+      "@type": "Person",
+      "name": "Aarish Khan",
+      "alternateName": [
+        "Aaris Khan",
+        "Aaris-khan",
+        "Aarish"
+      ],
+      "url": "https://github.com/Aaris-khan",
+      "sameAs": [
+        "https://github.com/Aaris-khan"
+      ]
+    },
+    "inLanguage": [
+      "en",
+      "hi"
+    ]
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    "name": "Aarish Dairy Pro",
+    "alternateName": [
+      "Aarish Dairy Pro",
+      "Aarish Dairy",
+      "Aarish Diary",
+      "Aaris Dairy",
+      "Aaris Diary",
+      "Aarish Financial Diary",
+      "Aaris Financial Diary",
+      "Aarish Dairy Financial",
+      "Aaris Dairy Financial",
+      "Doodh Hisab App",
+      "Doodh Ka Hisab",
+      "Milk Record App",
+      "Milk Record App India",
+      "Dairy Hisab Kitab",
+      "Dairy Ledger App",
+      "Udhar Khata Book",
+      "Udhar Bahi Khata",
+      "Udhar Record App",
+      "Khata Book App",
+      "Credit Book App",
+      "Credit Record App",
+      "Hisab Kitab App",
+      "Daily Ledger App",
+      "Daily Expenses App",
+      "Daily Kharcha App",
+      "Salary Register App",
+      "Business Record App",
+      "Business Ledger App",
+      "Financial Diary App",
+      "Small Business Ledger App"
+    ],
+    "url": "https://aaris-khan.github.io/financial-record-diarybook-last/",
+    "description": "Aarish Dairy Pro is a free PWA for doodh hisab, milk record, credit book, udhar khata book, daily expenses, salary register, personal diary and small business ledger. Aarish Dairy Pro is made for users across India and for Hindi or English-speaking users internationally who need a simple daily hisab kitab, milk record, credit book or business ledger app.",
+    "applicationCategory": "FinanceApplication",
+    "operatingSystem": "Web, Android",
+    "inLanguage": [
+      "en",
+      "hi"
+    ],
+    "isAccessibleForFree": true,
+    "featureList": [
+      "Doodh Hisab / Milk Record",
+      "Credit Book / Udhar Khata Book",
+      "Udhar Bahi Khata",
+      "Daily Expenses / Daily Kharcha Record",
+      "Salary Register",
+      "Personal Diary",
+      "Business Record / Small Business Ledger",
+      "Offline-ready PWA experience"
+    ],
+    "offers": {
+      "@type": "Offer",
+      "price": "0"
+    },
+    "author": {
+      "@type": "Person",
+      "name": "Aarish Khan",
+      "alternateName": [
+        "Aaris Khan",
+        "Aaris-khan",
+        "Aarish"
+      ],
+      "url": "https://github.com/Aaris-khan",
+      "sameAs": [
+        "https://github.com/Aaris-khan"
+      ]
+    }
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "What is Aarish Dairy Pro?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Aarish Dairy Pro is a free PWA for doodh hisab, milk record, credit book, udhar khata book, daily expenses, salary register, personal diary and small business ledger."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Is Aarish Dairy Pro also searched as Aarish Diary or Aaris Financial Diary?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Yes. Some users search for Aarish Dairy Pro as Aarish Diary, Aaris Dairy, Aarish Financial Diary, Aaris Financial Diary, Doodh Hisab App, Milk Record App, Credit Book App, Udhar Khata Book, Udhar Bahi Khata or Hisab Kitab App."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Can I use Aarish Dairy Pro outside India?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Yes. Aarish Dairy Pro can be used by anyone worldwide who wants to track milk records, credit book or udhar-style records, daily expenses, salary and business ledger in a simple diary app."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Who can use Aarish Dairy Pro?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Aarish Dairy Pro is made for small dairy owners, milk sellers, local shopkeepers and small business users who need a simple digital hisab kitab app."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Does Google index private app records?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "No. Public pages like the homepage and about page can be indexed, but user records inside login such as milk entries, credit records, diary notes and salary records are private app data."
+        }
+      }
+    ]
+  }
+]
+</script>
 </head>
 <body>
 <main>
 <div class="card">
-<h1>Aarish Dairy Pro</h1>
-<p><strong>Doodh Hisab, Udhar Khata Book & Custom Business Kit</strong></p>
+<nav>
+<a href="./index.html">Home</a>
+<a href="./about.html" aria-current="page">About</a>
+<a href="./doodh-hisab.html">Doodh Hisab</a>
+<a href="./udhar-khata-book.html">Udhar Khata Book</a>
+<a href="./hisab-kitab-app.html">Hisab Kitab App</a>
+<a href="./milk-record-app.html">Milk Record App</a>
+</nav>
+<h1>About Aarish Dairy Pro</h1>
 
+<p><strong>Aarish Dairy Pro is a free PWA for doodh hisab, milk record, credit book, udhar khata book, daily expenses, salary register, personal diary and small business ledger.</strong></p>
+
+<section>
+<h2>What is Aarish Dairy Pro?</h2>
+<p>Aarish Dairy Pro is a mobile-first financial diary and business record app. It helps users keep daily milk collection, credit book records, udhar records, expenses, salary, personal diary notes and business ledger in one secure PWA.</p>
+<p>यह ऐप दूध हिसाब, उधार खाता, रोज़ का खर्चा, तनख्वाह और छोटा बिजनेस रिकॉर्ड एक जगह रखने के लिए बनाया गया है।</p>
+</section>
+
+<section>
+<h2>Also searched as</h2>
+<p>People may search this app with different names and spellings. These names refer to the same Aarish Dairy Pro app and help users find the right tool without keyword stuffing.</p>
 <div class="chips">
-<span>Doodh Hisab</span>
-<span>Milk Record</span>
+<span>Aarish Dairy Pro</span>
+<span>Aarish Dairy</span>
+<span>Aarish Diary</span>
+<span>Aaris Dairy</span>
+<span>Aaris Diary</span>
+<span>Aarish Financial Diary</span>
+<span>Aaris Financial Diary</span>
+<span>Aarish Dairy Financial</span>
+<span>Aaris Dairy Financial</span>
+<span>Doodh Hisab App</span>
+<span>Doodh Ka Hisab</span>
+<span>Milk Record App</span>
+<span>Milk Record App India</span>
+<span>Dairy Hisab Kitab</span>
+<span>Dairy Ledger App</span>
 <span>Udhar Khata Book</span>
 <span>Udhar Bahi Khata</span>
-<span>Kharcha Record</span>
-<span>Salary Register</span>
-<span>Diary</span>
-<span>Business Kit</span>
+<span>Udhar Record App</span>
+<span>Khata Book App</span>
+<span>Credit Book App</span>
+<span>Credit Record App</span>
+<span>Hisab Kitab App</span>
+<span>Daily Ledger App</span>
+<span>Daily Expenses App</span>
+<span>Daily Kharcha App</span>
+<span>Salary Register App</span>
+<span>Business Record App</span>
+<span>Business Ledger App</span>
+<span>Financial Diary App</span>
+<span>Small Business Ledger App</span>
 </div>
+</section>
 
-<p>
-Aarish Dairy Pro is an all-in-one financial diary app for milk records,
-doodh hisab, udhar khata book, udhar bahi khata, daily kharcha,
-salary records, diary notes and business ledger.
-</p>
+<section>
+<h2>India and international use</h2>
+<p>Aarish Dairy Pro is made for users across India and for Hindi or English-speaking users internationally who need a simple daily hisab kitab, milk record, credit book or business ledger app.</p>
+<p>The app uses English with Hindi support so both Indian users and international users who understand Hindi or English can use it for simple record keeping.</p>
+</section>
 
-<p>
-It is made for simple Hindi + English hisab kitab, local business records,
-dairy records, udhar records and custom business tracking in one secure app.
-</p>
+<section>
+<h2>Who is this app for?</h2>
+<div class="grid">
+<div class="box"><strong>Small dairy owners</strong><p>Track daily doodh hisab, milk quantity, rates and customer records.</p></div>
+<div class="box"><strong>Milk sellers</strong><p>Maintain milk record and monthly hisab without relying only on paper diary.</p></div>
+<div class="box"><strong>Shopkeepers</strong><p>Use credit book, udhar khata book, udhar bahi khata and daily expenses record in one place.</p></div>
+<div class="box"><strong>Small businesses</strong><p>Keep salary register, business ledger and personal diary records together.</p></div>
+</div>
+</section>
+
+<section>
+<h2>How it works</h2>
+<ol>
+<li>Add a customer, employee, category or business profile.</li>
+<li>Record daily milk, credit book, udhar, expenses, salary or diary entry.</li>
+<li>The app keeps monthly hisab and business records organized.</li>
+<li>Use export/share features when you need to save or send records.</li>
+</ol>
+</section>
+
+<section>
+<h2>Features</h2>
+<div class="grid">
+<div class='box'><strong>Doodh Hisab / Milk Record</strong><p class='small'>Aarish Dairy Pro keeps this feature simple for daily mobile use.</p></div>
+<div class='box'><strong>Credit Book / Udhar Khata Book</strong><p class='small'>Aarish Dairy Pro keeps this feature simple for daily mobile use.</p></div>
+<div class='box'><strong>Udhar Bahi Khata</strong><p class='small'>Aarish Dairy Pro keeps this feature simple for daily mobile use.</p></div>
+<div class='box'><strong>Daily Expenses / Daily Kharcha Record</strong><p class='small'>Aarish Dairy Pro keeps this feature simple for daily mobile use.</p></div>
+<div class='box'><strong>Salary Register</strong><p class='small'>Aarish Dairy Pro keeps this feature simple for daily mobile use.</p></div>
+<div class='box'><strong>Personal Diary</strong><p class='small'>Aarish Dairy Pro keeps this feature simple for daily mobile use.</p></div>
+<div class='box'><strong>Business Record / Small Business Ledger</strong><p class='small'>Aarish Dairy Pro keeps this feature simple for daily mobile use.</p></div>
+<div class='box'><strong>Offline-ready PWA experience</strong><p class='small'>Aarish Dairy Pro keeps this feature simple for daily mobile use.</p></div>
+</div>
+</section>
+
+<section>
+<h2>Helpful feature pages</h2>
+<ul>
+<li><a href="./doodh-hisab.html">Doodh Hisab App</a> — daily milk hisab and dairy record guide.</li>
+<li><a href="./udhar-khata-book.html">Udhar Khata Book</a> — credit book, udhar, lena-dena and customer record guide.</li>
+<li><a href="./hisab-kitab-app.html">Hisab Kitab App</a> — daily expenses, salary and business ledger guide.</li>
+<li><a href="./milk-record-app.html">Milk Record App</a> — milk collection and monthly record guide.</li>
+</ul>
+</section>
+
+<section>
+<h2>Genuine changelog</h2>
+<ul>
+<li><strong>2026-07-01:</strong> Public SEO/GEO content hub V4 added with neutral free-app schema, India + international scope, worldwide-use FAQ and generic English aliases.</li>
+<li><strong>2026-06-30:</strong> Google Search Console verification, robots.txt and sitemap.xml setup completed.</li>
+<li><strong>Current app:</strong> Aarish Dairy Pro runs as a mobile-first PWA with Firebase login and offline-ready financial diary features.</li>
+</ul>
+</section>
 
 <p><a href="./index.html">Open Aarish Dairy Pro</a></p>
+
+<footer>
+Last updated: 2026-07-01. This page is part of the Aarish Dairy Pro public SEO/GEO content hub.
+</footer>
 </div>
 </main>
 </body>

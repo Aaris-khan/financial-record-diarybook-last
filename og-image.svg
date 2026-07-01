@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+<defs>
+<linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#020617"/><stop offset="50%" stop-color="#0f172a"/><stop offset="100%" stop-color="#001b2e"/></linearGradient>
+<radialGradient id="glow" cx="25%" cy="15%" r="65%"><stop offset="0%" stop-color="#34d399" stop-opacity="0.35"/><stop offset="100%" stop-color="#34d399" stop-opacity="0"/></radialGradient>
+<radialGradient id="glow2" cx="90%" cy="90%" r="70%"><stop offset="0%" stop-color="#60a5fa" stop-opacity="0.38"/><stop offset="100%" stop-color="#60a5fa" stop-opacity="0"/></radialGradient>
+</defs>
+<rect width="1200" height="630" fill="url(#bg)"/>
+<rect width="1200" height="630" fill="url(#glow)"/>
+<rect width="1200" height="630" fill="url(#glow2)"/>
+<rect x="70" y="70" width="1060" height="490" rx="42" fill="#111827" opacity="0.88" stroke="rgba(255,255,255,0.16)"/>
+<circle cx="150" cy="150" r="52" fill="#1d4ed8" opacity="0.95"/>
+<text x="225" y="155" fill="#f8fafc" font-size="56" font-family="Arial, sans-serif" font-weight="800">Aarish Dairy Pro</text>
+<text x="225" y="220" fill="#93c5fd" font-size="28" font-family="Arial, sans-serif" font-weight="700">Doodh Hisab • Credit Book • Milk Record</text>
+<text x="90" y="335" fill="#f8fafc" font-size="42" font-family="Arial, sans-serif" font-weight="800">Free PWA for daily hisab kitab</text>
+<text x="90" y="400" fill="#cbd5e1" font-size="28" font-family="Arial, sans-serif">Milk records, credit book, daily expenses, salary and business ledger.</text>
+<text x="90" y="485" fill="#34d399" font-size="26" font-family="Arial, sans-serif" font-weight="700">aaris-khan.github.io/financial-record-diarybook-last/</text>
+</svg>

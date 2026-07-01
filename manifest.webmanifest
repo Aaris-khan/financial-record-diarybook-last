@@ -1,0 +1,17 @@
+{
+  "name": "Aarish Dairy Pro - Doodh Hisab, Credit Book, Milk Record & Business Ledger",
+  "short_name": "Aarish Dairy",
+  "description": "Aarish Dairy Pro is a free PWA for doodh hisab, milk record, credit book, udhar khata book, daily expenses, salary register, personal diary and small business ledger. Aarish Dairy Pro is made for users across India and for Hindi or English-speaking users internationally who need a simple daily hisab kitab, milk record, credit book or business ledger app.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#030712",
+  "theme_color": "#0f172a",
+  "orientation": "portrait",
+  "lang": "en",
+  "categories": [
+    "finance",
+    "business",
+    "productivity"
+  ]
+}
