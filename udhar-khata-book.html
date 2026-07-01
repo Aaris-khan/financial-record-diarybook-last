@@ -83,6 +83,159 @@ nav a{
 ol,ul{color:var(--muted)}
 strong{color:#fff}
 footer{margin-top:28px;color:#94a3b8;font-size:13px}
+
+/* AARISH_APP_OPEN_CTA_V2_START */
+.aarish-app-open-cta{
+  margin:18px 0 30px;
+}
+.aarish-app-open-cta-link{
+  position:relative;
+  display:grid;
+  grid-template-columns:1fr 42px;
+  gap:16px;
+  align-items:center;
+  width:100%;
+  padding:22px 18px;
+  border-radius:32px;
+  overflow:hidden;
+  text-decoration:none !important;
+  color:#fff !important;
+  background:
+    radial-gradient(circle at 12% 0%, rgba(59,130,246,.40), transparent 34%),
+    radial-gradient(circle at 96% 100%, rgba(16,185,129,.35), transparent 38%),
+    linear-gradient(135deg, #050b14 0%, #0b1e3d 46%, #061f1d 100%);
+  border:1px solid rgba(147,197,253,.52);
+  box-shadow:
+    0 0 0 1px rgba(255,255,255,.05) inset,
+    0 22px 70px rgba(37,99,235,.34),
+    0 14px 36px rgba(0,0,0,.50);
+  transform:translateZ(0);
+}
+.aarish-app-open-cta-link::before{
+  content:"";
+  position:absolute;
+  inset:-2px;
+  background:linear-gradient(120deg, transparent 0%, rgba(255,255,255,.18) 42%, transparent 72%);
+  transform:translateX(-130%);
+  animation:aarishCtaShine 4.8s ease-in-out infinite;
+  pointer-events:none;
+}
+.aarish-app-open-cta-link::after{
+  content:"";
+  position:absolute;
+  inset:1px;
+  border-radius:31px;
+  pointer-events:none;
+  background:
+    linear-gradient(135deg, rgba(56,189,248,.18), transparent 32%),
+    linear-gradient(315deg, rgba(16,185,129,.14), transparent 30%);
+}
+@keyframes aarishCtaShine{
+  0%,55%{transform:translateX(-130%)}
+  78%,100%{transform:translateX(130%)}
+}
+.aarish-app-open-content{
+  position:relative;
+  z-index:2;
+  min-width:0;
+  display:flex;
+  flex-direction:column;
+  align-items:flex-start;
+}
+.aarish-app-open-leaf-tile{
+  width:76px;
+  height:76px;
+  border-radius:25px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  margin:0 0 13px;
+  background:
+    radial-gradient(circle at 28% 20%, rgba(255,255,255,.32), transparent 35%),
+    linear-gradient(135deg, #1e3a8a 0%, #2563eb 42%, #06b6d4 72%, #10b981 100%);
+  box-shadow:
+    0 18px 42px rgba(37,99,235,.38),
+    0 0 0 1px rgba(255,255,255,.16) inset,
+    0 0 32px rgba(34,211,238,.22);
+}
+.aarish-app-open-leaf-svg{
+  width:43px;
+  height:43px;
+  display:block;
+  filter:drop-shadow(0 8px 16px rgba(0,0,0,.22));
+}
+.aarish-app-open-kicker{
+  font-size:12px;
+  letter-spacing:.15em;
+  text-transform:uppercase;
+  color:#93c5fd;
+  font-weight:950;
+  margin-bottom:5px;
+}
+.aarish-app-open-title{
+  font-size:27px;
+  line-height:1.08;
+  color:#fff;
+  font-weight:1000;
+  letter-spacing:-.02em;
+}
+.aarish-app-open-subtitle{
+  margin-top:8px;
+  max-width:650px;
+  font-size:14.5px;
+  line-height:1.42;
+  color:#dbeafe;
+  font-weight:750;
+}
+.aarish-app-open-arrow{
+  position:relative;
+  z-index:2;
+  width:42px;
+  height:42px;
+  border-radius:999px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:28px;
+  font-weight:1000;
+  background:rgba(255,255,255,.13);
+  color:#fff;
+  box-shadow:0 0 0 1px rgba(255,255,255,.14) inset;
+}
+.aarish-app-open-cta-link:focus-visible{
+  outline:3px solid #93c5fd;
+  outline-offset:4px;
+}
+@media(max-width:560px){
+  .aarish-app-open-cta-link{
+    grid-template-columns:1fr 34px;
+    border-radius:26px;
+    padding:18px 15px;
+  }
+  .aarish-app-open-leaf-tile{
+    width:66px;
+    height:66px;
+    border-radius:22px;
+    margin-bottom:12px;
+  }
+  .aarish-app-open-leaf-svg{
+    width:38px;
+    height:38px;
+  }
+  .aarish-app-open-title{
+    font-size:22px;
+  }
+  .aarish-app-open-subtitle{
+    font-size:12.8px;
+  }
+  .aarish-app-open-arrow{
+    width:34px;
+    height:34px;
+    font-size:23px;
+  }
+}
+/* AARISH_APP_OPEN_CTA_V2_END */
+
 </style>
 <script type="application/ld+json">
 [
@@ -147,6 +300,25 @@ footer{margin-top:28px;color:#94a3b8;font-size:13px}
 <a href="./hisab-kitab-app.html">Hisab Kitab App</a>
 <a href="./milk-record-app.html">Milk Record App</a>
 </nav>
+<!-- AARISH_APP_OPEN_CTA_V2_START -->
+<section class="aarish-app-open-cta" aria-label="Open Aarish Dairy Pro main app">
+  <a class="aarish-app-open-cta-link" href="./index.html" aria-label="Open Aarish Dairy Pro main app">
+    <span class="aarish-app-open-content">
+      <span class="aarish-app-open-leaf-tile" aria-hidden="true">
+        <svg class="aarish-app-open-leaf-svg" viewBox="0 0 64 64" role="img" focusable="false">
+          <path d="M52.8 9.2C38.2 10.4 25.9 16.1 18.9 25.1c-5.7 7.4-5.9 16.6-.4 22.1 5.7 5.7 15 5.4 22.6-.5C50.4 39.5 55.8 25.1 52.8 9.2Z" fill="#60a5fa"/>
+          <path d="M12.2 51.8c11.8-3.7 21.6-11.5 29.5-25.1" fill="none" stroke="#a7f3d0" stroke-width="5.2" stroke-linecap="round"/>
+          <path d="M25.2 44.8c-5.3-4.7-6.3-11.7-2.6-18.2-6.8 5.2-9.5 13.7-4.1 20.6 1.8 2.4 4.2 3.6 6.7 4.1Z" fill="#22d3ee" opacity=".95"/>
+        </svg>
+      </span>
+      <span class="aarish-app-open-kicker">Premium Financial Hub</span>
+      <span class="aarish-app-open-title">Open Aarish Dairy Pro</span>
+      <span class="aarish-app-open-subtitle">Splash screen, Google sign-in aur main app yahin se open karein</span>
+    </span>
+    <span class="aarish-app-open-arrow" aria-hidden="true">&rarr;</span>
+  </a>
+</section>
+<!-- AARISH_APP_OPEN_CTA_V2_END -->
 <h1>Credit Book and Udhar Khata Book for Customer Records</h1>
 
 <p><strong>Aarish Dairy Pro works as a credit book and udhar khata book app for recording customer udhar, lena-dena and small business credit records.</strong></p>
