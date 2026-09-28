@@ -1,0 +1,56 @@
+name: Verify and publish Quran draft APK
+
+on:
+  push:
+    branches:
+      - verify/publish-quran-draft-apk-20260928
+
+permissions:
+  contents: write
+
+jobs:
+  verify-publish:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download exact draft APK asset
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          gh api \
+            -H 'Accept: application/octet-stream' \
+            /repos/Aaris-khan/financial-record-diarybook-last/releases/assets/594360755 \
+            > candidate.apk
+          test -s candidate.apk
+          sha256sum candidate.apk
+
+      - name: Verify this is Aaris Quran
+        shell: bash
+        run: |
+          set -euo pipefail
+          AAPT="$(find "$ANDROID_HOME/build-tools" -type f -name aapt | sort -V | tail -n 1)"
+          test -x "$AAPT"
+          "$AAPT" dump badging candidate.apk | tee badging.txt
+          PACKAGE="$(sed -n "s/^package: name='\([^']*\)'.*/\1/p" badging.txt | head -n 1)"
+          LABEL="$(sed -n "s/^application-label:'\([^']*\)'.*/\1/p" badging.txt | head -n 1)"
+          echo "package=$PACKAGE"
+          echo "label=$LABEL"
+          test "$PACKAGE" = 'com.aaris.quran'
+          echo "$LABEL" | grep -Eiq 'aaris.*quran|quran'
+
+      - name: Rename exact verified asset and publish draft
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          gh api -X PATCH \
+            /repos/Aaris-khan/financial-record-diarybook-last/releases/assets/594360755 \
+            -f name='Aaris-Quran.apk' >/dev/null
+          gh api -X PATCH \
+            /repos/Aaris-khan/financial-record-diarybook-last/releases/397924103 \
+            -F draft=false \
+            -f name='Aaris Apps' \
+            -f tag_name='aaris-apps-v1' \
+            -f target_commitish='main' \
+            -f make_latest='true' >/dev/null
+          echo 'Verified Quran APK published.'
