@@ -1,0 +1,21 @@
+name: Delete wrong draft APK asset
+
+on:
+  push:
+    branches:
+      - cleanup/delete-wrong-quran-draft-asset-20260928
+
+permissions:
+  contents: write
+
+jobs:
+  cleanup:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Delete only the wrong Quran draft asset
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          gh api -X DELETE /repos/Aaris-khan/financial-record-diarybook-last/releases/assets/594358392
+          echo 'Deleted asset 594358392 (Aaris-Quran.apk)'
