@@ -1,0 +1,62 @@
+name: Verify and publish Pharmacy draft APK
+
+on:
+  push:
+    branches:
+      - verify/publish-pharmacy-draft-apk-20260928
+
+permissions:
+  contents: write
+
+jobs:
+  verify-publish:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download exact draft APK asset
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          gh api \
+            -H 'Accept: application/octet-stream' \
+            /repos/Aaris-khan/financial-record-diarybook-last/releases/assets/594396907 \
+            > candidate.apk
+          test -s candidate.apk
+          sha256sum candidate.apk
+
+      - name: Verify this is permanent Aaris Pharmacy
+        shell: bash
+        run: |
+          set -euo pipefail
+          AAPT="$(find "$ANDROID_HOME/build-tools" -type f -name aapt | sort -V | tail -n 1)"
+          APKSIGNER="$(find "$ANDROID_HOME/build-tools" -type f -name apksigner | sort -V | tail -n 1)"
+          test -x "$AAPT"
+          test -x "$APKSIGNER"
+          "$AAPT" dump badging candidate.apk | tee badging.txt
+          PACKAGE="$(sed -n "s/^package: name='\([^']*\)'.*/\1/p" badging.txt | head -n 1)"
+          LABEL="$(sed -n "s/^application-label:'\([^']*\)'.*/\1/p" badging.txt | head -n 1)"
+          echo "package=$PACKAGE"
+          echo "label=$LABEL"
+          test "$PACKAGE" = 'com.aaris.pharmacy'
+          echo "$LABEL" | grep -Eiq 'aaris.*pharmacy|pharmacy'
+          "$APKSIGNER" verify --verbose --print-certs candidate.apk | tee signing.txt
+          CERT_SHA256="$(sed -n 's/^Signer #1 certificate SHA-256 digest: //p' signing.txt | head -n 1 | tr -d ':' | tr '[:lower:]' '[:upper:]')"
+          echo "signing_sha256=$CERT_SHA256"
+          test "$CERT_SHA256" = '330D1611849C7C9B1F9F592C458932F25AE6F3ABA1BC7E8ABFBC9E6868EF004F'
+
+      - name: Rename exact verified asset and publish draft
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          gh api -X PATCH \
+            /repos/Aaris-khan/financial-record-diarybook-last/releases/assets/594396907 \
+            -f name='Aaris-Pharmacy.apk' >/dev/null
+          gh api -X PATCH \
+            /repos/Aaris-khan/financial-record-diarybook-last/releases/397932139 \
+            -F draft=false \
+            -f name='Aaris Pharmacy App' \
+            -f tag_name='aaris-pharma-v1' \
+            -f target_commitish='main' \
+            -f make_latest='false' >/dev/null
+          echo 'Verified Pharmacy APK published.'
