@@ -15767,6 +15767,14 @@ window.generateAndCopyAIPrompt = async function () {
             description: 'Offline Quran, Hadith, translation, search and recitation.',
             icon: 'fa-solid fa-book-quran',
             downloadUrl: 'https://github.com/Aaris-khan/quran-app-advance/releases/download/aarish-kingdom-latest/Aarish-Kingdom-release.apk'
+        }),
+        Object.freeze({
+            id: 'aaris-pharmacy',
+            name: 'Aaris Pharmacy',
+            description: 'Offline-first medicine inventory, scanner, search and pharmacy management.',
+            icon: 'fa-solid fa-capsules',
+            downloadUrl: '',
+            pendingMessage: 'Aaris Pharmacy APK is verified and ready. Publish it once to a permanent release link to enable direct download.'
         })
     ]);
     window.AARISH_MORE_APPS_V1 = apps;
@@ -15777,11 +15785,29 @@ window.generateAndCopyAIPrompt = async function () {
         host.dataset.rendered = '1';
 
         apps.forEach(function(app){
-            const card = document.createElement('a');
+            const card = document.createElement(app.downloadUrl ? 'a' : 'button');
             card.className = 'more-app-card-v1';
-            card.href = app.downloadUrl;
-            card.setAttribute('aria-label', 'Download ' + app.name + ' APK');
-            card.addEventListener('click', function(){ try { if(typeof haptic === 'function') haptic(); } catch(e){} });
+            card.style.border = '0';
+            card.style.font = 'inherit';
+            card.style.cursor = 'pointer';
+            if(app.downloadUrl){
+                card.href = app.downloadUrl;
+                card.setAttribute('aria-label', 'Download ' + app.name + ' APK');
+            }else{
+                card.type = 'button';
+                card.setAttribute('aria-label', app.name + ' APK');
+            }
+            card.addEventListener('click', function(event){
+                try { if(typeof haptic === 'function') haptic(); } catch(e){}
+                if(!app.downloadUrl){
+                    event.preventDefault();
+                    const message = app.pendingMessage || (app.name + ' download will be available soon.');
+                    try {
+                        if(typeof showToast === 'function') showToast(message);
+                        else alert(message);
+                    } catch(e) {}
+                }
+            });
 
             const icon = document.createElement('span');
             icon.className = 'more-app-icon-v1';
@@ -15803,7 +15829,9 @@ window.generateAndCopyAIPrompt = async function () {
 
             const download = document.createElement('span');
             download.className = 'more-app-download-v1';
-            download.innerHTML = '<i class="fa-solid fa-download" aria-hidden="true"></i><span>APK</span>';
+            download.innerHTML = app.downloadUrl
+                ? '<i class="fa-solid fa-download" aria-hidden="true"></i><span>APK</span>'
+                : '<i class="fa-solid fa-circle-check" aria-hidden="true"></i><span>READY</span>';
 
             card.appendChild(icon);
             card.appendChild(copy);
