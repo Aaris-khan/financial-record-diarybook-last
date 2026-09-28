@@ -3280,18 +3280,18 @@ button:active {
         /* AARISH_MORE_APPS_LOGIN_V1_START */
         .more-apps-login-btn-v1 {
             position: absolute;
-            top: calc(env(safe-area-inset-top, 0px) + 14px);
+            top: 14px;
             right: 14px;
-            z-index: 5;
+            z-index: 12;
             min-height: 38px;
             padding: 9px 13px;
-            border: 1px solid rgba(255,255,255,0.14);
+            border: 1px solid rgba(100,210,255,0.26);
             border-radius: 999px;
-            background: rgba(28,28,30,0.72);
-            color: #fff;
+            background: rgba(10,132,255,0.16);
+            color: #EAF6FF;
             backdrop-filter: blur(22px) saturate(175%);
             -webkit-backdrop-filter: blur(22px) saturate(175%);
-            box-shadow: 0 8px 28px rgba(0,0,0,0.30), inset 0 1px 0 rgba(255,255,255,0.08);
+            box-shadow: 0 8px 28px rgba(0,122,255,0.16), inset 0 1px 0 rgba(255,255,255,0.10);
             display: inline-flex;
             align-items: center;
             justify-content: center;
@@ -3299,10 +3299,10 @@ button:active {
             font: inherit;
             font-size: 12px;
             line-height: 1;
-            font-weight: 850;
+            font-weight: 900;
             cursor: pointer;
             -webkit-tap-highlight-color: transparent;
-            transition: transform .18s cubic-bezier(.32,.72,0,1), background .18s ease;
+            transition: transform .18s cubic-bezier(.32,.72,0,1), background .18s ease, border-color .18s ease;
         }
         .more-apps-login-btn-v1:active { transform: scale(.96); background: rgba(44,44,46,.88); }
         .more-apps-login-btn-v1 i { font-size: 13px; color: #64D2FF; }
@@ -3400,13 +3400,13 @@ button:active {
 
     
 <div id="login-screen" style="position: fixed; inset: 0; background: #000; display: flex; align-items: center; justify-content: center; z-index: 9999; overflow: hidden;">
-    <!-- AARISH_MORE_APPS_LOGIN_V1_BUTTON_START -->
-    <button type="button" class="more-apps-login-btn-v1" onclick="openMoreAppsV1()" aria-label="More Apps">
-        <i class="fa-solid fa-grip" aria-hidden="true"></i><span>More Apps</span>
-    </button>
-    <!-- AARISH_MORE_APPS_LOGIN_V1_BUTTON_END -->
     <div style="position:absolute; top:-20%; left:-20%; width: 70%; height: 70%; background: radial-gradient(circle, #007AFF 0%, transparent 70%); opacity: 0.3; filter: blur(80px);"></div>
     <div class="login-core-card" style="width: 90%; max-width: 360px; text-align: center; position: relative; z-index: 1; padding: 22px; border-radius: 28px; background: rgba(18,18,20,0.88) !important; border: 1px solid rgba(255,255,255,0.115) !important; box-shadow: 0 18px 58px rgba(0,0,0,0.68), 0 0 34px rgba(0,122,255,0.075), inset 0 1px 0 rgba(255,255,255,0.095) !important; backdrop-filter: blur(34px) saturate(180%) !important; -webkit-backdrop-filter: blur(34px) saturate(180%) !important; color: #FFFFFF !important; overflow: hidden;">
+        <!-- AARISH_MORE_APPS_LOGIN_V2_BUTTON_START -->
+        <button type="button" class="more-apps-login-btn-v1" onclick="openMoreAppsV1()" aria-label="More Apps">
+            <i class="fa-solid fa-grip" aria-hidden="true"></i><span>More Apps</span>
+        </button>
+        <!-- AARISH_MORE_APPS_LOGIN_V2_BUTTON_END -->
         <div class="w-20 h-20 mx-auto bg-blue-500/20 shrink-0 rounded-[20px] flex items-center justify-center mb-6" style="box-shadow: 0 0 20px rgba(0,122,255,0.30);"><i class="fa-solid fa-leaf text-4xl text-blue-500"></i></div>
         <h1 style="font-size:28px; font-weight:800; color:#FFF; margin-bottom: 4px; letter-spacing: -0.5px;" class="truncate w-full min-w-0">Aarish Dairy Pro</h1>
 
