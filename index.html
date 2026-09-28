@@ -3277,6 +3277,102 @@ button:active {
         }
         /* AARISH_LOGIN_CLEAN_SEO_BALANCED_V2_END */
 
+        /* AARISH_MORE_APPS_LOGIN_V1_START */
+        .more-apps-login-btn-v1 {
+            position: absolute;
+            top: calc(env(safe-area-inset-top, 0px) + 14px);
+            right: 14px;
+            z-index: 5;
+            min-height: 38px;
+            padding: 9px 13px;
+            border: 1px solid rgba(255,255,255,0.14);
+            border-radius: 999px;
+            background: rgba(28,28,30,0.72);
+            color: #fff;
+            backdrop-filter: blur(22px) saturate(175%);
+            -webkit-backdrop-filter: blur(22px) saturate(175%);
+            box-shadow: 0 8px 28px rgba(0,0,0,0.30), inset 0 1px 0 rgba(255,255,255,0.08);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 7px;
+            font: inherit;
+            font-size: 12px;
+            line-height: 1;
+            font-weight: 850;
+            cursor: pointer;
+            -webkit-tap-highlight-color: transparent;
+            transition: transform .18s cubic-bezier(.32,.72,0,1), background .18s ease;
+        }
+        .more-apps-login-btn-v1:active { transform: scale(.96); background: rgba(44,44,46,.88); }
+        .more-apps-login-btn-v1 i { font-size: 13px; color: #64D2FF; }
+
+        .more-apps-backdrop-v1 {
+            position: fixed;
+            inset: 0;
+            z-index: 10030;
+            display: none;
+            align-items: flex-end;
+            justify-content: center;
+            padding: 14px;
+            background: rgba(0,0,0,.58);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+        }
+        .more-apps-backdrop-v1.open { display: flex; }
+        .more-apps-sheet-v1 {
+            width: min(100%, 460px);
+            max-height: min(78vh, 640px);
+            overflow-y: auto;
+            border-radius: 28px;
+            padding: 18px;
+            background: rgba(24,24,27,.96);
+            border: 1px solid rgba(255,255,255,.13);
+            box-shadow: 0 28px 90px rgba(0,0,0,.72), inset 0 1px 0 rgba(255,255,255,.08);
+            color: #fff;
+            transform-origin: bottom center;
+            animation: moreAppsSheetInV1 .26s cubic-bezier(.22,.9,.25,1) both;
+        }
+        @keyframes moreAppsSheetInV1 {
+            from { transform: translateY(24px) scale(.98); opacity: 0; }
+            to { transform: translateY(0) scale(1); opacity: 1; }
+        }
+        .more-apps-sheet-head-v1 { display:flex; align-items:center; justify-content:space-between; gap:14px; margin-bottom:14px; }
+        .more-apps-sheet-title-v1 { font-size:21px; font-weight:900; letter-spacing:-.35px; margin:0; }
+        .more-apps-sheet-sub-v1 { margin:3px 0 0; color:#8E8E93; font-size:12px; font-weight:650; line-height:1.35; }
+        .more-apps-close-v1 {
+            width: 36px; height: 36px; flex:0 0 36px; border:0; border-radius:50%;
+            background: rgba(118,118,128,.22); color:#fff; cursor:pointer; font-size:14px;
+        }
+        .more-apps-list-v1 { display:grid; gap:10px; }
+        .more-app-card-v1 {
+            width:100%; min-height:76px; padding:13px 14px; border-radius:20px;
+            display:flex; align-items:center; gap:13px; text-decoration:none; color:#fff;
+            background: rgba(255,255,255,.065); border:1px solid rgba(255,255,255,.09);
+            box-shadow: inset 0 1px 0 rgba(255,255,255,.045);
+            transition: transform .16s ease, background .16s ease, border-color .16s ease;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .more-app-card-v1:active { transform:scale(.982); background:rgba(255,255,255,.10); border-color:rgba(100,210,255,.24); }
+        .more-app-icon-v1 {
+            width:50px; height:50px; flex:0 0 50px; border-radius:16px;
+            display:flex; align-items:center; justify-content:center;
+            background: rgba(52,199,89,.14); color:#34C759; font-size:22px;
+            box-shadow: inset 0 1px 0 rgba(255,255,255,.08);
+        }
+        .more-app-copy-v1 { flex:1; min-width:0; text-align:left; }
+        .more-app-name-v1 { font-size:15px; font-weight:900; line-height:1.2; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+        .more-app-desc-v1 { margin-top:4px; color:#A1A1AA; font-size:11px; font-weight:650; line-height:1.35; }
+        .more-app-download-v1 {
+            flex:0 0 auto; min-width:38px; height:38px; padding:0 11px; border-radius:12px;
+            display:flex; align-items:center; justify-content:center; gap:6px;
+            background:rgba(0,122,255,.14); color:#64D2FF; font-size:12px; font-weight:900;
+        }
+        @media (min-width: 700px) {
+            .more-apps-backdrop-v1 { align-items:center; }
+        }
+        /* AARISH_MORE_APPS_LOGIN_V1_END */
+
 </style>
 
      
@@ -3304,6 +3400,11 @@ button:active {
 
     
 <div id="login-screen" style="position: fixed; inset: 0; background: #000; display: flex; align-items: center; justify-content: center; z-index: 9999; overflow: hidden;">
+    <!-- AARISH_MORE_APPS_LOGIN_V1_BUTTON_START -->
+    <button type="button" class="more-apps-login-btn-v1" onclick="openMoreAppsV1()" aria-label="More Apps">
+        <i class="fa-solid fa-grip" aria-hidden="true"></i><span>More Apps</span>
+    </button>
+    <!-- AARISH_MORE_APPS_LOGIN_V1_BUTTON_END -->
     <div style="position:absolute; top:-20%; left:-20%; width: 70%; height: 70%; background: radial-gradient(circle, #007AFF 0%, transparent 70%); opacity: 0.3; filter: blur(80px);"></div>
     <div class="login-core-card" style="width: 90%; max-width: 360px; text-align: center; position: relative; z-index: 1; padding: 22px; border-radius: 28px; background: rgba(18,18,20,0.88) !important; border: 1px solid rgba(255,255,255,0.115) !important; box-shadow: 0 18px 58px rgba(0,0,0,0.68), 0 0 34px rgba(0,122,255,0.075), inset 0 1px 0 rgba(255,255,255,0.095) !important; backdrop-filter: blur(34px) saturate(180%) !important; -webkit-backdrop-filter: blur(34px) saturate(180%) !important; color: #FFFFFF !important; overflow: hidden;">
         <div class="w-20 h-20 mx-auto bg-blue-500/20 shrink-0 rounded-[20px] flex items-center justify-center mb-6" style="box-shadow: 0 0 20px rgba(0,122,255,0.30);"><i class="fa-solid fa-leaf text-4xl text-blue-500"></i></div>
@@ -3328,6 +3429,21 @@ button:active {
         <!-- AARISH_ANDROID_APK_DOWNLOAD_V1_END -->
     </div>
 </div>
+
+<!-- AARISH_MORE_APPS_LOGIN_V1_SHEET_START -->
+<div id="more-apps-backdrop-v1" class="more-apps-backdrop-v1" aria-hidden="true" onclick="if(event.target===this) closeMoreAppsV1()">
+    <section class="more-apps-sheet-v1" role="dialog" aria-modal="true" aria-labelledby="more-apps-title-v1">
+        <div class="more-apps-sheet-head-v1">
+            <div>
+                <h2 id="more-apps-title-v1" class="more-apps-sheet-title-v1">More Apps</h2>
+                <p class="more-apps-sheet-sub-v1">More useful apps from Aaris. Tap an app to download.</p>
+            </div>
+            <button type="button" class="more-apps-close-v1" onclick="closeMoreAppsV1()" aria-label="Close More Apps"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+        <div id="more-apps-list-v1" class="more-apps-list-v1"></div>
+    </section>
+</div>
+<!-- AARISH_MORE_APPS_LOGIN_V1_SHEET_END -->
 
 <div id="main-app" class="app-container hidden">
 
@@ -15636,6 +15752,90 @@ window.generateAndCopyAIPrompt = async function () {
 })();
 </script>
 <!-- AARISH_AI_PROMPT_AUTOPASTE_ENGINE_V3_END -->
+
+
+<!-- AARISH_MORE_APPS_LOGIN_V1_JS_START -->
+<script>
+(function(){
+    'use strict';
+
+    // One small catalogue keeps future app additions surgical: add one object, no UI rewrite.
+    const apps = Object.freeze([
+        Object.freeze({
+            id: 'aaris-quran',
+            name: 'Aaris Quran',
+            description: 'Offline Quran, Hadith, translation, search and recitation.',
+            icon: 'fa-solid fa-book-quran',
+            downloadUrl: 'https://github.com/Aaris-khan/quran-app-advance/releases/download/aarish-kingdom-latest/Aarish-Kingdom-release.apk'
+        })
+    ]);
+    window.AARISH_MORE_APPS_V1 = apps;
+
+    function renderMoreAppsV1(){
+        const host = document.getElementById('more-apps-list-v1');
+        if(!host || host.dataset.rendered === '1') return;
+        host.dataset.rendered = '1';
+
+        apps.forEach(function(app){
+            const card = document.createElement('a');
+            card.className = 'more-app-card-v1';
+            card.href = app.downloadUrl;
+            card.setAttribute('aria-label', 'Download ' + app.name + ' APK');
+            card.addEventListener('click', function(){ try { if(typeof haptic === 'function') haptic(); } catch(e){} });
+
+            const icon = document.createElement('span');
+            icon.className = 'more-app-icon-v1';
+            const iconGlyph = document.createElement('i');
+            iconGlyph.className = app.icon;
+            iconGlyph.setAttribute('aria-hidden','true');
+            icon.appendChild(iconGlyph);
+
+            const copy = document.createElement('span');
+            copy.className = 'more-app-copy-v1';
+            const name = document.createElement('span');
+            name.className = 'more-app-name-v1';
+            name.textContent = app.name;
+            const desc = document.createElement('span');
+            desc.className = 'more-app-desc-v1';
+            desc.textContent = app.description;
+            copy.appendChild(name);
+            copy.appendChild(desc);
+
+            const download = document.createElement('span');
+            download.className = 'more-app-download-v1';
+            download.innerHTML = '<i class="fa-solid fa-download" aria-hidden="true"></i><span>APK</span>';
+
+            card.appendChild(icon);
+            card.appendChild(copy);
+            card.appendChild(download);
+            host.appendChild(card);
+        });
+    }
+
+    window.openMoreAppsV1 = function(){
+        try { if(typeof haptic === 'function') haptic(); } catch(e){}
+        renderMoreAppsV1();
+        const backdrop = document.getElementById('more-apps-backdrop-v1');
+        if(!backdrop) return;
+        backdrop.classList.add('open');
+        backdrop.setAttribute('aria-hidden','false');
+        const close = backdrop.querySelector('.more-apps-close-v1');
+        if(close) setTimeout(function(){ try { close.focus({preventScroll:true}); } catch(e){} }, 0);
+    };
+
+    window.closeMoreAppsV1 = function(){
+        const backdrop = document.getElementById('more-apps-backdrop-v1');
+        if(!backdrop) return;
+        backdrop.classList.remove('open');
+        backdrop.setAttribute('aria-hidden','true');
+    };
+
+    document.addEventListener('keydown', function(event){
+        if(event.key === 'Escape') window.closeMoreAppsV1();
+    });
+})();
+</script>
+<!-- AARISH_MORE_APPS_LOGIN_V1_JS_END -->
 
 </body>
 </html>
