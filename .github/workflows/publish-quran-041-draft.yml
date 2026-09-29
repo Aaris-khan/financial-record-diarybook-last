@@ -70,20 +70,20 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          gh api --method PATCH             "repos/$GITHUB_REPOSITORY/releases/assets/$ASSET_ID"             -f name="$TARGET_ASSET"             -f label="Aaris Quran 0.4.1 APK" >/dev/null
+          gh api --method PATCH \
+            "repos/$GITHUB_REPOSITORY/releases/assets/$ASSET_ID" \
+            -f name="$TARGET_ASSET" \
+            -f label="Aaris Quran 0.4.1 APK" >/dev/null
 
-          NOTES="$(cat <<'EOF'
-Aaris Quran 0.4.1
-
-- Android package: com.aaris.quran
-- Version code: 5
-- Version name: 0.4.1
-- Signed with the permanent Aaris release certificate
-- Quran word-audio downloads use the separate public immutable audio release
-- Source development repository is separate from public APK/audio distribution
-EOF
-)"
-          gh api --method PATCH             "repos/$GITHUB_REPOSITORY/releases/$RELEASE_ID"             -f tag_name="$TARGET_TAG"             -f target_commitish="main"             -f name="Aaris Quran 0.4.1"             -f body="$NOTES"             -F draft=false             -F prerelease=false >/dev/null
+          NOTES=$'Aaris Quran 0.4.1\n\n- Android package: com.aaris.quran\n- Version code: 5\n- Version name: 0.4.1\n- Signed with the permanent Aaris release certificate\n- Quran word-audio downloads use the separate public immutable audio release\n- Source development repository is separate from public APK/audio distribution'
+          gh api --method PATCH \
+            "repos/$GITHUB_REPOSITORY/releases/$RELEASE_ID" \
+            -f tag_name="$TARGET_TAG" \
+            -f target_commitish="main" \
+            -f name="Aaris Quran 0.4.1" \
+            -f body="$NOTES" \
+            -F draft=false \
+            -F prerelease=false >/dev/null
 
       - name: Verify published release
         shell: bash
