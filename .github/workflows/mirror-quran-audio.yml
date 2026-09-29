@@ -1,4 +1,4 @@
-name: Mirror Quran public audio
+name: Finalize Quran public audio catalog
 
 on:
   push:
@@ -11,39 +11,41 @@ permissions:
   contents: write
 
 jobs:
-  mirror:
+  finalize:
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 10
     env:
       SOURCE_REPO: Aaris-khan/quran-app-advance
       SOURCE_TAG: quran-word-audio-muallim-v1-9796e08
       TARGET_TAG: quran-word-audio-public-v1-9796e08
       GH_TOKEN: ${{ github.token }}
     steps:
-      - name: Download current public Quran audio release
+      - name: Build self-contained public catalog
         shell: bash
         run: |
           set -euo pipefail
           mkdir -p mirror
-          gh release download "$SOURCE_TAG"             --repo "$SOURCE_REPO"             --dir mirror
-          test -f mirror/catalog.json
-          test "$(find mirror -maxdepth 1 -name '*.aqp' | wc -l)" -eq 114
-          echo "Downloaded $(du -sh mirror | cut -f1) of public audio assets."
+          gh release download "$SOURCE_TAG"             --repo "$SOURCE_REPO"             --pattern catalog.json             --dir mirror
+          python3 - <<'PY'
+          from pathlib import Path
+          p=Path("mirror/catalog.json")
+          text=p.read_text(encoding="utf-8")
+          old="https://github.com/Aaris-khan/quran-app-advance/releases/download/quran-word-audio-muallim-v1-9796e08"
+          new="https://github.com/Aaris-khan/financial-record-diarybook-last/releases/download/quran-word-audio-public-v1-9796e08"
+          if text.count(old)!=115:
+              raise SystemExit(f"Unexpected old-host occurrence count: {text.count(old)}")
+          p.write_text(text.replace(old,new),encoding="utf-8")
+          PY
 
-      - name: Create or refresh public mirror release
+      - name: Replace only public catalog metadata
         shell: bash
         run: |
           set -euo pipefail
-          if gh release view "$TARGET_TAG" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
-            gh release upload "$TARGET_TAG" mirror/*               --repo "$GITHUB_REPOSITORY"               --clobber
-          else
-            gh release create "$TARGET_TAG" mirror/*               --repo "$GITHUB_REPOSITORY"               --title "Aaris Quran public word audio"               --notes "Public binary mirror for Aaris Quran word-audio packs. Source code remains separate from public delivery assets."
-          fi
+          gh release upload "$TARGET_TAG" mirror/catalog.json             --repo "$GITHUB_REPOSITORY"             --clobber
 
-      - name: Verify mirror
+      - name: Verify release shape
         shell: bash
         run: |
           set -euo pipefail
           COUNT="$(gh api "repos/$GITHUB_REPOSITORY/releases/tags/$TARGET_TAG" --jq '.assets | length')"
-          echo "Mirrored asset count: $COUNT"
           test "$COUNT" -eq 115
