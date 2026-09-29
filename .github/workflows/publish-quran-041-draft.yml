@@ -1,0 +1,95 @@
+name: Verify and publish Aaris Quran 0.4.1 draft
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/publish-quran-041-draft.yml"
+
+permissions:
+  contents: write
+
+jobs:
+  verify-and-publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      RELEASE_ID: "398936089"
+      ASSET_ID: "597651741"
+      EXPECTED_SHA256: "c7470d3d7d91d02c818c17a3fa264ce1db7b1246db58b55e44734b4dda4b432e"
+      EXPECTED_PACKAGE: "com.aaris.quran"
+      EXPECTED_VERSION_CODE: "5"
+      EXPECTED_VERSION_NAME: "0.4.1"
+      EXPECTED_CERT_SHA256: "330d1611849c7c9b1f9f592c458932f25ae6f3aba1bc7e8abfbc9e6868ef004f"
+      TARGET_TAG: "aaris-quran-0.4.1"
+      TARGET_ASSET: "Aaris-Quran-v0.4.1.apk"
+      GH_TOKEN: ${{ github.token }}
+
+    steps:
+      - name: Download exact draft APK
+        shell: bash
+        run: |
+          set -euo pipefail
+          gh api             -H "Accept: application/octet-stream"             "repos/$GITHUB_REPOSITORY/releases/assets/$ASSET_ID"             > "$RUNNER_TEMP/quran.apk"
+          test -s "$RUNNER_TEMP/quran.apk"
+          ACTUAL_SHA="$(sha256sum "$RUNNER_TEMP/quran.apk" | awk '{print $1}')"
+          echo "APK SHA-256: $ACTUAL_SHA"
+          test "$ACTUAL_SHA" = "$EXPECTED_SHA256"
+
+      - name: Verify package, version and permanent signing certificate
+        shell: bash
+        run: |
+          set -euo pipefail
+          BUILD_TOOLS="$(find "$ANDROID_HOME/build-tools" -mindepth 1 -maxdepth 1 -type d -printf '%f\n' | sort -V | tail -1)"
+          AAPT="$ANDROID_HOME/build-tools/$BUILD_TOOLS/aapt"
+          APKSIGNER="$ANDROID_HOME/build-tools/$BUILD_TOOLS/apksigner"
+          test -x "$AAPT"
+          test -x "$APKSIGNER"
+
+          BADGING="$("$AAPT" dump badging "$RUNNER_TEMP/quran.apk" | head -n 1)"
+          echo "$BADGING"
+          echo "$BADGING" | grep -F "name='$EXPECTED_PACKAGE'"
+          echo "$BADGING" | grep -F "versionCode='$EXPECTED_VERSION_CODE'"
+          echo "$BADGING" | grep -F "versionName='$EXPECTED_VERSION_NAME'"
+
+          "$APKSIGNER" verify --verbose --print-certs "$RUNNER_TEMP/quran.apk" | tee "$RUNNER_TEMP/signing.txt"
+          ACTUAL_CERT="$(grep -m1 'certificate SHA-256 digest:' "$RUNNER_TEMP/signing.txt" | sed 's/.*digest: //' | tr -d ':' | tr '[:upper:]' '[:lower:]')"
+          echo "Signer SHA-256: $ACTUAL_CERT"
+          test "$ACTUAL_CERT" = "$EXPECTED_CERT_SHA256"
+
+      - name: Ensure target tag is unused
+        shell: bash
+        run: |
+          set -euo pipefail
+          if gh release view "$TARGET_TAG" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
+            echo "Target release tag already exists: $TARGET_TAG" >&2
+            exit 1
+          fi
+
+      - name: Rename asset and publish verified draft
+        shell: bash
+        run: |
+          set -euo pipefail
+          gh api --method PATCH             "repos/$GITHUB_REPOSITORY/releases/assets/$ASSET_ID"             -f name="$TARGET_ASSET"             -f label="Aaris Quran 0.4.1 APK" >/dev/null
+
+          NOTES="$(cat <<'EOF'
+Aaris Quran 0.4.1
+
+- Android package: com.aaris.quran
+- Version code: 5
+- Version name: 0.4.1
+- Signed with the permanent Aaris release certificate
+- Quran word-audio downloads use the separate public immutable audio release
+- Source development repository is separate from public APK/audio distribution
+EOF
+)"
+          gh api --method PATCH             "repos/$GITHUB_REPOSITORY/releases/$RELEASE_ID"             -f tag_name="$TARGET_TAG"             -f target_commitish="main"             -f name="Aaris Quran 0.4.1"             -f body="$NOTES"             -F draft=false             -F prerelease=false >/dev/null
+
+      - name: Verify published release
+        shell: bash
+        run: |
+          set -euo pipefail
+          JSON="$(gh api "repos/$GITHUB_REPOSITORY/releases/tags/$TARGET_TAG")"
+          echo "$JSON" | jq -e '.draft == false and .prerelease == false'
+          echo "$JSON" | jq -e --arg n "$TARGET_ASSET" '.assets | length == 1 and .[0].name == $n and .[0].state == "uploaded"'
+          echo "$JSON" | jq -r '.assets[0].browser_download_url'
