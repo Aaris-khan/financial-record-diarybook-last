@@ -15766,7 +15766,7 @@ window.generateAndCopyAIPrompt = async function () {
             name: 'Aaris Quran',
             description: 'Offline Quran, Hadith, translation, search and recitation.',
             icon: 'fa-solid fa-book-quran',
-            downloadUrl: 'https://github.com/Aaris-khan/financial-record-diarybook-last/releases/download/aaris-quran-1.0/Aaris-Quran.apk?asset=597537208&v=20260929T070845Z'
+            downloadUrl: 'https://github.com/Aaris-khan/financial-record-diarybook-last/releases/download/aaris-quran-1.0/Aaris-Quran.apk'
         }),
         Object.freeze({
             id: 'aaris-pharmacy',
@@ -15808,10 +15808,6 @@ window.generateAndCopyAIPrompt = async function () {
                     return;
                 }
 
-                // Force a fresh request on every tap so a replaced release asset is never
-                // mistaken for an older browser/CDN-cached APK with the same filename.
-                const joiner = app.downloadUrl.indexOf('?') === -1 ? '?' : '&';
-                card.href = app.downloadUrl + joiner + 'fresh=' + Date.now();
             });
 
             const icon = document.createElement('span');
