@@ -1,0 +1,49 @@
+name: Mirror Quran public audio
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/mirror-quran-audio.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  mirror:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      SOURCE_REPO: Aaris-khan/quran-app-advance
+      SOURCE_TAG: quran-word-audio-muallim-v1-9796e08
+      TARGET_TAG: quran-word-audio-public-v1-9796e08
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - name: Download current public Quran audio release
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p mirror
+          gh release download "$SOURCE_TAG"             --repo "$SOURCE_REPO"             --dir mirror
+          test -f mirror/catalog.json
+          test "$(find mirror -maxdepth 1 -name '*.aqp' | wc -l)" -eq 114
+          echo "Downloaded $(du -sh mirror | cut -f1) of public audio assets."
+
+      - name: Create or refresh public mirror release
+        shell: bash
+        run: |
+          set -euo pipefail
+          if gh release view "$TARGET_TAG" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
+            gh release upload "$TARGET_TAG" mirror/*               --repo "$GITHUB_REPOSITORY"               --clobber
+          else
+            gh release create "$TARGET_TAG" mirror/*               --repo "$GITHUB_REPOSITORY"               --title "Aaris Quran public word audio"               --notes "Public binary mirror for Aaris Quran word-audio packs. Source code remains separate from public delivery assets."
+          fi
+
+      - name: Verify mirror
+        shell: bash
+        run: |
+          set -euo pipefail
+          COUNT="$(gh api "repos/$GITHUB_REPOSITORY/releases/tags/$TARGET_TAG" --jq '.assets | length')"
+          echo "Mirrored asset count: $COUNT"
+          test "$COUNT" -eq 115
